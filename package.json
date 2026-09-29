@@ -2,13 +2,20 @@
   "name": "polygon-learning-experience",
   "private": true,
   "scripts": {
-    "test": "node verification/playwright-game.cjs",
-    "test:review": "node verification/playwright-review.cjs",
-    "test:scene": "node verification/check-story-scene.cjs"
+    "test": "node tests/run.cjs",
+    "test:quick": "node tests/run.cjs --quick",
+    "test:lesson": "node tests/lesson.test.cjs",
+    "test:story": "node tests/story.test.cjs",
+    "test:flows": "node tests/flows.test.cjs",
+    "test:checks": "node tests/checks/run-all.cjs",
+    "build:swiftee": "node tools/build-swiftee.cjs",
+    "build:story-voice": "python3 tools/story/build-story-voice.py",
+    "build:story-music": "node tools/story/build-story-music.cjs",
+    "optimize:media": "node tools/optimize-media.cjs"
   },
   "devDependencies": {
-    "@fontsource-variable/baloo-2": "5.3.0",
-    "@fontsource-variable/nunito": "5.3.0",
-    "playwright": "1.62.1"
+    "ffmpeg-static": "^5.2.0",
+    "playwright": "1.62.1",
+    "sharp": "^0.34.5"
   }
 }

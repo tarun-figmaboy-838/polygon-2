@@ -1,0 +1,317 @@
+/* ============================================================================
+   MOMO + POLO STORY — comic styles.
+
+   Everything is scoped under #story-intro, so nothing here can reach the
+   lesson. Each scene is a comic panel (the artwork's own 1980 x 1080 canvas,
+   scaled as one piece by src/story/story-intro.js) with an ink frame, on a
+   paper page with halftone dots. The words sit in ONE speech balloon, drawn
+   by the script as an inked SVG outline; this file styles its lettering.
+   ========================================================================= */
+
+@font-face {
+  font-family: 'Comic Neue';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../assets/fonts/comic-neue-700-latin.woff2') format('woff2');
+}
+
+#story-intro {
+  --story-dark: #0b1c33;          /* matches the blizzard intro's first frame */
+  --ink: #151515;
+  --paper: #f6efdd;
+  --story-scale: 1;
+  --panel-ink: 6px;
+
+  /* Colour for key words: who or what the word is about. Text colour only. */
+  --focus-momo: #d95c12;
+  --focus-polo: #1766c4;
+  --focus-gold: #a86e00;
+  --focus-action: #e02d24;
+  --focus-good: #178a3f;
+  --focus-worry: #7236b0;
+
+  position: fixed;
+  inset: 0;
+  z-index: 10060;                 /* above the blizzard (10050) and navigator (10000) */
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(160, 120, 60, 0.13) 1.6px, transparent 2px) 0 0 / 15px 15px,
+    radial-gradient(circle at 50% 50%, rgba(160, 120, 60, 0.08) 1.2px, transparent 1.6px) 7.5px 7.5px / 15px 15px,
+    var(--paper);
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  contain: layout paint style;
+}
+
+/* ---------------------------------------------------------------- panel */
+
+#story-intro .story-stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1980px;
+  height: 1080px;
+  margin: -540px 0 0 -990px;
+  transform: scale(var(--story-scale));
+  transform-origin: 50% 50%;
+  overflow: hidden;
+  pointer-events: none;
+  background: #cfe6f7;
+  border-radius: calc(var(--panel-ink) * 0.6);
+  box-shadow:
+    0 0 0 var(--panel-ink) var(--ink),
+    calc(var(--panel-ink) * 1.8) calc(var(--panel-ink) * 2) 0 calc(var(--panel-ink) * 0.6) rgba(21, 21, 21, 0.18);
+}
+#story-intro.is-caption .story-stage { top: var(--stage-centre, 50%); }
+
+#story-intro .story-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0;
+  backface-visibility: hidden;
+}
+#story-intro .story-layer.is-shown { opacity: 1; }
+#story-intro .story-shake,
+#story-intro .story-cam {
+  position: absolute;
+  inset: 0;
+}
+#story-intro .story-cam img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;              /* the image IS the panel: no stretch, no crop */
+  display: block;
+}
+
+/* Local light on the artwork. Screen-blended so it can only brighten what is
+   already there: the ball glows, it does not get repainted. */
+#story-intro .story-glow,
+#story-intro .story-light {
+  position: absolute;
+  border-radius: 50%;
+  mix-blend-mode: screen;
+  opacity: 0;
+  pointer-events: none;
+}
+#story-intro .story-glow {
+  background: radial-gradient(circle, rgba(255, 226, 150, 0.85) 0%, rgba(255, 196, 80, 0.38) 38%, rgba(255, 190, 60, 0) 70%);
+}
+#story-intro .story-light {
+  background: radial-gradient(circle, rgba(255, 250, 235, 1) 0%, rgba(255, 245, 225, 0.45) 45%, rgba(255, 245, 225, 0) 72%);
+}
+#story-intro .story-glint,
+#story-intro .story-heart,
+#story-intro .story-sweat,
+#story-intro .story-lines {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+#story-intro .story-glint svg,
+#story-intro .story-heart svg,
+#story-intro .story-sweat svg,
+#story-intro .story-lines svg { width: 100%; height: 100%; display: block; overflow: visible; }
+
+#story-intro .story-particles {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+#story-intro .story-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 78% 72% at 50% 48%, rgba(8, 22, 48, 0) 55%, rgba(8, 22, 48, 0.9) 100%);
+  opacity: 0.12;
+  transition: opacity 900ms ease;
+}
+
+/* ------------------------------------------------------ speech balloon */
+
+#story-intro .story-dialogue {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+#story-intro .story-box {
+  position: absolute;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+#story-intro .story-box.is-shown { opacity: 1; }
+#story-intro .story-box-shape {
+  position: absolute;
+  overflow: visible;
+  filter: drop-shadow(6px 7px 0 rgba(21, 21, 21, 0.22));
+}
+#story-intro .story-box-text {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  transform: translate(-50%, -52%);
+  white-space: nowrap;            /* always one line */
+  text-align: center;
+  font: 700 var(--line-size, 52px)/1.15 'Comic Neue', 'Baloo 2', sans-serif;
+  letter-spacing: 0.3px;
+  color: var(--ink);
+}
+#story-intro .story-box-measure {
+  position: absolute;
+  left: 0;
+  top: 0;
+  visibility: hidden;
+  white-space: nowrap;
+}
+
+/* One word at a time: each pops up with a little spring. */
+#story-intro .story-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(10px) scale(0.6);
+  transition: opacity 150ms ease-out, transform 320ms cubic-bezier(0.34, 1.7, 0.5, 1);
+}
+#story-intro .story-word.is-on { opacity: 1; transform: none; }
+
+/* Key words: coloured text, with a bigger bounce as they are said. */
+#story-intro .story-word[data-focus="momo"]   { color: var(--focus-momo); }
+#story-intro .story-word[data-focus="polo"]   { color: var(--focus-polo); }
+#story-intro .story-word[data-focus="gold"]   { color: var(--focus-gold); }
+#story-intro .story-word[data-focus="action"] { color: var(--focus-action); }
+#story-intro .story-word[data-focus="good"]   { color: var(--focus-good); }
+#story-intro .story-word[data-focus="worry"]  { color: var(--focus-worry); }
+#story-intro .story-word.is-focus.is-on { animation: storyFocusPop 520ms cubic-bezier(0.3, 1.6, 0.5, 1); }
+@keyframes storyFocusPop {
+  0%   { transform: scale(0.5) rotate(-6deg); }
+  55%  { transform: scale(1.25) rotate(3deg); }
+  80%  { transform: scale(0.96) rotate(-1deg); }
+  100% { transform: none; }
+}
+
+/* ------------------------------------------------------------ start card */
+
+#story-intro .story-veil,
+#story-intro .story-curtain {
+  position: absolute;
+  inset: 0;
+  background: var(--story-dark);
+  pointer-events: none;
+}
+#story-intro .story-veil { opacity: 1; }
+#story-intro .story-curtain { opacity: 0; }
+
+#story-intro .story-start {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 18px;
+  padding-bottom: 13vh;
+  box-sizing: border-box;
+  transition: opacity 260ms ease;
+}
+#story-intro .story-start.is-gone { opacity: 0; pointer-events: none; }
+#story-intro .story-play {
+  --button-label-size: clamp(22px, 3.2vmin, 34px);
+  min-width: clamp(168px, 22vmin, 240px);
+  min-height: clamp(64px, 9vmin, 92px);
+  padding: 0 clamp(22px, 3vmin, 36px);
+  gap: 12px;
+}
+#story-intro .story-play svg { width: 0.9em; height: 0.9em; flex: none; filter: drop-shadow(0 1px 0 #205b80); }
+#story-intro .story-play[aria-disabled="true"] { filter: saturate(0.55) brightness(0.92); cursor: progress; }
+#story-intro .story-progress {
+  width: clamp(140px, 20vmin, 220px);
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.28);
+  box-shadow: 0 0 0 2px rgba(21, 21, 21, 0.25);
+  overflow: hidden;
+  transition: opacity 300ms ease;
+}
+#story-intro .story-progress i {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #88ecfb, #4ba5f4);
+  transition: width 240ms ease;
+}
+#story-intro .story-progress.is-done { opacity: 0; }
+
+#story-intro .story-skip {
+  position: absolute;
+  top: max(14px, env(safe-area-inset-top));
+  right: max(14px, env(safe-area-inset-right));
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 3px solid var(--ink);
+  background: #ffffff;
+  color: var(--ink);
+  font: 600 17px/1 'Baloo 2', Nunito, sans-serif;
+  letter-spacing: 0.3px;
+  box-shadow: 3px 4px 0 rgba(21, 21, 21, 0.85);
+  cursor: pointer;
+  transition: transform 140ms ease, box-shadow 140ms ease, opacity 300ms ease;
+}
+#story-intro .story-skip:hover { transform: translate(-1px, -1px); box-shadow: 4px 5px 0 rgba(21, 21, 21, 0.85); }
+#story-intro .story-skip:active { transform: translate(2px, 2px); box-shadow: 1px 2px 0 rgba(21, 21, 21, 0.85); }
+#story-intro .story-skip:focus-visible,
+#story-intro .story-play:focus-visible { outline: 3px solid #1766c4; outline-offset: 4px; }
+#story-intro.is-ending .story-skip { opacity: 0; pointer-events: none; }
+
+/* ------------------------------------------ upright phone: balloon below */
+
+#story-intro .story-caption {
+  position: absolute;
+  left: max(16px, env(safe-area-inset-left));
+  right: max(16px, env(safe-area-inset-right));
+  top: var(--caption-top, 70%);
+  display: none;
+  justify-content: center;
+  pointer-events: none;
+}
+#story-intro.is-caption .story-caption { display: flex; }
+#story-intro .story-caption .story-box { position: relative; margin-top: 26px; }
+#story-intro .story-caption .story-box-shape { filter: drop-shadow(3px 4px 0 rgba(21, 21, 21, 0.22)); }
+#story-intro .story-caption .story-box-text { font-size: var(--line-size, clamp(18px, 5.4vw, 26px)); }
+
+#story-intro .story-rotate {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  max-width: 280px;
+  color: #3b3226;
+  font: 600 15px/1.3 'Baloo 2', Nunito, sans-serif;
+  text-align: left;
+}
+#story-intro .story-rotate svg { width: 26px; height: 26px; flex: none; }
+#story-intro.is-caption .story-rotate { display: flex; }
+
+/* Screen readers hear each line once, when it is spoken. */
+#story-intro .story-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #story-intro .story-word { transform: none; transition: opacity 160ms linear; }
+  #story-intro .story-word.is-focus.is-on { animation: none; }
+}

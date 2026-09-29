@@ -6,7 +6,7 @@
 <title>Polygon Adventure</title>
 <meta name="description" content="Explore shapes, sides, vertices, and angles with Swiftee in a playful polygon adventure.">
 <link rel="preload" href="assets/fonts/baloo-2-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="assets/instructiion%20board.png" as="image">
+<link rel="preload" href="assets/images/instruction-board.webp" as="image">
 <link rel="stylesheet" href="styles/fonts.css">
 <link rel="preload" href="assets/fonts/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="styles/buttons.css">
@@ -17,32 +17,37 @@
   html, body { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#103574; -webkit-text-size-adjust:100%; text-size-adjust:100%; }
   .game-viewport { position:fixed; inset:0; width:100%; height:100%; height:100dvh; overflow:hidden; background:#103574; }
 </style>
-<script src="responsive-layout.js"></script>
+<script src="src/lesson/responsive-layout.js"></script>
 <!-- Required lesson data and voice cues must be ready before the app mounts,
      including on a cold cache or a slow production connection. -->
-<script src="polygon-data.js"></script>
-<script src="screen-navigator.js"></script>
-<script src="voiceovers/recordings.js"></script>
-<script src="voiceovers/recorded-player.js"></script>
+<script src="src/lesson/polygon-data.js"></script>
+<script src="src/lesson/screen-navigator.js"></script>
+<script src="src/lesson/recordings.js"></script>
+<script src="src/lesson/recorded-player.js"></script>
 <!-- Swiftee's sheet table, generated from the character pack's manifest by
-     build-swiftee.cjs. It loads here, not from the helmet below, because the
+     tools/build-swiftee.cjs. It loads here, not from the helmet below, because the
      lesson script reads it while it is being evaluated. -->
-<script src="assets/swiftee/swiftee-sheets.js"></script>
-<script src="assets/swiftee/swiftee-flying.js"></script>
-<script src="assets/runtime/resources.js"></script>
-<script src="./support.js"></script>
+<script src="src/lesson/swiftee-sheets.js"></script>
+<script src="src/lesson/swiftee-flying.js"></script>
+<script src="src/runtime/resources.js"></script>
+<script src="src/runtime/support.js"></script>
+<!-- The Momo + Polo story plays first. The blizzard waits on StoryIntro.gate
+     exactly as the lesson waits on IceIntro.gate, so nothing starts under it. -->
+<link rel="stylesheet" href="styles/story-intro.css">
+<script src="src/story/story-voice.js"></script>
+<script src="src/story/story-data.js"></script>
+<script src="src/story/story-intro.js"></script>
 <!-- The blizzard cinematic. It loads from the real head rather than the helmet
      below so the overlay is styled and on screen before the lesson's runtime
      has mounted anything; the lesson then waits on IceIntro.gate. -->
 <link rel="stylesheet" href="styles/ice-intro.css">
-<script src="ice-intro.js"></script>
+<script src="src/intro/ice-intro.js"></script>
 </head>
 <body>
 <x-dc>
 <helmet>
 <style>
   html, body { margin: 0; padding: 0; height: 100%; background: #103574; overflow: hidden; }
-  a { color: #2f6fd0; } a:hover { color: #1546a0; }
   /* The lesson has no text-entry fields: suppress selection and browsing carets. */
   * { -webkit-tap-highlight-color: transparent; caret-color: transparent; -webkit-user-select: none; user-select: none; }
   body { cursor: default; }
@@ -157,7 +162,6 @@
   @keyframes pointBreathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.07); } }
   @keyframes pointRing { 0% { transform: scale(0.3); opacity: 0; } 16% { opacity: 0.6; } 100% { transform: scale(1); opacity: 0; } }
   @keyframes pointGlow { 0%,100% { opacity: 0.75; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } }
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   /* A label drops in under the figure it names and settles. */
   @keyframes chipDrop { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
   /* The figure itself answers the narration -- the card it sits in stays put,
@@ -180,14 +184,12 @@
     45% { transform:scale(1.04); }
   }
   /* All four figures acknowledge together once the sorting is finished. */
-  @keyframes figureCheer { 0%,100% { transform:scale(1); } 40% { transform:scale(1.04); } 75% { transform:scale(1.01); } }
   /* Each answer button arrives on its own beat rather than both at once. */
   @keyframes optionRise { from { opacity:0; transform:translateY(14px) scale(.94); } to { opacity:1; transform:translateY(0) scale(1); } }
   @keyframes handHint { 0%,100% { transform: translate(0,0); opacity: 0.9; } 50% { transform: translate(64px,-52px); opacity: 1; } }
   @keyframes nudgeTap { 0% { transform: translate(14px,30px) scale(1.1); opacity: 0; } 16% { transform: translate(0,0) scale(1.06); opacity: 1; } 38% { transform: translate(0,0) scale(0.84); } 56% { transform: translate(0,0) scale(1.04); } 82% { transform: translate(0,0) scale(1); opacity: 1; } 100% { transform: translate(0,6px) scale(1); opacity: 0; } }
   @keyframes nudgeRing { 0% { transform: scale(0.3); opacity: 0; } 34% { transform: scale(0.4); opacity: 0.85; } 100% { transform: scale(1.7); opacity: 0; } }
   @keyframes glowPulse { 0%,100% { opacity: 0.25; } 50% { opacity: 0.75; } }
-  @keyframes zoneInvite { 0%,100% { box-shadow: 0 0 0 0 rgba(34,184,230,0); } 50% { box-shadow: 0 0 0 9px rgba(34,184,230,0.17); } }
   /* --- Swiftee, the guide. Frames are blitted onto a canvas whose cell never
          changes, so expressions swap without the bird moving a pixel; the only
          motion here is on the wrapper — the fly-in and the lean toward the sign
@@ -207,7 +209,6 @@
     .instruction-panel { animation:none !important; }
     .swiftee-wrap { transition:none !important; }
     .drop-zone { animation:none !important; }
-    .ice-board { transition:none !important; }
     .narrator-text span { transform:none !important; }
     .game-action,.game-action::before,.game-action::after,.game-action *,.game-handle { animation:none !important; transition:none !important; }
   }
@@ -357,7 +358,7 @@
       </sc-if>
 
       <sc-if value="{{ showHand }}" hint-placeholder-val="{{ false }}">
-        <img class="idle-hand" src="assets/handNudge.webp" alt="" style="{{ handStyle }}" />
+        <img class="idle-hand" src="assets/images/hand-nudge.webp" alt="" style="{{ handStyle }}" />
       </sc-if>
 
       <sc-for list="{{ fx }}" as="f" hint-placeholder-count="0">
@@ -367,7 +368,7 @@
       <sc-if value="{{ showNudge }}" hint-placeholder-val="{{ false }}">
         <div style="{{ nudgeWrap }}">
           <div class="idle-ring" style="{{ nudgeRing }}"></div>
-          <img class="idle-hand" src="assets/handNudge.webp" alt="" style="{{ nudgeHand }}" />
+          <img class="idle-hand" src="assets/images/hand-nudge.webp" alt="" style="{{ nudgeHand }}" />
         </div>
       </sc-if>
     </div>
@@ -408,17 +409,12 @@
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1320,&quot;height&quot;:720}}">
-const IK = '#f58420', ICE = '#22b8e6', GRN = '#2f9e5e', RED = '#e8553f', GOLD = '#e9a733';
+const IK = '#f58420', ICE = '#22b8e6', GOLD = '#e9a733';
 /* How long the boundary trace takes on the open/closed screens. The dotted
    continuation is timed from this, so the two halves of the gesture can never
    drift apart: change it here and both move together. */
 const OC_TRACE_MS = 1000;
 const SHAPE_VIOLET = '#6354c7'; // Blue-violet outline against the mint learning card.
-/* The shape Swiftee draws on the opening run, screens 2 to 5. A golden yellow
-   rather than a lemon one: the board behind it is a pale sky blue, and a light
-   yellow all but vanishes on it. This one keeps the hue while holding enough
-   weight to be read as a boundary the learner is being asked to judge. */
-/* Golden Amber. One colour for the whole drawing, start to finish. */
 /* ---------- one button label, everywhere ----------
    Screen 6's Open / Closed buttons are the reference for every button in the
    lesson. Family, weight, alignment and capitalisation are fixed here and are
@@ -524,10 +520,6 @@ const BOUNDARY = {
 };
 /* The answer row lives in this band at the foot of the opening card. */
 const OPENING_ANSWER_BAND = 168;
-const LAYER = {
-  board:   BOARD,
-  sign:    { x: 22, y: 236, w: 344, h: 272 }
-};
 /* Preserve the existing logical content size so geometry and drop coordinates stay stable. */
 const SAFE = {
   x: 390, y: 172, w: 1570, h: 701
@@ -553,8 +545,6 @@ const S1_DOT = 62, S1_TRAVEL = 620;
    them reaches the word "boundaries" at about 1.9s, so they are lit and holding
    well before it arrives, by whichever voice is reading. */
 const BOUND_DRAW = 1150;
-const NARR = { w: 284, w2: 284 };
-/* Consistent readable type; longer narration pages inside the dialogue bubble. */
 /* Haloes, matching the answer buttons: a ring hugging the card plus a wide
    bloom, so a figure that is right or wrong looks lit up rather than merely
    shadowed. These were soft shadows cast underneath the card, which is not
@@ -603,7 +593,7 @@ const conceptTheme = name => CONCEPT_THEME[conceptKey(name)] || CONCEPT_THEME.ge
 /* Every expression shares one fixed cell, so changing poses cannot move the guide. */
 const SWIFTEE_CELL = 340;
 const SWIFTEE_BASELINE = (window.SWIFTEE && window.SWIFTEE.baseline) || 0.877;
-/* Feet and centre line aligned to the left rock in assets/image.png. */
+/* Feet and centre line aligned to the left rock in assets/images/lesson-background.webp. */
 const SWIFTEE_FEET = 824, SWIFTEE_CENTRE = Math.round(192 * 1.3);
 const GUIDE_BOX = {
   x: Math.round(SWIFTEE_CENTRE - SWIFTEE_CELL / 2),
@@ -634,7 +624,7 @@ const GUIDE_VISIBLE = !!(window.SWIFTEE && window.SWIFTEE.clips);
    events (instruction started, wrong attempt, hint shown…) and it picks the
    expression, holding a reaction to the end and queueing the ambient pose
    behind it. All grids, frame counts and triads come from window.SWIFTEE,
-   generated from the pack's manifest by build-swiftee.cjs.
+   generated from the pack's manifest by tools/build-swiftee.cjs.
    ========================================================================= */
 class SwifteeSprite {
   constructor(data, canvasGetter) {
@@ -805,11 +795,6 @@ class SwifteeGuide {
   }
 
   /* Semantic events keep expressions tied to actual playback and learner actions. */
-  onScreenEnter(first) {
-    if (!this.on) return;
-    this.clearIdle(); this.dozing = false; this.reaction = null; this.resting = GUIDE_REST.WATCH;
-    this.react(first ? [['flapping', 1]] : [['curious', .35]], 1);
-  }
   /* Wings for the whole crossing.
 
      The travel animations move Swiftee's CELL; the bird drawn inside it was
@@ -913,11 +898,12 @@ class SwifteeGuide {
   }
 }
 
+/* Ogg where the browser plays it, MP3 otherwise (see src/lesson/recorded-player.js). */
+const audioSrc = src => (typeof window !== 'undefined' && window.polygonAudioSrc ? window.polygonAudioSrc(src) : src);
 class Component extends DCLogic {
   navigationRef = React.createRef();
   state = {
     ready: false, k: 0, narr: '', speaking: false, voiceError: '', muted: false, scale: 1,
-    ddCheer: false,
     /* The scenery is one picture that ships with the page; nothing has to load
        before it can be shown. */
     boundaryBackgroundReady: true,
@@ -925,7 +911,7 @@ class Component extends DCLogic {
     cnt: [4, 4], attempts: 0, wrong: null, ok: null, ocReveal: null, ocRetire: false, ocWords: { open:false, closed:false }, nudge: null,
     guideHidden: true, interactive: false,
     storyDialogue: false, storyContent: false, storyControls: false, guideFlying: false,
-    narrTone: 'teach', narrTick: 0,
+    narrTick: 0,
     hoverK: null, pressK: null, fx: [],
     userPts: null, dragged: false, reveal: false, nums: 0, hlKind: null,
     chip: null, placed: {}, badPlace: null, sortAt: {}, pickedFig: null, justPlaced: null, tick: null, united: false, say: '',
@@ -1112,7 +1098,7 @@ class Component extends DCLogic {
     });
   }
   loadDrawingSound() {
-    if (!this._drawingLoad) this._drawingLoad = fetch('assets/sfx/pencil-draw.wav')
+    if (!this._drawingLoad) this._drawingLoad = fetch(audioSrc('assets/audio/sfx/pencil-draw.mp3'))
       .then(response => { if (!response.ok) throw new Error('Drawing audio unavailable'); return response.arrayBuffer(); })
       .then(data => { const ac = this.ac(); return ac ? ac.decodeAudioData(data) : null; })
       .then(buffer => { if (!this._gone) this._drawingBuffer = buffer; })
@@ -1188,11 +1174,11 @@ class Component extends DCLogic {
      sound when a learner answers quickly. Rewinding the same element means one
      attempt can only ever be one sound. */
   answerClip(kind) {
-    const files = { ok: 'correct  sound.mp3', no: 'incorrect (3).mp3' };
+    const files = { ok: 'correct.mp3', no: 'incorrect.mp3' };
     if (!files[kind] || typeof Audio === 'undefined') return null;
     this._answerClips = this._answerClips || {};
     if (!this._answerClips[kind]) {
-      const clip = new Audio('assets/sfx/' + encodeURIComponent(files[kind]));
+      const clip = new Audio(audioSrc('assets/audio/sfx/' + files[kind]));
       clip.preload = 'auto';
       this._answerClips[kind] = clip;
     }
@@ -1495,7 +1481,6 @@ class Component extends DCLogic {
   replay = () => { const t = this.state.narr; if (t) this.narrate(t, {}); };
   /* Narration stays mandatory: state.muted only gates withAudio() and the
      AudioContext, i.e. the chimes and taps, never the spoken instruction. */
-  toggleMute = () => this.setState((st) => ({ muted: !st.muted }));
 
 
   /* ---------- geometry ---------- */
@@ -1806,7 +1791,7 @@ class Component extends DCLogic {
       chip: null, labelPrompt: false, badPlace: null, pickedFig: null, justPlaced: null, tick: null, united: false, say: '', morph: null
     };
     if (s.ph === 'draw') reset.drawn = false;
-    if (s.sc !== 'S6' || s.ph === 'classify') { reset.dd = [null, null, null, null]; reset.ddWrong = [false, false, false, false]; reset.ddActive = 0; reset.ddCheer = false; reset.ddConfirmed = null; reset.ddRetryQuestion = false; }
+    if (s.sc !== 'S6' || s.ph === 'classify') { reset.dd = [null, null, null, null]; reset.ddWrong = [false, false, false, false]; reset.ddActive = 0; reset.ddConfirmed = null; reset.ddRetryQuestion = false; }
     if (s.sc !== 'S12') reset.placed = {};
     if (s.sc !== 'C2' && s.sc !== 'C5') reset.sortAt = {};
     if (s.sc === 'S13') reset.cnt = [0, 4];
@@ -1830,7 +1815,7 @@ class Component extends DCLogic {
     reset.polygonTravel = false;
     if (this.learningReferenceScene(k)) { reset.storyContent = true; reset.storyDialogue = false; reset.narr = ''; reset.narrPage = ''; }
     this._lastSc = s.sc;
-    reset.narrTone = 'teach'; reset.fx = [];
+    reset.fx = [];
     reset.hoverK = null; reset.pressK = null;
     /* Nothing is tappable until the instruction has actually started. */
     reset.interactive = false; reset.speaking = false; reset.voiceError = '';
@@ -2147,7 +2132,6 @@ class Component extends DCLogic {
     }
   }
   answerFeedback(correct, progress = false) {
-    this.setState({narrTone:correct ? 'ok' : 'no'});
     if (!correct) this.guide.onWrongAttempt();
     else if (progress) this.guide.onCorrectProgress();
     else this.guide.onCorrectAnswer();
@@ -2333,7 +2317,6 @@ class Component extends DCLogic {
   }
   restoreQuestion() {
     const s = this.step();
-    this.setState({ narrTone: 'teach' });
     const question = s.q === 'dd' && this.state.ddRetryQuestion
       ? 'Is the boundary straight or curved?' : s.narr;
     this.narrate(question, { then: () => this.armNudge() });
@@ -2360,7 +2343,7 @@ class Component extends DCLogic {
     const s = this.step(); if (this.state.ok || this.state.ocReveal || this.locked() || !this.state.ocWords[val]) return;
     this.clearNudge();
     if (val === s.ans) {
-      this.setState({ ok:val,wrong:null,interactive:false,narrTone:'ok' });
+      this.setState({ ok:val,wrong:null,interactive:false });
       this.answerFeedback(true);
       if (!this.reducedMotion()) this.burst(OPENING_BOARD.x+OPENING_BOARD.w/2-SAFE.x,
         OPENING_BOARD.y+OPENING_BOARD.h-SAFE.y+60,{n:7,d:12,cols:['#ffffff','#8ee9ff','#b9b4ff']});
@@ -2395,7 +2378,7 @@ class Component extends DCLogic {
         const complete = dd.every((v, j) => v === truth[j]);
         /* The last correct answer is confirmed by the whole row answering back
            together, so the reward is for the sorting, not just the final tap. */
-        this.setState({ dd: dd, ddWrong: bad, interactive: false, ddCheer: complete, ddConfirmed: i }); this.react('happy');
+        this.setState({ dd: dd, ddWrong: bad, interactive: false, ddConfirmed: i }); this.react('happy');
         if (complete) this.confetti();
         else if (!this.reducedMotion()) this.burst(227+i*372,484,{n:7,d:12,cols:['#ffffff','#8ee9ff','#94e4bb']});
         const generation = this.gen;
@@ -3360,7 +3343,7 @@ class Component extends DCLogic {
        on rather than competing with its own reflection. */
     const backdropStyle = {
       position:'absolute', inset:0, zIndex:0, pointerEvents:'none',
-      background:'#103574 url(assets/image.png) center / cover no-repeat',
+      background:'#103574 url(assets/images/lesson-background.webp) center / cover no-repeat',
       filter:'blur(44px) brightness(.52) saturate(.92)',
       transform:'scale(1.12)', transformOrigin:'center center'
     };
@@ -3394,7 +3377,7 @@ class Component extends DCLogic {
          second one, which read as the scene jumping rather than as the lesson
          moving on -- and the blurred backdrop behind the frame is drawn from
          the first painting, so the two no longer matched while it was up. */
-      backgroundSrc: 'assets/image.png',
+      backgroundSrc: 'assets/images/lesson-background.webp',
       lessonScene: this.learningReferenceScene() ? 'parts-reference' : this.polygonIntroScene() ? 'polygon-intro' : this.topLessonScene() ? 'boundary' : 'standard',
       safeStyle: this.safeStyle(),
       showGuide: GUIDE_VISIBLE, guideViewport: this.guideViewportStyle(), guideStyle: this.guideStyle(),
@@ -3971,6 +3954,9 @@ class Component extends DCLogic {
     return Object.assign({}, lane, {x, w:width, tailX:Math.max(20, Math.min(width - 80, guideX - x - 3))});
   }
   signStyle() {
+    /* The shell renders before boot() has assigned this.P; the sign is empty
+       then anyway, and measuring it would read lesson data that is not there. */
+    if (!this.P || !this.state.ready) return { display: 'none' };
     const text = this.state.narrShow || (this.state.narrPage === undefined ? this.state.narr : this.state.narrPage);
     const box = this.fittedDialogue(text);
     /* Empty, or waiting with nothing revealed yet: both count as nothing to show. */
@@ -4019,6 +4005,8 @@ class Component extends DCLogic {
       : this.topLessonScene() ? BOUNDARY.guide : GUIDE_BOX;
   }
   guideViewportStyle() {
+    /* Hidden until boot() has the lesson data (see signStyle). */
+    if (!this.P || !this.state.ready) return { display: 'none' };
     const boundary = this.topLessonScene();
     const polygon = this.polygonIntroScene();
     const parts = this.learningReferenceScene();

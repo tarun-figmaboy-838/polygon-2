@@ -72,7 +72,6 @@
   z-index: 1;
 }
 .dialogue-tail-fill { fill: var(--dialogue-paper); }
-[data-layout="portrait"] .dialogue-tail { width:var(--responsive-tail-size); height:var(--responsive-tail-size); }
 .dialogue-tail-stroke {
   fill: none;
   stroke: var(--dialogue-edge);
@@ -82,9 +81,6 @@
   stroke-width: 4;
   stroke-linecap: round;
   stroke-linejoin: round;
-}
-.comic-dialogue::after {
-  content: none;
 }
 .comic-dialogue.dialogue-box { --dialogue-height: 0px; padding:13px var(--dialogue-side-padding, 20px); }
 .dialogue-box .dialogue-text { padding:4px 0; }
@@ -128,11 +124,6 @@
 @keyframes polygonFillIn {
   from { opacity:0; }
   to { opacity:1; }
-}
-@keyframes boundaryEmphasis {
-  0% { opacity: .35; }
-  35%, 65% { opacity: 1; }
-  100% { opacity: .65; }
 }
 @media (prefers-reduced-motion: reduce) {
   [data-lesson="boundary"] *, [data-lesson="boundary"] *::before,

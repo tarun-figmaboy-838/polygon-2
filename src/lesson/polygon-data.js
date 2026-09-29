@@ -1,0 +1,141 @@
+/* Polygon lesson content: figure geometry traced from the source PDF + screen script. */
+(function () {
+  function reg(n, cx, cy, r, rotDeg) {
+    var pts = [], rot = (rotDeg || 0) * Math.PI / 180;
+    for (var i = 0; i < n; i++) {
+      var a = rot - Math.PI / 2 + i * 2 * Math.PI / n;
+      pts.push([+(cx + r * Math.cos(a)).toFixed(1), +(cy + r * Math.sin(a)).toFixed(1)]);
+    }
+    return pts;
+  }
+  function vbOf(pts, pad) {
+    var xs = pts.map(function (p) { return p[0]; }), ys = pts.map(function (p) { return p[1]; });
+    var x0 = Math.min.apply(null, xs) - pad, y0 = Math.min.apply(null, ys) - pad;
+    return [x0, y0, Math.max.apply(null, xs) + pad - x0, Math.max.apply(null, ys) + pad - y0].join(' ');
+  }
+  function poly(pts, pad) { return { pts: pts, closed: true, vb: vbOf(pts, pad === undefined ? 14 : pad) }; }
+
+  /* ---- figures traced from the PDF ---- */
+  var FIG = {
+    /* p2 — pointed leaf/star figure with a narrow stem (closed, straight) */
+    leaf: poly([[500, 0], [633, 389], [988, 376], [880, 516], [748, 653], [890, 790], [532, 766],
+      [532, 955], [468, 955], [468, 766], [110, 790], [252, 653], [120, 516], [12, 376], [367, 389]], 24),
+
+    /* p6 — open curved figure: a wide cup, open across the top. The boundary
+       runs most of the way round but never arrives back where it started,
+       which is what makes it open, and the opening is wide enough to read as
+       a gap at card size rather than a hairline.
+       It is an ellipse, not a circle — the reference is about 1.23x wider than
+       it is tall — swept 261 degrees so a 99-degree gap sits centred on top.
+       The viewBox is square and 1020 wide: square so the figure centres in its
+       card the same way the others do, and 1020 so k() — and with it the stroke
+       and gap-dot scale — is exactly what it always was. */
+    pot: {
+      curved: true, closed: false, vb: '0 0 1020 1020',
+      d: 'M858.8 200.4 C904.7 243.8 937.7 295.1 955.4 350.6 C973.1 406 974.9 463.9 960.8 520' +
+         ' C946.7 576.1 917 628.8 874 674.1 C831 719.4 775.9 756.1 712.8 781.3 C649.7 806.5' +
+         ' 580.3 819.6 510 819.6 C439.7 819.6 370.3 806.5 307.2 781.3 C244.1 756.1 189 719.4' +
+         ' 146 674.1 C103 628.8 73.3 576.1 59.2 520 C45.1 463.9 46.9 406 64.6 350.6 C82.3 295.1' +
+         ' 115.3 243.8 161.2 200.4',
+      gap: { x: 510, y: 200, w: 698, h: 110 }
+    },
+    /* Shared closed figure from the revised reference: a single horizontal
+       top edge, two inward side corners and a downward point. Keep the same
+       viewBox so every lesson instance retains its size and placement. */
+    starClosed: {
+      closed: true, vb: '60 140 800 700',
+      pts: [[95, 160], [830, 160], [687, 386], [835, 587], [530, 565],
+        [449, 792], [304, 565], [85, 585], [257, 386]]
+    },
+
+    /* p8 — irregular angular open figure */
+    zig: {
+      straightOpen: true, closed: false, vb: '55 45 710 920',
+      pts: [[310, 255], [75, 470], [245, 940], [735, 625], [270, 598], [600, 258], [430, 65], [100, 205]],
+      gap: { x: 205, y: 230, w: 260, h: 110 }
+    },
+
+    /* p9 — crescent (closed, curved) */
+    crescent: {
+      curved: true, closed: true, vb: '266 145 150 152',
+      d: 'M406.9 159.7 C337.2 153 277.9 176.7 274.4 212.6 C271 248.6 324.7 283.1 394.4 289.8' +
+         ' C351.8 271.7 327.3 244.5 329.9 218 C332.4 191.4 361.6 169.3 406.9 159.7 Z'
+    },
+
+    /* p17 / p25 / p37 — the lesson pentagon */
+    pentagon: poly([[410.3, 116.4], [556.9, 116.4], [602.2, 237.5], [483.6, 312.4], [365, 237.5]]),
+    /* p23 — cross-like polygon used for "Label the parts" */
+    cross: poly([[162.1, 47.6], [301.2, 47.6], [301.2, 96.6], [350.3, 96.6], [350.3, 194.6],
+      [301.2, 194.6], [301.2, 243.7], [162.1, 243.7], [162.1, 194.6], [113, 194.6], [113, 96.6], [162.1, 96.6]]),
+    /* p34 / p35 */
+    triangle: poly([[268.4, 141.6], [451.6, 141.6], [360, 300]]),
+    quad: poly([[241.6, 131], [409.9, 131], [469.3, 253.8], [301, 253.8]]),
+
+    hexagon: poly(reg(6, 500, 500, 300, 30)),
+    heptagon: poly(reg(7, 500, 500, 300, 0)),
+    octagon: poly(reg(8, 500, 500, 300, 22.5)),
+
+    /* p19 — "which of these figures are polygons" set */
+    p19a: { straightOpen: true, closed: false, vb: '-20 -20 1040 1040',
+      pts: [[60, 300], [180, 40], [960, 180], [880, 900], [220, 960]] },
+    /* Reference L: equal outer dimensions and arms one third of that width. */
+    p19c: poly([[50, 50], [350, 50], [350, 650], [950, 650], [950, 950], [50, 950]], 30),
+    p19d: { curved: true, closed: true, vb: '-20 -20 1040 1040',
+      d: 'M480 90 C660 40 900 150 930 380 C960 610 830 900 570 940 C320 980 60 830 60 590' +
+         ' C60 400 200 330 300 300 C390 273 380 118 480 90 Z' },
+    p19e: poly([[500, 60], [940, 900], [60, 900]], 30),
+
+    /* p36 — "select all the quadrilaterals" */
+    q36a: poly([[300, 60], [960, 340], [370, 440], [40, 800]], 30),
+    q36b: { curved: true, closed: true, vb: '-20 -20 1040 1040',
+      d: 'M120 250 C300 480 480 460 620 250 C700 130 860 170 960 250 L330 940 Z' },
+    q36c: poly([[300, 90], [960, 40], [930, 900], [60, 860]], 30),
+    q36d: poly([[500, 40], [820, 430], [500, 960], [180, 430]], 30),
+
+    /* CFU 1 */
+    c1a: poly([[50, 50], [350, 50], [350, 650], [950, 650], [950, 950], [50, 950]], 30),
+    c1b: { straightOpen: true, closed: false, vb: '-20 -20 1040 1040',
+      pts: [[120, 940], [120, 80], [880, 940], [880, 100]] },
+    /* Eight straight sides, with a deep inward notch: closed and concave. */
+    /* Concave four-sided silhouette traced from the supplied reference. */
+    c1c: poly([[141,15],[960,558],[159,582],[306,294]], 24),
+    c1d: { curved: true, closed: true, vb: '-20 -20 1040 1040',
+      d: 'M240 80 L520 80 C820 80 960 300 960 510 C960 720 820 940 520 940 L240 940 Z' },
+
+    /* CFU 2 */
+    c2a: poly([[190, 800], [330, 150], [800, 210], [880, 800]], 30),
+    c2b: { curved: true, closed: true, vb: '-20 -20 1040 1040',
+      d: 'M500 60 C430 240 100 420 100 620 C100 810 270 940 500 940 C730 940 900 810 900 620 C900 420 570 240 500 60 Z' },
+    c2d: poly(reg(6, 500, 500, 430, 30), 30),
+    c2e: { straightOpen: true, closed: false, vb: '-20 -20 1040 1040',
+      pts: [[140, 120], [180, 720], [900, 780]] },
+
+    /* CFU 3 */
+    c3a: poly(reg(6, 500, 500, 430, 30), 30),
+    c3b: poly([[80, 240], [920, 240], [920, 760], [80, 760]], 30),
+    c3c: poly([[120, 110], [800, 110], [480, 500], [800, 890], [120, 890]], 30),
+    c3d: { curved: true, closed: true, vb: '-20 -20 1040 1040',
+      d: 'M500 60 C744 60 940 256 940 500 C940 744 744 940 500 940 C256 940 60 744 60 500 C60 256 256 60 500 60 Z' },
+
+    /* CFU 4 — pentagons (A B) and higher-sided distractors (D F) */
+    c4a: poly(reg(5, 500, 520, 420, 0), 30),
+    c4b: poly([[300, 60], [880, 300], [520, 470], [860, 900], [140, 780]], 30),
+    c4d: poly(reg(7, 500, 500, 430, 12), 30),
+    c4f: poly(reg(9, 500, 500, 430, 0), 30),
+
+    /* CFU 5 — hexagons and heptagons */
+    c5a: poly(reg(6, 500, 500, 430, 30), 30),
+    c5b: poly(reg(7, 500, 500, 430, 0), 30),
+    /* Reference silhouettes: preserve the uneven widths, sloping edges and
+       inward corners rather than regularising either polygon. */
+    c5c: poly([[265,350],[1025,390],[825,770],[1170,1170],[285,1150],[530,720]], 30),
+    c5d: poly([[615,35],[930,225],[770,460],[940,695],[225,785],[435,445],[265,275]], 30)
+  };
+
+  var C = {
+    ink: '#123a6b', blue: '#2f6fd0', purple: '#7c4dcf', green: '#2f9e5e',
+    orange: '#ef7d2b', pink: '#e5468a', teal: '#1a9aa8', gold: '#e9a733'
+  };
+
+  window.POLY = { FIG: FIG, C: C, reg: reg, poly: poly };
+})();

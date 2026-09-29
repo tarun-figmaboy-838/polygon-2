@@ -123,12 +123,10 @@
    plus a wide bloom, so the button itself looks lit up. Green for yes, red for
    no, each paired with its own movement. */
 .ice-button[data-feedback="correct"] {
-  --button-feedback-glow:0 0 0 7px rgba(46,204,113,.5),0 0 30px 12px rgba(46,204,113,.62),0 14px 22px -8px rgba(28,150,80,.55);
   animation:answerSuccess 640ms cubic-bezier(.3,1.35,.4,1) both!important;
 }
 .ice-button[data-feedback="correct"][aria-pressed="true"]:not(:focus-visible) { outline:none; }
 .ice-button[data-feedback="incorrect"] {
-  --button-feedback-glow:0 0 0 7px rgba(240,84,84,.5),0 0 30px 12px rgba(240,84,84,.6),0 14px 22px -8px rgba(198,54,62,.5);
   animation:answerRetry 560ms ease-in-out both!important;
 }
 /* A disabled button stays fully legible -- it is still part of the question.

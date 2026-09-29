@@ -1,2 +1,7 @@
+# Text files are stored with LF line endings, whatever an editor or tool on
+# any machine writes; a line-ending-only change can no longer show up as a
+# modified file.
+* text=auto eol=lf
+
 # Integrity-pinned vendor scripts must retain identical bytes on every platform.
-assets/runtime/*.min.js -text
+assets/vendor/*.min.js -text

@@ -1,6 +1,5 @@
 /* Keep the supplied artwork continuous, with one shared rim on every aspect ratio.
    Crop to its inner face (42,82)-(1638,808), excluding both baked-in borders. */
-[data-layout="portrait"] .zone-title { font-size:var(--compact-label-size,30px)!important; letter-spacing:0!important; }
 .story-board {
   overflow:hidden;
   box-sizing:border-box;
@@ -17,7 +16,7 @@
   right:-2.8822%;
   bottom:-17.3554%;
   left:-2.6316%;
-  background:url('../assets/instructiion%20board.png') center / 100% 100% no-repeat;
+  background:url('../assets/images/instruction-board.webp') center / 100% 100% no-repeat;
   pointer-events:none;
 }
 /* One circular curve clips all four corners, independent of the stretched PNG.
