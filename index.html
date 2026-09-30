@@ -648,15 +648,44 @@ class SwifteeSprite {
     this.d = data; this.getCanvas = canvasGetter;
     this.images = {}; this.queue = []; this.seg = null; this.shown = 0; this.acc = 0;
     this.last = 0; this.running = false; this.raf = 0;
+    /* A SHEET IS READY WHEN IT IS DECODED, not when its src is set and not merely when it
+       has loaded: `loading` holds each sheet's one promise, `decoded` the ones that can be
+       drawn at once, `failed` the ones that will never come. */
+    this.loading = {}; this.decoded = new Set(); this.failed = new Set();
   }
   clip(name) { return this.d.clips[name]; }
-  image(name) {
-    let im = this.images[name];
-    if (!im) { im = new Image(); im.decoding = 'async'; im.src = this.clip(name).image; this.images[name] = im; }
-    return im;
+  image(name) { this.load(name); return this.images[name]; }
+  /* Request a sheet, wait for it to load, then decode() it (off the main thread where the
+     browser can), and only then count it as ready. Resolves true when it can be drawn, false
+     when it failed; one request per sheet however many times it is asked for. */
+  load(name) {
+    if (this.loading[name]) return this.loading[name];
+    const clip = this.clip(name);
+    if (!clip) return Promise.resolve(false);
+    const im = this.images[name] = this.images[name] || new Image();
+    im.decoding = 'async';
+    this.loading[name] = new Promise(resolve => {
+      const done = ok => {
+        if (ok) this.decoded.add(name);
+        else { this.failed.add(name); console.warn('[swiftee] sheet did not load, its clip is skipped: ' + clip.image); }
+        resolve(ok);
+        if (ok && this.seg && this.seg.clip === name) this.draw();
+      };
+      const decode = () => {
+        if (!im.naturalWidth) { done(false); return; }
+        if (im.decode) im.decode().then(() => done(true), () => done(im.naturalWidth > 0));
+        else done(true);
+      };
+      im.onload = decode;
+      im.onerror = () => done(false);
+      im.src = clip.image;
+      if (im.complete && im.naturalWidth) { im.onload = null; decode(); }
+    });
+    return this.loading[name];
   }
-  ready(name) { const im = this.image(name); return im.complete && im.naturalWidth > 0; }
-  preload(names) { names.forEach(n => { if (this.clip(n)) this.image(n); }); }
+  ready(name) { return this.decoded.has(name); }
+  /* Resolves once every named sheet is decoded (or has failed). */
+  preload(names) { return Promise.all(names.filter(n => this.clip(n)).map(n => this.load(n))); }
   /* segments: [{ clip, frames, onEnd }] — frames is how many to show before
      moving on: a multiple of the clip's length for whole loops, Infinity to
      loop until replaced. Replaces whatever was queued. */
@@ -672,8 +701,12 @@ class SwifteeSprite {
   step(t) {
     const dt = Math.min(250, t - this.last); this.last = t;
     if (!this.seg) return;
-    /* hold the last drawn frame until this clip's sheet has arrived */
-    if (!this.ready(this.seg.clip)) { this.acc = 0; return; }
+    /* A clip whose sheet never arrives is passed over, so she falls back to the pose she goes
+       to next (in the end her resting pose) rather than holding a frame for ever. */
+    if (this.failed.has(this.seg.clip)) { const done = this.seg; this.next(); if (done.onEnd) done.onEnd(); return; }
+    /* Still coming: hold the frame on screen, and start this clip from its first frame once it
+       is decoded, so a start, loop, stop plays whole. */
+    if (!this.ready(this.seg.clip)) { this.acc = 0; this.load(this.seg.clip); return; }
     this.acc += dt;
     const per = 1000 / this.d.fps;
     if (this.acc < per) return;
@@ -727,14 +760,27 @@ class SwifteeGuide {
   mount() {
     if (!this.on) return;
     const s = this.d.states;
-    /* 'flying' preloads with the rest: it plays on the very first screen
-       change, and a sheet that is still downloading shows an empty cell. */
-    this.sprite.preload(['blinking', 'flapping', 'flying', s.happy.loop, s.confused.loop, s.talking.start, s.talking.loop, s.talking.stop, s.waving.start, s.waving.loop, s.waving.stop]);
-    this._preload = setTimeout(() => this.sprite.preload(Object.keys(this.d.clips)), 2500);
+    /* THE CRITICAL SHEETS FIRST, AND THE LESSON WAITS FOR THEM (whenReady, in boot()): her
+       resting pose, the flight she makes on the very first screen, the settle, talking, the
+       answer faces and the wave. Before this they were only requested, all 37 sheets were
+       asked for at once 2.5 s later, and screen 1 started its fly-in on a timer: on a real
+       connection she flew in as an empty cell (half a second on a normal line, the whole
+       1.4 s flight on a slow one) and popped in after landing. */
+    const critical = ['blinking', 'flapping', 'flying', s.happy.loop, s.confused.loop, s.talking.start, s.talking.loop, s.talking.stop, s.waving.start, s.waving.loop, s.waving.stop];
+    this.ready = this.sprite.preload(critical);
+    /* THE REST AFTER THEM, two at a time (in the sheet table's order), so they never compete
+       with the sheets needed first. A pose asked for before its sheet is in holds the frame on
+       screen and plays from its start once the sheet is decoded. */
+    const rest = Object.keys(this.d.clips).filter(n => critical.indexOf(n) < 0);
+    const pump = () => { const n = rest.shift(); if (n && !this._unmounted) this.sprite.load(n).then(pump, pump); };
+    this.ready.then(() => { pump(); pump(); });
     this.sprite.set(this.build(GUIDE_REST.WATCH, Infinity));
     this.sprite.start();
   }
-  unmount() { if (this.sprite) this.sprite.stop(); this.clearIdle(); clearTimeout(this._preload); }
+  /* Resolves when the sheets she needs from the first screen on are decoded (or have failed:
+     a sheet that never comes is skipped by the sprite, so it cannot hold the lesson). */
+  whenReady() { return this.ready || Promise.resolve(); }
+  unmount() { this._unmounted = true; if (this.sprite) this.sprite.stop(); this.clearIdle(); }
   /* ---- chains. A state plays start → loop → stop; a standalone clip just plays. ---- */
   build(name, cycles) {
     const st = this.d.states[name], out = [];
@@ -973,10 +1019,18 @@ class Component extends DCLogic {
          by itself); the lesson then keeps its first screen, silent, underneath. */
       /* ?bridge=1 opens straight on the story into Part 2 (src/bridge/bridge-story.js),
          and the lesson keeps its first screen silent underneath in the same way. */
+      /* Screen 1 is Swiftee's entrance, so it waits for her critical sheets to be decoded
+         (see SwifteeGuide.mount). After the story and the blizzard they are long in; when the
+         lesson opens at once (?intro=0, ?preview=1, a fast skip) this is what stops her flying
+         in as an empty cell. A failed sheet resolves the wait too, so nothing can hold it. */
+      /* The latest screen wins: if anything has run a screen while her sheets were still
+         coming (the screen navigator, a test jumping ahead), this late start stands down
+         instead of running screen 1 over it and cancelling that screen's timers. */
       const begin = () => {
         if (this._gone || (window.RunnerStage && window.RunnerStage.autostart) ||
             (window.BridgeStory && window.BridgeStory.autostart)) return;
-        this.runStep(0, true);
+        const gen = this.gen || 0;
+        this.guide.whenReady().then(() => { if (!this._gone && (this.gen || 0) === gen) this.runStep(0, true); });
       };
       const intro = window.IceIntro && window.IceIntro.gate;
       this.setState({ ready: true, k: 0, userPts: null }, () => {

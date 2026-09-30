@@ -121,9 +121,11 @@ npm install                            # newer npm may ask you to approve the in
                                        # scripts: npm install-scripts approve ffmpeg-static
 npx playwright install chromium        # and `webkit` to test Safari's engine
 npm test                               # lesson smoke + story on 6 screens + user flows + the runner hand-off
-                                       # + the story into the game (~12 min)
+                                       # + the story into the game + Swiftee loading (~14 min)
 npm run test:runner                    # just the hand-off: ?game=1, the Help Momo button, ?game=0 (~2 min)
 npm run test:bridge                    # the story into the game: order, locking, voice, Next, Play (~4 min)
+npm run test:swiftee                   # Swiftee loading: sheet table, cold / slow / warm loads, state races (~2 min)
+BASE=https://tarun-figmaboy-838.github.io/polygon-2/ npm run test:swiftee   # the same against a deployed site
 npm run test:checks                    # 32 focused lesson checks incl. the full 48-screen playthrough (~20 min)
 ENGINE=webkit npm test                 # the same in Safari's engine
 ```

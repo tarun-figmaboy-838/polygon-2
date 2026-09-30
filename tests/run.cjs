@@ -13,8 +13,9 @@ const suites = [
   ['Story, every screen', 'story.test.cjs', quick ? { DEVICES: 'desktop' } : {}],
   ['User flows', 'flows.test.cjs', {}],
   ['The Frozen Pass hand-off', 'runner.test.cjs', {}],
-  ['The story into Part 2', 'bridge.test.cjs', {}]
-].filter(s => !(quick && /^(flows|runner|bridge)\.test\.cjs$/.test(s[1])));
+  ['The story into Part 2', 'bridge.test.cjs', {}],
+  ['Swiftee loading', 'swiftee.test.cjs', {}]
+].filter(s => !(quick && /^(flows|runner|bridge|swiftee)\.test\.cjs$/.test(s[1])));
 
 const summary = [];
 for (const [name, file, env] of suites) {

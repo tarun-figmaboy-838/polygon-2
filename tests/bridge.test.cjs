@@ -76,8 +76,11 @@ const SCENARIOS = {
     }
     const run = samples.filter(s => s.phase === 'MOMO_RUNNING');
     check('Momo enters from off the left of the screen', run.length && run[0].x < run[0].cam.l + 200, JSON.stringify(run[0]));
-    const steps = run.slice(1).map((s, i) => s.x - run[i].x);
-    check('Momo runs in smoothly: never a jump, never backwards', steps.every(d => d >= -1 && d < 260), steps.join(','));
+    /* judged as a speed on the scene's own clock, so a sample that happens to land late is not
+       a jump: he enters at ~1.04 px/ms (easing out), so anything past 1.4 would be a skip */
+    const steps = run.slice(1).map((s, i) => ({ dx: s.x - run[i].x, dt: Math.max(1, s.t - run[i].t) }));
+    check('Momo runs in smoothly: never a jump, never backwards', steps.every(v => v.dx >= -1 && v.dx / v.dt < 1.4),
+      steps.map(v => v.dx + 'px/' + v.dt + 'ms').join(','));
     check('the path scrolls while he runs', run.length > 2 && run[run.length - 1].wx > run[0].wx + 300, run.map(s => Math.round(s.wx)).join(','));
     check('Next is not on the page while he runs', samples.every(s => !s.next));
     const afterPoke = await state(page);
