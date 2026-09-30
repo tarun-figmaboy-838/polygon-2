@@ -902,6 +902,10 @@
      reaches them. */
   function showSay(again) {
     var b = S.box;
+    /* THE NARRATOR IS HEARD, NOT SHOWN. Their lines keep their voice, their timing and their
+       place in the story (and the screen reader still hears each one, from the live region),
+       but no box comes up for them: only Momo and Polo speak in bubbles. */
+    if (b.sc && b.sc.speaker === 'narrator') { b.shown = true; return; }
     b.el.classList.add('revealing');
     if (again) b.el.classList.add('again');
     void b.el.offsetWidth;
