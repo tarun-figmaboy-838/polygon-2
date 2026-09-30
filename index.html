@@ -529,7 +529,7 @@ const BOUNDARY = {
   /* Measured off the reference frame and converted to stage units. Swiftee
      stands on the panel's top rim, feet just over the edge, with her bubble
      beside her; the panel and its row of figures sit below them both. */
-  dialogue: { x: 361, y: 11, w: 1039, h: 190 },
+  dialogue: { x: 361, y: 11, w: 1039, h: 190 },   // the bubble hangs from its bottom (dialogueLayout)
   guide:    { x: 1438, y: 42, w: 252, h: 252 },
   boardW: 1846, boardY: 257, boardH: 770,
   card: { size: 362, gap: 46 },
@@ -573,6 +573,13 @@ const INCORRECT_GLOW = '0 0 0 6px rgba(240,84,84,.5), 0 0 30px 12px rgba(240,84,
 const CORRECT_RIM = '#2ecc71', CORRECT_FACE = '#f1fdf6';
 const INCORRECT_RIM = '#f05454', INCORRECT_FACE = '#fff5f4';
 const NARR_TYPE = { size: 46, lineHeight: 1.2, pad: 8, inset: 24, color: '#174b52', accent: '#7b249c', outline: 0 };
+/* Where Swiftee's bubble may sit (see dialogueLayout), in stage px. margin: its nearest
+   approach to the stage edge or the board's rim; clearance: to the work on the board;
+   maxW: the widest it grows, about forty characters a line; gap + tail: from her crest to
+   the bubble's body; crest: her visible head, as a share of her cell from its top;
+   chrome: the body's border, padding and text padding, top and bottom together
+   (styles/dialogue.css), which the text's own height is added to. */
+const DIALOGUE = { margin: 40, clearance: 32, maxW: 1040, gap: 20, tail: 44, crest: 0.11, chrome: 42 };
 // Saturated dark inks distinguish learning concepts from the teal sentence.
 const CONCEPT_THEME = {
   open: {ink:'#9a3a06', light:'#ffe1b9'}, closed: {ink:'#126135', light:'#d0eedb'},
@@ -3888,16 +3895,27 @@ class Component extends DCLogic {
   }
   compareLayout() {
     return {
-      /* The pair opens out to the board's edges and the bubble takes the middle,
-         centred on 990 with matching 140px gutters either side. They used to be
-         10px apart, which read as the bubble resting on the Before card. */
+      /* The pair opens out to the board's edges and the bubble takes the middle
+         over her head (dialogueLayout keeps it a clearance off both cards). */
       guide: {x:840,y:646,w:300,h:300},
-      dialogue: {x:730,y:398,w:520,h:200},
       cards: {size:440, y:246, leftX:150, rightX:1390}
     };
   }
   learningFigureBox() {
     return {x:900,y:190,w:700,h:700};
+  }
+  /* The end screen's six polygons: two rows of three, centred on the right lane. */
+  endGrid() {
+    const lane = 1290, perRow = 3, w = 250, gap = 30;
+    return { lane, perRow, w, gap, x0: lane - (perRow * w + (perRow - 1) * gap) / 2 };
+  }
+  /* Screen 11's pentagon, a little larger than the other screens' figures. */
+  partsFigureBox() {
+    return {x:786,y:196,w:740,h:740};
+  }
+  /* The ice panel of screens 20-41 and the end. */
+  teachingBoard() {
+    return {x:100,y:(STAGE.h-900)/2,w:1780,h:900};
   }
   figureInViewBox(fromKey,toKey) {
     // Preserve the source silhouette's on-screen size when the SVG viewBox changes.
@@ -3925,7 +3943,6 @@ class Component extends DCLogic {
     return {
       board,
       guide: {x:215,y:636,w:340,h:340},
-      dialogue: {x:196,y:352,w:648,h:232},
       /* Sized to carry the same weight as the pentagon on screen 20, so the
          figure does not shrink when the lesson moves between these screens.
          Square, and low enough that the name pill above it never sits on the
@@ -3944,7 +3961,7 @@ class Component extends DCLogic {
   }
   boardStyle() {
     const boundaryWidth = BOUNDARY.boardW;
-    const box = this.learningReferenceScene() ? {x:100,y:(STAGE.h-900)/2,w:1780,h:900} : this.polygonIntroScene() ? this.polygonIntroLayout().board : this.topLessonScene() ? {x:(STAGE.w-boundaryWidth)/2,y:BOUNDARY.boardY,w:boundaryWidth,h:BOUNDARY.boardH} : BOARD;
+    const box = this.learningReferenceScene() ? this.teachingBoard() : this.polygonIntroScene() ? this.polygonIntroLayout().board : this.topLessonScene() ? {x:(STAGE.w-boundaryWidth)/2,y:BOUNDARY.boardY,w:boundaryWidth,h:BOUNDARY.boardH} : BOARD;
     const travel = this.learningReferenceScene() || this.polygonIntroScene() || this.topLessonScene() || this.state.boundaryTravel;
     return Object.assign(stageBox(box, 30), {
       opacity: this.state.storyContent ? 1 : 0, transition: this.reducedMotion() ? 'none' :
@@ -3952,43 +3969,71 @@ class Component extends DCLogic {
       pointerEvents: 'none'
     });
   }
+  /* THE DIALOGUE'S ROOM. One rule places Swiftee's bubble on every screen: it hangs from
+     her head, above her with its tail pointing down at her crest (beside her, pointing
+     across, on the top-row screens), the same gap away every time. Across, it may use the
+     whole clear strip it sits in, from the stage's safe margin or the board's rim to the
+     near edge of the screen's work less a clearance, so a long line spreads out before it
+     grows tall. The one number a screen supplies is where its work begins (dialogueEdge).
+
+     Returns that strip: x and w its extent, y + h the line the bubble grows up from (its
+     bottom; on the top row, the bottom it hangs from), anchorX the point under her head,
+     side for the sideways tail, and on the top row ceiling/floor, the band it stays inside. */
   dialogueLayout() {
-    const connected = lane => {
-      const guide = this.guideLayout();
-      // The sprite has transparent margins. Anchor to its visible crest/wing,
-      // leaving 20 stage pixels beyond the 44px tail, in every speaking layout.
-      const gap = 20, tailReach = 44;
-      if (this.topLessonScene()) return Object.assign({}, lane, {
-        x: guide.x + guide.w * 0.16 - tailReach - gap - lane.w
-      });
-      return Object.assign({}, lane, {
-        y: guide.y + guide.h * 0.11 - tailReach - gap - lane.h
-      });
-    };
-    if (this.compareFocus()) return connected(this.compareLayout().dialogue);
-    if (this.learningReferenceScene()) return connected({x:140,y:450,w:500,h:200});
-    /* S10 used to put the bubble on the right on its own; screens 17, 18 and
-       19 now share the one left-lane composition, so it needs no exception. */
-    if (this.polygonIntroScene()) return connected(this.polygonIntroLayout().dialogue);
-    if (this.topLessonScene()) return connected(BOUNDARY.dialogue);
-    const step = this.state.ready ? this.step() : null;
-    const roomy = step && (step.sc === 'S1' || step.q === 'oc');
-    const x = roomy ? SWIFTEE_CENTRE - 86 : 8;
-    // Dialogue and content scale together inside the same complete scene.
-    return connected({ x, y:0, w:roomy ? 620 : 360, h:210 });
+    const guide = this.guideLayout(), D = DIALOGUE;
+    const crest = guide.y + guide.h * D.crest;
+    if (this.topLessonScene()) {
+      // Left of her, level with her head, above the panel of figures.
+      const right = guide.x + guide.w * 0.16 - D.tail - D.gap;
+      const left = Math.max((STAGE.w - BOUNDARY.boardW) / 2 + D.margin, right - D.maxW);
+      const bottom = BOUNDARY.dialogue.y + BOUNDARY.dialogue.h;
+      return { x: left, y: BOUNDARY.dialogue.y, w: right - left, h: BOUNDARY.dialogue.h, anchorX: right, side: true,
+        ceiling: D.margin / 2, floor: BOUNDARY.boardY - D.margin / 2 };
+    }
+    let left, right;
+    if (this.compareFocus()) {
+      // Between the two pentagons, over her head.
+      const c = this.compareLayout().cards;
+      left = c.leftX + c.size + D.clearance; right = c.rightX - D.clearance;
+    } else if (this.polygonIntroScene() || this.learningReferenceScene()) {
+      // The board's left lane, from its rim to the figure, the grid or the sockets.
+      const board = this.polygonIntroScene() ? this.polygonIntroLayout().board : this.teachingBoard();
+      left = board.x + D.margin; right = this.dialogueEdge() - D.clearance;
+    } else {
+      // The opening: the rock, from the stage edge to the opening card's rim.
+      left = D.margin; right = OPENING_BOARD.x - D.margin;
+    }
+    if (right - left > D.maxW) right = left + D.maxW;
+    const bottom = crest - D.tail - D.gap;
+    return { x: left, y: bottom - 210, w: right - left, h: 210, anchorX: guide.x + guide.w / 2, side: false };
   }
+  /* Where the screen's work begins, from the left, in stage px: the same numbers the
+     screen draws it from, so the bubble cannot drift onto it. */
+  dialogueEdge() {
+    const sc = this.step().sc;
+    if (this.polygonIntroScene()) { const L = this.polygonIntroLayout(); return Math.min(L.figure.x, L.grid.x); }
+    if (sc === 'S11') return this.partsFigureBox().x;
+    if (sc === 'S12') { const L = this.labelLayout(); return Math.min(L.box.x, ...L.spots.map(sp => sp.p[0] - L.socket.w / 2)); }
+    if (sc === 'END') return this.endGrid().x0;
+    return this.learningFigureBox().x;
+  }
+  /* The bubble for one chunk of a line, sized from the WHOLE chunk before its first word
+     is spoken: the words then land in their final places, and the bubble never resizes,
+     rewraps or moves while they arrive. As few lines as the strip allows, then the
+     narrowest width that still holds that many, so the lines come out even and no last word
+     is left on its own. Measured in a copy of the dialogue's own text that nobody sees or
+     hears (off screen, hidden, aria-hidden), once per text, strip width and font state:
+     nothing is re-measured while the words are revealed. */
   fittedDialogue(text) {
     const lane = this.dialogueLayout();
     const content = String(text || '').trim().replace(/\s+/g, ' ');
     const inset = NARR_TYPE.inset * 2;
     const available = Math.max(1, lane.w - inset);
-    // Size the complete passage, including unrevealed words, once per page.
-    // Keep its line count while trimming the spare space from balanced lines.
     const concepts = this.learningKeywords(content);
     const key = [content, available, concepts.join(','), document.fonts?.status].join('|');
     this._dialogueWidths = this._dialogueWidths || new Map();
-    let width = this._dialogueWidths.get(key);
-    if (width === undefined) {
+    let fit = this._dialogueWidths.get(key);
+    if (fit === undefined) {
       const words = content.split(' ').filter(Boolean);
       const linesAt = limit => {
         let count = 1, line = '';
@@ -3999,6 +4044,7 @@ class Component extends DCLogic {
         }
         return count;
       };
+      // A first estimate from the canvas, used as it is only where there is no document to measure in.
       const lines = linesAt(available);
       let low = Math.min(available, Math.max(92, ...words.map(word => this.narratorWidth(word))));
       let high = Math.min(available, this.narratorWidth(content));
@@ -4007,10 +4053,12 @@ class Component extends DCLogic {
         const mid = (low + high) / 2;
         if (linesAt(mid) <= lines) high = mid; else low = mid;
       }
-      // Inline word spans have their own wrapping opportunities. Verify against
-      // the same browser typography so a compact box never adds an extra line.
+      let textH = lines * NARR_TYPE.size * NARR_TYPE.lineHeight;
+      // Inline word spans have their own wrapping opportunities, so the real answer comes
+      // from the same browser typography the bubble uses.
       if (document.createElement && document.body) {
         const probe = document.createElement('div');
+        probe.setAttribute('aria-hidden', 'true');
         Object.assign(probe.style, this.narrStyle(), {position:'absolute',left:'-10000px',top:'0',visibility:'hidden',pointerEvents:'none',maxWidth:'none'});
         for (const token of content.split(/(\s+)/).filter(Boolean)) {
           const span = document.createElement('span');
@@ -4031,17 +4079,23 @@ class Component extends DCLogic {
             const mid = (low + high) / 2;
             if (heightAt(mid) <= height + 0.5 && probe.scrollWidth <= mid + 1) high = mid; else low = mid;
           }
+          textH = height;
         } finally { probe.remove(); }
       }
-      width = Math.min(lane.w, Math.ceil(high + inset + 1));
+      fit = { w: Math.min(lane.w, Math.ceil(high + inset + 1)), h: Math.ceil(textH + DIALOGUE.chrome) };
       if (this._dialogueWidths.size > 150) this._dialogueWidths.clear();
-      this._dialogueWidths.set(key, width);
+      this._dialogueWidths.set(key, fit);
     }
-    const guide = this.guideLayout();
-    const guideX = guide.x + guide.w / 2;
-    const sideTail = this.topLessonScene();
-    const x = sideTail ? lane.x + lane.w - width : Math.max(lane.x, Math.min(lane.x + lane.w - width, guideX - width / 2));
-    return Object.assign({}, lane, {x, w:width, tailX:Math.max(20, Math.min(width - 80, guideX - x - 3))});
+    const width = fit.w, height = fit.h;
+    /* Across: centred under her head where the strip allows, else against its near side
+       (on the top row, its right end is beside her). Down: its bottom on the line above
+       her crest, growing upward; on the top row it hangs from the same line but never
+       rises past the stage's top margin. */
+    const x = lane.side ? lane.x + lane.w - width
+      : Math.max(lane.x, Math.min(lane.x + lane.w - width, lane.anchorX - width / 2));
+    const bottom = lane.y + lane.h;
+    const y = lane.side ? Math.min(lane.floor - height, Math.max(lane.ceiling, bottom - height)) : bottom - height;
+    return Object.assign({}, lane, {x, y, w:width, h:height, tailX:Math.max(20, Math.min(width - 80, lane.anchorX - x - 3))});
   }
   signStyle() {
     /* The shell renders before boot() has assigned this.P; the sign is empty
@@ -4736,8 +4790,7 @@ class Component extends DCLogic {
        itself rather than being pushed to the bottom to clear a band for the
        "Side" pill. Slightly smaller, and the pill sits closer to the edge it
        names, which buys the headroom that band was taking. */
-    const size = reference ? 740 : 750, x = reference ? 786 : (SAFE.w - size) / 2, y = reference ? 196 : 40;
-    const box = { x, y, w:size, h:size };
+    const box = reference ? this.partsFigureBox() : { x:(SAFE.w - 750) / 2, y:40, w:750, h:750 };
     const figureColor = reference ? '#3478d4' : this.polyColor('pentagon');
     const palette = {
       sides: { color: '#e99712', ink: conceptTheme('side').ink, tint: '#ffe18a', shadow: 'rgba(237,160,18,.26)', glow: 'rgba(237,160,18,.55)' },
@@ -4825,7 +4878,7 @@ class Component extends DCLogic {
       { d: 'M' + arcStart.join(' ') + curve, color: palette.angle.color, w: 13 * K, style: draw(cue('form', 2720), Math.max(100, cueDelay - cue('form', 2720) - 100)) }
     ] : [];
     V.cards = [this.buildCard({
-      key: 'pent-' + ph + '-' + st.motionRun, x: x, y: y, w: size, h: size, plain: true, vb: F.vb, snap: reference, stillCard: ph === 'angle',
+      key: 'pent-' + ph + '-' + st.motionRun, x: box.x, y: box.y, w: box.w, h: box.h, plain: true, vb: F.vb, snap: reference, stillCard: ph === 'angle',
       d: this.figD('pentagon'), stroke: figureColor, sw: 18,
       fill: this.figFill('pentagon', figureColor),
       hl: hl, dots: dots, arcs: arcs
@@ -4891,30 +4944,14 @@ class Component extends DCLogic {
       touchAction:'none', userSelect:'none', cursor:'grab'
     };
   }
-  viewLabels(V, s) {
+  /* Screen 12's figure and its three sockets: where viewLabels draws them, and where
+     dialogueLayout keeps the bubble clear of them. */
+  labelLayout() {
     const reference = this.learningReferenceScene();
-    const st = this.state, F = this.fig('cross'), size = reference ? 700 : 660, K = this.k('cross');
+    const F = this.fig('cross'), size = reference ? 700 : 660, K = this.k('cross');
     const x = reference ? 910 : (SAFE.w - size) / 2, y = reference ? 200 : 3, box = {x,y,w:size,h:size};
-    const figureColor = reference ? '#3478d4' : this.polyColor('cross');
-    const pts = F.pts;
-    const hl = [], dots = [], arcs = [];
-    const p = st.placed;
-    const sideHighlight = this.segHl('cross', [9], null, p.side ? this.labelTheme('side').color : '#438bd7', 12);
-    sideHighlight.forEach(segment => { segment.style = { filter: 'none', transition: 'stroke 200ms ease-out' }; });
-    hl.push.apply(hl, sideHighlight);
-    dots.push({ x: pts[5][0], y: pts[5][1], r: 22 * K, fill: '#fff', stroke: p.vertex ? this.labelTheme('vertex').color : '#607d98', sw: 9 * K, style: {} });
-    const angleVertex = pts[1], radius = 130 * K;
+    const pts = F.pts, angleVertex = pts[1], radius = 130 * K;
     const u = this.unit(angleVertex, pts[0]), v = this.unit(angleVertex, pts[2]);
-    const arcStart = [angleVertex[0]+u[0]*radius,angleVertex[1]+u[1]*radius];
-    const arcEnd = [angleVertex[0]+v[0]*radius,angleVertex[1]+v[1]*radius];
-    const curve = ' A'+radius+' '+radius+' 0 0 '+(u[0]*v[1]-u[1]*v[0]>0?1:0)+' '+arcEnd.join(' ');
-    arcs.push({ d:'M'+angleVertex.join(' ')+' L'+arcStart.join(' ')+curve+' Z', fill:p.angle?'rgba(21,156,168,.14)':'rgba(96,125,152,.08)',color:'none',w:0 });
-    arcs.push({ d:'M'+arcStart.join(' ')+curve,color:p.angle?this.labelTheme('angle').color:'#607d98',w:11*K });
-    V.cards = [this.buildCard({
-      key: 'cross', x: x, y: y, w: size, h: size, plain: true, vb: F.vb, snap: reference,
-      d: this.figD('cross'), stroke: figureColor, sw: 12, hl: hl, dots: dots, arcs: arcs,
-      fill: this.figFill('cross', figureColor)
-    })];
     const segsC = this.segs('cross');
     const anchors = {
       side: this.mapPt(box, F.vb, segsC[9].mid),
@@ -4932,6 +4969,31 @@ class Component extends DCLogic {
       key: key, label: key.charAt(0).toUpperCase() + key.slice(1),
       p: [anchors[key][0] + offs[key][0], anchors[key][1] + offs[key][1]]
     }));
+    return { F, K, box, pts, angleVertex, radius, u, v, anchors, angleTip, spots, socket: { w: 212, h: 76 } };
+  }
+  viewLabels(V, s) {
+    const reference = this.learningReferenceScene();
+    const st = this.state, L = this.labelLayout(), F = L.F, K = L.K, box = L.box, x = box.x, y = box.y, size = box.w;
+    const figureColor = reference ? '#3478d4' : this.polyColor('cross');
+    const pts = L.pts;
+    const hl = [], dots = [], arcs = [];
+    const p = st.placed;
+    const sideHighlight = this.segHl('cross', [9], null, p.side ? this.labelTheme('side').color : '#438bd7', 12);
+    sideHighlight.forEach(segment => { segment.style = { filter: 'none', transition: 'stroke 200ms ease-out' }; });
+    hl.push.apply(hl, sideHighlight);
+    dots.push({ x: pts[5][0], y: pts[5][1], r: 22 * K, fill: '#fff', stroke: p.vertex ? this.labelTheme('vertex').color : '#607d98', sw: 9 * K, style: {} });
+    const angleVertex = L.angleVertex, radius = L.radius, u = L.u, v = L.v;
+    const arcStart = [angleVertex[0]+u[0]*radius,angleVertex[1]+u[1]*radius];
+    const arcEnd = [angleVertex[0]+v[0]*radius,angleVertex[1]+v[1]*radius];
+    const curve = ' A'+radius+' '+radius+' 0 0 '+(u[0]*v[1]-u[1]*v[0]>0?1:0)+' '+arcEnd.join(' ');
+    arcs.push({ d:'M'+angleVertex.join(' ')+' L'+arcStart.join(' ')+curve+' Z', fill:p.angle?'rgba(21,156,168,.14)':'rgba(96,125,152,.08)',color:'none',w:0 });
+    arcs.push({ d:'M'+arcStart.join(' ')+curve,color:p.angle?this.labelTheme('angle').color:'#607d98',w:11*K });
+    V.cards = [this.buildCard({
+      key: 'cross', x: x, y: y, w: size, h: size, plain: true, vb: F.vb, snap: reference,
+      d: this.figD('cross'), stroke: figureColor, sw: 12, hl: hl, dots: dots, arcs: arcs,
+      fill: this.figFill('cross', figureColor)
+    })];
+    const anchors = L.anchors, angleTip = L.angleTip, spots = L.spots;
     V.targets = spots.map((sp) => {
       const done = !!p[sp.key], bad = st.badPlace === sp.key, theme = this.labelTheme(sp.key);
       const hovered = st.labelHover === sp.key && !done;
@@ -4948,8 +5010,8 @@ class Component extends DCLogic {
         disabled: done, feedback: bad ? 'incorrect' : '',
         label: done ? sp.label + ', correctly placed' : ({side:'Left question-mark target',vertex:'Lower-right question-mark target',angle:'Upper-right question-mark target'}[sp.key]),
         style: {
-          position: 'absolute', left: (sp.p[0] - 106) + 'px', top: (sp.p[1] - 38) + 'px',
-          width: '212px', height: '76px', borderRadius: '22px', boxSizing: 'border-box',
+          position: 'absolute', left: (sp.p[0] - L.socket.w / 2) + 'px', top: (sp.p[1] - L.socket.h / 2) + 'px',
+          width: L.socket.w + 'px', height: L.socket.h + 'px', borderRadius: '22px', boxSizing: 'border-box',
           /* A quiet solid rim rather than a dashed one -- the target still
              reads as somewhere to drop, without ringing the figure in
              broken lines. */
@@ -5631,10 +5693,9 @@ class Component extends DCLogic {
        row of six had to shrink them to fit, and the old right-shifted board
        left her crowded against the first card with her bubble off the screen. */
     const reference = this.learningReferenceScene();
-    const lane = 1290, perRow = 3;
-    const w = reference ? 250 : 226, gap = reference ? 30 : 24;
-    const rowW = perRow * w + (perRow - 1) * gap;
-    const x0 = reference ? lane - rowW / 2 : (SAFE.w - row.length * w + gap - (row.length - 1) * gap) / 2;
+    const grid = this.endGrid(), lane = grid.lane, perRow = grid.perRow;
+    const w = reference ? grid.w : 226, gap = reference ? grid.gap : 24;
+    const x0 = reference ? grid.x0 : (SAFE.w - row.length * w + gap - (row.length - 1) * gap) / 2;
     V.cards = row.map((it, i) => {
       const F = this.fig(it[0]);
       const col = reference ? i % perRow : i, line = reference ? Math.floor(i / perRow) : 0;

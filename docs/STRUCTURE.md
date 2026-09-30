@@ -21,6 +21,7 @@ The displayed screen number is the position in `steps()`, starting at 1. Interna
 | Narration catalogue and word timestamps | `src/lesson/recordings.js` |
 | Screen jump menu and Back / Next (review only, shown with `?dev=1`) | `src/lesson/screen-navigator.js` |
 | Background, dialogue bubble, and bird landing | `index.html`: `BOARD`, `GUIDE_BOX`, `enterScreen`, `storyVoiceStart` (see [design/STORY_SCENE.md](design/STORY_SCENE.md)) |
+| Where Swiftee's bubble sits and how big it grows | `index.html`: `DIALOGUE`, `dialogueLayout`, `dialogueEdge`, `fittedDialogue` (see "The dialogue's room" in [design/STORY_SCENE.md](design/STORY_SCENE.md)) |
 | Blizzard timing, wind direction, storm strength | `styles/ice-intro.css`: the variables on `#ice-intro` |
 | Blizzard snow, gust audio, lesson handoff | `src/intro/ice-intro.js`: `FIELDS`, `DUST`, `GAIN_CURVE`; the lesson's gate is `boot()` in `index.html` |
 | Story lines, coloured words, balloon position and tail, effects, timing | `src/story/story-data.js` |

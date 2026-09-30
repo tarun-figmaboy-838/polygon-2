@@ -8,8 +8,8 @@ screens use fewer particles; reduced motion hides snow and keeps stars static.
 
 ## Scene layout
 
-- Left: Swiftee stays perched on the rock, with dialogue above her head. Compact
-  activities allow a wider bubble; dense activities keep it within the left margin.
+- Left: Swiftee stays perched on the rock, with dialogue above her head. The bubble
+  may use the whole clear strip beside the activity (see "The dialogue's room" below).
   Her horizontal center moves from stage x=192 to x=250 (30% farther right).
 - Right: a quiet, pale activity surface preserves the existing 1570 × 701 logical
   learning area. Shape geometry and drag/drop coordinates use the same coordinate system.
@@ -17,8 +17,27 @@ screens use fewer particles; reduced motion hides snow and keeps stars static.
   tail aligned above the bird's head, 46px dark teal Nunito text, a 4px teal border, warm cream surface, and comfortable padding.
   The supplied `swiftee-bubble.html` provides the rounded rectangle, catch-light, soft glow, and curved SVG tail. The lesson keeps its own audio-driven word reveal and local font assets.
   The tail is filled across its join and stroked only on its free edges. `dialogueLayout()` controls the fixed gap, so longer text grows upward without moving the pointer toward the bird. In the centred boundary scene the same tail rotates toward Swiftee at the lower right.
-  On narrow screens, bubble width follows the visible viewport while keeping the head anchor.
   Empty game dialogue is hidden; `design/dialogue-bubble.html` previews the reusable empty shell.
+
+## The dialogue's room
+
+One rule places the bubble on every screen (`dialogueLayout()`, `fittedDialogue()`, the
+`DIALOGUE` numbers in `index.html`), all in stage pixels, so it is the same at every window size:
+
+- **Where it hangs.** Above Swiftee's crest with its tail pointing down at her, 20px clear of the
+  44px tail; on the top-row screens (6, 7 and the two sorts) beside her, pointing across.
+  Across, it is centred under her head wherever the strip allows.
+- **How wide it may grow.** The clear strip it sits in: from the stage's 40px margin, or the
+  board's rim, to where the screen's work begins, less a 32px clearance, and never wider than
+  1040px. Where the work begins is the one number a screen supplies (`dialogueEdge()`), read
+  from the same layout the screen draws from: the opening card, the figure or grid, screen 11's
+  pentagon, screen 12's sockets, the end screen's grid, the two pentagons of the comparison.
+- **Its size.** Measured once per chunk of the line, from the whole chunk, before its first
+  word is spoken: the fewest lines the strip allows, then the narrowest width that still holds
+  that many, so the lines are even and no word is left alone at the end. The text stays at 46px.
+  The measuring copy is off screen, hidden and `aria-hidden`, and is removed at once.
+- **While she speaks.** Words appear in the places they will keep. Nothing is measured again
+  until the text, the fonts or the layout change, so the bubble does not resize, rewrap or move.
 - The 47 steps, questions, correct answers, and recording text remain in `steps()`.
 - Learning cards use `styles/cards.css`: a pale opaque center, soft inset rim,
   and low-contrast mountain silhouettes confined to the bottom corners.
@@ -79,7 +98,7 @@ and counters; `playwright-review.cjs` checks white text and label bounds on all 
 - `enterScreen` controls the introduction; `storyVoiceStart` connects playback to content.
 - `buildCard` adds short entrance fades without changing shape paths.
 - `src/lesson/recorded-player.js` calls `storyVoiceStart` on actual playback.
-- `tests/checks/check-dialogue-frame.cjs`, `check-dialogue-tail.cjs`, `check-scene-aspect.cjs`
+- `tests/checks/check-dialogue-frame.cjs`, `check-dialogue-tail.cjs`, `check-dialogue-fit.cjs`, `check-scene-aspect.cjs`
   and the full playthrough (`playwright-game.cjs`) cover the scene across all 48 screens.
 
 Runtime scripts and fonts ship in `assets/vendor/` and `assets/fonts/`. The opening
