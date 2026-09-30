@@ -754,11 +754,18 @@
      each later part comes up in its place with a smaller pop once the one before
      has been said. A part is laid out at its final size before a word is seen; the
      words then pop in on the voice's own clock (updateVoice), the key words in
-     colour. Coordinates are the story's stage pixels (1980 x 1080): `box` {x, y}
-     is where the box is centred and `tail` the top of the speaker's head, as
-     story-data.js writes them. */
+     colour. Coordinates are the story's stage pixels (1980 x 1080), as story-data.js
+     writes them: `box.x` is the box's centre, `tail` the top of the speaker's head
+     (a bubble hangs TAIL_HANG above it), and `box.y` places the narrator's label. */
   var PART_OUT = 130;     // a part leaving before the next takes the box (the kit's partOut)
   var TAIL_UP = 30;       // under the picture, how far the tail rises toward the speaker's side
+  /* A CHARACTER'S BUBBLE HANGS JUST ABOVE THE HEAD, the kit's way: its bottom edge this
+     far above the tail's tip, so the tail is a short, wide-based wedge. It was placed
+     from the scene's `box.y` — in the sky, 150 to 230 stage px above the head — and
+     the same path then ran the tail all the way down as a long thin spike: the
+     stretched pointer this replaces. (The kit's own story hangs its bubbles 40-44 px
+     over the speaker.) */
+  var TAIL_HANG = 44;
 
   function linesOf(sc) {
     return sc.lines && sc.lines.length ? sc.lines : [{ text: sc.text }];
@@ -834,7 +841,9 @@
       b.el.setAttribute('data-tail', 'up');
     } else {
       var left = Math.round(clamp((box.x != null ? box.x : W / 2) - w / 2, 24, W - 24 - w));
-      var top = Math.round(clamp((box.y != null ? box.y : 112) - h / 2, 24, H - 24 - h));
+      // a bubble hangs TAIL_HANG above the head it points at; the narrator's label sits at box.y
+      var cy = talking ? box.tail[1] - TAIL_HANG - h / 2 : (box.y != null ? box.y : 112);
+      var top = Math.round(clamp(cy - h / 2, 24, H - 24 - h));
       b.el.style.left = left + 'px';
       b.el.style.top = top + 'px';
       tx = talking ? box.tail[0] - left : w / 2;

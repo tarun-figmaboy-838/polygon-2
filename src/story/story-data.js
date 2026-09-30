@@ -20,10 +20,11 @@
        line.focus           words shown in colour: momo | polo | gold |
                             action | good | worry
        line.gap             pause before this line, ms (lines after the first)
-     box                    x, y = where the box is centred (in the sky, on the
-                            speaker's side); tail = the point its tail reaches
-                            (the top of the speaker's head). No tail for the
-                            narrator.
+     box                    x = where the box is centred (on the speaker's side);
+                            y = where the narrator's label is centred. tail = the
+                            point a bubble's tail reaches (the top of the speaker's
+                            head); the bubble hangs a short tail's length above it,
+                            so its y is not needed. No tail for the narrator.
      feel                   shout: the box shakes; worry: it trembles
      voice                  prefix of the takes in window.STORY_VOICE (scene-N/1, /2, …)
      enter                  crossfade into this scene, ms
