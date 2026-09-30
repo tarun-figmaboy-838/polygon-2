@@ -18,7 +18,9 @@ const server=http.createServer((req,res)=>{
   // Accelerate real audio, preserving its clock, word events and end gates.
   await page.addInitScript(()=>{const play=HTMLMediaElement.prototype.play;HTMLMediaElement.prototype.play=function(){this.playbackRate=6;return play.call(this);};});
   await page.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>r.abort());
-  await page.goto('http://127.0.0.1:9351/?preview=1');
+  // The walkthrough ends by pressing Play again, which the completion screen offers
+  // when the story into Part 2 is left out (tests/bridge.test.cjs covers that story).
+  await page.goto('http://127.0.0.1:9351/?preview=1&bridge=0');
   await page.waitForFunction(()=>window.__poly?.state.ready);
   await page.mouse.click(700,200);
   // Exercise the explicit recovery path where the host has no speech engine.

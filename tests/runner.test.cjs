@@ -3,8 +3,9 @@
      - ?game=1 opens straight on the game: its cover and PLAY are up, its engine reports
        TITLE, the lesson underneath is hidden, the story and the blizzard never ran, no
        request fails and nothing throws in either document
-     - the completion screen offers Help Momo beside Play again, the game is already
-       loading behind it, and pressing Help Momo brings the game up at its cover
+     - with the story into Part 2 left out (?bridge=0), the completion screen offers Help
+       Momo beside Play again, the game is already loading behind it, and pressing Help Momo
+       brings the game up at its cover (the story itself: tests/bridge.test.cjs)
      - ?game=0 leaves the game out: Play again alone, and nothing loaded
 
    node tests/runner.test.cjs          ENGINE=webkit node tests/runner.test.cjs */
@@ -84,8 +85,8 @@ async function toEnd(page) {
   check('?game=1: no script errors', !a.errors.length, a.errors.join(' | '));
   await a.page.close();
 
-  /* 2. the hand-off from the completion screen */
-  const b = await open(browser, srv, '?preview=1');
+  /* 2. the hand-off from the completion screen, without the story between */
+  const b = await open(browser, srv, '?preview=1&bridge=0');
   await toEnd(b.page);
   const help = b.page.getByRole('button', { name: 'Help Momo', exact: true });
   const again = b.page.getByRole('button', { name: 'Play again', exact: true });

@@ -48,6 +48,12 @@
      leaves it out. See src/runner/runner-stage.js. -->
 <link rel="stylesheet" href="styles/runner-stage.css">
 <script src="src/runner/runner-stage.js"></script>
+<!-- The Broken Path: the short story between Part 1 and Part 2. When the completion
+     screen's last line has been read, Momo runs to a broken path, Swiftee flies in and
+     tells him what is next, and Next brings up the Part 2 cover. ?bridge=1 opens
+     straight on it; ?bridge=0 leaves it out. See src/bridge/bridge-story.js. -->
+<link rel="stylesheet" href="styles/bridge-story.css">
+<script src="src/bridge/bridge-story.js"></script>
 </head>
 <body>
 <x-dc>
@@ -960,8 +966,11 @@ class Component extends DCLogic {
          finished and handed control over. */
       /* ?game=1 opens straight on the runner (src/runner/runner-stage.js brings it up
          by itself); the lesson then keeps its first screen, silent, underneath. */
+      /* ?bridge=1 opens straight on the story into Part 2 (src/bridge/bridge-story.js),
+         and the lesson keeps its first screen silent underneath in the same way. */
       const begin = () => {
-        if (this._gone || (window.RunnerStage && window.RunnerStage.autostart)) return;
+        if (this._gone || (window.RunnerStage && window.RunnerStage.autostart) ||
+            (window.BridgeStory && window.BridgeStory.autostart)) return;
         this.runStep(0, true);
       };
       const intro = window.IceIntro && window.IceIntro.gate;
@@ -1454,7 +1463,7 @@ class Component extends DCLogic {
     if (choiceQuestion && !(/\bopen\b/i.test(text) && /\bclosed?\b/i.test(text))) lines.push('Is it open or closed?');
     this._voiceQueue = lines.flatMap(line => window.PolygonRecordedVoice && window.PolygonRecordedVoice.find(line) ? [line] : this.instructionPages(line)).map(part => ({ text: part })); this._voiceRetry = null; this._voiceContinue = null;
     this._voiceAfter = () => {
-      if (this.step().sc === 'END') this.guide.onScreenComplete();
+      if (this.step().sc === 'END') { this.guide.onScreenComplete(); this.queueBridge(); }
       if (o.then) o.then();
       else if (o.auto) {
         const polygonReveal = this.step().sc === 'S8';
@@ -1870,9 +1879,12 @@ class Component extends DCLogic {
         if (s.ph === 'draw') this.setState({ storyContent: true });
         if (s.sc === 'END') {
           this.later(() => this.confetti(), 260);
-          /* The runner game loads now, invisibly, so its cover is ready by the time the
-             last line has been read and "Help Momo" is pressed. */
-          if (window.RunnerStage && window.RunnerStage.enabled) window.RunnerStage.preload();
+          /* The story into Part 2 loads now, with the lesson's AudioContext for its voice,
+             and asks for the runner game's frame once its own art is in. Without the
+             story, the runner game loads now, invisibly, so its cover is ready by the
+             time the last line has been read and "Help Momo" is pressed. */
+          if (this.bridgeOn()) window.BridgeStory.preload({ audioContext: this.ac() });
+          else if (window.RunnerStage && window.RunnerStage.enabled) window.RunnerStage.preload();
         }
         if (s.ph === 'point') { this.later(go, 500); return; }
         if (s.ph === 'draw') {
@@ -5490,6 +5502,7 @@ class Component extends DCLogic {
 
   restart = () => {
     if (this.locked()) return;
+    this._bridging = false;
     this.sfx('tap');
     this._guideGreeted = false;
     this.setState({ k: 0, userPts: null, dragged: false, drawn: false }, () => {
@@ -5508,6 +5521,30 @@ class Component extends DCLogic {
     try { window.speechSynthesis.cancel(); } catch (e) {}
     this.setState({ interactive: false });
     window.RunnerStage.start();
+  };
+  /* PART 1 HANDS OVER TO PART 2 BY A STORY (src/bridge/bridge-story.js), not by a button.
+     The completion screen plays as it always has: Swiftee's line, the confetti. When
+     that line has been read there is a short pause, and then the story starts by itself:
+     the ice frosts over, Momo runs to a broken path, Swiftee flies in and says what is
+     next, and her Next brings up the Part 2 cover. The pause is timed from the end of
+     the line, so a learner who replays it simply moves the start with it; leaving the
+     screen (Back, the screen navigator) clears the timer with every other one. */
+  bridgeOn() { return typeof window !== 'undefined' && !!(window.BridgeStory && window.BridgeStory.enabled); }
+  queueBridge() {
+    if (!this.bridgeOn()) return;
+    this.later(() => {
+      if (this.step().sc !== 'END' || this._voiceLocked || this.state.speaking) return;
+      this.startBridge();
+    }, 1400);
+  }
+  startBridge = () => {
+    if (!this.bridgeOn() || this._bridging) return;
+    this._bridging = true;
+    this.clearNudge();
+    if (this._stopRecordedVoice) this._stopRecordedVoice();
+    try { window.speechSynthesis.cancel(); } catch (e) {}
+    this.setState({ interactive: false });
+    window.BridgeStory.start({ audioContext: this.ac() });
   };
   viewEnd(V, s) {
     const row = [['triangle', this.P.C.purple], ['quad', this.P.C.orange], ['pentagon', this.P.C.blue],
@@ -5545,6 +5582,9 @@ class Component extends DCLogic {
        where the journey goes next, and the lesson has just given the learner everything
        the game asks for. PLAY AGAIN restarts the lesson. Without the game (?game=0, or a
        page that never loaded the stage) Play again stands alone where it always did. */
+    /* With the story into Part 2 there is nothing to press here: the story follows by
+       itself (see queueBridge). */
+    if (this.bridgeOn()) { V.targets = []; return; }
     const runner = typeof window !== 'undefined' && window.RunnerStage && window.RunnerStage.enabled;
     const y = reference ? '872px' : '620px';
     const button = (text, click, x, nudge) => ({

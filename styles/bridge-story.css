@@ -1,0 +1,158 @@
+/* ============================================================================
+   THE BROKEN PATH — the story between Part 1 and Part 2 (src/bridge/bridge-story.js).
+
+   The scene itself is drawn on the canvas; this file styles what sits around
+   it: the frost that wipes over the lesson and clears on the scene, Swiftee's
+   dialogue box (her own from Part 1), and the Next button (the lesson's own ice
+   button). Everything is scoped under #bridge-story.
+   ========================================================================= */
+
+#bridge-story {
+  position: fixed;
+  inset: 0;
+  /* above the lesson and its screen navigator (10000); under the runner's stage (10070),
+     whose curtain fades over this scene into the Part 2 cover */
+  z-index: 10065;
+  overflow: hidden;
+  outline: none;
+  cursor: default;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#bridge-story .bridge-canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  visibility: hidden;
+}
+#bridge-story.is-open .bridge-canvas { visibility: visible; }
+
+/* THE ICE WIPE. Frost sweeps across the lesson from the left with a soft edge, the lesson
+   stops painting under it, and it melts away on the scene already moving. Where masks are
+   not supported it is a plain fade. */
+#bridge-story .bridge-frost {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    radial-gradient(60% 45% at 22% 30%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 70%),
+    radial-gradient(50% 40% at 78% 72%, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0) 70%),
+    linear-gradient(160deg, #ffffff 0%, #eef8ff 38%, #d3ebfb 100%);
+  -webkit-mask-image: linear-gradient(90deg, #000 45%, transparent 55%);
+  mask-image: linear-gradient(90deg, #000 45%, transparent 55%);
+  -webkit-mask-size: 300% 100%;
+  mask-size: 300% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: 100% 0;
+  mask-position: 100% 0;
+  transition: opacity 260ms ease-out, -webkit-mask-position 420ms ease-in-out, mask-position 420ms ease-in-out;
+}
+#bridge-story.is-frosting .bridge-frost {
+  opacity: 1;
+  -webkit-mask-position: 0 0;
+  mask-position: 0 0;
+}
+#bridge-story.is-open .bridge-frost {
+  opacity: 0;
+  transition: opacity 620ms ease-out;
+}
+
+/* While the scene has the screen, the lesson underneath is not painted at all. Once Part 2
+   is up the scene is hidden too, in the moment before it removes itself. */
+html[data-bridge="on"] .game-viewport { visibility: hidden; }
+html[data-runner="on"] #bridge-story { visibility: hidden; }
+
+/* ----------------------------------------------------------- the bubble */
+/* SWIFTEE'S OWN DIALOGUE BOX from Part 1: the lesson's .comic-dialogue / .dialogue-box and
+   its tail (styles/dialogue.css) carry the cream paper, the teal edge and glow, the
+   catch-light and the curved tail. This only sets the lettering as the lesson sets it
+   (NARR_TYPE: Nunito 800 at 44px, the lesson's teal ink, balanced rows, the accent ink on a
+   key word) and how the box arrives. The script sizes the box to its text in the lesson's
+   own units and scales the whole thing to the scene. */
+#bridge-story .bridge-say {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 3;
+  transform-origin: 0 0;
+  pointer-events: none;
+}
+#bridge-story .bridge-box {
+  width: max-content;
+  max-width: 640px;
+  opacity: 0;
+  transform: scale(0.94);
+  transform-origin: var(--ox, 30%) 100%;
+  transition: opacity 240ms ease-out, transform 240ms cubic-bezier(0.22, 0.8, 0.25, 1);
+}
+#bridge-story .bridge-say.show .bridge-box { opacity: 1; transform: none; }
+#bridge-story .bridge-say.out .bridge-box { opacity: 0; transform: scale(0.97); transition: opacity 150ms ease-in, transform 150ms ease-in; }
+#bridge-story .bridge-say-text {
+  position: relative;
+  display: block;
+  font: 800 44px/1.2 Nunito, 'Baloo 2', sans-serif;
+  letter-spacing: 0.005em;
+  color: #174b52;
+  text-align: center;
+  white-space: normal;
+  text-wrap: balance;
+}
+/* each word shows the moment it is said, sharp, as a recorded cue shows it in the lesson */
+#bridge-story .bridge-say .w { display: inline-block; opacity: 0; }
+#bridge-story .bridge-say .w.in { opacity: 1; }
+#bridge-story .bridge-say .w.k { color: #7b249c; font-weight: 900; }
+
+/* the words, for a screen reader, one line at a time */
+#bridge-story .bridge-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------- Next */
+/* THE LESSON'S OWN ICE BUTTON (styles/buttons.css), bottom right, the size of the story's
+   Play. It is not on the page until the story has been told, then it rises in once:
+   a small entrance, and no loop after it. */
+#bridge-story .bridge-next {
+  --button-label-size: clamp(22px, 3.2vmin, 34px);
+  position: absolute;
+  z-index: 4;
+  right: max(20px, 3vw, env(safe-area-inset-right));
+  bottom: max(20px, 4.5vh, env(safe-area-inset-bottom));
+  min-width: clamp(150px, 20vmin, 220px);
+  min-height: clamp(60px, 9vmin, 88px);
+  padding: 0 clamp(22px, 3vmin, 34px);
+  gap: 10px;
+  opacity: 0;
+  translate: 0 14px;
+  pointer-events: none;
+  transition: opacity 260ms ease-out, translate 360ms cubic-bezier(0.3, 1.3, 0.5, 1), filter 140ms ease;
+}
+#bridge-story .bridge-next[hidden] { display: none !important; }
+#bridge-story .bridge-next.is-in { opacity: 1; translate: 0 0; pointer-events: auto; }
+#bridge-story .bridge-next.is-pressed { filter: brightness(0.94); pointer-events: none; }
+#bridge-story .bridge-next svg { width: 0.8em; height: 0.8em; flex: none; filter: drop-shadow(0 1px 0 #205b80); }
+
+@media (prefers-reduced-motion: reduce) {
+  #bridge-story .bridge-frost {
+    -webkit-mask-image: none;
+    mask-image: none;
+    transition: opacity 360ms ease;
+  }
+  #bridge-story.is-open .bridge-frost { transition: opacity 400ms ease; }
+  #bridge-story .bridge-box,
+  #bridge-story .bridge-say.show .bridge-box,
+  #bridge-story .bridge-say.out .bridge-box { transform: none; transition: opacity 200ms ease; }
+  #bridge-story .bridge-next { translate: 0 0; transition: opacity 260ms ease; }
+}

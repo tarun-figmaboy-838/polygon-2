@@ -94,7 +94,7 @@
   function skipRequested() {
     var q = params();
     if (q && q.get('story') === '1') return false;
-    if (q && (q.get('story') === '0' || q.get('intro') === '0' || q.get('preview') === '1' || q.get('game') === '1')) return true;
+    if (q && (q.get('story') === '0' || q.get('intro') === '0' || q.get('preview') === '1' || q.get('game') === '1' || q.get('bridge') === '1')) return true;
     return !!navigator.webdriver;
   }
   function reducedMotion() {

@@ -124,7 +124,7 @@
   function skipRequested() {
     try {
       var q = new URLSearchParams(window.location.search);
-      return q.get('intro') === '0' || q.get('preview') === '1' || q.get('game') === '1';
+      return q.get('intro') === '0' || q.get('preview') === '1' || q.get('game') === '1' || q.get('bridge') === '1';
     } catch (e) { return false; }
   }
 

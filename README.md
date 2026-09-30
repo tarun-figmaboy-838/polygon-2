@@ -1,6 +1,6 @@
 # Polygon Adventure
 
-A playful polygon lesson for young learners. It opens with **Momo and Polo**, a nine-panel animated comic story, then a short blizzard, then the 48-screen lesson where Swiftee the bird teaches open and closed figures, straight and curved boundaries, sides, vertices and angles, and polygon names from triangle to octagon. When the lesson is done, **the Frozen Pass**: a runner game in which Momo crosses the broken ice by cutting down the right polygon, seven crossings, to reach his friend.
+A playful polygon lesson for young learners. It opens with **Momo and Polo**, a nine-panel animated comic story, then a short blizzard, then the 48-screen lesson where Swiftee the bird teaches open and closed figures, straight and curved boundaries, sides, vertices and angles, and polygon names from triangle to octagon. When the lesson is done, a short story carries it into **the Frozen Pass**: Momo runs to a broken path, Swiftee flies in and tells him what comes next, and the runner game begins, in which Momo crosses the broken ice by cutting down the right polygon, seven crossings, to reach his friend.
 
 **Play it:** https://tarun-figmaboy-838.github.io/polygon-2/
 
@@ -22,6 +22,8 @@ npx serve .
 | `?story=1` | Force the story in automated browsers, which skip it by default |
 | `?game=1` | Straight to the Frozen Pass runner game: the story, the blizzard and the lesson are skipped |
 | `?game=0` | Leave the game out: the completion screen keeps only Play again |
+| `?bridge=1` | Straight to the story between the lesson and the game (the Broken Path) |
+| `?bridge=0` | Leave that story out: the completion screen offers Help Momo and Play again |
 
 ## Folders
 
@@ -32,6 +34,7 @@ src/
   intro/              the blizzard cinematic
   lesson/             lesson data, layout, voice playback, Swiftee's sheet tables
   runtime/            the component runtime that boots the lesson
+  bridge/             the Broken Path: the story from the lesson into the game
   runner/             the hand-off to the Frozen Pass game after the lesson
 styles/               all CSS (lesson, story, blizzard, buttons, fonts, the game's stage)
 assets/
@@ -71,7 +74,7 @@ npm run optimize:media -- assets/audio/lesson --speech   # narration: mono, spee
 
 It is told like a comic: each scene is a panel on a comic page, and the words appear in **one box**, a short part of the line at a time, using the dialogue kit from POLYGON Part 1. The narrator's box is a storybook label, cream paper with one brown line, that drops in with a bounce; Momo and Polo speak in white bubbles that boing out of their tails, the bubble and its tail one drawn outline reaching to the speaker's head. Each word pops in as it is said, and a later part of a line takes the box with a smaller pop. The box shakes for a shout and trembles for a worry. Key words are coloured (Momo orange, Polo blue, the treasure gold, action red, encouragement green). Sounds, music, sparkles, hearts, ink emanata, speed lines and gentle shakes keep it lively; there are no written sound effects.
 
-A **Play** button starts it, because browsers only allow sound after a tap. **Skip** or Esc goes straight to the lesson. On an upright phone the balloon sits under the picture, its tail pointing up toward the speaker, and the text shrinks, if it must, to stay on one line.
+A **Play** button starts it, because browsers only allow sound after a tap. There is no Skip button: the story plays through. Esc, or `?story=0`, goes straight to the lesson. On an upright phone the balloon sits under the picture, its tail pointing up toward the speaker, and the text shrinks, if it must, to stay on one line.
 
 | To change | Edit |
 |---|---|
@@ -83,18 +86,26 @@ The voices are **placeholder takes** made with the macOS Indian English voices (
 
 The music is an original score rendered by `npm run build:story-music`: one file with a section per mood (warm, playful, tension, hush, resolve) that the story crossfades between. To use a studio track instead, give it the same sections and times, or change the table in `story-data.js`.
 
+## The Broken Path (from the lesson into the game)
+
+When the completion screen's last line has been read, there is a short pause and then the story starts by itself. Frost wipes across the lesson and clears on the game's own world at dawn. Momo runs in along the ice path, sees the break ahead, skids to a stop short of the edge and looks down. Swiftee flies in on a curve, lands beside him, looks at the gap and then at Momo, and says two lines word by word: "Oh no! The path is broken." and "Help Momo cross the Frozen Pass!". Both are the game's own approved lines, played from its recorded take. When the last line has been read, **Next** appears. It brings up the game's cover, the Frozen Rush banner with its **Play** button, and Play starts the game.
+
+Nothing takes a tap or a key during the story except Next, and Next does not exist until the story has been told. The scene is drawn from the game's art (`game/assets`) with the game's own numbers, so its ground is the ground the game opens on. Swiftee is the lesson's sprite and speaks in her own Part 1 dialogue box. The sounds are the game's own: its recorded snow footsteps, its skid, the cartoon pips as Momo shivers at the edge, a lighter take of its whoosh as Swiftee swoops in, and its tap on Next. Without sound the words keep the same timing. With reduced motion every beat is shown as a held picture. The story is `src/bridge/bridge-story.js` and `styles/bridge-story.css`, and its states are listed at the top of the script.
+
 ## The Frozen Pass (the runner game)
 
 `game/` is the Ice Age runner from the `running-mammoth` repository, brought in as it ships there: `game/index.html`, its two stylesheets, the modules in `game/js/` and its art and sound. One change was made to it: Baloo 2 comes from the lesson's own font file (`styles/fonts.css`) instead of Google Fonts, so the whole experience still ships every font with the page. That is also why the game has to be served from this folder rather than from `game/` on its own.
 
-It plays in an `<iframe>`, not inside the lesson's document. The game's stylesheet carries global rules and generic class names, the two pages read different meanings into `?intro=0`, and each keeps its own audio and keyboard focus. `src/runner/runner-stage.js` puts the frame on the page invisibly as the lesson's completion screen opens, so the game loads while the last line is read; the **Help Momo** button on that screen dims the lesson to the game's night blue and lifts the curtain on the game's cover. **Play again** inside the game restarts the game; **Play again** on the lesson's completion screen restarts the lesson.
+It plays in an `<iframe>`, not inside the lesson's document. The game's stylesheet carries global rules and generic class names, the two pages read different meanings into `?intro=0`, and each keeps its own audio and keyboard focus. `src/runner/runner-stage.js` puts the frame on the page invisibly while the completion screen and the Broken Path play, so the game has loaded by the time it is needed. The story's **Next** dims the screen to the game's night blue and lifts the curtain on the game's cover. **Play again** inside the game restarts the game. With `?bridge=0` the completion screen offers **Help Momo**, which does the same, and **Play again**, which restarts the lesson.
 
 | To change | Edit |
 |---|---|
 | The seven crossings: which polygon, which distractors, the wording | `game/js/engine.js`: `CFG.levelOne.phases`. Read [docs/game/RUNNER.md](docs/game/RUNNER.md) first: it is the contract |
 | The tutorial's seven lines | `game/js/tutorial.js` (their recording is `game/assets/audio/vo-lines`) |
 | When the game loads, the curtain, which URL flags reach it | `src/runner/runner-stage.js`, `styles/runner-stage.css` |
-| The completion screen's two buttons | `index.html`: `viewEnd`, `startRunner` |
+| The story into the game: its timing, lines, layout and states | `src/bridge/bridge-story.js`, `styles/bridge-story.css` |
+| When the story starts after the completion screen | `index.html`: `queueBridge`, `startBridge` |
+| The completion screen's buttons (only with `?bridge=0`) | `index.html`: `viewEnd`, `startRunner` |
 
 Three files under `game/js/` are generated and should not be edited by hand: `game.bundle.js` (the modules concatenated for opening `game/index.html` straight off the disk; this project always serves the game over HTTP, so it is not used here, but rebuild it with `node tools/build-bundle.mjs` in the running-mammoth repository whenever a module changes so the two can never disagree), `option-shapes.js` and `asset-versions.js`. The game's own Playwright suite lives in that repository and runs against exactly these files.
 
@@ -104,8 +115,10 @@ Three files under `game/js/` are generated and should not be edited by hand: `ga
 npm install                            # newer npm may ask you to approve the install
                                        # scripts: npm install-scripts approve ffmpeg-static
 npx playwright install chromium        # and `webkit` to test Safari's engine
-npm test                               # lesson smoke + story on 6 screens + user flows + the runner hand-off (~8 min)
+npm test                               # lesson smoke + story on 6 screens + user flows + the runner hand-off
+                                       # + the story into the game (~12 min)
 npm run test:runner                    # just the hand-off: ?game=1, the Help Momo button, ?game=0 (~2 min)
+npm run test:bridge                    # the story into the game: order, locking, voice, Next, Play (~4 min)
 npm run test:checks                    # 32 focused lesson checks incl. the full 48-screen playthrough (~20 min)
 ENGINE=webkit npm test                 # the same in Safari's engine
 ```
