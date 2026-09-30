@@ -24,6 +24,7 @@ npx serve .
 | `?game=0` | Leave the game out: the completion screen keeps only Play again |
 | `?bridge=1` | Straight to the story between the lesson and the game (the Broken Path) |
 | `?bridge=0` | Leave that story out: the completion screen offers Help Momo and Play again |
+| `?dev=1` | Review mode: shows the screen navigator (Screens jump menu, Back and Next) at the top of the lesson |
 
 ## Folders
 
@@ -132,5 +133,5 @@ Screenshots of every story panel on every screen size are saved to `tests/output
 
 ## Notes
 
-- The screen navigator (a "Screens" button at the top left) ships enabled so reviewers can jump between screens. Delete its `<script>` tag in `index.html` for a public release. The runner has a review control of its own, a "Skip to ending" pill in its bottom-left corner; `game/index.html` says how to remove it.
+- The screen navigator (the "Screens" jump menu and the Back and Next buttons at the top of the lesson) is hidden from learners. Open the page with `?dev=1` to use it. The runner has a review control of its own, a "Skip to ending" pill in its bottom-left corner; `game/index.html` says how to remove it.
 - Text files are stored with LF line endings (`.gitattributes`), so an editor that switches line endings can no longer make files look modified.

@@ -4,6 +4,8 @@
      - default load: story (skipped for automated browsers) -> blizzard ->
        screen 1 narration
      - ?preview=1 authoring mode still goes straight to screen 1
+     - the screen navigator (Screens, Back, Next) is not on the page for a learner,
+       and is there with ?dev=1
      - no request returns an error, no script error (the lesson template's
        own {{ }} placeholder warnings are known and ignored)
      - every narration recording in the catalog exists in its shipped format,
@@ -66,7 +68,17 @@ async function open(browser, srv, query) {
   const b = await open(browser, srv, '?preview=1');
   check('?preview=1 goes straight to screen 1', b.started !== null && b.started < 12, b.started === null ? 'never started' : b.started.toFixed(1) + 's');
   check('?preview=1: no script errors', !b.errors.length, b.errors.join(' | '));
+  check('no screen navigator (Screens, Back, Next) for a learner', await b.page.evaluate(() => !document.getElementById('polygon-screen-navigator')));
   await b.page.close();
+
+  const d = await open(browser, srv, '?preview=1&dev=1');
+  const nav = await d.page.evaluate(() => {
+    const host = document.getElementById('polygon-screen-navigator'), root = host && host.shadowRoot;
+    return !!root && !!root.getElementById('toggle') && !!root.getElementById('back') && !!root.getElementById('next');
+  });
+  check('?dev=1: the screen navigator is there (Screens, Back, Next)', nav);
+  check('?dev=1: no script errors', !d.errors.length, d.errors.join(' | '));
+  await d.page.close();
 
   await browser.close();
   await srv.close();

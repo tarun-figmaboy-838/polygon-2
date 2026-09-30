@@ -1,8 +1,17 @@
-/* Lesson screen navigation, available wherever the game is opened. */
+/* Lesson screen navigation for review: the "Screens" jump menu and the Back / Next
+   buttons at the top of the lesson. Learners never see it. It is on the page only
+   with ?dev=1 in the address (?dev-1 is taken as the same thing); without it mount()
+   puts nothing on the page and returns a no-op. */
 (function () {
   'use strict';
+  const dev = (() => {
+    try { const q = new URLSearchParams(window.location.search); return q.get('dev') === '1' || q.has('dev-1'); }
+    catch (error) { return false; }
+  })();
   window.PolygonScreenNavigator = {
+    enabled: dev,
     mount(game) {
+      if (!dev) return () => {};
       const host = document.createElement('div');
       host.id = 'polygon-screen-navigator';
       const root = host.attachShadow({ mode: 'open' });

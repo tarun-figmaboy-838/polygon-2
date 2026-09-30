@@ -12,7 +12,7 @@ const server=http.createServer((req,res)=>{
   try {
     const page=await browser.newPage({reducedMotion:'reduce'}),errors=[];
     page.on('pageerror',e=>errors.push(e.message));
-    await page.goto('http://127.0.0.1:9380/?intro=0');await page.waitForFunction(()=>window.__poly?.state.ready);
+    await page.goto('http://127.0.0.1:9380/?intro=0&dev=1');await page.waitForFunction(()=>window.__poly?.state.ready);
     await page.evaluate(()=>{const g=__poly;g._stopRecordedVoice?.();g.timers.forEach(clearTimeout);g._guideGreeted=true;g.later=()=>0;g.narrate=()=>{};});
     const out=path.join(__dirname,'output','scene-aspect');fs.mkdirSync(out,{recursive:true});
     await page.addStyleTag({content:'*,*::before,*::after{animation:none!important;transition:none!important}'});

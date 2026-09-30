@@ -14,7 +14,7 @@ const server=http.createServer((req,res)=>{
     for(const density of [1,1.25,1.5,2,3]){
       const page=await browser.newPage({viewport:{width:1920/density,height:1080/density},deviceScaleFactor:density,reducedMotion:'reduce'});
       page.on('pageerror',e=>errors.push(e.message));
-      await page.goto('http://127.0.0.1:9395/?intro=0');
+      await page.goto('http://127.0.0.1:9395/?intro=0&dev=1');
       await page.waitForFunction(()=>window.__poly?.state.ready);
       await page.addStyleTag({content:'*,*::before,*::after{animation:none!important;transition:none!important}'});
       await page.evaluate(()=>{const g=__poly;g._stopRecordedVoice?.();g.timers.forEach(clearTimeout);g.later=()=>0;g.narrate=()=>{};g._guideGreeted=true;});

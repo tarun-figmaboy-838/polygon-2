@@ -19,7 +19,7 @@ The displayed screen number is the position in `steps()`, starting at 1. Interna
 | Shape coordinates | `src/lesson/polygon-data.js`: `FIG` |
 | Narration playback and word timing | `src/lesson/recorded-player.js` |
 | Narration catalogue and word timestamps | `src/lesson/recordings.js` |
-| Screen jump menu | `src/lesson/screen-navigator.js` |
+| Screen jump menu and Back / Next (review only, shown with `?dev=1`) | `src/lesson/screen-navigator.js` |
 | Background, dialogue bubble, and bird landing | `index.html`: `BOARD`, `GUIDE_BOX`, `enterScreen`, `storyVoiceStart` (see [design/STORY_SCENE.md](design/STORY_SCENE.md)) |
 | Blizzard timing, wind direction, storm strength | `styles/ice-intro.css`: the variables on `#ice-intro` |
 | Blizzard snow, gust audio, lesson handoff | `src/intro/ice-intro.js`: `FIELDS`, `DUST`, `GAIN_CURVE`; the lesson's gate is `boot()` in `index.html` |
