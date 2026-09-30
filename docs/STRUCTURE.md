@@ -24,7 +24,7 @@ The displayed screen number is the position in `steps()`, starting at 1. Interna
 | Blizzard timing, wind direction, storm strength | `styles/ice-intro.css`: the variables on `#ice-intro` |
 | Blizzard snow, gust audio, lesson handoff | `src/intro/ice-intro.js`: `FIELDS`, `DUST`, `GAIN_CURVE`; the lesson's gate is `boot()` in `index.html` |
 | Story lines, coloured words, balloon position and tail, effects, timing | `src/story/story-data.js` |
-| Story look (balloon lettering, comic page and panel) | `styles/story-intro.css` |
+| Story look (the narration label and speech bubbles, comic page and panel) | `styles/story-intro.css` |
 | Story behaviour (sequencing, audio, effects) | `src/story/story-intro.js` |
 | Swiftee's animation sheets | `tools/build-swiftee.cjs` (writes `assets/swiftee/` and `src/lesson/swiftee-sheets.js`) |
 | The completion screen's Help Momo / Play again buttons | `index.html`: `viewEnd`, `startRunner` |

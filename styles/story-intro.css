@@ -8,12 +8,14 @@
    by the script as an inked SVG outline; this file styles its lettering.
    ========================================================================= */
 
+/* Fredoka is the dialogue kit's lettering for Momo and Polo; the narrator is set in
+   the lesson's Nunito. A variable file, 300-700, so the 600 the bubbles use is real. */
 @font-face {
-  font-family: 'Comic Neue';
+  font-family: 'Fredoka';
   font-style: normal;
-  font-weight: 700;
+  font-weight: 300 700;
   font-display: swap;
-  src: url('../assets/fonts/comic-neue-700-latin.woff2') format('woff2');
+  src: url('../assets/fonts/fredoka-latin.woff2') format('woff2');
 }
 
 #story-intro {
@@ -135,7 +137,15 @@
   transition: opacity 900ms ease;
 }
 
-/* ------------------------------------------------------ speech balloon */
+/* ------------------------------------------------- the narration box */
+/* THE DIALOGUE KIT'S STORY BOX (POLYGON Part 1, previews/dialogue-kit.html: its
+   .story-say rules), in this story's own coordinates. The narrator is a storybook
+   label — cream paper and one brown line — that drops in with a bounce; Momo and
+   Polo speak in white bubbles that boing out of their tails, the bubble and its
+   tail one drawn outline (bubblePath in story-intro.js). Each word pops in as it
+   is said, a line's parts take the box in turn, and the key words arrive in
+   colour. Sizes are stage pixels (the 1980-wide panel, scaled as one by
+   --story-scale) with a floor in screen pixels, so the type is never under 16px. */
 
 #story-intro .story-dialogue {
   position: absolute;
@@ -143,60 +153,91 @@
   pointer-events: none;
 }
 
-#story-intro .story-box {
-  position: absolute;
-  opacity: 0;
+#story-intro .story-say {
+  --say-ink: #1c2a4a;               /* the kit's ink: the bubbles' outline, shadow and lettering */
+  position: absolute; left: 0; top: 0; z-index: 2;
+  width: max-content; box-sizing: border-box;
+  isolation: isolate; opacity: 0; pointer-events: none;
+  rotate: var(--tilt, 0deg);
+  transform: scale(.9); transform-origin: var(--ox, 50%) var(--oy, 100%);
+  transition: opacity 160ms ease-out, transform 200ms ease-out;
   will-change: transform, opacity;
 }
-#story-intro .story-box.is-shown { opacity: 1; }
-#story-intro .story-box-shape {
-  position: absolute;
-  overflow: visible;
-  filter: drop-shadow(6px 7px 0 rgba(21, 21, 21, 0.22));
+#story-intro .story-say.show { opacity: 1; transform: none; }
+#story-intro .story-say.out { opacity: 0; transform: scale(.92); transition: opacity 150ms ease-in, transform 150ms ease-in; }
+#story-intro .story-say.enter { animation: storyBoing 540ms cubic-bezier(.3, 1.3, .5, 1) backwards; }
+/* a line's next part: the same speaker going on, so a small pop, not a new entrance */
+#story-intro .story-say.enter.again,
+#story-intro .story-say[data-who="narrator"].enter.again { animation: storyAgain 260ms cubic-bezier(.3, 1.4, .5, 1) backwards; }
+@keyframes storyAgain {
+  0%   { opacity: 0; transform: scale(.9); }
+  60%  { opacity: 1; transform: scale(1.03); }
+  100% { opacity: 1; transform: none; }
 }
-#story-intro .story-box-text {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  z-index: 1;
-  transform: translate(-50%, -52%);
-  white-space: nowrap;            /* always one line */
-  text-align: center;
-  font: 700 var(--line-size, 52px)/1.15 'Comic Neue', 'Baloo 2', sans-serif;
-  letter-spacing: 0.3px;
-  color: var(--ink);
-}
-#story-intro .story-box-measure {
-  position: absolute;
-  left: 0;
-  top: 0;
-  visibility: hidden;
-  white-space: nowrap;
+@keyframes storyBoing {
+  0%   { opacity: 0; transform: scale(.35) rotate(-7deg); }
+  45%  { opacity: 1; transform: scale(1.09) rotate(2.5deg); }
+  70%  { transform: scale(.96) rotate(-1.2deg); }
+  86%  { transform: scale(1.02) rotate(.4deg); }
+  100% { opacity: 1; transform: none; }
 }
 
-/* One word at a time: each pops up with a little spring. */
-#story-intro .story-word {
-  display: inline-block;
-  opacity: 0;
-  transform: translateY(10px) scale(0.6);
-  transition: opacity 150ms ease-out, transform 320ms cubic-bezier(0.34, 1.7, 0.5, 1);
+/* the narrator's panel stands straight */
+#story-intro .story-say[data-who="narrator"] {
+  --tilt: 0deg;
+  padding: 20px 42px 22px;
+  background: #fff3d1; border: 5px solid #6b4423; border-radius: 26px;
+  box-shadow: 6px 8px 0 rgba(107, 68, 35, .92), 0 16px 30px rgba(20, 50, 90, .22);
+  font-family: Nunito, 'Baloo 2', sans-serif; font-weight: 800;
+  font-size: max(39px, calc(16px / var(--story-scale, 1))); line-height: 1.42;
+  color: #5a3517; text-align: center;
 }
-#story-intro .story-word.is-on { opacity: 1; transform: none; }
+#story-intro .story-say[data-who="narrator"].enter { animation: storyDrop 600ms cubic-bezier(.3, 1.25, .5, 1) backwards; }
+@keyframes storyDrop {
+  0%   { opacity: 0; transform: translateY(-34px) scale(.94); }
+  55%  { opacity: 1; transform: translateY(5px) scale(1.02); }
+  80%  { transform: translateY(-2px); }
+  100% { opacity: 1; transform: none; }
+}
 
-/* Key words: coloured text, with a bigger bounce as they are said. */
-#story-intro .story-word[data-focus="momo"]   { color: var(--focus-momo); }
-#story-intro .story-word[data-focus="polo"]   { color: var(--focus-polo); }
-#story-intro .story-word[data-focus="gold"]   { color: var(--focus-gold); }
-#story-intro .story-word[data-focus="action"] { color: var(--focus-action); }
-#story-intro .story-word[data-focus="good"]   { color: var(--focus-good); }
-#story-intro .story-word[data-focus="worry"]  { color: var(--focus-worry); }
-#story-intro .story-word.is-focus.is-on { animation: storyFocusPop 520ms cubic-bezier(0.3, 1.6, 0.5, 1); }
-@keyframes storyFocusPop {
-  0%   { transform: scale(0.5) rotate(-6deg); }
-  55%  { transform: scale(1.25) rotate(3deg); }
-  80%  { transform: scale(0.96) rotate(-1deg); }
-  100% { transform: none; }
+/* the characters' bubbles */
+#story-intro .story-say[data-who="momo"],
+#story-intro .story-say[data-who="polo"] {
+  padding: 24px 36px 22px;
+  font-family: Fredoka, 'Baloo 2', sans-serif;
+  font-weight: 600; font-size: max(44px, calc(17px / var(--story-scale, 1))); line-height: 1.26; letter-spacing: .3px;
+  color: var(--say-ink); text-align: center;
 }
+#story-intro .story-say[data-who="momo"] { --tilt: -1.2deg; }
+#story-intro .story-say[data-who="polo"] { --tilt: 1.2deg; }
+/* the bubble and its tail, one path; a second copy six pixels down is the hard shadow */
+#story-intro .story-say-shape { position: absolute; left: 0; top: 0; z-index: -1; overflow: visible; pointer-events: none; }
+#story-intro .story-say[data-who="narrator"] .story-say-shape { display: none; }
+#story-intro .story-say-shape .fill { fill: #fff; stroke: var(--say-ink); stroke-width: 5.5; stroke-linejoin: round; }
+#story-intro .story-say-shape .shade { fill: var(--say-ink); opacity: .88; }
+/* under the picture on an upright phone the tail rises to the speaker: the same shape, turned over */
+#story-intro .story-say[data-tail="up"] .story-say-shape { transform: scaleY(-1); }
+/* one line, always: place() fits the type to the room instead of wrapping */
+#story-intro .story-say-text { position: relative; display: block; white-space: nowrap; }
+
+/* each word pops in as it is said: from a little small and low, just past its size, home */
+#story-intro .story-say .w {
+  display: inline-block; transform-origin: 50% 85%;
+  transition: opacity 140ms ease-out, scale 280ms cubic-bezier(.3, 1.8, .55, 1), translate 280ms cubic-bezier(.3, 1.8, .55, 1);
+}
+#story-intro .story-say.revealing .w { opacity: 0; scale: .62; translate: 0 7px; }
+#story-intro .story-say.revealing .w.in { opacity: 1; scale: 1; translate: 0 0; }
+/* THE KEY WORDS: the kit's lettering in this story's colours (Momo orange, Polo blue, the
+   treasure gold, action red, encouragement green, worry purple); the comma or the "!" after
+   one stays ink, and it lands with a bigger pop than its neighbours */
+#story-intro .story-say .w.k .kw { color: #e65c00; }
+#story-intro .story-say .w.k[data-focus="momo"]   .kw { color: var(--focus-momo); }
+#story-intro .story-say .w.k[data-focus="polo"]   .kw { color: var(--focus-polo); }
+#story-intro .story-say .w.k[data-focus="gold"]   .kw { color: var(--focus-gold); }
+#story-intro .story-say .w.k[data-focus="action"] .kw { color: var(--focus-action); }
+#story-intro .story-say .w.k[data-focus="good"]   .kw { color: var(--focus-good); }
+#story-intro .story-say .w.k[data-focus="worry"]  .kw { color: var(--focus-worry); }
+#story-intro .story-say.revealing .w.k:not(.in) { scale: .55; }
 
 /* ------------------------------------------------------------ start card */
 
@@ -285,9 +326,15 @@
   pointer-events: none;
 }
 #story-intro.is-caption .story-caption { display: flex; }
-#story-intro .story-caption .story-box { position: relative; margin-top: 26px; }
-#story-intro .story-caption .story-box-shape { filter: drop-shadow(3px 4px 0 rgba(21, 21, 21, 0.22)); }
-#story-intro .story-caption .story-box-text { font-size: var(--line-size, clamp(18px, 5.4vw, 26px)); }
+#story-intro .story-caption .story-say { position: relative; margin-top: 30px; --tilt: 0deg; }
+#story-intro .story-caption .story-say[data-who="narrator"] {
+  padding: 10px 20px 11px; border-width: 3px; border-radius: 16px;
+  box-shadow: 3px 4px 0 rgba(107, 68, 35, .92), 0 8px 16px rgba(20, 50, 90, .22);
+  font-size: clamp(16px, 4.6vw, 24px);
+}
+#story-intro .story-caption .story-say[data-who="momo"],
+#story-intro .story-caption .story-say[data-who="polo"] { padding: 12px 18px 11px; font-size: clamp(17px, 5.2vw, 26px); }
+#story-intro .story-caption .story-say-shape .fill { stroke-width: 3.5; }
 
 #story-intro .story-rotate {
   display: none;
@@ -312,6 +359,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  #story-intro .story-word { transform: none; transition: opacity 160ms linear; }
-  #story-intro .story-word.is-focus.is-on { animation: none; }
+  #story-intro .story-say, #story-intro .story-say.out { transform: none; }
+  #story-intro .story-say.enter, #story-intro .story-say[data-who="narrator"].enter { animation: none; }
+  #story-intro .story-say .w { transition: opacity 120ms ease-out; }
+  #story-intro .story-say.revealing .w { scale: 1; translate: 0 0; }
 }

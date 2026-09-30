@@ -7,11 +7,13 @@
    already waits on the blizzard, so nothing starts underneath the story.
 
    It is told like a comic: each scene is a panel on a comic page, and the
-   words appear in ONE speech balloon, one short line at a time. The balloon
-   pops in, bounces from line to line, shakes for a shout and trembles when
-   someone is worried; its tail points at whoever is talking (the narrator's
-   balloon has none). Key words are coloured. Sounds, music, sparkles,
-   hearts, ink emanata, speed lines and gentle shakes keep it lively.
+   words appear in ONE box, a short part of the line at a time — the dialogue
+   kit's story box from POLYGON Part 1 (see "the narration box" below). The
+   narrator's label drops in; Momo's and Polo's bubbles boing out of their
+   tails, which point at whoever is talking; the box shakes for a shout and
+   trembles when someone is worried. Each word pops in as it is said, the key
+   words in colour. Sounds, music, sparkles, hearts, ink emanata, speed lines
+   and gentle shakes keep it lively.
 
    One controller, one clock:
      - A single requestAnimationFrame tick advances the story clock, reveals
@@ -235,13 +237,15 @@
     S.dialogueHost = el('div', 'story-dialogue', stage);
     S.veil = el('div', 'story-veil', stage);
 
-    /* The one speech balloon: an inked SVG outline round a line of text. */
-    var box = el('div', 'story-box', S.dialogueHost);
-    box.setAttribute('data-speaker', 'narrator');
-    var text = el('div', 'story-box-text', box);
-    var measure = el('span', 'story-box-measure', text);
-    measure.setAttribute('aria-hidden', 'true');
-    S.box = { el: box, text: text, measure: measure, svg: null, sc: null, line: -1, spans: [], shown: false };
+    /* THE NARRATION BOX (the dialogue kit's story box): the narrator's label, or a
+       character's bubble whose outline and tail are one drawn path — see place(). */
+    var box = el('div', 'story-say', S.dialogueHost);
+    box.setAttribute('data-who', 'narrator');
+    var shape = svgEl('svg', { class: 'story-say-shape', 'aria-hidden': 'true' }, box);
+    var shade = svgEl('path', { class: 'shade', transform: 'translate(0 6)' }, shape);
+    var fill = svgEl('path', { class: 'fill' }, shape);
+    var text = el('span', 'story-say-text', box);
+    S.box = { el: box, shape: shape, shade: shade, fill: fill, text: text, sc: null, line: -1, spans: [], shown: false };
 
     var start = el('div', 'story-start', root);
     var play = el('button', 'ice-button story-play', start);
@@ -296,7 +300,7 @@
       S.root.classList.toggle('is-caption', caption);
       (caption ? S.captionHost : S.dialogueHost).appendChild(S.box.el);
     }
-    if (S.box.sc) layoutBox();
+    if (S.box.sc) place();
     if (S.canvas) {
       /* Particles are soft and small: draw them at the size they are seen,
          never above the artwork's own resolution. */
@@ -369,7 +373,8 @@
     tasks.push(loadMusic());
     if (document.fonts && document.fonts.load) {
       tasks.push(Promise.all([
-        document.fonts.load('700 50px "Comic Neue"'),
+        document.fonts.load('600 44px Fredoka'),
+        document.fonts.load('800 39px Nunito'),
         document.fonts.load('600 30px "Baloo 2"')
       ]).catch(function () {}));
     }
@@ -740,196 +745,182 @@
     g.globalAlpha = 1;
   }
 
-  /* ------------------------------------------------------ speech balloon */
+  /* ------------------------------------------------- the narration box */
+  /* THE DIALOGUE KIT'S STORY BOX (POLYGON Part 1: story.js partsOf / bubblePath /
+     layoutSay / place / showSay / hideSay, as previews/dialogue-kit.html carries
+     them), driving this story's own script and voice. A scene's `lines` are the
+     parts of its text: the first takes the box with the speaker's entrance — the
+     narrator's label drops in, a character's bubble boings out of its tail — and
+     each later part comes up in its place with a smaller pop once the one before
+     has been said. A part is laid out at its final size before a word is seen; the
+     words then pop in on the voice's own clock (updateVoice), the key words in
+     colour. Coordinates are the story's stage pixels (1980 x 1080): `box` {x, y}
+     is where the box is centred and `tail` the top of the speaker's head, as
+     story-data.js writes them. */
+  var PART_OUT = 130;     // a part leaving before the next takes the box (the kit's partOut)
+  var TAIL_UP = 30;       // under the picture, how far the tail rises toward the speaker's side
 
   function linesOf(sc) {
     return sc.lines && sc.lines.length ? sc.lines : [{ text: sc.text }];
   }
 
-  /* The balloon's outline: a rounded comic shape (a superellipse) with the
-     tail spliced in toward the speaker, so outline and tail are one inked
-     line. Points are relative to the balloon's centre. */
-  function superPoint(t, a, b, n) {
-    var c = Math.cos(t), s = Math.sin(t);
-    return [a * (c < 0 ? -1 : 1) * Math.pow(Math.abs(c), 2 / n), b * (s < 0 ? -1 : 1) * Math.pow(Math.abs(s), 2 / n)];
-  }
-  function balloonPath(a, b, tip) {
-    var N = 120, pts = [];
-    for (var i = 0; i < N; i++) pts.push(superPoint(i / N * Math.PI * 2, a, b, 2.6));
-    var P = function (k) { return pts[((k % N) + N) % N]; };
-    var d = [];
-    if (!tip) {
-      d.push('M', fx(pts[0][0]), fx(pts[0][1]));
-      for (var z = 1; z < N; z++) d.push('L', fx(pts[z][0]), fx(pts[z][1]));
-      return { d: d.concat('Z').join(' '), pts: pts };
-    }
-    var ang = Math.atan2(tip[1], tip[0]), best = 0, bestD = Infinity;
-    pts.forEach(function (p, k) {
-      var da = Math.atan2(p[1], p[0]) - ang;
-      var dd = Math.abs(Math.atan2(Math.sin(da), Math.cos(da)));
-      if (dd < bestD) { bestD = dd; best = k; }
-    });
-    var baseW = Math.min(64, a * 0.5), span = 1;
-    while (span < N / 6 && Math.hypot(P(best + span)[0] - P(best - span)[0], P(best + span)[1] - P(best - span)[1]) < baseW) span++;
-    var i0 = best - span, i1 = best + span;
-    d.push('M', fx(P(i1)[0]), fx(P(i1)[1]));
-    for (var k = i1 + 1; k < i0 + N; k++) d.push('L', fx(P(k)[0]), fx(P(k)[1]));
-    var b0 = P(i0), b1 = P(i1);
-    var mx = (b0[0] + b1[0]) / 2, my = (b0[1] + b1[1]) / 2;
-    var len = Math.hypot(tip[0] - mx, tip[1] - my) || 1;
-    var nx = -(tip[1] - my) / len, ny = (tip[0] - mx) / len, bend = len * 0.16;
-    var c0 = [b0[0] + (tip[0] - b0[0]) * 0.55 + nx * bend, b0[1] + (tip[1] - b0[1]) * 0.55 + ny * bend];
-    var c1 = [b1[0] + (tip[0] - b1[0]) * 0.45 + nx * bend * 0.55, b1[1] + (tip[1] - b1[1]) * 0.45 + ny * bend * 0.55];
-    d.push('L', fx(b0[0]), fx(b0[1]), 'Q', fx(c0[0]), fx(c0[1]), fx(tip[0]), fx(tip[1]),
-      'Q', fx(c1[0]), fx(c1[1]), fx(b1[0]), fx(b1[1]));
-    return { d: d.concat('Z').join(' '), pts: pts.concat([tip]) };
-  }
-  function drawBalloon(a, b, tip, stroke) {
-    var shape = balloonPath(a, b, tip);
-    var xs = shape.pts.map(function (p) { return p[0]; }), ys = shape.pts.map(function (p) { return p[1]; });
-    var pad = stroke + 10;
-    var minX = Math.min.apply(null, xs) - pad, maxX = Math.max.apply(null, xs) + pad;
-    var minY = Math.min.apply(null, ys) - pad, maxY = Math.max.apply(null, ys) + pad;
-    var svg = svgEl('svg', {
-      class: 'story-box-shape', 'aria-hidden': 'true',
-      viewBox: [minX, minY, maxX - minX, maxY - minY].map(fx).join(' ')
-    });
-    svg.style.left = fx(a + minX) + 'px';
-    svg.style.top = fx(b + minY) + 'px';
-    svg.style.width = fx(maxX - minX) + 'px';
-    svg.style.height = fx(maxY - minY) + 'px';
-    svgEl('path', { d: shape.d, fill: '#ffffff', stroke: INK, 'stroke-width': stroke, 'stroke-linejoin': 'round' }, svg);
-    return svg;
+  /* THE BUBBLE AND ITS TAIL ARE ONE OUTLINE: a rounded box whose bottom edge runs out
+     to the speaker's head and back. The base leans toward the speaker. The kit's
+     bubblePath, as it is. */
+  function bubblePath(w, h, tx, ty) {
+    var r = Math.min(30, h / 2 - 1);
+    var bw = Math.max(36, Math.min(64, w * 0.16));
+    var bx = Math.max(r + bw / 2 + 4, Math.min(w - r - bw / 2 - 4, tx + (w / 2 - tx) * 0.2));
+    var x1 = bx - bw / 2, x2 = bx + bw / 2, dy = Math.max(14, ty - h);
+    ty = h + dy;
+    var n = function (v) { return Math.round(v * 10) / 10; };
+    return 'M' + n(r) + ',0 H' + n(w - r) + ' A' + n(r) + ',' + n(r) + ' 0 0 1 ' + n(w) + ',' + n(r) + ' V' + n(h - r) +
+      ' A' + n(r) + ',' + n(r) + ' 0 0 1 ' + n(w - r) + ',' + n(h) + ' H' + n(x2) +
+      ' Q' + n(x2 + (tx - x2) * 0.25) + ',' + n(h + dy * 0.62) + ' ' + n(tx) + ',' + n(ty) +
+      ' Q' + n(x1 + (tx - x1) * 0.62) + ',' + n(h + dy * 0.28) + ' ' + n(x1) + ',' + n(h) +
+      ' H' + n(r) + ' A' + n(r) + ',' + n(r) + ' 0 0 1 0,' + n(h - r) + ' V' + n(r) + ' A' + n(r) + ',' + n(r) + ' 0 0 1 ' + n(r) + ',0 Z';
   }
 
-  /* The balloon grows round the line it shows: sized from the words, placed
-     in the sky on the speaker's side with its tail on the speaker. On an
-     upright phone it sits under the picture, its tail pointing up toward the
-     speaker's side, and the text shrinks if it must to stay on one line. */
-  function layoutBox() {
+  /* The words of part k, each its own span, laid out at their final size before a
+     word is seen. A key word's letters take its colour (data-focus) and the mark
+     after it stays ink. */
+  function layoutSay(sc, k) {
+    var b = S.box, line = linesOf(sc)[k], focus = line.focus || {};
+    b.el.className = 'story-say';
+    b.el.setAttribute('data-who', sc.speaker);
+    b.el.setAttribute('data-scene', String(sc.id));
+    b.text.textContent = '';
+    b.spans = line.text.split(' ').map(function (w, i) {
+      if (i) b.text.appendChild(document.createTextNode(' '));
+      var cat = focus[w], sp = el('span', cat ? 'w k' : 'w', b.text);
+      if (cat) {
+        sp.setAttribute('data-focus', cat);
+        var m = /^(.*?[^,.!?;:—…])([,.!?;:—…]+)$/.exec(w);
+        el('span', 'kw', sp).textContent = m ? m[1] : w;
+        if (m) sp.appendChild(document.createTextNode(m[2]));
+      } else sp.textContent = w;
+      return sp;
+    });
+    b.sc = sc; b.line = k;
+    S.history.push({ scene: sc.id, event: 'line', line: k + 1, speaker: sc.speaker, text: b.text.textContent });
+    place();
+  }
+
+  /* EVERY PART ON ONE LINE, the box closed round it. Only if it would be wider than
+     the room it has does its type come down — just enough to fit, never under 20
+     stage px (13 under the picture). Then it is placed: centred on `box`, clamped to
+     the stage, with the tail drawn to `tail` for a character. Under the picture on an
+     upright phone it sits in the caption row instead, its tail rising toward the
+     speaker's side of the picture. Called again on every resize. */
+  function place() {
     var b = S.box, sc = b.sc;
     if (!sc) return;
-    var line = linesOf(sc)[Math.max(0, b.line)];
-    var cap = S.caption;
-    b.el.style.removeProperty('--line-size');
-    b.measure.textContent = line.text;
-    var tw = b.measure.offsetWidth, th = b.measure.offsetHeight;
-    if (cap) {
-      var avail = S.captionHost.clientWidth - 64;
-      if (tw > avail) {
-        var size = parseFloat(getComputedStyle(b.text).fontSize) || 20;
-        b.el.style.setProperty('--line-size', Math.max(13, Math.floor(size * avail / tw)) + 'px');
-        tw = b.measure.offsetWidth; th = b.measure.offsetHeight;
-      }
+    var cap = S.caption, box = sc.box || {};
+    var talking = sc.speaker !== 'narrator' && !!box.tail;
+    b.el.style.fontSize = '';
+    b.el.style.left = cap ? '' : '0px';
+    b.el.style.top = cap ? '' : '0px';
+    var room = cap ? Math.max(120, S.captionHost.clientWidth - 24) : W - 80;
+    var wide = b.el.offsetWidth, padX = wide - b.text.offsetWidth;
+    var f0 = parseFloat(getComputedStyle(b.el).fontSize) || 0;
+    if (wide > room && f0 > 0 && wide > padX) {
+      b.el.style.fontSize = Math.max(cap ? 13 : 20, Math.floor(f0 * (room - padX) / (wide - padX) * 10) / 10) + 'px';
     }
-    var K = 1.2;
-    var a = tw / 2 * K + (cap ? 16 : 34);
-    var bb = th / 2 * K + (cap ? 10 : 22);
-    var talking = sc.speaker !== 'narrator' && sc.box && sc.box.tail;
-    var tip = null;
+    var w = b.el.offsetWidth, h = b.el.offsetHeight, tx, ty;
     if (cap) {
-      if (talking) {
-        var hostW = S.captionHost.clientWidth;
-        tip = [clamp(sc.box.tail[0] / W * hostW - hostW / 2, -a + 26, a - 26), -(bb + 18)];
-      }
-      b.el.style.left = b.el.style.top = '';
+      var hostW = S.captionHost.clientWidth;
+      tx = talking ? clamp(box.tail[0] / W * hostW - (hostW - w) / 2, -10, w + 10) : w / 2;
+      ty = h + TAIL_UP;
+      b.el.setAttribute('data-tail', 'up');
     } else {
-      var cx = clamp(sc.box && sc.box.x != null ? sc.box.x : W / 2, a + 40, W - a - 40);
-      var cy = clamp(sc.box && sc.box.y != null ? sc.box.y : 112, bb + 24, H - bb - 24);
-      if (talking) tip = [sc.box.tail[0] - cx, sc.box.tail[1] - cy];
-      b.el.style.left = fx(cx - a) + 'px';
-      b.el.style.top = fx(cy - bb) + 'px';
+      var left = Math.round(clamp((box.x != null ? box.x : W / 2) - w / 2, 24, W - 24 - w));
+      var top = Math.round(clamp((box.y != null ? box.y : 112) - h / 2, 24, H - 24 - h));
+      b.el.style.left = left + 'px';
+      b.el.style.top = top + 'px';
+      tx = talking ? box.tail[0] - left : w / 2;
+      ty = talking ? box.tail[1] - top : h;
+      b.el.removeAttribute('data-tail');
     }
-    b.el.style.width = fx(2 * a) + 'px';
-    b.el.style.height = fx(2 * bb) + 'px';
-    if (b.svg) b.svg.remove();
-    b.svg = drawBalloon(a, bb, tip, cap ? 3.5 : 7);
-    b.el.insertBefore(b.svg, b.el.firstChild);
-    b.el.style.transformOrigin = tip ? fx(a + tip[0]) + 'px ' + fx(bb + tip[1]) + 'px' : '50% 50%';
+    if (talking && w && h) {
+      var d = bubblePath(w, h, tx, ty);
+      b.shape.setAttribute('width', String(w)); b.shape.setAttribute('height', String(h));
+      b.shape.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+      b.shade.setAttribute('d', d); b.fill.setAttribute('d', d);
+      // the hard shadow falls below the bubble whichever way up the shape is
+      b.shade.setAttribute('transform', cap ? 'translate(0 -6)' : 'translate(0 6)');
+      // it pops from where the tail leaves the box: the speaker's side
+      b.el.style.setProperty('--ox', fx(clamp(tx, 0, w)) + 'px');
+      b.el.style.setProperty('--oy', cap ? '0px' : fx(h) + 'px');
+    } else {
+      b.shade.removeAttribute('d'); b.fill.removeAttribute('d');
+      b.el.style.setProperty('--ox', '50%');
+      b.el.style.setProperty('--oy', '0px');
+    }
   }
 
-  function fillWords(parent, text, focus) {
-    return text.split(' ').map(function (w, i) {
-      if (i) parent.appendChild(document.createTextNode(' '));
-      var s = el('span', 'story-word', parent);
-      s.textContent = w;
-      if (focus && focus[w]) { s.classList.add('is-focus'); s.setAttribute('data-focus', focus[w]); }
-      return s;
-    });
+  /* In: the first part pops out (a bubble) or drops in (the narrator); a later part
+     comes up with the smaller pop. The words stay hidden (revealing) until the voice
+     reaches them. */
+  function showSay(again) {
+    var b = S.box;
+    b.el.classList.add('revealing');
+    if (again) b.el.classList.add('again');
+    void b.el.offsetWidth;
+    b.el.classList.add('show', 'enter');
+    b.shown = true;
   }
-
-  /* The balloon pops out of the speaker for a scene with its first line
-     (words still hidden until they are spoken), then shakes for a shout or
-     trembles for a worry. */
+  /* The box for a scene: its first part with the speaker's entrance, then the shout's
+     shake or the worry's tremble once that entrance has landed. */
   function showBox(sc) {
     var b = S.box;
-    b.sc = sc;
-    b.el.setAttribute('data-speaker', sc.speaker);
-    b.el.setAttribute('data-scene', String(sc.id));
     cancelAnimsOf(b.el);
-    setLine(sc, 0, true);
-    b.el.classList.add('is-shown');
-    b.shown = true;
-    if (S.audio) S.audio.sfx('pop');
-    if (S.reduced) { animate(b.el, [{ opacity: 0 }, { opacity: 1 }], { duration: 200 }); return; }
-    animate(b.el, [
-      { opacity: 0, transform: 'scale(.2) rotate(-7deg)' },
-      { opacity: 1, transform: 'scale(1.1) rotate(2deg)', offset: 0.55 },
-      { opacity: 1, transform: 'scale(.95) rotate(-1deg)', offset: 0.78 },
-      { opacity: 1, transform: 'scale(1) rotate(0deg)' }
-    ], { duration: 440, easing: 'ease-out' });
+    layoutSay(sc, 0);
+    showSay(false);
+    if (S.audio && sc.speaker !== 'narrator') S.audio.sfx('pop');
+    if (S.reduced) return;
     if (sc.feel === 'shout') {
-      afterDelay(430, function () {
+      afterDelay(560, function () {
         animate(b.el, [0, -9, 8, -6, 4, -2, 0].map(function (x) { return { transform: 'translateX(' + x + 'px)' }; }),
           { duration: 380, easing: 'ease-out' });
       });
     } else if (sc.feel === 'worry') {
-      afterDelay(430, function () {
+      afterDelay(560, function () {
         animate(b.el, [0, 1.6, -1.6, 1.1, -1.1, 0].map(function (r) { return { transform: 'rotate(' + r + 'deg)' }; }),
           { duration: 560, iterations: 2, easing: 'ease-in-out' });
       });
     }
   }
-
-  /* Line k replaces the balloon's line with a comic bounce: the balloon
-     squashes, swaps to the new line at its smallest, and springs back. */
-  function setLine(sc, k, first) {
-    var b = S.box, line = linesOf(sc)[k];
-    var old = b.text.querySelector('.story-line');
-    var holder = el('div', 'story-line');
-    b.spans = fillWords(holder, line.text, line.focus);
-    b.line = k;
-    S.history.push({ scene: sc.id, event: 'line', line: k + 1, speaker: sc.speaker, text: holder.textContent });
-    var swap = function () {
-      if (old && old.parentNode) old.parentNode.removeChild(old);
-      b.text.appendChild(holder);
-      layoutBox();
-    };
-    if (first || S.reduced) { swap(); return b.spans; }
-    if (old) animate(old, [{ opacity: 1 }, { opacity: 0 }], { duration: 110, fill: 'forwards' });
-    animate(b.el, [
-      { transform: 'scale(1)' }, { transform: 'scale(.86)', offset: 0.32 },
-      { transform: 'scale(1.06)', offset: 0.7 }, { transform: 'scale(1)' }
-    ], { duration: 420, easing: 'ease-in-out' });
-    afterDelay(135, swap);
-    return b.spans;
+  /* Part k takes the box: the part before leaves, and after PART_OUT the next comes up
+     in its place with the smaller pop. */
+  function nextPart(sc, k, gen) {
+    hideSay();
+    return wait(PART_OUT, gen).then(function () {
+      layoutSay(sc, k);
+      showSay(true);
+    });
   }
-
+  function hideSay() {
+    var b = S.box;
+    if (!b.el.classList.contains('show')) return false;
+    b.el.classList.remove('enter', 'again', 'show');
+    b.el.classList.add('out');
+    return true;
+  }
   function hideBox(ms, gen) {
     var b = S.box;
     if (!b.shown) return Promise.resolve();
     cancelAnimsOf(b.el);
-    animate(b.el, [{ opacity: 1, transform: 'scale(1)' }, { opacity: 0, transform: S.reduced ? 'scale(1)' : 'scale(.85)' }],
-      { duration: ms, easing: 'ease-in', fill: 'forwards' });
+    hideSay();
     return wait(ms, gen).then(resetBox);
   }
   function resetBox() {
     var b = S.box;
     if (!b) return;
     cancelAnimsOf(b.el);
-    b.el.classList.remove('is-shown');
-    Array.prototype.slice.call(b.text.querySelectorAll('.story-line')).forEach(function (n) { n.remove(); });
-    if (b.svg) { b.svg.remove(); b.svg = null; }
+    b.el.className = 'story-say';
+    b.el.removeAttribute('data-tail');
+    b.text.textContent = '';
+    b.shade.removeAttribute('d'); b.fill.removeAttribute('d');
     b.spans = [];
     b.sc = null;
     b.line = -1;
@@ -1000,7 +991,7 @@
     var v = S.voice;
     var p = v.usesAudio ? S.audio.ctx.currentTime - v.t0 : (S.clock - v.c0) / 1000;
     while (v.shown < v.spans.length && v.starts[v.shown] <= p + WORD_LEAD) {
-      v.spans[v.shown++].classList.add('is-on');
+      v.spans[v.shown++].classList.add('in');
     }
     v.cues.forEach(function (c) {
       if (!c.fired && p >= c.at) { c.fired = true; runCue(c.cue); }
@@ -1015,7 +1006,7 @@
     S.isVOPlaying = false;
     if (S.audio) { S.audio.stopVoice(v.source); S.audio.duck(false); }
     if (complete) {
-      v.spans.forEach(function (s) { s.classList.add('is-on'); });
+      v.spans.forEach(function (s) { s.classList.add('in'); });
       v.resolve();
     } else {
       v.reject(new Cancelled());
@@ -1059,11 +1050,12 @@
            a negative offset land in the pause before it. */
         (sc.cues || []).forEach(function (c) {
           if (c.line === k + 1 && c.word === 0 && c.offset < 0) {
-            afterDelay(Math.max(0, gap + LINE_VOICE_DELAY + c.offset * 1000), function () { runCue(c); });
+            afterDelay(Math.max(0, gap + PART_OUT + LINE_VOICE_DELAY + c.offset * 1000), function () { runCue(c); });
           }
         });
         return wait(gap, gen).then(function () {
-          setLine(sc, k);
+          return nextPart(sc, k, gen);
+        }).then(function () {
           return wait(LINE_VOICE_DELAY, gen);
         });
       }).then(function () {

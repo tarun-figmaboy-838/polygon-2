@@ -6,10 +6,11 @@
    on the 1980 x 1080 artwork (assets/story/scene-N.webp), so a glow or the
    speech balloon is placed by reading the position off the picture.
 
-   The words appear in ONE comic speech balloon, one short line at a time:
-   the balloon shows a line, the line is spoken, then the balloon bounces and
-   the next line replaces it. For Momo and Polo its tail points at whoever is
-   talking; the narrator's balloon has no tail.
+   The words appear in ONE box, a short part of the line at a time (the
+   dialogue kit's story box, see story-intro.js): the box shows a part, the part
+   is spoken, then it leaves and the next comes up in its place. The narrator's
+   box is a storybook label with no tail; Momo and Polo speak in white bubbles
+   whose tail points at whoever is talking.
 
    Per scene:
      image, speaker, text   the final art and the exact script line
@@ -19,10 +20,11 @@
        line.focus           words shown in colour: momo | polo | gold |
                             action | good | worry
        line.gap             pause before this line, ms (lines after the first)
-     box                    x, y = where the balloon is centred (in the sky, on
-                            the speaker's side); tail = the point its tail aims
-                            at (the speaker's head). No tail for the narrator.
-     feel                   shout: the balloon shakes; worry: it trembles
+     box                    x, y = where the box is centred (in the sky, on the
+                            speaker's side); tail = the point its tail reaches
+                            (the top of the speaker's head). No tail for the
+                            narrator.
+     feel                   shout: the box shakes; worry: it trembles
      voice                  prefix of the takes in window.STORY_VOICE (scene-N/1, /2, …)
      enter                  crossfade into this scene, ms
      boxAt, voiceAt         when the box appears and the first line is spoken,

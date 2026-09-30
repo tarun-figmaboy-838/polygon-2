@@ -41,7 +41,7 @@ assets/
   audio/lesson/       narration: Ogg Opus, plus MP3 for browsers without Ogg
   audio/sfx/          answer and drawing sounds (Ogg + MP3)
   audio/story/        story voices and music (Ogg + MP3)
-  fonts/              Baloo 2, Nunito and Comic Neue (with licences)
+  fonts/              Baloo 2, Nunito and Fredoka (with licences)
   vendor/             React and React DOM
 game/                 THE FROZEN PASS: the runner game, a complete page of its own
                       (its markup, stylesheets, modules and about 20 MB of art and sound)
@@ -69,14 +69,14 @@ npm run optimize:media -- assets/audio/lesson --speech   # narration: mono, spee
 
 ## The Momo + Polo story
 
-It is told like a comic: each scene is a panel on a comic page, and the words appear in **one speech balloon**, one short line at a time. The balloon shows a line, the line is spoken, then the balloon bounces and the next line replaces it. Its tail points at whoever is talking (the narrator's balloon has none); it shakes for a shout and trembles for a worry. Key words are coloured (Momo orange, Polo blue, the treasure gold, action red, encouragement green). Sounds, music, sparkles, hearts, ink emanata, speed lines and gentle shakes keep it lively; there are no written sound effects.
+It is told like a comic: each scene is a panel on a comic page, and the words appear in **one box**, a short part of the line at a time, using the dialogue kit from POLYGON Part 1. The narrator's box is a storybook label, cream paper with one brown line, that drops in with a bounce; Momo and Polo speak in white bubbles that boing out of their tails, the bubble and its tail one drawn outline reaching to the speaker's head. Each word pops in as it is said, and a later part of a line takes the box with a smaller pop. The box shakes for a shout and trembles for a worry. Key words are coloured (Momo orange, Polo blue, the treasure gold, action red, encouragement green). Sounds, music, sparkles, hearts, ink emanata, speed lines and gentle shakes keep it lively; there are no written sound effects.
 
 A **Play** button starts it, because browsers only allow sound after a tap. **Skip** or Esc goes straight to the lesson. On an upright phone the balloon sits under the picture, its tail pointing up toward the speaker, and the text shrinks, if it must, to stay on one line.
 
 | To change | Edit |
 |---|---|
 | Lines, coloured words, balloon position and tail, timing, effects | `src/story/story-data.js` |
-| Balloon lettering, comic page and panel | `styles/story-intro.css` |
+| The box (the label, the bubbles, their lettering), comic page and panel | `styles/story-intro.css` |
 | Behaviour (sequencing, audio, effects) | `src/story/story-intro.js` |
 
 The voices are **placeholder takes** made with the macOS Indian English voices (Tara narrates; Momo and Polo are pitched-up takes), one take per line. For studio recordings, record one take per line (the list is in `tools/story/build-story-voice.py`), join them the same way and update `src/story/story-voice.js`, or rebuild the placeholders with `npm run build:story-voice`.
