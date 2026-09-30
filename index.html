@@ -1010,6 +1010,12 @@ class Component extends DCLogic {
     window.addEventListener('keydown', this.unlockAudio, true);
     window.addEventListener('pointerup', this.unlockAudio, true);
     window.addEventListener('touchend', this.unlockAudio, true);
+    /* A face that arrives (or fails) after a bubble was sized: size it again (fittedDialogue). */
+    this._fontsChanged = () => { if (this._dialogueWidths) this._dialogueWidths.clear(); if (this._fitStrikes) this._fitStrikes.clear(); if (!this._gone) this.setState({ dialogueFitTick: (this.state.dialogueFitTick || 0) + 1 }); };
+    if (document.fonts && document.fonts.addEventListener) {
+      document.fonts.addEventListener('loadingdone', this._fontsChanged);
+      document.fonts.addEventListener('loadingerror', this._fontsChanged);
+    }
     /* The Help Momo scene plays before screen 1, and speaks through this lesson's
        AudioContext: the tap on the story's Play has unlocked it by then (unlockAudio). */
     if (window.BridgeStory && window.BridgeStory.useAudio) window.BridgeStory.useAudio(() => this.ac());
@@ -1085,6 +1091,10 @@ class Component extends DCLogic {
     if (this._vertexDragCleanup) this._vertexDragCleanup();
     if (this._stopRecordedVoice) this._stopRecordedVoice();
     if (this._disposeNavigator) this._disposeNavigator();
+    if (document.fonts && document.fonts.removeEventListener && this._fontsChanged) {
+      document.fonts.removeEventListener('loadingdone', this._fontsChanged);
+      document.fonts.removeEventListener('loadingerror', this._fontsChanged);
+    }
     if (this._labelDragCleanup) this._labelDragCleanup();
     if (this._sortDragCleanup) this._sortDragCleanup();
     this.stopDrawingSound();
@@ -4025,14 +4035,22 @@ class Component extends DCLogic {
      narrowest width that still holds that many, so the lines come out even and no last word
      is left on its own. Measured in a copy of the dialogue's own text that nobody sees or
      hears (off screen, hidden, aria-hidden), once per text, strip width and font state:
-     nothing is re-measured while the words are revealed. */
+     nothing is re-measured while the words are revealed.
+
+     THE FONT IT IS MEASURED IN IS THE FONT IT IS DRAWN IN. The copy sits in the bubble's
+     own container, so it inherits exactly what the bubble does; the key says which face is
+     actually there (Nunito, or the fallback when it failed); fonts finishing or failing to
+     load clear the sizes and draw again (mount); and once the bubble is on screen its real
+     lines are checked against the lines it was sized for (checkDialogueFit). A box sized in
+     one face while its words are drawn in another wrapped them into a lone last word. */
   fittedDialogue(text) {
     const lane = this.dialogueLayout();
     const content = String(text || '').trim().replace(/\s+/g, ' ');
     const inset = NARR_TYPE.inset * 2;
     const available = Math.max(1, lane.w - inset);
     const concepts = this.learningKeywords(content);
-    const key = [content, available, concepts.join(','), document.fonts?.status].join('|');
+    const face = (() => { try { return document.fonts.check('800 46px Nunito') && document.fonts.check('900 46px Nunito') ? 'nunito' : 'fallback'; } catch (e) { return '-'; } })();
+    const key = [content, available, concepts.join(','), document.fonts?.status, face].join('|');
     this._dialogueWidths = this._dialogueWidths || new Map();
     let fit = this._dialogueWidths.get(key);
     if (fit === undefined) {
@@ -4060,6 +4078,7 @@ class Component extends DCLogic {
       // from the same browser typography the bubble uses.
       if (document.createElement && document.body) {
         const probe = document.createElement('div');
+        probe.className = 'narrator-text';           // every rule the real text gets, this gets
         probe.setAttribute('aria-hidden', 'true');
         Object.assign(probe.style, this.narrStyle(), {position:'absolute',left:'-10000px',top:'0',visibility:'hidden',pointerEvents:'none',maxWidth:'none'});
         for (const token of content.split(/(\s+)/).filter(Boolean)) {
@@ -4072,9 +4091,12 @@ class Component extends DCLogic {
           } else span.style.whiteSpace = 'pre';
           probe.appendChild(span);
         }
-        document.body.appendChild(probe);
+        // inside the bubble's own text box, beside the real text (the same fonts and text settings);
+        // offset sizes, so the stage's scale does not enter into it
+        const home = document.querySelector('.comic-dialogue.dialogue-box .dialogue-text') || document.querySelector('.instruction-panel') || document.body;
+        home.appendChild(probe);
         try {
-          const heightAt = w => { probe.style.width = w + 'px'; return probe.getBoundingClientRect().height; };
+          const heightAt = w => { probe.style.width = w + 'px'; return probe.offsetHeight; };
           const height = heightAt(available);
           low = Math.min(92, available); high = available;
           for (let i = 0; i < 12; i++) {
@@ -4084,10 +4106,11 @@ class Component extends DCLogic {
           textH = height;
         } finally { probe.remove(); }
       }
-      fit = { w: Math.min(lane.w, Math.ceil(high + inset + 1)), h: Math.ceil(textH + DIALOGUE.chrome) };
+      fit = { w: Math.min(lane.w, Math.ceil(high + inset + 1)), h: Math.ceil(textH + DIALOGUE.chrome), textH };
       if (this._dialogueWidths.size > 150) this._dialogueWidths.clear();
       this._dialogueWidths.set(key, fit);
     }
+    this.checkDialogueFit(key, content, fit, lane);
     const width = fit.w, height = fit.h;
     /* Across: centred under her head where the strip allows, else against its near side
        (on the top row, its right end is beside her). Down: its bottom on the line above
@@ -4098,6 +4121,36 @@ class Component extends DCLogic {
     const bottom = lane.y + lane.h;
     const y = lane.side ? Math.min(lane.floor - height, Math.max(lane.ceiling, bottom - height)) : bottom - height;
     return Object.assign({}, lane, {x, y, w:width, h:height, tailX:Math.max(20, Math.min(width - 80, lane.anchorX - x - 3))});
+  }
+  /* Once the bubble is on screen: does it hold its words in the lines it was sized for?
+     If the words wrap into more (a face that changed after measuring, a browser that sets
+     type its own way), the size is measured again, and if the copy still disagrees with
+     the page, the bubble takes the strip's full width and the height its words really
+     need. It runs as the bubble is laid out, while it is still hidden waiting for its first
+     word, so a correction is made before anything shows; at most twice per text, and a
+     bubble that passes is not looked at again (a face that changes later clears the sizes). */
+  checkDialogueFit(key, content, fit, lane) {
+    this._fitStrikes = this._fitStrikes || new Map();
+    const strikes = this._fitStrikes.get(key) || 0;
+    if (fit.ok || this._fitChecking === key || strikes >= 2) return;
+    this._fitChecking = key;
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      if (this._fitChecking === key) this._fitChecking = null;
+      if (this._gone) return;
+      const nt = document.querySelector('.comic-dialogue.dialogue-box .narrator-text:not([aria-hidden])');
+      if (!nt || nt.textContent.replace(/\s+/g, ' ').trim().replace(/\b(?:triangles?|quadrilaterals?|pentagons?|hexagons?|heptagons?|octagons?|polygons?)\b/gi, shapeCase) !==
+          content.replace(/\b(?:triangles?|quadrilaterals?|pentagons?|hexagons?|heptagons?|octagons?|polygons?)\b/gi, shapeCase)) return;
+      const LH = NARR_TYPE.size * NARR_TYPE.lineHeight;
+      const drawn = Math.round(nt.offsetHeight / LH), sized = Math.round(fit.textH / LH);
+      const overflow = nt.scrollWidth > nt.clientWidth + 1;
+      if (drawn <= sized && !overflow) { fit.ok = true; return; }
+      const n = strikes + 1;
+      this._fitStrikes.set(key, n);
+      if (this._fitStrikes.size > 150) this._fitStrikes.clear();
+      if (n === 1) this._dialogueWidths.delete(key);                   // measure again, now
+      else { fit.w = lane.w; fit.textH = Math.max(fit.textH, nt.scrollHeight); fit.h = Math.ceil(fit.textH + DIALOGUE.chrome); }
+      this.setState({ dialogueFitTick: (this.state.dialogueFitTick || 0) + 1 });
+    }));
   }
   signStyle() {
     /* The shell renders before boot() has assigned this.P; the sign is empty

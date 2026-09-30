@@ -15,7 +15,9 @@
    - the copy it is measured in is hidden from sight and from screen readers, and is
      gone afterwards; the bubble never takes a click
    - resizing the window mid-sentence keeps the screen, the words shown so far, and
-     the bubble's size and place on the stage */
+     the bubble's size and place on the stage
+   - drawn in another face than it was measured in, it still leaves no word alone and
+     nothing spilling out */
 const fs=require('fs'),path=require('path'),http=require('http');
 const {chromium}=require('playwright');
 const R=path.resolve(__dirname,'..','..');
@@ -127,15 +129,15 @@ const judge=(where,m)=>{
     check(!worst.unstable&&!worst.empty&&!worst.flash,'while she speaks, on every screen: no resize or rewrap once a word shows, never empty, never the whole line first');
 
     /* The copy the bubble is measured in. */
-    const probe=await page.evaluate(()=>{const g=__poly,seen=[],add=document.body.appendChild;
-      document.body.appendChild=function(el){if(el&&el.style&&el.style.left==='-10000px')seen.push({aria:el.getAttribute('aria-hidden'),vis:el.style.visibility,pe:el.style.pointerEvents});return add.call(this,el);};
-      try{g.fittedDialogue('A measuring line nobody has seen before, with a polygon in it.');}finally{document.body.appendChild=add;}
-      return{seen,left:[...document.body.children].filter(el=>el.style&&el.style.left==='-10000px').length};});
+    const probe=await page.evaluate(()=>{const g=__poly,seen=[],add=Element.prototype.appendChild;
+      Element.prototype.appendChild=function(el){if(el&&el.style&&el.style.left==='-10000px')seen.push({aria:el.getAttribute('aria-hidden'),vis:el.style.visibility,pe:el.style.pointerEvents,home:this.className||this.tagName});return add.call(this,el);};
+      try{g.fittedDialogue('A measuring line nobody has seen before, with a polygon in it.');}finally{Element.prototype.appendChild=add;}
+      return{seen,left:[...document.querySelectorAll('[aria-hidden="true"]')].filter(el=>el.style&&el.style.left==='-10000px').length};});
     check(probe.seen.length===1&&probe.seen[0].aria==='true'&&probe.seen[0].vis==='hidden'&&probe.seen[0].pe==='none'&&probe.left===0,
       'the bubble is measured in one hidden, aria-hidden copy that is removed afterwards '+JSON.stringify(probe));
-    const again=await page.evaluate(()=>{const g=__poly,add=document.body.appendChild;let n=0;
-      document.body.appendChild=function(el){if(el&&el.style&&el.style.left==='-10000px')n++;return add.call(this,el);};
-      try{g.fittedDialogue('A measuring line nobody has seen before, with a polygon in it.');}finally{document.body.appendChild=add;}return n;});
+    const again=await page.evaluate(()=>{const g=__poly,add=Element.prototype.appendChild;let n=0;
+      Element.prototype.appendChild=function(el){if(el&&el.style&&el.style.left==='-10000px')n++;return add.call(this,el);};
+      try{g.fittedDialogue('A measuring line nobody has seen before, with a polygon in it.');}finally{Element.prototype.appendChild=add;}return n;});
     check(again===0,'the same words are not measured twice');
 
     /* Resize while she is mid-sentence. */
@@ -148,6 +150,21 @@ const judge=(where,m)=>{
       check(seq.every(x=>x.k===n-1)&&new Set(seq.map(x=>x.box)).size===1&&seq.every((x,i)=>!i||x.words>=seq[i-1].words),
         'Screen '+n+': resizing mid-sentence keeps the screen, the words shown and the bubble '+JSON.stringify(seq));
       await page.waitForFunction(()=>!__poly._voiceLocked,null,{timeout:20000}).catch(()=>{});
+    }
+    /* The words drawn in another face than the one the bubble was measured in (a webfont that
+       failed or came late, a browser that sets type its own way): still no word alone at the
+       end, nothing spilling out of the box. */
+    await page.addStyleTag({content:'.comic-dialogue .narrator-text,.comic-dialogue .narrator-text span{font-family:"Arial Black",Arial,sans-serif!important}'});
+    // as a page drawn in that face from the start: nothing measured before it is kept
+    await page.evaluate(()=>{const g=__poly;if(g._dialogueWidths)g._dialogueWidths.clear();if(g._fitStrikes)g._fitStrikes.clear();});
+    for(const n of [3,18,20]){
+      await page.evaluate(n=>{const g=__poly;g.setState({k:n-1},()=>g.runStep(n-1,false));},n);
+      await page.waitForFunction(n=>{const g=__poly;return g.state.k===n-1&&g.state.narrShow===g.step().narr&&g.state.wordReveal!=='waiting';},n,{timeout:20000}).catch(()=>{});
+      await page.waitForTimeout(500);
+      const m=await page.evaluate(()=>{const s=document.querySelector('.comic-dialogue.dialogue-box'),t=s.querySelector('.narrator-text'),LH=55.2;
+        const w=[...t.children].filter(x=>/\S/.test(x.textContent)),line=x=>Math.floor((x.offsetTop+x.offsetHeight/2)/LH),L=[...new Set(w.map(line))];
+        return{lines:L.length,alone:L.length>1&&w.filter(x=>line(x)===L[L.length-1]).length===1,spill:t.scrollWidth>t.clientWidth+1,box:s.offsetWidth+'x'+s.offsetHeight,text:t.textContent};});
+      check(!m.alone&&!m.spill,'Screen '+n+' in another face: '+m.lines+' lines, '+m.box+(m.alone?' — a word alone':'')+(m.spill?' — spills out':'')+' | '+m.text);
     }
     check(errors.length===0,'no page errors: '+errors.slice(0,2).join(' | '));
   } finally { await browser.close(); server.close(); }
