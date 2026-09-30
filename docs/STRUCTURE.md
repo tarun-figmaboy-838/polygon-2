@@ -31,6 +31,8 @@ The displayed screen number is the position in `steps()`, starting at 1. Interna
 | When that story starts after the completion screen | `index.html`: `queueBridge`, `startBridge` |
 | The completion screen's Help Momo / Play again buttons (only with `?bridge=0`) | `index.html`: `viewEnd`, `startRunner` |
 | The hand-off to the runner game: when it loads, the curtain, its URL flags | `src/runner/runner-stage.js`, `styles/runner-stage.css` |
+| The gold Play and the pill buttons (Next, Help Momo, Play again) | `styles/buttons-kit.css`, `src/fx/play-fx.js`, `assets/ui/`; in the lesson `pillBtn` / `pillWidth` in `index.html` |
+| Momo's jump in the runner game (the 24-cell sheet) | `game/js/engine.js`: `sheets.jump`, `frames.jump`, the JUMP_START / JUMP_AIR / LAND cases in `PlayerController.draw` |
 | The runner game itself: its seven crossings, tutorial, art and sound | `game/js/engine.js`: `CFG.levelOne.phases`; `game/js/tutorial.js`; see [game/RUNNER.md](game/RUNNER.md) |
 
 Narration text is matched to recordings by wording. When you change a spoken sentence, check its entry in `src/lesson/recordings.js` too.

@@ -20,7 +20,8 @@ const server=http.createServer((req,res)=>{
   await page.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>r.abort());
   // The walkthrough ends by pressing Play again, which the completion screen offers
   // when the story into Part 2 is left out (tests/bridge.test.cjs covers that story).
-  await page.goto('http://127.0.0.1:9351/?preview=1&bridge=0');
+  // ?dev=1: it jumps between screens with the screen navigator, a review control.
+  await page.goto('http://127.0.0.1:9351/?preview=1&bridge=0&dev=1');
   await page.waitForFunction(()=>window.__poly?.state.ready);
   await page.mouse.click(700,200);
   // Exercise the explicit recovery path where the host has no speech engine.

@@ -247,12 +247,19 @@
     var text = el('span', 'story-say-text', box);
     S.box = { el: box, shape: shape, shade: shade, fill: fill, text: text, sc: null, line: -1, spans: [], shown: false };
 
+    /* THE ROUND GOLD PLAY from the Part 1 buttons kit (styles/buttons-kit.css, and its
+       motion in src/fx/play-fx.js): held back while the story loads, it pops in when it can
+       be pressed, the glow behind it breathes and crystals turn on its rim, and a press
+       squashes it and knocks a ring of crystals off. */
     var start = el('div', 'story-start', root);
-    var play = el('button', 'ice-button story-play', start);
+    var playWrap = el('div', 'kit-play-wrap story-play-wrap', start);
+    var play = el('button', 'kit-play story-play', playWrap);
     play.type = 'button';
     play.setAttribute('aria-disabled', 'true');
     play.setAttribute('aria-label', 'Loading the story');
-    play.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15a1 1 0 0 0 1.52.85l12-7.5a1 1 0 0 0 0-1.7l-12-7.5A1 1 0 0 0 7 4.5z" fill="#fff"/></svg><span>Play</span>';
+    play.innerHTML = '<span class="kit-play-halo" aria-hidden="true"></span><img src="assets/ui/play.webp" alt="" draggable="false">';
+    var sparks = el('span', 'kit-play-sparks', playWrap);
+    sparks.setAttribute('aria-hidden', 'true');
     var progress = el('div', 'story-progress', start);
     el('i', '', progress);
     var tip = el('div', 'story-rotate', start);
@@ -271,7 +278,7 @@
     /* The whole page fades to the blizzard's first colour at the end. */
     S.curtain = el('div', 'story-curtain', root);
 
-    S.root = root; S.stage = stage; S.start = start; S.play = play;
+    S.root = root; S.stage = stage; S.start = start; S.play = play; S.playWrap = playWrap;
     S.progress = progress; S.live = live;
     document.body.appendChild(root);
   }
@@ -1193,6 +1200,7 @@
     state.waiters = [];
     state.liveAnims.slice().forEach(function (a) { try { a.cancel(); } catch (e) {} });
     state.liveAnims = [];
+    if (state.stopPlayFx) { state.stopPlayFx(); state.stopPlayFx = null; }
     if (state.audio) state.audio.close();
     if (state.root && state.root.parentNode) state.root.parentNode.removeChild(state.root);
     StoryIntro.lastRun = { history: state.history, listeners: state.listeners.length };
@@ -1276,6 +1284,8 @@
       state.progress.classList.add('is-done');
       state.play.setAttribute('aria-disabled', 'false');
       state.play.setAttribute('aria-label', 'Play the story');
+      state.play.classList.add('enter');
+      if (window.PlayFx && !state.stopPlayFx) state.stopPlayFx = window.PlayFx.mount(state.playWrap);
       try { state.play.focus({ preventScroll: true }); } catch (e) {}
     });
   }

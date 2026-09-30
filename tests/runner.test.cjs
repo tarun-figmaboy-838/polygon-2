@@ -7,6 +7,9 @@
        Momo beside Play again, the game is already loading behind it, and pressing Help Momo
        brings the game up at its cover (the story itself: tests/bridge.test.cjs)
      - ?game=0 leaves the game out: Play again alone, and nothing loaded
+     - Momo's jump is the Momo jump kit's (mammoth-jump-v2): the push-off cell, the flight
+       cells in order with the arc, the three landing cells, and the run picked up on cell 24,
+       at the base size and on a hi-DPI screen (the hd/ sheet)
 
    node tests/runner.test.cjs          ENGINE=webkit node tests/runner.test.cjs */
 const path = require('path');
@@ -112,6 +115,46 @@ async function toEnd(page) {
   check('?game=0: nothing was loaded', await c.page.evaluate(() => !document.getElementById('runner-stage')));
   check('?game=0: no script errors', !c.errors.length, c.errors.join(' | '));
   await c.page.close();
+
+  /* 4. the jump, played in the game: base sheets, then the hi-DPI set */
+  for (const [tag, dsf] of [['base', 1], ['hd', 2]]) {
+    const ctx = await browser.newContext({ viewport: { width: 1440, height: 810 }, deviceScaleFactor: dsf });
+    const pg = await ctx.newPage();
+    const jerr = [];
+    pg.on('pageerror', e => { if (!noise.test(e.message)) jerr.push(e.message); });
+    const before = srv.requests.length;
+    await pg.goto(srv.url + '/?game=1&tutorial=0&sound=0', { waitUntil: 'domcontentloaded' });
+    await waitForGame(pg);
+    const fr = gameFrame(pg);
+    await fr.waitForFunction(() => { const c = document.getElementById('cover'); return c && !c.classList.contains('loading'); }, null, { timeout: 60000 });
+    await fr.locator('#btn-play').click({ force: true });
+    await fr.waitForFunction(() => window.iceAgeGame.state() === 'RUN_SEGMENT_1' && window.iceAgeGame.debug().jumpEnabled === true, null, { timeout: 60000 });
+    const seen = await fr.evaluate(() => new Promise(resolve => {
+      const g = window.iceAgeGame, out = [];
+      g.jump();
+      const t0 = performance.now();
+      (function tick() {
+        out.push(g.mammothState() + ' ' + g.mammothFrame());
+        if (performance.now() - t0 < 1800) requestAnimationFrame(tick); else resolve({ out, art: g.artSet() });
+      })();
+    }));
+    const rows = seen.out.map(r => { const [st, sf] = r.split(' '); const [sheet, fn] = sf.split(':'); return { st, sheet, f: +fn }; });
+    const jump = rows.filter(r => r.sheet === 'jump');
+    const air = [...new Set(rows.filter(r => r.st === 'JUMP_AIR').map(r => r.f))];
+    const landIdx = rows.findIndex(r => r.st === 'LAND');
+    const back = rows.slice(landIdx).find(r => r.st === 'RUN');
+    const req = srv.requests.slice(before).filter(r => /mammoth-jump/.test(r.path));
+    check(tag + ': the jump plays the new sheet (' + (tag === 'hd' ? 'hd/' : '') + 'mammoth-jump-v2), and nothing asks for the old one',
+      req.length > 0 && req.every(r => r.status === 200 && /mammoth-jump-v2/.test(r.path)) && seen.art === tag && req.some(r => (tag === 'hd') === /\/hd\//.test(r.path)),
+      JSON.stringify({ art: seen.art, req: req.map(r => r.status + ' ' + r.path) }));
+    check(tag + ': take-off on the push-off cell (12)', rows.some(r => r.st === 'JUMP_START' && r.sheet === 'jump' && r.f === 12), rows.slice(0, 6).map(r => r.st + ':' + r.f).join(' '));
+    check(tag + ': the flight runs through cells 12-20 in order, with the arc', air.length >= 6 && air.every((v, i) => i === 0 || v > air[i - 1]) && air.every(v => v >= 12 && v <= 20), air.join(','));
+    check(tag + ': the landing plays cells 21-23', rows.filter(r => r.st === 'LAND').every(r => r.f >= 21 && r.f <= 23) && rows.some(r => r.st === 'LAND' && r.f === 21), rows.filter(r => r.st === 'LAND').map(r => r.f).join(','));
+    check(tag + ': the run picks up on cell 24, the pose nearest the landing', !!back && back.sheet === 'run' && back.f >= 24 && back.f <= 26, JSON.stringify(back));
+    check(tag + ': every jump cell is one of the 24', jump.every(r => r.f >= 0 && r.f < 24));
+    check(tag + ': no script errors', !jerr.length, jerr.join(' | '));
+    await ctx.close();
+  }
 
   await browser.close();
   await srv.close();

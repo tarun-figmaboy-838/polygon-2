@@ -51,12 +51,14 @@ const ASSET_V = {
   "assets/char/hd/bear.webp": "d257b5b8",
   "assets/char/hd/mammoth-hurt.webp": "c32cf9bc",
   "assets/char/hd/mammoth-idle.webp": "db0e5422",
+  "assets/char/hd/mammoth-jump-v2.webp": "84955cd0",
   "assets/char/hd/mammoth-jump.webp": "9b67b6a2",
   "assets/char/hd/mammoth-run.webp": "97f41757",
   "assets/char/hd/mammoth-skid.webp": "820a18a1",
   "assets/char/hd/mammoth-tremble.webp": "889e9461",
   "assets/char/mammoth-hurt.webp": "8a886c8e",
   "assets/char/mammoth-idle.webp": "f1bbf762",
+  "assets/char/mammoth-jump-v2.webp": "be4c78d2",
   "assets/char/mammoth-jump.webp": "6b17e847",
   "assets/char/mammoth-run.webp": "d3ab6c72",
   "assets/char/mammoth-skid.webp": "ee6c20a7",
@@ -1688,7 +1690,11 @@ const CFG = {
          three moments than it was. Add a shake/hurt GIF and they come straight back. */
       sheets: {
         run: 'assets/char/mammoth-run.webp',
-        jump: 'assets/char/mammoth-jump.webp',
+        /* THE JUMP, from the Momo jump kit (Part 2's own jump sheet): 24 cells on the same
+           420x320 grid and foot line. Cells 0-9 are the ten named poses the old sheet held
+           (jumpMap below reads them unchanged); cells 10-23 are the unbroken take-off, flight
+           and landing, GIF frames 14-27, which JUMP_START, JUMP_AIR and LAND now play. */
+        jump: 'assets/char/mammoth-jump-v2.webp',
         skid: 'assets/char/mammoth-skid.webp',
         /* THE FRIGHT (mammoth-shake, from art-source/gif/ditch-new.gif) IS SHELVED, not
            deleted: on request the arrival at the edge is the trample instead, so SHAKE and
@@ -1747,12 +1753,12 @@ const CFG = {
       /* Straight from tools/slice-char.mjs — the sheets are built to these counts, so
          the two move together. The run is 20 because the source art had 20 and the
          cycle is distance-driven, so it is simply smoother; nothing else changes. */
-      frames: { run: 36, jump: 10, skid: 36, hurt: 36, idle: 12, tremble: 12 },
+      frames: { run: 36, jump: 24, skid: 36, hurt: 36, idle: 12, tremble: 12 },
       /* The same seven sheets at 1.5x, listed in full rather than derived from the paths
          above so the asset tests see and fetch them (a built string is invisible to the
          scanner). Loaded instead of `sheets` when CFG.sprite.hd applies; see there. */
       hd: {
-        run: 'assets/char/hd/mammoth-run.webp', jump: 'assets/char/hd/mammoth-jump.webp',
+        run: 'assets/char/hd/mammoth-run.webp', jump: 'assets/char/hd/mammoth-jump-v2.webp',
         skid: 'assets/char/hd/mammoth-skid.webp',
         hurt: 'assets/char/hd/mammoth-hurt.webp', idle: 'assets/char/hd/mammoth-idle.webp',
         tremble: 'assets/char/hd/mammoth-tremble.webp'
@@ -4729,7 +4735,18 @@ class PlayerController {
       /* 0.12, not 0.18: the last 90 ms of a 180 ms landing was the absorb pose held still, which
          is a stand rather than a landing — the owner's note on jump-to-run. The absorb still
          reads (it fills 60 ms and dissolves into the run), the weight is still in the squash. */
-      if (this.state === 'LAND' && this.t > 0.12) this.setState(moving ? 'RUN' : 'IDLE_LOOK');
+      if (this.state === 'LAND' && this.t > 0.12) {
+        if (moving && this.F.run) {
+          /* Run cell 24 is the grounded silhouette nearest the last landing cell, so the stride
+             resumes there rather than popping to whatever pose the distance had reached. */
+          const stride = this.stride;
+          const cycle = Math.floor(this.runDist / stride);
+          const target = 24 / this.F.run;
+          const phase = this.runDist / stride - cycle;
+          this.runDist = (cycle + (phase > target ? 1 : 0) + target) * stride + 0.001;
+        }
+        this.setState(moving ? 'RUN' : 'IDLE_LOOK');
+      }
     }
     /* Footfalls are fired by the CYCLE, not by a timer. On a timer the crunch and the
        snow puff drift out of phase with the legs, which is most of why a run reads as
@@ -4982,23 +4999,23 @@ class PlayerController {
         sheet = img;
         f = Math.floor((this.runDist / this.stride) * F.run) % F.run;
         break;
+      /* THE JUMP IS ONE PERFORMANCE NOW (the Momo jump kit, Part 2's own draw): consecutive
+         drawings from the original take, one opaque cell at a time. The dissolves between four
+         separate poses drew two see-through mammoths at once, which read as a blink. */
       case 'JUMP_START':
-        // crouch, launch: the launch dissolves in over the crouch's second half
-        f = this.t < 0.045 ? J.crouch : J.launch;
-        if (f === J.crouch && this.t > 0.022) { blendF = J.launch; blendU = (this.t - 0.022) / 0.023; }
+        // GIF frame 16: the push-off
+        f = 12;
         break;
       case 'JUMP_AIR': {
-        /* The pose follows the vertical speed; each hands over to the next by a dissolve across
-           the 180 units of speed before its threshold, so the four flight poses read as one arc
-           instead of four cuts. */
-        const TH = [[-420, J.rise, J.apex], [160, J.apex, J.fall], [760, J.fall, J.preLand]];
-        f = this.vy < -420 ? J.rise : this.vy < 160 ? J.apex : this.vy < 760 ? J.fall : J.preLand;
-        for (const [thr, from, to] of TH) if (f === from && this.vy > thr - 180 && this.vy < thr) { blendF = to; blendU = (this.vy - (thr - 180)) / 180; }
+        /* GIF frames 17-24, advanced by the arc: 0 at the take-off, 1 at the touchdown, read
+           off the vertical speed, so the flight takes as long as the physics says it does. */
+        const u = clamp((this.vy - CFG.jumpVel) / Math.max(1, -2 * CFG.jumpVel), 0, 1);
+        f = 12 + Math.min(8, Math.floor(u * 9));
         break;
       }
       case 'LAND':
-        f = this.t < 0.09 ? J.land : J.absorb;
-        if (this.t > 0.05 && this.t < 0.09) { blendF = J.absorb; blendU = (this.t - 0.05) / 0.04; }
+        // GIF frames 25-27: impact, compression, recovery, 40 ms each
+        f = 21 + Math.min(2, Math.floor(this.t / 0.04));
         break;
       case 'SKID_STOP':
         if (this.skidSheet) { sheet = this.skidSheet; f = Math.min(F.skid - 1, Math.floor(this.skidP * F.skid)); }

@@ -4,6 +4,15 @@
 > lesson's own font file (`../styles/fonts.css`) instead of Google Fonts. So serve the
 > whole project (`npx serve .` one folder up) rather than this folder alone. The runner's
 > contract and notes are in `../docs/game/`. Everything below is the game's own README.
+>
+> **One change since it was delivered: Momo's jump.** It plays the Momo jump kit's sheet from
+> Part 2 (`assets/char/mammoth-jump-v2.webp` and its `hd/` twin, 24 cells): the push-off on
+> cell 12, the flight through cells 12-20 advanced by the arc, the landing on 21-23, and the
+> run picked up on cell 24. Cells 0-9 are the same ten named poses as before, so every other
+> use of the jump sheet is unchanged, and so are the jump's physics. The change is in
+> `js/engine.js` (the sheet list, `frames.jump`, the JUMP_START / JUMP_AIR / LAND cases in
+> `PlayerController.draw`, and the landing's hand-back to the run), with `game.bundle.js` and
+> `asset-versions.js` updated to match.
 
 # Ice Age Mammoth Runner
 

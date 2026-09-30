@@ -175,6 +175,10 @@ const SCENARIOS = {
       check('no footsteps once he has stopped', r.sounds.filter(x => x.name === 'step').every(x => x.at <= r.history.find(h => h.phase === 'MOMO_AT_DITCH').at));
     }
     const nb = await page.locator('#bridge-story .bridge-next').boundingBox();
+    check("Next is the Part 1 buttons kit's blue pill", await page.evaluate(() => {
+      const n = document.querySelector('#bridge-story .bridge-next');
+      return n.classList.contains('kit-btn') && n.classList.contains('kit-btn--nav') && /btn-uiNav/.test(getComputedStyle(n).borderImageSource);
+    }));
     check('Next is on the screen and clear of the bubble', nb && nb.x + nb.width <= vp.width && nb.y + nb.height <= vp.height &&
       (nb.x > r.say.box.left + r.say.box.w || nb.y > r.say.box.top + r.say.box.h), JSON.stringify({ nb, box: r.say.box }));
     await page.waitForTimeout(500);

@@ -543,11 +543,12 @@
     var live = el('div', 'bridge-live', root);
     live.setAttribute('aria-live', 'polite');
 
-    var next = el('button', 'ice-button bridge-next', root);
+    /* the Part 1 buttons kit's blue navigation pill (styles/buttons-kit.css) */
+    var next = el('button', 'kit-btn kit-btn--nav bridge-next', root);
     next.type = 'button';
     next.hidden = true;
     next.disabled = true;
-    next.innerHTML = '<span>Next</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    next.innerHTML = '<span>Next</span><span class="chev" aria-hidden="true">&#9654;</span>';
 
     var frost = el('div', 'bridge-frost', root);
     frost.setAttribute('aria-hidden', 'true');
@@ -1211,7 +1212,8 @@
     n.classList.add('is-in');
     S.nextOn = true;
     phase('NEXT_ENABLED');
-    try { n.focus({ preventScroll: true }); } catch (e) { n.focus(); }
+    /* Not focused for the learner: focusing it here drew the kit's white focus ring round it
+       the moment it arrived. A key press still finds it: Tab (and nothing else) goes to Next. */
   }
   function onNext(e) {
     if (e) e.preventDefault();

@@ -6,6 +6,8 @@
      - ?preview=1 authoring mode still goes straight to screen 1
      - the screen navigator (Screens, Back, Next) is not on the page for a learner,
        and is there with ?dev=1
+     - the Part 1 buttons kit is in: the story's round gold Play (with its crystals), and
+       with ?bridge=0 the end screen's blue Help Momo and gold Play again pills
      - no request returns an error, no script error (the lesson template's
        own {{ }} placeholder warnings are known and ignored)
      - every narration recording in the catalog exists in its shipped format,
@@ -79,6 +81,34 @@ async function open(browser, srv, query) {
   check('?dev=1: the screen navigator is there (Screens, Back, Next)', nav);
   check('?dev=1: no script errors', !d.errors.length, d.errors.join(' | '));
   await d.page.close();
+
+  /* THE BUTTONS KIT */
+  const e = await browser.newPage({ viewport: { width: 1440, height: 810 } });
+  const eErrors = [];
+  e.on('pageerror', x => { if (!noise.test(x.message)) eErrors.push(x.message); });
+  await e.goto(srv.url + '/?story=1', { waitUntil: 'domcontentloaded' });
+  await e.waitForFunction(() => window.StoryIntro && window.StoryIntro.state().ready, null, { timeout: 30000 });
+  await e.waitForTimeout(700);
+  const play = await e.evaluate(() => {
+    const b = document.querySelector('#story-intro .story-play'), i = b && b.querySelector('img');
+    return { kit: !!b && b.classList.contains('kit-play'), art: !!i && i.complete && i.naturalWidth === 320,
+      crystals: document.querySelectorAll('#story-intro .kit-play-sparks svg').length, shown: !!b && getComputedStyle(b).opacity === '1' };
+  });
+  check("the story's start card has the kit's round gold Play, with its crystals", play.kit && play.art && play.crystals >= 5 && play.shown, JSON.stringify(play));
+  await e.click('#story-intro .story-play');
+  check('the gold Play starts the story', await e.waitForFunction(() => window.StoryIntro.state().playing, null, { timeout: 5000 }).then(() => true, () => false));
+  await e.goto(srv.url + '/?preview=1&bridge=0', { waitUntil: 'domcontentloaded' });
+  await e.waitForFunction(() => window.__poly && window.__poly.state.ready, null, { timeout: 30000 });
+  await e.evaluate(() => { const g = window.__poly, k = g.steps().length - 1; g.setState({ k }, () => g.runStep(k, false)); });
+  await e.waitForFunction(() => document.querySelectorAll('.kit-btn').length === 2, null, { timeout: 30000 }).catch(() => {});
+  const pills = await e.evaluate(() => [...document.querySelectorAll('.kit-btn')].map(b => ({
+    text: b.textContent.trim(), nav: b.classList.contains('kit-btn--nav'), gold: b.classList.contains('kit-btn--primary'),
+    ice: b.classList.contains('ice-button'), art: getComputedStyle(b).borderImageSource })));
+  check('end screen (?bridge=0): Help Momo is the blue pill and Play again the gold one',
+    pills.length === 2 && pills[0].text === 'Help Momo' && pills[0].nav && /btn-uiNav/.test(pills[0].art) &&
+    pills[1].text === 'Play again' && pills[1].gold && /btn-uiPrimary/.test(pills[1].art) && pills.every(p => !p.ice), JSON.stringify(pills));
+  check('buttons kit: no script errors', !eErrors.length, eErrors.join(' | '));
+  await e.close();
 
   await browser.close();
   await srv.close();
