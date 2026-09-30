@@ -1,8 +1,9 @@
 #!/usr/bin/env node
-/* User-behaviour tests for the story, each in a fresh page: Skip (mid-story
-   and on the start card), Escape, a double tap on Play, switching tabs
-   mid-line, replay, Ogg failing (MP3 fallback), all audio failing (text still
-   runs), and a missing scene image (straight to the lesson, never stuck).
+/* User-behaviour tests for the story, each in a fresh page: Escape (mid-story
+   and on the start card; the page has no Skip button), a double tap on Play,
+   switching tabs mid-line, replay, Ogg failing (MP3 fallback), all audio
+   failing (text still runs), and a missing scene image (straight to the
+   lesson, never stuck).
 
    node tests/flows.test.cjs          ENGINE=webkit node tests/flows.test.cjs
    ONLY=replay,escapeKey node tests/flows.test.cjs */
@@ -39,8 +40,11 @@ const SCENARIOS = {
     const { page, context, errors } = await fresh(browser, srv);
     await ready(page); await page.click('.story-play');
     await until(page, () => { const s = window.StoryIntro.state(); return s.scene === 3 && s.phase === 'dialogue'; });
+    const skipButton = await page.evaluate(() => [...document.querySelectorAll('#story-intro button')]
+      .some(b => /skip/i.test(b.textContent + ' ' + (b.getAttribute('aria-label') || ''))));
+    check('no Skip button on the story', !skipButton);
     const t = Date.now();
-    await page.click('.story-skip');
+    await page.keyboard.press('Escape');
     const gone = await until(page, () => !document.getElementById('story-intro'), null, 3000).then(() => Date.now() - t, () => -1);
     const run = await page.evaluate(() => window.StoryIntro.state().lastRun);
     check('skip mid-story: overlay leaves quickly', gone > 0 && gone < 1500, gone + 'ms');
@@ -53,7 +57,7 @@ const SCENARIOS = {
   async skipAtStart(browser, srv) {
     const { page, context } = await fresh(browser, srv);
     await ready(page);
-    await page.click('.story-skip');
+    await page.keyboard.press('Escape');
     check('skip on start card: lesson starts', await lessonStarted(page));
     await context.close();
   },
@@ -77,7 +81,7 @@ const SCENARIOS = {
     check('double tap Play: one start', h.filter(e => e.event === 'play').length === 1);
     check('double tap Play: scene 1 entered once', h.filter(e => e.event === 'enter' && e.scene === 1).length === 1);
     check('double tap Play: one voice at a time', h.filter(e => e.event === 'voice' && e.scene === 1 && e.line === 1).length === 1);
-    await page.click('.story-skip');
+    await page.keyboard.press('Escape');
     await context.close();
   },
 
@@ -101,7 +105,7 @@ const SCENARIOS = {
     await page.waitForTimeout(1500);
     const c = await state(page);
     check('tab visible again: story resumes', c.clock > b.clock + 800 && c.audio === 'running', `${b.clock} -> ${c.clock}, ${c.audio}`);
-    await page.click('.story-skip');
+    await page.keyboard.press('Escape');
     await context.close();
   },
 
@@ -119,7 +123,7 @@ const SCENARIOS = {
     const mid = await state(page);
     check('replay mid-story: plays from scene 1 again', mid.history.filter(e => e.event === 'enter').map(e => e.scene).join() === '1,2,3');
     check('replay mid-story: one voice at a time', mid.history.filter(e => e.event === 'voice').length <= 8);
-    await page.click('.story-skip');
+    await page.keyboard.press('Escape');
     const started = await lessonStarted(page);
     check('replay mid-story: lesson starts once after', started);
     check('replay: listeners released', (await page.evaluate(() => window.StoryIntro.state().lastRun.listeners)) === 0);
@@ -140,7 +144,7 @@ const SCENARIOS = {
     const s = await state(page);
     check('Ogg missing: voices fall back to MP3', s.history.filter(e => e.event === 'voice').every(e => e.withAudio) && s.voiceLoaded, JSON.stringify(s.history.filter(e => e.event === 'voice')));
     check('Ogg missing: music falls back to MP3', s.music && s.music.loaded);
-    await page.click('.story-skip');
+    await page.keyboard.press('Escape');
     await context.close();
   },
 

@@ -79,6 +79,7 @@ All functions in this table are in `index.html`.
 ## Other documents
 
 - [design/](design/): the lesson scene notes, the button design, and the original bubble reference supplied for the story (`story-dialogue-box.png`).
+- [design/story-frame/](design/story-frame/): the story’s paper page and ink-framed panel as two drop-in files (`story-frame.css`, `story-frame.js`) for another story, with a demo page.
 - [voice/](voice/): the narration script and line exports for voice recording, the recordings manifest and transcript, and notes on word timing.
 - [game/](game/): the runner game's own contract, animation and voice notes, as they came with it.
 - [sfx.md](sfx.md): where the lesson's sound effects come from.

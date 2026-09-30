@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Story Frame</title>
+<!-- A demo of story-frame.css and story-frame.js, using this repo's scene art.
+     Tap the picture, or press the arrow keys, to step through the scenes. -->
+<link rel="stylesheet" href="story-frame.css">
+<style>
+  html, body { margin: 0; height: 100%; background: #f6efdd; }
+  .sf-panel { cursor: pointer; }
+  .demo-note {
+    font: 700 18px/1.3 Nunito, system-ui, sans-serif; color: #5a3517;
+    background: #fff3d1; border: 3px solid #6b4423; border-radius: 16px;
+    padding: 10px 20px;
+  }
+</style>
+</head>
+<body>
+  <div class="sf-page">
+    <div class="sf-panel"><img src="../../../assets/story/scene-1.webp" alt="Momo and Polo on the ice"></div>
+    <div class="sf-caption"><div class="demo-note">Words go here on an upright phone</div></div>
+  </div>
+  <script src="story-frame.js"></script>
+  <script>
+    var page = document.querySelector('.sf-page');
+    StoryFrame.fit(page, { width: 1980, height: 1080 });
+    var img = page.querySelector('.sf-panel img'), n = 1;
+    function show(k) { n = (k + 8) % 9 + 1; img.src = '../../../assets/story/scene-' + n + '.webp'; }
+    page.querySelector('.sf-panel').addEventListener('click', function () { show(n + 1); });
+    window.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight') show(n + 1);
+      if (e.key === 'ArrowLeft') show(n - 1);
+    });
+  </script>
+</body>
+</html>

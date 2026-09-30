@@ -70,7 +70,7 @@
     return {
       root: null, stage: null, layersHost: null, dialogueHost: null, canvas: null, ctx2d: null,
       vignette: null, veil: null, curtain: null, start: null, play: null, progress: null,
-      skipBtn: null, live: null, captionHost: null,
+      live: null, captionHost: null,
       phase: 'loading', scene: 0, isTransitioning: false, isVOPlaying: false, canContinue: false,
       runGen: 0, sceneGen: 0,
       clock: 0, sceneStart: 0, lastFrame: 0, raf: 0, paused: false,
@@ -262,10 +262,8 @@
        read, instead of inside a picture too small to read from. */
     S.captionHost = el('div', 'story-caption', root);
 
-    var skipBtn = el('button', 'story-skip', root);
-    skipBtn.type = 'button';
-    skipBtn.textContent = 'Skip ›';
-    skipBtn.setAttribute('aria-label', 'Skip the story');
+    /* No Skip button on the page: the story plays through. Escape, or ?story=0 in
+       the address, still goes straight to the lesson. */
 
     var live = el('div', 'story-live', root);
     live.setAttribute('aria-live', 'polite');
@@ -274,7 +272,7 @@
     S.curtain = el('div', 'story-curtain', root);
 
     S.root = root; S.stage = stage; S.start = start; S.play = play;
-    S.progress = progress; S.skipBtn = skipBtn; S.live = live;
+    S.progress = progress; S.live = live;
     document.body.appendChild(root);
   }
 
@@ -1155,7 +1153,7 @@
   }
 
   /* Fade the whole page to the blizzard's first colour, then hand over.
-     Used by the natural ending, by Skip, and after any error; only ever once. */
+     Used by the natural ending, by skip (Escape), and after any error; only ever once. */
   function finishStory(gen, fadeMs) {
     if (!S || S.handedOff || S.ending) return Promise.resolve();
     S.ending = true;
@@ -1247,7 +1245,6 @@
     on(window, 'orientationchange', fit);
     on(document, 'visibilitychange', onVisibility);
     on(S.play, 'click', begin);
-    on(S.skipBtn, 'click', function (e) { e.preventDefault(); skip(); });
     on(window, 'keydown', function (e) { if (e.key === 'Escape') skip(); });
     /* A browser that parks audio (a call, a lock screen) gets it back on the
        next touch; the story clock waits for it meanwhile. */

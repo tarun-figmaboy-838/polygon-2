@@ -1,0 +1,74 @@
+/* ============================================================================
+   STORY FRAME — the Momo + Polo story's page and panel, on their own.
+
+   The page is cream paper with two offset grids of halftone dots. The panel is
+   one picture at its own design size (1980 x 1080 by default), scaled as one
+   piece to fit the screen, with a black ink frame and a soft offset shadow.
+   The ink line stays the same thickness on screen at any scale.
+
+   Markup:
+     <div class="sf-page">
+       <div class="sf-panel"><img src="scene-1.webp" alt=""></div>
+       <div class="sf-caption"></div>            (optional: words on an upright phone)
+     </div>
+   Then call StoryFrame.fit(page) from story-frame.js. Every name is prefixed
+   sf- so nothing here reaches the rest of your page.
+   ========================================================================= */
+
+.sf-page {
+  --sf-paper: #f6efdd;            /* the page */
+  --sf-dot: 160, 120, 60;         /* the halftone dots, as r, g, b */
+  --sf-ink: #151515;              /* the frame */
+  --sf-panel-bg: #cfe6f7;         /* behind the picture while it loads */
+  --sf-w: 1980px;                 /* the panel's design size (set by story-frame.js) */
+  --sf-h: 1080px;
+  --sf-scale: 1;                  /* set by story-frame.js */
+  --sf-ink-w: 6px;                /* set by story-frame.js */
+
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(var(--sf-dot), 0.13) 1.6px, transparent 2px) 0 0 / 15px 15px,
+    radial-gradient(circle at 50% 50%, rgba(var(--sf-dot), 0.08) 1.2px, transparent 1.6px) 7.5px 7.5px / 15px 15px,
+    var(--sf-paper);
+}
+
+/* The panel: laid out at its design size, centred, then scaled as one piece, so
+   anything you place inside it uses the picture's own pixel coordinates. */
+.sf-panel {
+  position: absolute;
+  left: 50%;
+  top: var(--sf-centre, 50%);
+  width: var(--sf-w);
+  height: var(--sf-h);
+  margin: calc(var(--sf-h) / -2) 0 0 calc(var(--sf-w) / -2);
+  transform: scale(var(--sf-scale));
+  transform-origin: 50% 50%;
+  overflow: hidden;
+  background: var(--sf-panel-bg);
+  border-radius: calc(var(--sf-ink-w) * 0.6);
+  box-shadow:
+    0 0 0 var(--sf-ink-w) var(--sf-ink),
+    calc(var(--sf-ink-w) * 1.8) calc(var(--sf-ink-w) * 2) 0 calc(var(--sf-ink-w) * 0.6) rgba(21, 21, 21, 0.18);
+}
+.sf-panel > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;              /* the image IS the panel: no stretch */
+  display: block;
+}
+
+/* On an upright phone the picture is too small to letter inside, so the panel
+   moves up and this row under it holds the words instead. */
+.sf-caption {
+  position: absolute;
+  left: max(16px, env(safe-area-inset-left));
+  right: max(16px, env(safe-area-inset-right));
+  top: var(--sf-caption-top, 70%);
+  display: none;
+  justify-content: center;
+}
+.sf-page.is-portrait .sf-caption { display: flex; }
