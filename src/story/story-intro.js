@@ -755,10 +755,13 @@
      has been said. A part is laid out at its final size before a word is seen; the
      words then pop in on the voice's own clock (updateVoice), the key words in
      colour. Coordinates are the story's stage pixels (1980 x 1080), as story-data.js
-     writes them: `box.x` is the box's centre, `tail` the top of the speaker's head
-     (a bubble hangs TAIL_HANG above it), and `box.y` places the narrator's label. */
+     writes them: `box.x` is the box's centre (a bubble slides from it to hang over the
+     head), `tail` the top of the speaker's head (a bubble hangs TAIL_HANG above it),
+     and `box.y` places the narrator's label. On
+     an upright phone the box sits in the caption row under the picture instead, slid
+     along the row to under the speaker, its tail rising TAIL_UP as a short wedge. */
   var PART_OUT = 130;     // a part leaving before the next takes the box (the kit's partOut)
-  var TAIL_UP = 30;       // under the picture, how far the tail rises toward the speaker's side
+  var TAIL_UP = 30;       // under the picture, how far the tail rises from under the speaker
   /* A CHARACTER'S BUBBLE HANGS JUST ABOVE THE HEAD, the kit's way: its bottom edge this
      far above the tail's tip, so the tail is a short, wide-based wedge. It was placed
      from the scene's `box.y` — in the sky, 150 to 230 stage px above the head — and
@@ -774,10 +777,16 @@
   /* THE BUBBLE AND ITS TAIL ARE ONE OUTLINE: a rounded box whose bottom edge runs out
      to the speaker's head and back. The base leans toward the speaker. The kit's
      bubblePath, as it is. */
+  function tailBase(w, h) {
+    var r = Math.min(30, h / 2 - 1), bw = Math.max(36, Math.min(64, w * 0.16));
+    return { r: r, bw: bw, edge: r + bw / 2 + 4 };   // edge: the nearest a base's centre comes to a side
+  }
+  /* The tip may lean this far past the base's reach — a wedge on a slight slant, never
+     a sliver running sideways to a head the box was not over. */
+  var TAIL_LEAN = 12;
   function bubblePath(w, h, tx, ty) {
-    var r = Math.min(30, h / 2 - 1);
-    var bw = Math.max(36, Math.min(64, w * 0.16));
-    var bx = Math.max(r + bw / 2 + 4, Math.min(w - r - bw / 2 - 4, tx + (w / 2 - tx) * 0.2));
+    var t = tailBase(w, h), r = t.r, bw = t.bw;
+    var bx = Math.max(t.edge, Math.min(w - t.edge, tx + (w / 2 - tx) * 0.2));
     var x1 = bx - bw / 2, x2 = bx + bw / 2, dy = Math.max(14, ty - h);
     ty = h + dy;
     var n = function (v) { return Math.round(v * 10) / 10; };
@@ -835,18 +844,34 @@
     }
     var w = b.el.offsetWidth, h = b.el.offsetHeight, tx, ty;
     if (cap) {
-      var hostW = S.captionHost.clientWidth;
-      tx = talking ? clamp(box.tail[0] / W * hostW - (hostW - w) / 2, -10, w + 10) : w / 2;
+      /* Under the picture the box slides along its row to sit under the speaker, and
+         the tail rises from under the speaker as a short wedge. It used to stay centred
+         and send its tail slanting across the row to the speaker's side. */
+      var hostW = S.captionHost.clientWidth, left0 = (hostW - w) / 2, dx = 0;
+      if (talking) {
+        var edge = tailBase(w, h).edge;
+        var sx = box.tail[0] / W * hostW;                     // the speaker, along the row
+        var want = clamp(sx - left0, edge, w - edge);         // the tip's spot in the box, off its corners
+        dx = Math.round(clamp(sx - (left0 + want), -left0, hostW - w - left0));
+        tx = clamp(sx - (left0 + dx), edge - TAIL_LEAN, w - edge + TAIL_LEAN);
+      } else tx = w / 2;
       ty = h + TAIL_UP;
+      b.el.style.translate = dx ? dx + 'px 0' : '';
       b.el.setAttribute('data-tail', 'up');
     } else {
-      var left = Math.round(clamp((box.x != null ? box.x : W / 2) - w / 2, 24, W - 24 - w));
-      // a bubble hangs TAIL_HANG above the head it points at; the narrator's label sits at box.y
-      var cy = talking ? box.tail[1] - TAIL_HANG - h / 2 : (box.y != null ? box.y : 112);
+      var left = (box.x != null ? box.x : W / 2) - w / 2, e = talking ? tailBase(w, h).edge : 0;
+      /* A bubble hangs TAIL_HANG above the head it points at, slid from box.x as far as
+         it must for the head to be under its bottom edge's straight run (a lean past
+         it allowed), so the tail is a wedge. A narrow bubble at the scene's box.x could
+         be 150 stage px to one side of the head, its tail a sliver running across. */
+      if (talking) left = clamp(left, box.tail[0] - (w - e + TAIL_LEAN), box.tail[0] - (e - TAIL_LEAN));
+      left = Math.round(clamp(left, 24, W - 24 - w));
+      var cy = talking ? box.tail[1] - TAIL_HANG - h / 2 : (box.y != null ? box.y : 112);   // the narrator's label sits at box.y
       var top = Math.round(clamp(cy - h / 2, 24, H - 24 - h));
       b.el.style.left = left + 'px';
       b.el.style.top = top + 'px';
-      tx = talking ? box.tail[0] - left : w / 2;
+      b.el.style.translate = '';
+      tx = talking ? clamp(box.tail[0] - left, e - TAIL_LEAN, w - e + TAIL_LEAN) : w / 2;
       ty = talking ? box.tail[1] - top : h;
       b.el.removeAttribute('data-tail');
     }
@@ -928,6 +953,7 @@
     cancelAnimsOf(b.el);
     b.el.className = 'story-say';
     b.el.removeAttribute('data-tail');
+    b.el.style.translate = '';
     b.text.textContent = '';
     b.shade.removeAttribute('d'); b.fill.removeAttribute('d');
     b.spans = [];
