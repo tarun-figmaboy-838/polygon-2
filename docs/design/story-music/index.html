@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Story Music</title>
+<!-- A demo of story-music.js: press Play, then try each mood and the voice dip. -->
+<style>
+  :root { --paper: #f6efdd; --ink: #183d58; --card: #ffffffcc; --accent: #1766c4; }
+  html, body { margin: 0; min-height: 100%; background: var(--paper); color: var(--ink);
+    font: 600 16px/1.45 Nunito, system-ui, sans-serif; }
+  main { max-width: 640px; margin: 0 auto; padding: 32px 16px 48px; display: grid; gap: 20px; }
+  h1 { margin: 0; font-size: 28px; }
+  p { margin: 0; }
+  .card { background: var(--card); border-radius: 18px; padding: 18px; display: grid; gap: 12px; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; }
+  button { font: inherit; border: 0; border-radius: 12px; padding: 10px 16px; cursor: pointer;
+    background: #dfeaf7; color: var(--ink); }
+  button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+  button:disabled { opacity: .5; cursor: default; }
+  #play { background: var(--accent); color: #fff; font-size: 18px; }
+  code { font: 600 14px ui-monospace, Menlo, monospace; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Story music</h1>
+  <p>The Momo + Polo story's background music: one file, five moods. The music crossfades from one mood to the next, and dips while someone speaks.</p>
+  <div class="card">
+    <div class="row"><button id="play" type="button">Play</button></div>
+    <div class="row" id="moods"></div>
+    <div class="row">
+      <button id="duck" type="button" aria-pressed="false" disabled>Voice speaking (dip)</button>
+      <button id="fade" type="button" disabled>Fade out</button>
+    </div>
+    <p><code id="readout">not started</code></p>
+  </div>
+</main>
+<script src="story-music.js"></script>
+<script>
+  var music = StoryMusic.create({ src: 'story-music' });
+  var moods = document.getElementById('moods'), readout = document.getElementById('readout');
+  var buttons = {};
+  Object.keys(StoryMusic.SECTIONS).forEach(function (name) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.textContent = name; b.disabled = true; b.setAttribute('aria-pressed', 'false');
+    b.onclick = function () { music.mood(name); show(); };
+    buttons[name] = b; moods.appendChild(b);
+  });
+  function show() {
+    var s = music.state();
+    Object.keys(buttons).forEach(function (n) { buttons[n].setAttribute('aria-pressed', String(s.section === n)); });
+    readout.textContent = (s.loaded ? 'playing ' + (s.section || '-') + ' (' + s.format + ')' : 'loading...') + ' · audio ' + s.audio;
+  }
+  document.getElementById('play').onclick = function () {
+    music.unlock();
+    music.mood('warm');
+    [].forEach.call(document.querySelectorAll('button'), function (b) { b.disabled = false; });
+    music.ready.then(show);
+    show();
+  };
+  var ducked = false;
+  document.getElementById('duck').onclick = function () {
+    ducked = !ducked; music.duck(ducked); this.setAttribute('aria-pressed', String(ducked));
+  };
+  document.getElementById('fade').onclick = function () { music.fadeOut(1.2); };
+  setInterval(show, 500);
+</script>
+</body>
+</html>
