@@ -5,7 +5,8 @@
      - the exact script, one line at a time, with the right speaker
      - every line voiced, voices clearly above the music, no clipping
      - all five music sections heard (warm, playful, tension, hush, resolve)
-     - one handoff, the blizzard, then the lesson from its first screen
+     - one handoff, then the Help Momo scene (its three lines; the lesson waits), its
+       Next, the blizzard, then the lesson from its first screen
      - no listeners left behind
      - with ?dev=1, a Scenes menu over it: jump to a scene (before Play too), Back,
        Next, and play on from there; without ?dev=1, no menu
@@ -74,6 +75,18 @@ async function playThrough(browser, srv, tag, device) {
   }
   const seconds = (Date.now() - t0) / 1000;
   const run = await page.evaluate(() => window.StoryIntro.state().lastRun);
+  /* Then the Help Momo scene (tests/bridge.test.cjs covers it in full): its three lines,
+     the lesson waiting underneath, and its Next on into the blizzard. */
+  const scene = await page.waitForFunction(() => window.BridgeStory && window.BridgeStory.state().nextEnabled, null, { timeout: 60000 }).then(() => true, () => false);
+  if (!scene) fail.push('the Help Momo scene did not reach Next after the story');
+  else {
+    const says = await page.evaluate(() => window.BridgeStory.state().history.filter(h => h.event === 'say').map(h => h.id + (h.withAudio ? '' : ' (silent)')).join());
+    if (says !== 'tut-5-broken,tut-2-goal,learn-first') fail.push('Help Momo lines: ' + says);
+    if (await page.evaluate(() => !!window.__poly._voiceStarted)) fail.push('the lesson started under the Help Momo scene');
+    await page.screenshot({ path: path.join(OUT, `${tag}-10-help-momo.png`) });
+    const next = page.locator('#bridge-story .bridge-next');
+    if (device.hasTouch) await next.tap(); else await next.click();
+  }
   const blizzard = await page.waitForSelector('#ice-intro', { timeout: 5000 }).then(() => true, () => false);
   await page.waitForFunction(() => !document.getElementById('ice-intro'), null, { timeout: 15000 }).catch(() => fail.push('blizzard did not finish'));
   await page.waitForFunction(() => window.__poly && window.__poly.state.narr, null, { timeout: 12000 }).catch(() => {});

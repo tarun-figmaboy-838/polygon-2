@@ -2,8 +2,9 @@
 /* User-behaviour tests for the story, each in a fresh page: Escape (mid-story
    and on the start card; the page has no Skip button), a double tap on Play,
    switching tabs mid-line, replay, Ogg failing (MP3 fallback), all audio
-   failing (text still runs), and a missing scene image (straight to the
-   lesson, never stuck).
+   failing (text still runs), and a missing scene image (on to the lesson,
+   never stuck). Wherever the story ends, however it ends, the Help Momo scene
+   follows it (tests/bridge.test.cjs), and its Next leads into the lesson.
 
    node tests/flows.test.cjs          ENGINE=webkit node tests/flows.test.cjs
    ONLY=replay,escapeKey node tests/flows.test.cjs */
@@ -32,6 +33,10 @@ const state = (page) => page.evaluate(() => window.StoryIntro.state());
 const ready = (page) => page.waitForFunction(() => window.StoryIntro.state().ready || !window.StoryIntro.state().active, null, { timeout: 30000 });
 const until = (page, fn, arg, ms = 60000) => page.waitForFunction(fn, arg, { timeout: ms });
 async function lessonStarted(page, ms = 20000) {
+  // the Help Momo scene comes first: wait for its Next and press it
+  const next = await page.waitForFunction(() => window.BridgeStory && window.BridgeStory.state().nextEnabled, null, { timeout: ms + 45000 }).then(() => true, () => false);
+  if (!next) return false;
+  await page.locator('#bridge-story .bridge-next').click();
   return page.waitForFunction(() => !document.getElementById('story-intro') && !document.getElementById('ice-intro') && window.__poly && window.__poly.state.k === 0 && !!window.__poly.state.narr, null, { timeout: ms }).then(() => true, () => false);
 }
 
@@ -161,7 +166,7 @@ const SCENARIOS = {
 
   async missingArt(browser, srv) {
     const { page, context } = await fresh(browser, srv, { route: { pattern: '**/assets/story/scene-5.webp', handler: r => r.fulfill({ status: 404, body: '' }) } });
-    check('missing scene art: goes straight to the lesson', await lessonStarted(page, 30000));
+    check('missing scene art: goes on to Help Momo and the lesson', await lessonStarted(page, 30000));
     await context.close();
   }
 };

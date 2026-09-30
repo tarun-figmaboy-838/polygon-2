@@ -3268,5 +3268,109 @@ window.POLYGON_RECORDINGS = [
       }
     ],
     "source": "Windows OneCore Microsoft Heera (en-IN); word starts measured from the rendered audio"
+  },
+  {
+    "text": "But for that first you need to learn about polygons.",
+    "src": "assets/audio/lesson/89_But_for_that_first_you_need_to_learn_about_polygons.mp3",
+    "duration": 3.75,
+    "words": [
+      {
+        "word": "But",
+        "start": 0.0
+      },
+      {
+        "word": "for",
+        "start": 0.26
+      },
+      {
+        "word": "that",
+        "start": 0.528
+      },
+      {
+        "word": "first",
+        "start": 0.81
+      },
+      {
+        "word": "you",
+        "start": 1.177
+      },
+      {
+        "word": "need",
+        "start": 1.51
+      },
+      {
+        "word": "to",
+        "start": 1.86
+      },
+      {
+        "word": "learn",
+        "start": 2.09
+      },
+      {
+        "word": "about",
+        "start": 2.357
+      },
+      {
+        "word": "polygons.",
+        "start": 2.83
+      }
+    ],
+    "source": "macOS say -v Tara, pitch +150 cents, pace x0.74 (placeholder take); word starts measured from the rendered audio"
+  },
+  {
+    "text": "You know all about polygons now. You are ready to help Momo.",
+    "src": "assets/audio/lesson/90_You_know_all_about_polygons_now_You_are_ready_to_help_Momo.mp3",
+    "duration": 4.82,
+    "words": [
+      {
+        "word": "You",
+        "start": 0.02
+      },
+      {
+        "word": "know",
+        "start": 0.26
+      },
+      {
+        "word": "all",
+        "start": 0.512
+      },
+      {
+        "word": "about",
+        "start": 0.752
+      },
+      {
+        "word": "polygons",
+        "start": 1.22
+      },
+      {
+        "word": "now.",
+        "start": 2.475
+      },
+      {
+        "word": "You",
+        "start": 2.9
+      },
+      {
+        "word": "are",
+        "start": 3.112
+      },
+      {
+        "word": "ready",
+        "start": 3.324
+      },
+      {
+        "word": "to",
+        "start": 3.736
+      },
+      {
+        "word": "help",
+        "start": 3.937
+      },
+      {
+        "word": "Momo.",
+        "start": 4.16
+      }
+    ],
+    "source": "macOS say -v Tara, pitch +150 cents, pace x0.74 (placeholder take); word starts measured from the rendered audio"
   }
 ];

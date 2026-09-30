@@ -28,8 +28,9 @@ The displayed screen number is the position in `steps()`, starting at 1. Interna
 | Story look (the narration label and speech bubbles, comic page and panel) | `styles/story-intro.css` |
 | Story behaviour (sequencing, audio, effects) | `src/story/story-intro.js` |
 | Swiftee's animation sheets | `tools/build-swiftee.cjs` (writes `assets/swiftee/` and `src/lesson/swiftee-sheets.js`) |
-| The story from the lesson into the game (the Broken Path): timing, lines, layout, states | `src/bridge/bridge-story.js`, `styles/bridge-story.css` |
-| When that story starts after the completion screen | `index.html`: `queueBridge`, `startBridge` |
+| The Help Momo scene between the story and the lesson (the Broken Path): timing, lines, layout, states | `src/bridge/bridge-story.js`, `styles/bridge-story.css` |
+| When it plays: after the story, before the blizzard | `src/intro/ice-intro.js` `autostart`, `BridgeStory.afterStory` |
+| The lesson's ending: its two lines, then the game's cover | `index.html`: `lessonComplete`, `queuePart2`, `startPart2` |
 | The completion screen's Help Momo / Play again buttons (only with `?bridge=0`) | `index.html`: `viewEnd`, `startRunner` |
 | The hand-off to the runner game: when it loads, the curtain, its URL flags | `src/runner/runner-stage.js`, `styles/runner-stage.css` |
 | The gold Play and the pill buttons (Next, Help Momo, Play again) | `styles/buttons-kit.css`, `src/fx/play-fx.js`, `assets/ui/`; in the lesson `pillBtn` / `pillWidth` in `index.html` |
@@ -40,11 +41,12 @@ Narration text is matched to recordings by wording. When you change a spoken sen
 
 ## Start-up order
 
-1. **The story.** `src/story/story-intro.js` shows its start card, plays on **Play**, and releases `StoryIntro.gate` when it ends or is skipped.
-2. **The blizzard.** `src/intro/ice-intro.js` starts from that gate, plays for 5.8 s, and releases `IceIntro.gate`.
-3. **The lesson.** `boot()` in `index.html` waits on `IceIntro.gate`, then runs screen 1.
-4. **The Broken Path.** As screen 48 opens, `runStep` asks `src/bridge/bridge-story.js` to preload its art and voice, and the story asks `src/runner/runner-stage.js` to preload the game (`game/index.html`) in an invisible frame once its own art is in. When screen 48's line has been read, `queueBridge` waits 1.4 s and `startBridge` calls `BridgeStory.start()`: frost wipes over the lesson, and the story plays. `?bridge=1` starts here directly; `?bridge=0` leaves it out, and screen 48 keeps its Help Momo and Play again buttons.
-5. **The Frozen Pass.** The story's **Next** calls `RunnerStage.start()`, which hides the lesson and lifts a curtain on the game's cover, where **Play** starts the game. `?game=1` starts here directly; `?game=0` leaves the game and the story out.
+1. **The story.** `src/story/story-intro.js` shows its start card, plays on **Play**, and releases `StoryIntro.gate` when it ends or is skipped. Once it is playing, `src/bridge/bridge-story.js` preloads the Help Momo scene's art and voice.
+2. **Help Momo.** `src/intro/ice-intro.js` waits on that gate and calls `BridgeStory.afterStory()`: if the story played, the scene comes up out of the story's dark, speaks its three lines through the lesson's AudioContext (unlocked by the story's Play), and settles its promise when **Next** has been pressed and it has faded back to the dark. `?bridge=1` starts here directly; `?bridge=0` leaves it out.
+3. **The blizzard.** `ice-intro.js` then plays for 5.8 s and releases `IceIntro.gate`.
+4. **The lesson.** `boot()` in `index.html` waits on `IceIntro.gate`, then runs screen 1.
+5. **The ending.** As screen 48 opens, `runStep` asks `src/runner/runner-stage.js` to preload the game (`game/index.html`) in an invisible frame. Screen 48 says its line, then (`lessonComplete`) "You know all about polygons now. You are ready to help Momo.", the lesson locked throughout; `queuePart2` waits 1.4 s and `startPart2` calls `RunnerStage.start()`. With `?bridge=0` screen 48 offers Help Momo and Play again instead.
+6. **The Frozen Pass.** `RunnerStage.start()` hides the lesson and lifts a curtain on the game's cover, where **Play** starts the game. `?game=1` starts here directly; `?game=0` leaves the game and the Help Momo scene out.
 
 Each overlay removes itself completely (DOM, timers, audio) when it finishes. The runner's frame stays up: its own **Play again** restarts the game.
 
@@ -80,7 +82,7 @@ All functions in this table are in `index.html`.
 | 45 | Find the non-polygon | `C3` | `viewTapOne` |
 | 46 | Select pentagons | `C4` | `viewMulti` |
 | 47 | Sort hexagons / heptagons | `C5` | `viewSort` |
-| 48 | Completion; then the Broken Path story into the runner game (with `?bridge=0`: Help Momo or Play again) | `END` | `viewEnd`, `queueBridge`, `startBridge`, `startRunner` |
+| 48 | Completion: its line, then "You know all about polygons now. You are ready to help Momo.", then the runner game's cover (with `?bridge=0`: Help Momo or Play again) | `END` | `viewEnd`, `lessonComplete`, `queuePart2`, `startPart2`, `startRunner` |
 
 ## Other documents
 

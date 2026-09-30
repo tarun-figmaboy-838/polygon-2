@@ -1,64 +1,68 @@
 /* ============================================================================
-   THE BROKEN PATH — the story between Part 1 and Part 2.
+   HELP MOMO — the Broken Path, between the story and the lesson.
 
-   Part 1, the polygon lesson, ends on its completion screen: Swiftee's "You did
-   it!", the confetti, then a short pause. The lesson then calls start(). It does
-   not cut to a new screen. The ice frosts over the lesson and clears on this
-   scene, which is set in the Part 2 game's own world and drawn from its own art
-   (game/assets), placed the way game/js/engine.js places it:
+   The Momo + Polo story ends with Polo's "Momo, keep going!" and fades to its dark
+   (src/story/story-intro.js). This scene comes up out of that dark, set in the Part 2
+   game's own world and drawn from its own art (game/assets), placed the way
+   game/js/engine.js places it:
 
      Momo runs in along the ice path and the path starts to scroll. The break
      comes into view ahead, and he skids to a stop short of the edge. He looks
      down at the drop, trembles a little and settles. Swiftee flies in on a
      curve, slows, and lands between him and the edge. She looks at the gap,
-     looks back at Momo, and then speaks in her own Part 1 dialogue box: the two
-     lines Part 2 already has recorded for this moment, word by word with the
-     owner's own take. When the last line has been read, Next appears.
+     looks back at Momo, and then speaks in her own Part 1 dialogue box, word by
+     word with the voice: the two lines Part 2 has recorded for this moment, "Oh
+     no! The path is broken." and "Help Momo cross the Frozen Pass!", and then the
+     line that turns it into the lesson, "But for that first you need to learn
+     about polygons." It stays up to be read, and then Next appears.
+
+   Next fades the scene back to the story's dark, which is the blizzard's first frame,
+   and the blizzard carries on into the lesson (src/intro/ice-intro.js waits for this
+   scene, and the lesson waits for the blizzard). So the learner meets Momo's problem,
+   then learns the polygons that solve it. The lesson ends on Swiftee's "You know all
+   about polygons now. You are ready to help Momo." and then brings up the Part 2 cover
+   itself; this scene is not shown a second time.
 
    THE SOUND is the game's own: its recorded snow footsteps on each footfall, its
    skid, its cartoon pips as Momo shivers at the edge, its whoosh (lighter, for a
    small bird) as Swiftee swoops in, and its interface tap on Next.
 
-   Next hands over to RunnerStage (src/runner/runner-stage.js), which fades to
-   the Part 2 cover: the Frozen Rush banner and its Play button. Play starts the
-   game. That cover is the game's own (game/js/frontend.js), and it already
-   ignores a second press and starts the run once. Nothing in game/ is changed
-   by this file; it only reads the game's art, its voice take and its state.
-
    THE STATES, in order, as state().phase reports them:
-     PART1_COMPLETE   the lesson's last line is done and start() was called
-     STORY_ENTER      the ice frosts over the lesson and clears on the scene
+     STORY_COMPLETE   the story has handed over and start() was called
+     STORY_ENTER      the scene comes up out of the story's dark
      MOMO_RUNNING     Momo runs in; the path scrolls; the break comes into view
      MOMO_AT_DITCH    he has stopped short of the edge and looks down
      SWIFTEE_ENTER    Swiftee flies in and lands
      SWIFTEE_OBSERVE  she looks at the gap, then at Momo
-     DIALOGUE         her two lines, word by word with the voice
+     DIALOGUE         her three lines, word by word with the voice
      STORY_READY      the last line is said; it stays up to be read
      NEXT_ENABLED     Next is on screen and takes a tap
-     PART2_BANNER     Next was pressed; the Part 2 cover is coming up
-     PLAY_READY       the cover is up and its Play takes a tap
-     PART2_START      Play was pressed; Part 2 is running
-   The last two are read from the game itself (RunnerStage.state()), not guessed.
+     LESSON_START     Next was pressed; the scene fades, and the blizzard and the lesson follow
 
    NOTHING ELSE TAKES A TAP OR A KEY. From start() until the hand-off, the page
    under the scene is inert, the scene swallows every pointer and key that is
    not meant for Next, and Next does not exist on screen until NEXT_ENABLED. A
    tap cannot skip Swiftee's entrance, start a line twice or press Next early.
 
-   THE VOICE. The lines are windows in the game's one recorded take
+   THE VOICE. The first two lines are windows in the game's one recorded take
    (game/assets/audio/vo-lines.*), with the word times the game itself uses
    (CFG.vo.lines in game/js/engine.js; tests/bridge.test.cjs holds that the two
-   copies agree). The take plays through the lesson's own AudioContext, which the
-   learner's taps have already unlocked, so the scene can speak without asking
-   for another tap. Where there is no sound (no context, blocked autoplay, a
-   failed download), the words still arrive on the same clock, silently, and
-   the scene carries on. A story that cannot talk is never a story that stops.
+   copies agree). The third is a lesson recording (src/lesson/recordings.js), with its
+   own word times. They play through the lesson's own AudioContext, which the tap on
+   the story's Play has already unlocked, so the scene speaks without asking for another
+   tap. Where there is no sound (no context, blocked autoplay, a failed download), the
+   words still arrive on the same clock, silently, and the scene carries on. A story
+   that cannot talk is never a story that stops.
 
+   WHEN IT PLAYS: after the story, whenever the story played (a learner who skipped it
+   with Escape still meets Momo's problem). Where the story is left out (?story=0,
+   ?intro=0, ?preview=1, automated browsers) so is this scene, and the lesson opens as
+   it did.
    URL flags:
-     ?bridge=0   leave this scene out: the completion screen keeps Help Momo and
-                 Play again, as it did before
-     ?bridge=1   open straight on this scene (the story, the blizzard and the
-                 lesson are skipped), for review and for the tests
+     ?bridge=0   leave this scene out: the lesson follows the story at once, and its
+                 completion screen offers Help Momo (Part 2) and Play again
+     ?bridge=1   open straight on this scene (the story and the blizzard are skipped);
+                 its Next goes straight into the lesson. For review and for the tests
    With ?game=0 there is no Part 2, so there is no scene either.
    ========================================================================= */
 (function () {
@@ -105,7 +109,12 @@
      shivers once (4-6), looks up and settles (7-11). About two seconds. */
   var LOOK = [[0, 200], [1, 180], [2, 220], [3, 200], [4, 110], [5, 95], [6, 85], [5, 90], [4, 110],
               [7, 150], [8, 150], [9, 140], [10, 150], [11, 200]];
-  var IDLE = { frames: 12, fps: 9 };     // the game's idle: twelve poses at 9 fps, crossfaded
+  /* AND THEN HE WAITS AS THE GAME'S MAMMOTH WAITS AT A CRACK (PlayerController, LOOK_DOWN):
+     one still pose, the tremble's own last frame, the settle it ends on, kept alive by the
+     game's procedural breath, a slow rise and fall with a matching narrowing about his feet.
+     The idle sheet is not played here: the game keeps it off the ditch because twelve poses
+     looping beside the edge read as fidgeting, and it did here too. */
+  var HOLD = { frame: 11, rate: 1.75, lift: 3, grow: 0.006, narrow: 0.008, easeIn: 400 };
 
   /* THE COMPOSITION, in stage px: Momo stops at MOMO_X; the near lip of the break is at
      LIP and the break is GAP wide; Swiftee lands at PERCH, between his trunk (~740) and
@@ -124,8 +133,31 @@
     { id: 'tut-5-broken', text: 'Oh no! The path is broken.', at: 11.23, dur: 2.86,
       words: [0.06, 0.34, 1.13, 1.40, 1.86, 2.46], focus: { 'broken.': 1 } },
     { id: 'tut-2-goal', text: 'Help Momo cross the Frozen Pass!', at: 4.28, dur: 2.95,
-      words: [0.07, 0.33, 0.95, 1.40, 1.65, 2.30], focus: { 'Frozen': 1, 'Pass!': 1 } }
+      words: [0.07, 0.33, 0.95, 1.40, 1.65, 2.30], focus: { 'Frozen': 1, 'Pass!': 1 } },
+    /* The line into the lesson: a lesson recording, so its take, its length and its word
+       times are that recording's (see lessonTake). */
+    { id: 'learn-first', text: 'But for that first you need to learn about polygons.', lesson: true,
+      at: 0, dur: 3.6, words: [], focus: { 'polygons.': 1 } }
   ];
+  /* A lesson line takes its recording from the lesson's catalogue, looked up by its words
+     exactly as the lesson looks them up. Without the catalogue the words keep an even pace
+     over the line's own length, silently. */
+  function lessonTake(line) {
+    if (!line.lesson || line.take !== undefined) return line.take || null;
+    var rec = null;
+    try { rec = window.PolygonRecordedVoice && window.PolygonRecordedVoice.find(line.text); } catch (e) {}
+    line.take = rec || null;
+    var n = line.text.split(' ').length;
+    if (rec && rec.words && rec.words.length === n) {
+      line.dur = rec.duration;
+      line.words = rec.words.map(function (w) { return w.start; });
+    } else {
+      if (rec && rec.duration) line.dur = rec.duration;
+      line.words = line.text.split(' ').map(function (w, i) { return line.dur * 0.9 * i / n; });
+    }
+    return line.take;
+  }
+  LINES.forEach(lessonTake);
   var VO_SRC = 'assets/audio/vo-lines.mp3';
   /* THE GAME'S OWN SOUNDS (CFG.sfx in game/js/engine.js), at its gains under its 0.7 master:
      the recorded snow footsteps, cut at each footfall found in the waveform and taken in
@@ -142,8 +174,8 @@
   /* THE TIMELINE, in ms of scene time. The run is short on purpose: in, a stretch of
      running while the break comes into view, the stop. */
   var T = {
-    frost: 440,        // the ice wipes over the lesson
-    loadCap: 8000,     // longest the scene waits for its art under the frost
+    dusk: 440,         // the story's dark holds a moment before the scene comes up
+    loadCap: 8000,     // longest the scene waits for its art in the dark
     enter: 1730,       // Momo runs in while the path picks up speed
     cruise: 900,       // running, with the break in view
     beforeBird: 450,   // he has settled; a breath before Swiftee
@@ -152,8 +184,9 @@
     lookGap: 700,      // she looks at the break
     lookMomo: 450,     // she looks back at Momo
     partOut: 160,      // a line fading out before the next takes the box
-    lineGap: 420,      // the pause between the two lines
-    read: 900,         // the last line stays up alone before Next
+    lineGap: 420,      // the pause between one line and the next
+    read: 1100,        // the last line stays up alone, to be read, before Next
+    leave: 420,        // Next: the scene fades back to the dark the blizzard starts from
     stillLook: 900     // reduced motion: how long he is shown looking down
   };
   var WORD_LEAD = 0.04;  // a word shows this far ahead of its sound
@@ -174,7 +207,7 @@
 
   var SW = window.SWIFTEE || null;
   var BIRD_CLIPS = ['flying', 'flapping', 'blinking', 'curious', 'talk_start', 'talking', 'talk_stop'];
-  var REQUIRED = ['sky', 'path', 'capL', 'capR', 'run', 'skid', 'tremble', 'idle', 'bird:flying', 'bird:blinking', 'bird:talking'];
+  var REQUIRED = ['sky', 'path', 'capL', 'capR', 'run', 'skid', 'tremble', 'bird:flying', 'bird:blinking', 'bird:talking'];
 
   var S = null;          // the run on screen, or null
   var last = null;       // what the last run left behind, for state()
@@ -182,6 +215,7 @@
   var art = {};          // loaded images, by name
   var bytes = {};        // fetched audio, by name
   var ctxHint = null;    // the lesson's AudioContext, when it was handed over early
+  var ctxSource = null;  // or where to get it (useAudio): the lesson's, unlocked by the story's Play
   var versionsP = null;
 
   function noop() {}
@@ -283,17 +317,14 @@
     } catch (e) { return null; }
   }
 
-  /* Load everything the scene draws and says. Called as the completion screen opens, so
-     it is all in by the time the last line has been read. The game's frame is asked to
-     load after the scene's own art (or after 2.5 s, whichever comes first), so the two
-     do not fight over a slow connection for the part that is needed first. */
+  /* Load everything the scene draws and says. Called once the story is playing (see
+     watchStory), so it is all in by the time the story ends. The Part 2 game's own frame
+     is not asked for here: the lesson loads it on its completion screen. */
   function preload(opts) {
     if (!enabled) return Promise.resolve(false);
     if (opts && opts.audioContext) ctxHint = opts.audioContext;
     if (loading) return loading;
     var hd = pickHd();
-    var runner = function () { if (RS && RS.preload) RS.preload(); };
-    setTimeout(runner, 2500);
     loading = versions().then(function (V) {
       var jobs = [];
       var add = function (key, url) { jobs.push(loadImg(url).then(function (im) { art[key] = im; })); };
@@ -302,12 +333,16 @@
       add('capL', gameUrl(V, 'assets/env/cap-l.webp'));
       add('capR', gameUrl(V, 'assets/env/cap-r.webp'));
       add('rock', gameUrl(V, 'assets/env/rock-band.webp'));
-      ['run', 'skid', 'tremble', 'idle'].forEach(function (k) {
+      ['run', 'skid', 'tremble'].forEach(function (k) {
         add(k, gameUrl(V, 'assets/char/' + (hd ? 'hd/' : '') + 'mammoth-' + k + '.webp'));
       });
       if (SW && SW.clips) BIRD_CLIPS.forEach(function (c) { if (SW.clips[c]) add('bird:' + c, SW.clips[c].image); });
       if (document.fonts && document.fonts.load) jobs.push(document.fonts.load('600 46px Fredoka').catch(noop));
       bytes.voice = fetchBytes(gameAudioUrl(V, VO_SRC));
+      LINES.forEach(function (l) {
+        var take = lessonTake(l);
+        if (take) bytes[l.id] = fetchBytes(window.polygonAudioSrc ? window.polygonAudioSrc(take.src) : take.src);
+      });
       Object.keys(SFX).forEach(function (k) { bytes[k] = fetchBytes(gameAudioUrl(V, SFX[k].src)); });
       return Promise.all(jobs).then(function () {
         art.hd = hd;
@@ -317,13 +352,13 @@
         return REQUIRED.every(function (k) { return !!art[k]; });
       });
     });
-    loading.then(runner, runner);
     return loading;
   }
 
   /* ----------------------------------------------------------------- sound */
   function openAudio(given) {
     var ctx = given || ctxHint, own = false;
+    if ((!ctx || ctx.state === 'closed') && ctxSource) { try { ctx = ctxSource(); } catch (e) { ctx = null; } }
     if (!ctx || ctx.state === 'closed') {
       var A = window.AudioContext || window.webkitAudioContext;
       ctx = null;
@@ -336,7 +371,8 @@
     if (ctx.state === 'suspended') { try { ctx.resume().catch(noop); } catch (e) {} }
     /* Decode the take and the sounds with this context, once preload has started fetching
        them. decodeAudioData detaches what it is given, so each gets a copy. */
-    versions().then(function () { ['voice'].concat(Object.keys(SFX)).forEach(function (name) {
+    var takes = LINES.filter(function (l) { return l.take; }).map(function (l) { return l.id; });
+    versions().then(function () { ['voice'].concat(takes, Object.keys(SFX)).forEach(function (name) {
       if (!bytes[name]) return;
       bytes[name].then(function (ab) {
         if (!ab || !S || S.audio !== A2) return;
@@ -521,7 +557,7 @@
     root.tabIndex = -1;
     root.setAttribute('role', 'dialog');
     root.setAttribute('aria-modal', 'true');
-    root.setAttribute('aria-label', 'Momo reaches the broken path');
+    root.setAttribute('aria-label', 'Help Momo: he reaches the broken path');
 
     var canvas = el('canvas', 'bridge-canvas', root);
     canvas.setAttribute('aria-hidden', 'true');
@@ -550,8 +586,9 @@
     next.disabled = true;
     next.innerHTML = '<span>Next</span><span class="chev" aria-hidden="true">&#9654;</span>';
 
-    var frost = el('div', 'bridge-frost', root);
-    frost.setAttribute('aria-hidden', 'true');
+    /* the story's dark, which the scene comes up out of and goes back into for the blizzard */
+    var dusk = el('div', 'bridge-dusk', root);
+    dusk.setAttribute('aria-hidden', 'true');
 
     document.body.appendChild(root);
     S.root = root; S.canvas = canvas; S.ctx = canvas.getContext('2d'); S.next = next; S.live = live;
@@ -582,10 +619,10 @@
   }
   function toScreen(x, y) { var c = S.cam; return { x: (x - c.l) * c.s, y: (y - c.t) * c.s }; }
 
-  /* The sky and the water, which never move, drawn once per size into a canvas the
-     size of the screen. The sky is the game's rect, scaled about the middle of the
-     walking line only as far as it takes to reach every edge of the view above the
-     water; below the water line it is the game's sea. */
+  /* The sky, which never moves, drawn once per size into a canvas the size of the
+     screen: the game's rect, scaled about the middle of the walking line only as far as
+     it takes to reach every edge of the view above the water. The sea below it is drawn
+     each frame, on the game's wave (drawDeepWater). */
   function backdrop() {
     if (S.backdrop) return S.backdrop;
     var c = S.cam, cv = document.createElement('canvas');
@@ -596,13 +633,6 @@
     var f = Math.max(1, (ax - c.l) / (ax - SKY.x), (c.l + c.w - ax) / (SKY.x + SKY.w - ax), (ay - c.t) / (ay - SKY.y));
     var sx = ax - (ax - SKY.x) * f, sy = ay - (ay - SKY.y) * f;
     if (art.sky) g.drawImage(art.sky, sx, sy, SKY.w * f, SKY.h * f);
-    var bottom = Math.max(H + 40, c.t + c.h + 40);
-    var body = g.createLinearGradient(0, WATER, 0, WATER + 320);
-    body.addColorStop(0, '#2E9FC9'); body.addColorStop(0.3, '#1B7BA8'); body.addColorStop(1, '#0C4A70');
-    g.fillStyle = body; g.fillRect(c.l - 10, WATER, c.w + 20, bottom - WATER);
-    var refl = g.createLinearGradient(0, WATER, 0, WATER + 46);
-    refl.addColorStop(0, 'rgba(196,236,252,0.46)'); refl.addColorStop(1, 'rgba(174,224,248,0)');
-    g.fillStyle = refl; g.fillRect(c.l - 10, WATER, c.w + 20, 46);
     S.backdrop = cv;
     return cv;
   }
@@ -617,145 +647,309 @@
     ctx.drawImage(backdrop(), 0, 0);
     var k = c.dpr * c.s;
     ctx.setTransform(k, 0, 0, k, -c.l * k, -c.t * k);
-    var wx = S.worldX, x0 = HOLE_WX - wx, x1 = x0 + GAP;
+    var wx = S.worldX, x0 = HOLE_WX - wx, x1 = x0 + GAP, t = S.clock / 1000;
     var holeSeen = x0 < c.l + c.w + CAP.w * CAP_S && x1 > c.l - CAP.w * CAP_S;
-    var crack = holeSeen ? crackPath(x0, x1) : null;
-    if (crack) drawHole(ctx, x0, x1, crack);
-    drawPath(ctx, wx, crack);
+    var crack = holeSeen ? ditchPath(x0, x1) : null;
+    // the game's own order (game/js/engine.js, the frame's ground pass)
+    if (crack) { drawDitch(ctx, x0, x1, crack, t); drawWaterFront(ctx, x0, x1, crack, t); }
+    drawPath(ctx, wx, crack, t);
+    drawRiverLife(ctx, t);
     if (crack) drawLips(ctx, x0, x1);
     drawMomo(ctx);
     drawBird(ctx);
   }
 
-  /* The path, A A' A A', cut by the crack's outline where the break is (the game cuts
-     it the same way, with an even-odd clip), so the lips are the only edge it has. */
-  function drawPath(ctx, wx, crack) {
-    if (!art.tileA) return;
+  /* The path, A A' A A', and the sea under it, cut by the crevasse's outline where the
+     break is: the game's GroundManager.draw, with the same even-odd clip, so the lips
+     are the only edge the path has and the sea never paints into the crevasse (the
+     crevasse draws its own stretch of the same water). */
+  function drawPath(ctx, wx, crack, t) {
     var c = S.cam, from = c.l - 20, to = c.l + c.w + 20;
     ctx.save();
     if (crack) {
       var p = new Path2D();
-      p.rect(from, TILE_Y - 40, to - from, TILE_H + 80);
+      p.rect(from - 200, TILE_Y - 40, to - from + 400, Math.max(TILE_H + 80, c.t + c.h + 80 - TILE_Y));
       p.addPath(crack);
       ctx.clip(p, 'evenodd');
     }
+    drawDeepWater(ctx, t);
+    if (!art.tileA) { ctx.restore(); return; }
     for (var k = Math.floor((from + wx) / TILE_W); k * TILE_W - wx < to; k++) {
       ctx.drawImage((k & 1) ? art.tileB : art.tileA, Math.round(k * TILE_W - wx), TILE_Y, TILE_W, TILE_H);
     }
     ctx.restore();
   }
-  /* THE CRACK'S OUTLINE: straight down at the lips (the caps sit over those cuts), a
-     chewed top edge a few pixels above the walking line across the mouth, so the snow's
-     own fringe never hangs into it, and open to the water. Seeded, so it never jitters. */
-  function crackPath(x0, x1) {
-    if (!S.crackTop) {
-      var seed = 4817;
-      var rnd = function () { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
-      S.crackTop = [];
-      for (var i = 0; i <= 18; i++) {
-        var u = i / 18, edge = Math.min(u, 1 - u);
-        S.crackTop.push({ u: u, dy: edge < 0.06 ? -3 - rnd() * 4 : -12 + rnd() * 8 });
+  /* ============ THE CREVASSE AND THE WATER, AS THE GAME DRAWS THEM ============
+     Ported from game/js/engine.js (GroundManager: _profile, _ditchPath, _backArt,
+     _wallArt, waterY, drawDitch, drawWaterFront, drawDeepWater, drawRiverLife), with
+     the game's own numbers, for a plain break: no plug, no notch, the neck as wide as
+     the hole. The one change is the extent: the game fills its 1920 x 1080 stage, and
+     this scene can show more than that on a wide or an upright screen, so the fills
+     run to the edges of the camera instead. Read the game's comments there for why
+     each layer is what it is; keep the two in step. */
+  var THROAT = 36;                    // CFG.levelOne.throatDepth
+  function ditchProfile() {
+    if (S.prof) return S.prof;
+    var seed = Math.abs(Math.round(HOLE_WX)) % 9973 + 17;
+    var rnd = function () { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+    var N = 22, top = [];
+    for (var i = 0; i <= N; i++) {
+      var u = i / N, edge = Math.min(u, 1 - u);
+      top.push({ u: u, dy: edge < 0.05 ? -3 - rnd() * 4 : -9 + rnd() * 7 });
+    }
+    var wall = function () {
+      var out = [];
+      for (var j = 0; j <= 12; j++) {
+        var v = j / 12;
+        out.push({ v: v, f: v < 0.02 || v > 0.98 ? 0 : Math.sin(v * Math.PI) * (0.05 + rnd() * 0.06) + (rnd() - 0.5) * 0.07 });
       }
+      return out;
+    };
+    S.prof = { top: top, L: wall(), R: wall() };
+    return S.prof;
+  }
+  /* No more than a dozen cached walls (a resize makes new ones): the oldest go first. */
+  function keepWall(key, art) {
+    S.walls[key] = art;
+    var keys = Object.keys(S.walls);
+    for (var i = 0; i < keys.length - 12; i++) delete S.walls[keys[i]];
+    return art;
+  }
+  function ditchBottom() { var c = S.cam; return Math.max(H + 80, c.t + c.h + 80); }
+  function ditchPath(x0, x1) {
+    var pr = ditchProfile(), w = x1 - x0, y0 = SURFACE, yB = ditchBottom(), span = yB - y0;
+    var tv = span > 0 ? (THROAT + 60) / span : 0, p = new Path2D(), i;
+    p.moveTo(x0, y0 + pr.top[0].dy);
+    for (i = 0; i < pr.top.length - 1; i++) {
+      var a = pr.top[i], b = pr.top[i + 1], ax = x0 + w * a.u, bx = x0 + w * b.u;
+      p.quadraticCurveTo(ax, y0 + a.dy, (ax + bx) / 2, y0 + (a.dy + b.dy) / 2);
     }
-    var top = S.crackTop, w = x1 - x0, p = new Path2D();
-    p.moveTo(x0, H + 80);
-    p.lineTo(x0, SURFACE + top[0].dy);
-    for (var j = 0; j < top.length - 1; j++) {
-      var a = top[j], b = top[j + 1], ax = x0 + w * a.u, bx = x0 + w * b.u;
-      p.quadraticCurveTo(ax, SURFACE + a.dy, (ax + bx) / 2, SURFACE + (a.dy + b.dy) / 2);
-    }
-    p.lineTo(x1, SURFACE + top[top.length - 1].dy);
-    p.lineTo(x1, H + 80);
+    var last = pr.top[pr.top.length - 1];
+    p.lineTo(x0 + w * last.u, y0 + last.dy);
+    p.lineTo(x1, y0);
+    p.lineTo(x1, y0 + THROAT);
+    pr.R.forEach(function (q) { if (q.v > tv) p.lineTo(x1 - w * q.f, y0 + span * q.v); });
+    p.lineTo(x1, yB);
+    p.lineTo(x0, yB);
+    for (i = pr.L.length - 1; i >= 0; i--) { var q = pr.L[i]; if (q.v > tv) p.lineTo(x0 + w * q.f, y0 + span * q.v); }
+    p.lineTo(x0, y0 + THROAT);
+    p.lineTo(x0, y0);
     p.closePath();
     return p;
   }
-
-  /* The break, in the game's colours: the body of the crack (brighter toward the water,
-     which bounces light up), the platform's own rock band tiled across the far wall and
-     pulled into the dark, the shadow under the snow lip, darker side walls, and the
-     cold mist over the water. A simpler cut of the game's crevasse, from the same parts. */
-  function drawHole(ctx, x0, x1, crack) {
-    var w = x1 - x0, top = SURFACE - 16;
-    ctx.save();
-    ctx.clip(crack);
-    var body = ctx.createLinearGradient(0, SURFACE - 16, 0, WATER);
-    body.addColorStop(0, '#0E3358'); body.addColorStop(0.4, '#123F69'); body.addColorStop(0.82, '#1C5F8E'); body.addColorStop(1, '#2A7BA8');
-    ctx.fillStyle = body; ctx.fillRect(x0 - 2, top, w + 4, WATER - top + 2);
-    /* the far wall: the platform's rock band, bigger and fewer than the lips' so it reads
-       as further back, alternate courses mirrored, and pulled well into the dark */
-    if (art.rock) stoneCourses(ctx, x0, x1, SURFACE + 14, WATER, CAP_S * 1.05, function (row) { return Math.max(0.1, 0.3 - row * 0.07); }, 61);
-    /* soft vertical ice facets down the far wall */
-    [[0.18, 26], [0.37, 14], [0.55, 34], [0.74, 18], [0.88, 12]].forEach(function (fc, i) {
-      var fx = x0 + w * fc[0], g = ctx.createLinearGradient(0, SURFACE, 0, WATER);
-      g.addColorStop(0, 'rgba(150,210,245,0)'); g.addColorStop(0.35, 'rgba(150,210,245,' + (0.1 + (i % 2) * 0.04) + ')'); g.addColorStop(1, 'rgba(150,210,245,0)');
-      ctx.fillStyle = g;
-      ctx.beginPath(); ctx.moveTo(fx, SURFACE); ctx.lineTo(fx + fc[1], SURFACE); ctx.lineTo(fx + fc[1] * 0.4, WATER); ctx.lineTo(fx - fc[1] * 0.3, WATER); ctx.closePath(); ctx.fill();
-    });
-    drawWall(ctx, x0, w, 1);
-    drawWall(ctx, x1, w, -1);
-    var sh = ctx.createLinearGradient(0, top, 0, SURFACE + 70);
-    sh.addColorStop(0, 'rgba(3,16,38,0.72)'); sh.addColorStop(1, 'rgba(3,16,38,0)');
-    ctx.fillStyle = sh; ctx.fillRect(x0 - 6, top, w + 12, 94);
-    var side = Math.min(150, w * 0.3);
-    var gl = ctx.createLinearGradient(x0, 0, x0 + side, 0);
-    gl.addColorStop(0, 'rgba(6,24,52,0.6)'); gl.addColorStop(1, 'rgba(6,24,52,0)');
-    ctx.fillStyle = gl; ctx.fillRect(x0 - 6, top, side + 6, WATER - top);
-    var gr = ctx.createLinearGradient(x1, 0, x1 - side, 0);
-    gr.addColorStop(0, 'rgba(6,24,52,0.6)'); gr.addColorStop(1, 'rgba(6,24,52,0)');
-    ctx.fillStyle = gr; ctx.fillRect(x1 - side, top, side + 6, WATER - top);
-    var mist = ctx.createLinearGradient(0, WATER - 150, 0, WATER + 4);
-    mist.addColorStop(0, 'rgba(176,222,246,0)'); mist.addColorStop(0.7, 'rgba(176,222,246,0.28)'); mist.addColorStop(1, 'rgba(196,232,250,0.5)');
-    ctx.fillStyle = mist; ctx.fillRect(x0 - 6, WATER - 150, w + 12, 154);
-    ctx.restore();
+  function waterY(x, t) {
+    return WATER + Math.sin(x * 0.028 + t * 1.7) * 2.4 + Math.sin(x * 0.0105 - t * 1.05) * 1.7;
   }
-  /* Courses of the platform's stone (the rock band's lower rows, below its icicles),
-     each shifted and every other one mirrored so no repeat shows. */
-  function stoneCourses(ctx, xa, xb, ya, yb, scale, alphaFor, seed) {
-    var im = art.rock, sy = 36, sh = im.naturalHeight - sy;
-    var rw = im.naturalWidth * scale, rh = sh * scale;
-    for (var row = 0, y = ya; y < yb; row++, y += rh * 0.92) {
-      var shift = (row * 173 + seed) % rw;
-      ctx.globalAlpha = alphaFor(row);
-      for (var x = xa - shift; x < xb; x += rw) {
-        if (row % 2) { ctx.save(); ctx.translate(x + rw, y); ctx.scale(-1, 1); ctx.drawImage(im, 0, sy, im.naturalWidth, sh, 0, 0, rw, rh); ctx.restore(); }
-        else ctx.drawImage(im, 0, sy, im.naturalWidth, sh, x, y, rw, rh);
+  /* the far wall, cached: the rock band tiled across the interior at 0.72 of the lips'
+     scale, alternate rows mirrored, pushed back into the blue and darker with depth */
+  function backArt(ww) {
+    var band = art.rock;
+    if (!band || ww < 8) return null;
+    var Hh = Math.round(ditchBottom() - 20 - SURFACE);
+    ww = Math.max(8, Math.round(ww / 48) * 48);
+    S.walls = S.walls || {};
+    var key = 'back:' + ww + ':' + Hh;
+    if (S.walls[key]) return S.walls[key];
+    var cv = document.createElement('canvas');
+    cv.width = ww + 16; cv.height = Hh;
+    var g = cv.getContext('2d');
+    g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high';
+    var seed = 4241, rnd = function () { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+    var k = 0.72 * CAP_S, bw = band.naturalWidth || band.width, bh = band.naturalHeight || band.height;
+    var rowH = Math.max(20, Math.round(bh * k)), rowW = Math.round(bw * k);
+    for (var y = -Math.round(rnd() * rowH), row = 0; y < Hh; y += rowH - 4, row++) {
+      for (var x = -Math.round(rnd() * rowW); x < cv.width; x += rowW - 4) {
+        g.save();
+        if (row & 1) { g.translate(cv.width, 0); g.scale(-1, 1); g.drawImage(band, cv.width - x - rowW, y, rowW, rowH); }
+        else g.drawImage(band, x, y, rowW, rowH);
+        g.restore();
       }
     }
-    ctx.globalAlpha = 1;
+    g.globalCompositeOperation = 'source-atop';
+    g.fillStyle = 'rgba(12,44,80,0.78)'; g.fillRect(0, 0, cv.width, Hh);
+    var dk = g.createLinearGradient(0, 0, 0, Hh);
+    dk.addColorStop(0, 'rgba(4,18,40,0.3)'); dk.addColorStop(0.55, 'rgba(4,18,40,0.6)'); dk.addColorStop(1, 'rgba(4,18,40,0.9)');
+    g.fillStyle = dk; g.fillRect(0, 0, cv.width, Hh);
+    g.globalCompositeOperation = 'source-over';
+    return keepWall(key, { canvas: cv, w: cv.width, h: Hh });
   }
-  /* A SIDE WALL: stone coming down from the lip, bulging in toward the middle of the drop
-     and falling back toward the water, its inner edge broken course by course. Darker the
-     deeper it goes. It is what makes the break a crack in the ice rather than a box. */
-  function drawWall(ctx, xl, w, dir) {
-    if (!S.walls) {
-      var seed = 9173;
-      var rnd = function () { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
-      var mk = function () {
-        var out = [];
-        for (var i = 0; i <= 12; i++) { var v = i / 12; out.push({ v: v, f: 0.035 + Math.sin(v * Math.PI) * (0.12 + rnd() * 0.05) + (rnd() - 0.5) * 0.05 }); }
-        return out;
-      };
-      S.walls = { l: mk(), r: mk() };
+  /* one side wall, cached: the rock band down the side at the lips' scale, its inner edge
+     wandering between 70% and 100% of the width on curves, darker with depth */
+  function wallArt(side, ww) {
+    var band = art.rock;
+    if (!band) return null;
+    var Hh = Math.round(ditchBottom() + 20 - SURFACE);
+    ww = Math.max(8, Math.round(ww / 24) * 24);
+    S.walls = S.walls || {};
+    var key = side + ':' + ww + ':' + Hh;
+    if (S.walls[key]) return S.walls[key];
+    var cv = document.createElement('canvas');
+    cv.width = ww + 12; cv.height = Hh;
+    var g = cv.getContext('2d');
+    g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high';
+    var seed = side === 'l' ? 1301 : 7727, rnd = function () { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+    var k = CAP_S, bw = band.naturalWidth || band.width, bh = band.naturalHeight || band.height;
+    var rowH = Math.max(24, Math.round(bh * k)), rowW = Math.round(bw * k);
+    for (var y = -Math.round(rnd() * rowH * 0.5), row = 0; y < Hh; y += rowH - 6, row++) {
+      var sx = Math.round(rnd() * Math.max(0, rowW - cv.width - 8));
+      g.save();
+      if (row & 1) { g.translate(cv.width, 0); g.scale(-1, 1); }
+      g.drawImage(band, -sx, y, rowW, rowH);
+      g.restore();
     }
-    var prof = dir > 0 ? S.walls.l : S.walls.r, y0 = SURFACE + 6, span = WATER + 6 - y0;
+    g.globalCompositeOperation = 'destination-in';
+    g.beginPath();
+    g.moveTo(0, -60);
+    var px = ww * (0.7 + 0.3 * rnd()), py = -60;
+    g.lineTo(px, py);
+    for (var yy = 0; yy <= Hh + 60; yy += 56) {
+      var nx = ww * (0.7 + 0.3 * rnd());
+      g.quadraticCurveTo(px, (py + yy) / 2, (px + nx) / 2, yy);
+      px = nx; py = yy;
+    }
+    g.lineTo(px, Hh + 60);
+    g.lineTo(0, Hh + 60);
+    g.closePath();
+    g.fill();
+    g.globalCompositeOperation = 'source-atop';
+    var dk = g.createLinearGradient(0, 0, 0, Hh);
+    dk.addColorStop(0, 'rgba(6,26,52,0.10)'); dk.addColorStop(0.4, 'rgba(6,26,52,0.32)'); dk.addColorStop(1, 'rgba(6,26,52,0.82)');
+    g.fillStyle = dk; g.fillRect(0, 0, cv.width, Hh);
+    g.globalCompositeOperation = 'source-over';
+    return keepWall(key, { canvas: cv, w: cv.width, h: Hh });
+  }
+  /* THE INSIDE OF THE CREVASSE: the body of the crack, the far wall under the lip's
+     shadow, the side walls, the mist, the wall light, and the melt pool. */
+  function drawDitch(ctx, x0, x1, crack, t) {
+    var w = x1 - x0, bottom = ditchBottom();
     ctx.save();
+    ctx.clip(crack);
+    var g1 = ctx.createLinearGradient(0, SURFACE - 20, 0, WATER);
+    g1.addColorStop(0, '#0E3358'); g1.addColorStop(0.40, '#123F69'); g1.addColorStop(0.82, '#1C5F8E'); g1.addColorStop(1, '#2A7BA8');
+    ctx.fillStyle = g1; ctx.fillRect(x0 - 6, SURFACE - 40, w + 12, WATER - SURFACE + 60);
+    var back = backArt(Math.round(w / 24) * 24);
+    if (back) {
+      ctx.drawImage(back.canvas, 0, 0, back.w, back.h, Math.round(x0 - 8), SURFACE - 24, Math.round(w + 16), back.h);
+      var sh = ctx.createLinearGradient(0, SURFACE - 24, 0, SURFACE + 70);
+      sh.addColorStop(0, 'rgba(3,16,38,0.72)'); sh.addColorStop(1, 'rgba(3,16,38,0)');
+      ctx.fillStyle = sh; ctx.fillRect(x0 - 8, SURFACE - 24, w + 16, 94);
+    }
+    var wallW = Math.round(Math.min(150, Math.max(56, w * 0.38)));
+    var wl = wallArt('l', wallW), wr = wallArt('r', wallW);
+    if (wl && wr) {
+      var top = SURFACE - 14;
+      ctx.drawImage(wl.canvas, Math.round(x0 - 10), top);
+      ctx.save();
+      ctx.translate(Math.round(x1 + 10), 0);
+      ctx.scale(-1, 1);
+      ctx.drawImage(wr.canvas, 0, top);
+      ctx.restore();
+    }
+    var mist = ctx.createLinearGradient(0, WATER - 150, 0, WATER + 10);
+    mist.addColorStop(0, 'rgba(176,222,246,0)'); mist.addColorStop(0.7, 'rgba(176,222,246,0.28)'); mist.addColorStop(1, 'rgba(196,232,250,0.5)');
+    ctx.fillStyle = mist; ctx.fillRect(x0 - 8, WATER - 150, w + 16, 160);
+    var lightW = Math.max(120, w * 0.42);
+    [0, 1].forEach(function (side) {
+      var ex = side ? x1 : x0, dir = side ? -1 : 1;
+      var wg = ctx.createLinearGradient(ex, 0, ex + dir * lightW, 0);
+      wg.addColorStop(0, 'rgba(176,230,251,0.60)'); wg.addColorStop(0.45, 'rgba(150,216,246,0.22)'); wg.addColorStop(1, 'rgba(126,200,238,0)');
+      ctx.fillStyle = wg;
+      ctx.fillRect(side ? x1 - lightW : x0, SURFACE - 20, lightW, WATER - SURFACE + 40);
+    });
+    // the melt pool: the same body, reflection and streaks as the sea, on the same wave
+    var body = ctx.createLinearGradient(0, WATER, 0, H + 40);
+    body.addColorStop(0, '#2E9FC9'); body.addColorStop(0.30, '#1B7BA8'); body.addColorStop(1, '#0C4A70');
+    ctx.save();
+    var surf = new Path2D();
+    surf.moveTo(x0 - 6, waterY(x0 - 6, t));
+    for (var px = x0 - 6; px <= x1 + 6; px += 10) surf.lineTo(px, waterY(px, t));
+    surf.lineTo(x1 + 6, bottom);
+    surf.lineTo(x0 - 6, bottom);
+    surf.closePath();
+    ctx.clip(surf);
+    ctx.fillStyle = body;
+    ctx.fillRect(x0 - 8, WATER - 10, w + 16, bottom - WATER + 20);
+    var refl = ctx.createLinearGradient(0, WATER, 0, WATER + 46);
+    refl.addColorStop(0, 'rgba(196,236,252,0.46)'); refl.addColorStop(1, 'rgba(174,224,248,0)');
+    ctx.fillStyle = refl; ctx.fillRect(x0 - 8, WATER, w + 16, 46);
+    ctx.fillStyle = 'rgba(226,248,255,0.20)';
+    for (var i = 0; i < 4; i++) {
+      var sx = x0 + ((i * 0.3129 + t * 0.05) % 1) * w, sy = WATER + 14 + i * 13;
+      ctx.beginPath(); ctx.ellipse(sx, sy, 34 - i * 5, 2.2, 0, 0, 6.2832); ctx.fill();
+    }
+    ctx.restore();
+    ctx.restore();
+  }
+  /* the pool's surface: the bright meniscus along the wave, and ice flecks bobbing on it */
+  function drawWaterFront(ctx, x0, x1, crack, t) {
+    var w = x1 - x0;
+    ctx.save();
+    ctx.clip(crack);
+    ctx.save();
+    ctx.strokeStyle = 'rgba(240,253,255,0.98)';
+    ctx.lineWidth = 4.5; ctx.lineJoin = 'round';
     ctx.beginPath();
-    ctx.moveTo(xl, y0);
-    prof.forEach(function (p) { ctx.lineTo(xl + dir * w * p.f, y0 + span * p.v); });
-    ctx.lineTo(xl, WATER + 6);
-    ctx.closePath();
-    ctx.fillStyle = '#23324d';
-    ctx.fill();
-    ctx.clip();
-    if (art.rock) stoneCourses(ctx, dir > 0 ? xl - 10 : xl - w * 0.3, dir > 0 ? xl + w * 0.3 : xl + 10, y0, WATER + 6, CAP_S, function () { return 0.9; }, dir > 0 ? 17 : 131);
-    var g = ctx.createLinearGradient(0, y0, 0, WATER);
-    g.addColorStop(0, 'rgba(8,26,54,0.3)'); g.addColorStop(1, 'rgba(8,26,54,0.72)');
-    ctx.fillStyle = g;
-    ctx.fillRect(Math.min(xl, xl + dir * w * 0.3) - 10, y0, w * 0.3 + 20, span + 6);
-    var e = ctx.createLinearGradient(xl, 0, xl + dir * w * 0.2, 0);
-    e.addColorStop(0, 'rgba(8,26,54,0)'); e.addColorStop(1, 'rgba(8,26,54,0.35)');
-    ctx.fillStyle = e;
-    ctx.fillRect(Math.min(xl, xl + dir * w * 0.3) - 10, y0, w * 0.3 + 20, span + 6);
+    ctx.moveTo(x0 - 6, waterY(x0 - 6, t));
+    for (var px = x0 - 6; px <= x1 + 6; px += 10) ctx.lineTo(px, waterY(px, t));
+    ctx.stroke();
+    ctx.restore();
+    ctx.fillStyle = 'rgba(240,252,255,0.85)';
+    for (var i = 0; i < 5; i++) {
+      var fx = x0 + ((i * 0.417 + t * 0.028) % 1) * w, fy = waterY(fx, t) - 2;
+      ctx.beginPath(); ctx.ellipse(fx, fy, 9 - i, 3.2, Math.sin(t + i) * 0.15, 0, 6.2832); ctx.fill();
+    }
+    ctx.restore();
+  }
+  /* THE SEA under the shelf: the same lake the crevasse holds, on the same wave */
+  function drawDeepWater(ctx, t) {
+    var c = S.cam, l = c.l - 10, r = c.l + c.w + 10, bottom = ditchBottom();
+    ctx.save();
+    var surf = new Path2D();
+    surf.moveTo(l, waterY(l, t));
+    for (var px = l; px <= r; px += 10) surf.lineTo(px, waterY(px, t));
+    surf.lineTo(r, bottom);
+    surf.lineTo(l, bottom);
+    surf.closePath();
+    ctx.clip(surf);
+    var body = ctx.createLinearGradient(0, WATER, 0, H + 40);
+    body.addColorStop(0, '#2E9FC9'); body.addColorStop(0.30, '#1B7BA8'); body.addColorStop(1, '#0C4A70');
+    ctx.fillStyle = body;
+    ctx.fillRect(l, WATER - 10, r - l, bottom - WATER + 20);
+    var refl = ctx.createLinearGradient(0, WATER, 0, WATER + 46);
+    refl.addColorStop(0, 'rgba(196,236,252,0.46)'); refl.addColorStop(1, 'rgba(174,224,248,0)');
+    ctx.fillStyle = refl;
+    ctx.fillRect(l, WATER, r - l, 46);
+    ctx.fillStyle = 'rgba(226,248,255,0.20)';
+    for (var i = 0; i < 9; i++) {
+      var sx = l + ((i * 0.3129 + t * 0.05) % 1) * (r - l), sy = WATER + 14 + (i % 4) * 13;
+      ctx.beginPath(); ctx.ellipse(sx, sy, 34 - (i % 4) * 5, 2.2, 0, 0, 6.2832); ctx.fill();
+    }
+    ctx.restore();
+  }
+  /* the river lives: a fish now and then under the surface, and bubbles rising */
+  function drawRiverLife(ctx, t) {
+    var c = S.cam, l = c.l, wdt = c.w, band = H - WATER;
+    if (WATER > H) return;
+    ctx.save();
+    var period = 9.5, u = (t % period) / period;
+    if (u < 0.42) {
+      var dir = Math.floor(t / period) % 2 ? -1 : 1;
+      var fx = dir > 0 ? l - 60 + (u / 0.42) * (wdt + 120) : l + wdt + 60 - (u / 0.42) * (wdt + 120);
+      var fy = WATER + band * 0.58 + Math.sin(t * 6) * 3;
+      ctx.save(); ctx.translate(fx, fy); ctx.scale(dir, 1);
+      ctx.fillStyle = 'rgba(8,52,84,0.55)';
+      ctx.beginPath(); ctx.ellipse(0, 0, 22, 8, 0, 0, 6.2832); ctx.fill();
+      var flick = Math.sin(t * 14) * 4;
+      ctx.beginPath(); ctx.moveTo(-18, 0); ctx.lineTo(-32, -8 + flick); ctx.lineTo(-32, 8 + flick); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = 'rgba(200,240,255,0.7)'; ctx.beginPath(); ctx.arc(10, -2, 1.8, 0, 6.2832); ctx.fill();
+      ctx.restore();
+    }
+    ctx.fillStyle = 'rgba(226,248,255,0.55)';
+    for (var i = 0; i < 5; i++) {
+      var ph = (t * 0.35 + i * 0.23) % 1;
+      var bx = l + ((i * 0.41 + 0.07) % 1) * wdt + Math.sin(t * 2 + i) * 6, by = H - ph * band;
+      ctx.beginPath(); ctx.arc(bx, by, 1.6 + (1 - ph) * 2.2, 0, 6.2832); ctx.fill();
+    }
     ctx.restore();
   }
   function drawLips(ctx, x0, x1) {
@@ -792,12 +986,11 @@
         acc += st[1];
       }
     }
-    if (m.mode === 'idle') {
-      if (S.reduced) return { sheet: 'idle', f: 0, x: MOMO_X };
-      var p = t / 1000 * IDLE.fps, f = Math.floor(p) % IDLE.frames;
-      return { sheet: 'idle', f: f, bf: (f + 1) % IDLE.frames, bu: p - Math.floor(p), x: MOMO_X };
+    if (m.mode === 'hold') {
+      var br = S.reduced ? 0 : Math.sin(t / 1000 * HOLD.rate) * clamp(t / HOLD.easeIn, 0, 1);
+      return { sheet: 'tremble', f: HOLD.frame, x: MOMO_X, breath: br };
     }
-    return { sheet: m.sheet || 'idle', f: m.f || 0, x: MOMO_X };
+    return { sheet: m.sheet || 'tremble', f: m.f || 0, x: MOMO_X };
   }
   function momoMode(mode, extra) {
     var prev = S.pose;
@@ -825,8 +1018,19 @@
     rg.addColorStop(0.8, 'rgba(18,59,104,0.06)'); rg.addColorStop(1, 'rgba(18,59,104,0)');
     ctx.fillStyle = rg; ctx.beginPath(); ctx.arc(0, 0, 92, 0, 6.2832); ctx.fill();
     ctx.restore();
+    /* the game's breath on a held pose, about the foot line: up as it rises, narrower as
+       it grows, the way a chest does */
+    var br = p.breath || 0;
+    ctx.save();
+    if (br) {
+      var sq = 1 + br * HOLD.grow, sqX = (1 - br * HOLD.narrow) / Math.sqrt(sq);
+      ctx.translate(p.x, SURFACE - br * HOLD.lift);
+      ctx.scale(sqX, sq);
+      ctx.translate(-p.x, -SURFACE);
+    }
     drawCell(ctx, p.sheet, p.f, p.x, 1);
     if (p.bu > 0) drawCell(ctx, p.sheet, p.bf, p.x, p.bu);
+    ctx.restore();
     /* a hand-over dissolves: the pose he came from is drawn over the new one, fading */
     var hd = S.hand;
     if (hd && S.clock < hd.at + hd.dur) drawCell(ctx, hd.sheet, hd.f, p.x, 1 - (S.clock - hd.at) / hd.dur);
@@ -1079,8 +1283,7 @@
 
   function run(gen) {
     phase('STORY_ENTER');
-    requestAnimationFrame(function () { if (alive(gen)) S.root.classList.add('is-frosting'); });
-    return Promise.all([waitMs(T.frost), withTimeout(loading || preload(), T.loadCap)])
+    return Promise.all([waitMs(T.dusk), withTimeout(loading || preload(), T.loadCap)])
       .then(guard(gen, function (r) {
         if (!r[1]) { S.history.push({ event: 'fallback', reason: 'art', at: Math.round(S.clock) }); handOff('no-art'); return new Promise(noop); }
         return openScene(gen);
@@ -1094,8 +1297,8 @@
       .then(guard(gen, function () { showNext(); }));
   }
 
-  /* The scene is under the frost now: the lesson stops painting, the scene starts, and
-     the frost clears on Momo already running. */
+  /* The scene starts under the dark, the lesson underneath stops painting, and the dark
+     clears on Momo already running. */
   function openScene() {
     S.open = true;
     document.documentElement.setAttribute('data-bridge', 'on');
@@ -1112,7 +1315,7 @@
       momoMode('look', { hand: 120 });
       phase('MOMO_AT_DITCH');
       return waitUntil(function () { return S.momo.mode === 'look' && S.pose && S.pose.done; });
-    }).then(function () { momoMode('idle', { hand: 120 }); });
+    }).then(function () { S.momo = { mode: 'hold', t0: S.clock, from: MOMO_X }; });   // the same frame: no hand-over
   }
   /* Reduced motion: no run, no scroll, no flight. He is already at the edge, looking
      down; then he looks up. Every beat of the story is still there, as held pictures. */
@@ -1176,6 +1379,8 @@
     return say(LINES[0], false)
       .then(function () { return waitMs(T.lineGap); })
       .then(function () { return say(LINES[1], true); })
+      .then(function () { return waitMs(T.lineGap); })
+      .then(function () { return say(LINES[2], true); })
       .then(function () {
         var stop = art['bird:talk_stop'] ? [birdSeg('talk_stop', SW.clips.talk_stop.frames)] : [];
         birdSet(stop.concat(birdPose('blinking')), 120);
@@ -1189,7 +1394,8 @@
       layoutSay(line);
       S.live.textContent = line.text;
     }).then(function () {
-      var at = clip('voice', line.at, line.dur, 1, 0.02), c0 = S.clock, ctx = S.audio && S.audio.ctx;
+      var at = line.lesson ? clip(line.id, 0, line.dur, 1, 0.02) : clip('voice', line.at, line.dur, 1, 0.02);
+      var c0 = S.clock, ctx = S.audio && S.audio.ctx;
       var clock = at !== null ? function () { return ctx.currentTime - at; } : function () { return (S.clock - c0) / 1000; };
       S.speak = { line: line, clock: clock, shown: 0 };
       S.history.push({ event: 'say', id: line.id, text: line.text, withAudio: at !== null, at: Math.round(S.clock) });
@@ -1226,16 +1432,16 @@
     S.history.push({ event: 'next', at: Math.round(S.clock) });
     handOff('next');
   }
-  /* Part 2 takes the screen: RunnerStage fades to the game's cover. The scene stays under
-     the curtain until the cover is up, then clears itself away. */
+  /* The lesson takes the screen: the scene fades back to the story's dark, which is the
+     blizzard's first frame, and goes; the blizzard starts in the same moment (it waits on
+     the promise this settles) and carries on into the lesson. */
   function handOff(reason) {
     if (!S || S.handedOff) return;
     S.handedOff = true;
     S.history.push({ event: 'handoff', reason: reason, at: Math.round(S.clock) });
-    phase('PART2_BANNER');
-    var done = function () { destroy(); };
-    var p = RS && RS.start ? RS.start() : Promise.resolve(false);
-    p.then(done, done);
+    phase('LESSON_START');
+    S.root.classList.add('is-leaving');
+    waitMs(S.reduced ? 200 : T.leave).then(destroy, destroy);
   }
 
   /* ------------------------------------------------------------- locking */
@@ -1305,11 +1511,11 @@
     var gen = (last && last.gen || 0) + 1;
     S = {
       gen: gen, clock: 0, lastT: 0, paused: false, open: false, handedOff: false, nextOn: false,
-      reduced: reducedMotion(), phase: 'PART1_COMPLETE', history: [], waiters: [], listeners: [],
+      reduced: reducedMotion(), phase: 'STORY_COMPLETE', history: [], waiters: [], listeners: [],
       worldX: 0, momo: null, pose: null, hand: null, bird: { on: false, alpha: 1, rot: 0 },
       speak: null, sayBox: null, audio: null, sounds: []
     };
-    S.history.push({ event: 'phase', phase: 'PART1_COMPLETE', at: 0 });
+    S.history.push({ event: 'phase', phase: 'STORY_COMPLETE', at: 0 });
     S.done = new Promise(function (resolve) { S.resolveDone = resolve; });
     build();
     S.audio = openAudio(opts.audioContext);
@@ -1348,25 +1554,35 @@
     if (resolve) resolve(true);
   }
 
-  /* After the hand-off the phase is read from Part 2 itself: the cover is up and its
-     Play is available (the game's front end holds Play while its art is loading), or the
-     learner has pressed Play and the game has left its title state. */
-  function coverReady() {
-    try {
-      var host = document.getElementById('runner-stage'), fr = host && host.querySelector('iframe');
-      var doc = fr && fr.contentDocument, cover = doc && doc.getElementById('cover');
-      // the curtain has finished lifting (is-arriving goes when it has) and Play is not held
-      return !!(host && host.classList.contains('is-on') && !host.classList.contains('is-arriving') &&
-        cover && !cover.hidden && !cover.classList.contains('loading'));
-    } catch (e) { return false; }
-  }
   function phaseNow() {
-    var ph = S ? S.phase : last ? last.phase : (enabled ? 'IDLE' : 'OFF');
-    if (ph !== 'PART2_BANNER') return ph;
-    var rs = RS && RS.state ? RS.state() : null, g = rs && rs.game;
-    if (!rs || !rs.shown || !g || g === 'BOOT') return 'PART2_BANNER';
-    if (g === 'TITLE') return coverReady() ? 'PLAY_READY' : 'PART2_BANNER';
-    return 'PART2_START';
+    return S ? S.phase : last ? last.phase : (enabled ? 'IDLE' : 'OFF');
+  }
+
+  /* THE STORY'S HAND-OVER. The blizzard (src/intro/ice-intro.js) calls this when the story
+     hands over, and starts when it settles: the scene plays if the story did (skipped with
+     Escape counts, left out by the address or in an automated browser does not), and the
+     promise settles once Next has been pressed and the scene has gone. With ?bridge=1 it is
+     the scene that opened the page. */
+  function afterStory() {
+    if (!enabled) return Promise.resolve(false);
+    if (autostart) return S ? S.done : last ? Promise.resolve(true) : start({});
+    var st = null;
+    try { st = window.StoryIntro && window.StoryIntro.state ? window.StoryIntro.state() : null; } catch (e) {}
+    if (!st || !(st.active || st.lastRun)) return Promise.resolve(false);
+    preload();
+    return start({});
+  }
+  /* Load the scene while the story plays, once it has started (its own art and voice are in
+     by then), so it is ready when the story ends. */
+  function watchStory() {
+    var tries = 0;
+    (function poll() {
+      var st = null;
+      try { st = window.StoryIntro && window.StoryIntro.state ? window.StoryIntro.state() : null; } catch (e) {}
+      if (!st || !st.active) return;                       // no story: no scene to get ready
+      if (st.playing) { preload(); return; }
+      if (++tries < 2400) setTimeout(poll, 500);
+    })();
   }
 
   window.BridgeStory = {
@@ -1374,6 +1590,9 @@
     autostart: autostart,
     preload: preload,
     start: start,
+    afterStory: afterStory,
+    /* The lesson says where its AudioContext is, so the scene speaks through it. */
+    useAudio: function (source) { ctxSource = typeof source === 'function' ? source : null; },
     /* For the tests: where the story is, what has happened, and what is on screen. */
     state: function () {
       var src = S || last || {};
@@ -1403,13 +1622,19 @@
       }
       return out;
     },
-    /* The numbers this scene takes from the game, for the check that they still agree. */
-    lines: LINES.map(function (l) { return { id: l.id, text: l.text, at: l.at, dur: l.dur, words: l.words.slice() }; })
+    /* The numbers this scene takes from the game, for the check that they still agree,
+       and the lesson line that follows them. */
+    lines: LINES.filter(function (l) { return !l.lesson; }).map(function (l) { return { id: l.id, text: l.text, at: l.at, dur: l.dur, words: l.words.slice() }; }),
+    lessonLines: LINES.filter(function (l) { return l.lesson; }).map(function (l) { return { id: l.id, text: l.text, dur: l.dur, words: l.words.slice(), src: l.take ? l.take.src : null }; })
   };
 
   if (autostart) {
     var go = function () { preload(); start({}); };
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go, { once: true });
     else go();
+  } else if (enabled) {
+    /* after the story's own start-up (story-intro.js is earlier on the page) */
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', watchStory, { once: true });
+    else watchStory();
   }
 })();

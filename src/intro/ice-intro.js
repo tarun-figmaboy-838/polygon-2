@@ -534,12 +534,18 @@
     skip: finish
   };
 
-  /* The Momo + Polo story (story-intro.js) plays first when it is present;
-     the storm starts the moment the story hands over. */
+  /* The Momo + Polo story (story-intro.js) plays first when it is present, and then
+     the Help Momo scene (src/bridge/bridge-story.js), whose Next ends on this storm's
+     first frame: the storm starts the moment that scene has gone, or at once where
+     there is no scene. */
   function autostart() {
     var story = window.StoryIntro && window.StoryIntro.gate;
-    if (story && story.then) story.then(play, play);
-    else play();
+    var helpMomo = function () {
+      var B = window.BridgeStory;
+      return B && B.afterStory ? B.afterStory() : null;
+    };
+    if (story && story.then) story.then(helpMomo, helpMomo).then(play, play);
+    else Promise.resolve(helpMomo()).then(play, play);
   }
 
   if (document.readyState === 'loading') {

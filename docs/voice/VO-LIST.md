@@ -1,6 +1,6 @@
 # Voice-over list — every line, by part and character
 
-Every line the learner hears, taken from the code as it ships today (2026-09-30): the Momo + Polo story, the lesson, the Broken Path scene before Part 2, and the Frozen Rush game. Use it to cast, generate or record the voices, then hand the files back to be put in. The same rows, one per line, are in [vo-list-all.csv](vo-list-all.csv) for batch generation.
+Every line the learner hears, taken from the code as it ships today (2026-09-30): the Momo + Polo story, the Help Momo scene after it (the Broken Path), the lesson, and the Frozen Rush game. Use it to cast, generate or record the voices, then hand the files back to be put in. The same rows, one per line, are in [vo-list-all.csv](vo-list-all.csv) for batch generation.
 
 ## At a glance
 
@@ -9,11 +9,11 @@ Every line the learner hears, taken from the code as it ships today (2026-09-30)
 | 1 Momo + Polo story | Narrator | 6 | placeholder (macOS voice) | 6 |
 | 1 Momo + Polo story | Momo | 3 | placeholder (macOS voice) | 3 |
 | 1 Momo + Polo story | Polo | 7 | placeholder (macOS voice) | 7 |
-| 2 Lesson | Swiftee | 78 | 65 studio, 12 synthetic stand-ins, 1 with none | 13 (plus the 65 studio ones only if you want a new voice) |
-| 3 The Broken Path | Swiftee | 2 (+1 optional) | borrowed from the game, in the game's voice | 2 |
+| 2 Lesson | Swiftee | 79 | 65 studio, 13 synthetic stand-ins, 1 with none | 14 (plus the 65 studio ones only if you want a new voice) |
+| 3 Help Momo (the Broken Path) | Swiftee | 3 | two borrowed from the game, in the game's voice; one placeholder (macOS voice) | 3 |
 | 4 Frozen Rush game | Game voice | 14 | the owner's recording | 0 (optional) |
 
-**Must record:** 16 story takes, 13 lesson lines and 2 Broken Path lines, 31 files in all. Everything else already has a real recording and is listed so a new voice can cover the whole experience if you want one.
+**Must record:** 16 story takes, 14 lesson lines and 3 Help Momo lines, 33 files in all. Everything else already has a real recording and is listed so a new voice can cover the whole experience if you want one.
 
 ## How to deliver
 
@@ -140,16 +140,17 @@ Sixteen takes over nine scenes, one take per line part: the story shows one part
 | L76 | Count the sides of the ones you placed wrong. | Screen 47 (CFU 5): first wrong try | Gentle and encouraging. Never disappointed; a small nudge. Stress: sides. | `64_Count_the_sides_of_the_ones_you_placed_wrong.wav` | Studio recording |
 | L77 | 6 sides make a hexagon, 7 make a heptagon. | Screen 47 (CFU 5): second wrong try | Patient and kind; gives the answer away a little more. Stress: sides, hexagon, heptagon. | `65_Six_sides_make_a_hexagon_seven_make_a_heptagon.wav` | Studio recording |
 | L78 | You did it! Now you know what makes a figure a polygon. | Screen 48 (Finished): instruction | Clear and inviting: a question to the child, or a thing to look at. Stress: polygon. | `47_You_did_it_Now_you_know_what_makes_a_figure_a_polygon.wav` | Studio recording |
+| L79 | You know all about polygons now. You are ready to help Momo. | Screen 48 (Finished): after L78, the last line of the lesson; then the game's cover | Proud and warm, then a turn back to the story: Momo needs you. Stress: polygons, help Momo. | `90_You_know_all_about_polygons_now_You_are_ready_to_help_Momo.wav` | Stand-in: macOS voice (Tara), `tools/voice/build-swiftee-lines.py` |
 
-## 3. The Broken Path (Swiftee)
+## 3. Help Momo, the Broken Path (Swiftee)
 
-The scene between the lesson and the game. Swiftee's two lines currently play the game's own recordings of them, in the game's voice, so they should be recorded in hers.
+The scene between the story and the lesson. Its first two lines play the game's own recordings of them, in the game's voice, so they should be recorded in hers; the third is a lesson recording, a placeholder made with the macOS voice until it is recorded.
 
 | ID | Line | Where it plays | Delivery | File | Now |
 |---|---|---|---|---|---|
 | B1 | Oh no! The path is broken. | The Broken Path, after Momo stops at the edge: her first line | Concerned but calm, looking at the gap. Stress: broken. | `bridge-1-path-is-broken.wav` | Borrowed: the game's recorded take (tut-5-broken), in the game's voice, not Swiftee's |
-| B2 | Help Momo cross the Frozen Pass! | The Broken Path: her second line, then Next appears | Encouraging, a call to action to the child: let's go! Stress: Frozen Pass. | `bridge-2-help-momo-cross.wav` | Borrowed: the game's recorded take (tut-2-goal), in the game's voice, not Swiftee's |
-| B2-alt | Let's use what we learned to help Momo cross. | Optional: instead of B2, to link the lesson to the game (the line suggested in the brief) | Warm, confident, a teacher to her class. Stress: what we learned. | `bridge-2-alt-use-what-we-learned.wav` | Not used yet; no recording |
+| B2 | Help Momo cross the Frozen Pass! | The Broken Path: her second line | Encouraging, a call to action to the child: let's go! Stress: Frozen Pass. | `bridge-2-help-momo-cross.wav` | Borrowed: the game's recorded take (tut-2-goal), in the game's voice, not Swiftee's |
+| B3 | But for that first you need to learn about polygons. | The Broken Path: her third line, then Next appears and leads into the lesson | Gentle, a teacher turning to the class: the plan. Stress: first, polygons. | `89_But_for_that_first_you_need_to_learn_about_polygons.wav` | Stand-in: macOS voice (Tara), `tools/voice/build-swiftee-lines.py`; a lesson recording (`assets/audio/lesson/`) |
 
 ## 4. Frozen Rush (the game's voice)
 
@@ -178,7 +179,7 @@ Recorded by the owner as one take. Listed so a new voice can match the rest; rec
 |---|---|---|
 | Story | the 16 takes | They are joined into one file, `assets/audio/story/story-voice` (.ogg + .mp3), with a table of where each take starts and when each word is said (`src/story/story-voice.js`). `tools/story/build-story-voice.py` does this for the placeholder voices and can do it for real takes. |
 | Lesson | `assets/audio/lesson/`, the same names | Convert each to .ogg + .mp3 with the same name. Each line's word timings in `src/lesson/recordings.js` are then measured again (`tools/voice/extract-word-timings.cjs` and `import-word-timings.cjs`) so the words appear as they are said. The one new line (L21) also gets a row in that catalogue. |
-| Broken Path | `assets/audio/bridge/` | `src/bridge/bridge-story.js` plays each line from a window of a recording, with its word times (`LINES`). It points at the game's take today; it is switched to Swiftee's two files and their word times. |
+| Help Momo (Broken Path) | B1, B2: `assets/audio/bridge/`; B3: `assets/audio/lesson/`, the same name | `src/bridge/bridge-story.js` plays B1 and B2 from windows of a recording, with their word times (`LINES`); it points at the game's take today and is switched to Swiftee's two files and their word times. B3 is a lesson recording, so it is put in as the lesson's are (the row above), and the scene picks it up from `src/lesson/recordings.js` by its words. The two stand-ins are rebuilt with `npm run build:swiftee-lines`. |
 | Game | the 14 takes | The game plays one take, `game/assets/audio/vo-lines`, with a window per line (`CFG.vo.lines` in `game/js/engine.js`). New takes are joined into that file and the windows measured again (`tools/vo-split.mjs` and `vo-bake-words.mjs` in the running-mammoth repository). |
 
 ## Recordings that are no longer used
