@@ -1,21 +1,15 @@
-/* Lesson screen navigation for review: the "Screens" jump menu and the Back / Next
-   buttons at the top of the lesson. Learners never see it. It is on the page only
-   with ?dev=1 in the address (?dev-1 is taken as the same thing); without it mount()
-   puts nothing on the page and returns a no-op. */
+/* Screen navigation for review: the "Screens" jump menu and the Back / Next buttons
+   at the top of the lesson, and the same "Scenes" menu over the story before it
+   (src/story/story-intro.js). Learners never see them. They are on the page only with
+   ?dev=1 in the address (?dev-1 is taken as the same thing); without it mount() puts
+   nothing on the page and returns a no-op, and panel() returns null. */
 (function () {
   'use strict';
   const dev = (() => {
     try { const q = new URLSearchParams(window.location.search); return q.get('dev') === '1' || q.has('dev-1'); }
     catch (error) { return false; }
   })();
-  window.PolygonScreenNavigator = {
-    enabled: dev,
-    mount(game) {
-      if (!dev) return () => {};
-      const host = document.createElement('div');
-      host.id = 'polygon-screen-navigator';
-      const root = host.attachShadow({ mode: 'open' });
-      root.innerHTML = `<link rel="stylesheet" href="${new URL('styles/buttons.css', document.baseURI).href}"><style>
+  const STYLE = `
         :host{--button-label-size:16px;position:absolute;inset:0;z-index:10000;font:14px Nunito,sans-serif;color:#123a6b;pointer-events:none}
         #toggle,#step-navigation,#panel{pointer-events:auto}
         *{box-sizing:border-box}button,input{font:inherit}button{cursor:pointer}
@@ -32,20 +26,91 @@
         #list button{flex-direction:column;text-align:center;padding:10px;min-height:44px;white-space:normal}
         #list{padding:5px 5px 9px}
         small{display:block;opacity:1;margin-top:4px;font-weight:650;line-height:1.35}#empty{padding:12px;text-align:center}
-      </style>
-      <button class="ice-button" id="toggle" aria-expanded="false" aria-controls="panel">Screens</button>
-      <nav id="step-navigation" aria-label="Screen navigation">
+      `;
+
+  /* One navigator: a menu that lists the items and jumps to one, and Back / Next.
+     `nav` says what it navigates:
+       items()   [{ label, detail }]           current()  the index on screen
+       go(i)     show item i                   ready()    whether it can navigate yet
+       hideNext() optional, true hides Next    word, title, name, list, steps, close,
+                                               search, searchLabel: its words
+     Returns { host, sync, dispose }: put host on the page, call sync() when the item
+     on screen changes (the buttons and the menu follow). */
+  function panel(nav) {
+    const host = document.createElement('div');
+    host.id = nav.id || 'polygon-screen-navigator';
+    const root = host.attachShadow({ mode: 'open' });
+    root.innerHTML = `<link rel="stylesheet" href="${new URL('styles/buttons.css', document.baseURI).href}"><style>${STYLE}</style>
+      <button class="ice-button" id="toggle" aria-expanded="false" aria-controls="panel">${nav.word}</button>
+      <nav id="step-navigation" aria-label="${nav.steps}">
         <button class="ice-button" id="back" type="button" disabled>Back</button>
         <button class="ice-button" id="next" type="button" disabled>Next</button>
       </nav>
-      <section id="panel" aria-label="Lesson screen navigator" hidden>
-        <header><strong>Jump to a screen</strong><button class="ice-button" id="close" aria-label="Close screen navigator">Close</button></header>
-        <input id="search" type="search" placeholder="Search name or step number" aria-label="Search screens">
-        <nav id="list" aria-label="Lesson screens"></nav><div id="empty" hidden>No matching screens</div>
+      <section id="panel" aria-label="${nav.name}" hidden>
+        <header><strong>${nav.title}</strong><button class="ice-button" id="close" aria-label="${nav.close}">Close</button></header>
+        <input id="search" type="search" placeholder="${nav.search}" aria-label="${nav.searchLabel}">
+        <nav id="list" aria-label="${nav.list}"></nav><div id="empty" hidden>No matching ${nav.word.toLowerCase()}</div>
       </section>`;
-      const $ = id => root.getElementById(id);
-      const toggle = $('toggle'), panel = $('panel'), search = $('search'), list = $('list');
+    const $ = id => root.getElementById(id);
+    const toggle = $('toggle'), sheet = $('panel'), search = $('search'), list = $('list');
+    function close() { sheet.hidden = true; toggle.setAttribute('aria-expanded', 'false'); toggle.focus(); }
+    function render() {
+      if (!nav.ready()) return;
+      const query = search.value.trim().toLowerCase();
+      list.replaceChildren();
+      nav.items().forEach((item, index) => {
+        if (query && !`${index + 1} ${item.label} ${item.detail}`.toLowerCase().includes(query)) return;
+        const button = document.createElement('button');
+        button.className = 'ice-button';
+        button.textContent = `${index + 1}. ${item.label}`;
+        button.setAttribute('aria-current', String(index === nav.current()));
+        const description = document.createElement('small');
+        description.textContent = item.detail;
+        button.append(description);
+        button.onclick = () => { nav.go(index); close(); };
+        list.append(button);
+      });
+      $('empty').hidden = list.childElementCount > 0;
+    }
+    let last = -1;
+    function sync() {
+      // Nothing is asked of the content until it is ready: the lesson has no steps before boot().
+      const ready = nav.ready(), k = nav.current(), n = ready ? nav.items().length : 0;
+      $('back').disabled = !ready || k <= 0;
+      $('next').disabled = !ready || k >= n - 1;
+      $('next').hidden = !!(ready && nav.hideNext && nav.hideNext());
+      if (k === last) return;
+      last = k;
+      toggle.textContent = `${nav.word} · ${k + 1}`;
+      if (!sheet.hidden) render();
+    }
+    toggle.onclick = () => {
+      if (!sheet.hidden) { close(); return; }
+      sheet.hidden = false; toggle.setAttribute('aria-expanded', 'true'); render(); search.focus();
+    };
+    $('close').onclick = close;
+    $('back').onclick = () => nav.go(nav.current() - 1);
+    $('next').onclick = () => nav.go(nav.current() + 1);
+    search.oninput = render;
+    root.addEventListener('keydown', event => { if (event.key === 'Escape') close(); event.stopPropagation(); });
+    return { host, sync, dispose() { host.remove(); } };
+  }
+
+  window.PolygonScreenNavigator = {
+    enabled: dev,
+    panel(nav) { return dev ? panel(nav) : null; },
+    mount(game) {
+      if (!dev) return () => {};
       let disposed = false;
+      const nav = panel({
+        word: 'Screens', title: 'Jump to a screen', name: 'Lesson screen navigator', list: 'Lesson screens',
+        steps: 'Screen navigation', close: 'Close screen navigator', search: 'Search name or step number', searchLabel: 'Search screens',
+        items: () => game.steps().map(step => ({ label: step.label, detail: step.narr })),
+        current: () => game.state.k,
+        ready: () => !!game.state.ready,
+        hideNext: () => game.step().q === 'recall',
+        go: navigate
+      });
       function navigate(index) {
         if (disposed || !game.state.ready || index < 0 || index >= game.steps().length) return;
         const step = game.steps()[index];
@@ -58,58 +123,20 @@
           if (!disposed) { game.runStep(index, false); sync(); }
         });
       }
-      function close() { panel.hidden = true; toggle.setAttribute('aria-expanded', 'false'); toggle.focus(); }
-      function render() {
-        if (!game.state.ready) return;
-        const query = search.value.trim().toLowerCase();
-        list.replaceChildren();
-        game.steps().forEach((step, index) => {
-          if (query && !`${index + 1} ${step.label} ${step.narr}`.toLowerCase().includes(query)) return;
-          const button = document.createElement('button');
-          button.className = 'ice-button';
-          button.textContent = `${index + 1}. ${step.label}`;
-          button.setAttribute('aria-current', String(index === game.state.k));
-          const description = document.createElement('small');
-          description.textContent = step.narr;
-          button.append(description);
-          button.onclick = () => {
-            navigate(index);
-            close();
-          };
-          list.append(button);
-        });
-        $('empty').hidden = list.childElementCount > 0;
-      }
-      let last = -1;
       function sync() {
         if (disposed) return;
         // The lesson renderer can replace this container between screens.
         // Reattach the existing controls so their styling and handlers persist.
         const container = game.navigationRef.current;
-        if (container && host.parentElement !== container) container.append(host);
-        $('back').disabled = !game.state.ready || game.state.k === 0;
-        $('next').disabled = !game.state.ready || game.state.k >= game.steps().length - 1;
-        $('next').hidden = game.state.ready && game.step().q === 'recall';
-        if (game.state.k === last) return;
-        last = game.state.k;
-        toggle.textContent = `Screens · ${last + 1}`;
-        if (!panel.hidden) render();
+        if (container && nav.host.parentElement !== container) container.append(nav.host);
+        nav.sync();
       }
-      toggle.onclick = () => {
-        if (!panel.hidden) { close(); return; }
-        panel.hidden = false; toggle.setAttribute('aria-expanded', 'true'); render(); search.focus();
-      };
-      $('close').onclick = close;
-      $('back').onclick = () => navigate(game.state.k - 1);
-      $('next').onclick = () => navigate(game.state.k + 1);
-      search.oninput = render;
-      root.addEventListener('keydown', event => { if (event.key === 'Escape') close(); event.stopPropagation(); });
       // The first render may not have created the navigation container yet.
       sync();
       const observer = new MutationObserver(sync);
       observer.observe(document.body, { childList:true, subtree:true });
       const timer = setInterval(sync, 300);
-      return () => { disposed = true; observer.disconnect(); clearInterval(timer); host.remove(); };
+      return () => { disposed = true; observer.disconnect(); clearInterval(timer); nav.dispose(); };
     }
   };
 })();

@@ -1110,7 +1110,9 @@
     return chain;
   }
 
-  function playScene(i, gen) {
+  /* `cut`: the run starts here rather than at scene 1 (a review jump), so the panel
+     arrives the way the first one does, out of the dark, with nothing to cross-fade from. */
+  function playScene(i, gen, cut) {
     var sc = SCENES[i];
     var p = prepareLayer(i);
     return p.ready.then(function () {
@@ -1118,13 +1120,14 @@
       cleanupStoryScene();
       S.reduced = reducedMotion();
       S.scene = sc.id;
+      if (S.nav) S.nav.sync();
       S.sceneStart = S.clock;
       S.root.setAttribute('data-scene', String(sc.id));
       setPhase('entering');
       S.isTransitioning = true;
       S.history.push({ scene: sc.id, event: 'enter', image: p.img.getAttribute('data-scene-image'), speaker: sc.speaker, at: S.clock });
 
-      showLayer(p, sc, i === 0);
+      showLayer(p, sc, i === 0 || cut);
       setWeather(sc);
       if (S.vignette) S.vignette.style.opacity = String(sc.vignette == null ? 0.12 : sc.vignette);
       if (S.audio) S.audio.mood(sc.mood);
@@ -1148,11 +1151,13 @@
   }
 
   function runStory() {
-    var gen = ++S.runGen;
     S.clock = 0;
+    return runFrom(0, ++S.runGen);
+  }
+  function runFrom(from, gen) {
     var chain = Promise.resolve();
     SCENES.forEach(function (sc, i) {
-      chain = chain.then(function () { return playScene(i, gen); });
+      if (i >= from) chain = chain.then(function () { return playScene(i, gen, i === from && from > 0); });
     });
     return chain.then(function () {
       return finishStory(gen, 950);
@@ -1205,6 +1210,7 @@
     state.liveAnims.slice().forEach(function (a) { try { a.cancel(); } catch (e) {} });
     state.liveAnims = [];
     if (state.stopPlayFx) { state.stopPlayFx(); state.stopPlayFx = null; }
+    if (state.nav) { state.nav.dispose(); state.nav = null; }
     if (state.audio) state.audio.close();
     if (state.root && state.root.parentNode) state.root.parentNode.removeChild(state.root);
     StoryIntro.lastRun = { history: state.history, listeners: state.listeners.length };
@@ -1230,6 +1236,52 @@
     S.start.classList.add('is-gone');
     dropWaiters(function () { return true; });
     finishStory(++S.runGen, 320);
+  }
+
+  /* REVIEW ONLY (?dev=1, the lesson navigator's switch): play the story on from scene
+     index i. It unwinds the run on screen exactly as skip does (its voice, its waits and
+     cues, its box, its sounds) and takes every panel away, then plays from that scene to
+     the end and hands over to the lesson as usual. Before Play, the jump is the tap that
+     starts the story. */
+  function jumpTo(i) {
+    if (!S || !S.ready || S.handedOff || S.ending || i < 0 || i >= SCENES.length) return;
+    if (!S.playing) {
+      S.playing = true;
+      S.play.setAttribute('aria-disabled', 'true');
+      S.start.classList.add('is-gone');
+      if (S.audio) S.audio.unlock();      // inside the tap, or iOS keeps it muted
+    }
+    var gen = ++S.runGen;
+    dropWaiters(function () { return true; });
+    cleanupStoryScene();
+    Array.prototype.slice.call(S.layersHost.children).forEach(function (node) {
+      cancelAnimsOf(node);
+      node.parentNode.removeChild(node);
+    });
+    S.prepared = {};
+    S.currentLayer = null;
+    S.history.push({ event: 'jump', scene: SCENES[i].id, at: S.clock });
+    S.scene = SCENES[i].id;               // so a second Next, before the panel arrives, goes on from here
+    if (S.nav) S.nav.sync();
+    runFrom(i, gen);
+  }
+  function sceneIndex() {
+    for (var i = 0; i < SCENES.length; i++) if (SCENES[i].id === S.scene) return i;
+    return 0;   // before Play: the first panel is behind the start card
+  }
+  function mountNavigator(state) {
+    var N = window.PolygonScreenNavigator;
+    var who = { narrator: 'Narrator', momo: 'Momo', polo: 'Polo' };
+    state.nav = N && N.panel && N.panel({
+      id: 'story-scene-navigator', word: 'Scenes', title: 'Jump to a scene', name: 'Story scene navigator',
+      list: 'Story scenes', steps: 'Scene navigation', close: 'Close scene navigator',
+      search: 'Search scene, speaker or line', searchLabel: 'Search scenes',
+      items: function () { return SCENES.map(function (sc) { return { label: 'Scene ' + sc.id + ' · ' + (who[sc.speaker] || sc.speaker), detail: sc.text }; }); },
+      current: function () { return S === state ? sceneIndex() : -1; },
+      ready: function () { return S === state && state.ready && !state.handedOff && !state.ending; },
+      go: jumpTo
+    });
+    if (state.nav) { state.root.appendChild(state.nav.host); state.nav.sync(); }
   }
 
   function onVisibility() {
@@ -1262,6 +1314,7 @@
        next touch; the story clock waits for it meanwhile. */
     on(S.root, 'pointerdown', function () { if (S && S.playing && S.audio) S.audio.resume(); });
     S.raf = requestAnimationFrame(tick);
+    mountNavigator(S);
 
     /* The first panel sits behind the start card, dimmed, as soon as it has
        arrived, so the card is never an empty screen. */
@@ -1290,6 +1343,7 @@
       state.play.setAttribute('aria-label', 'Play the story');
       state.play.classList.add('enter');
       if (window.PlayFx && !state.stopPlayFx) state.stopPlayFx = window.PlayFx.mount(state.playWrap);
+      if (state.nav) state.nav.sync();
       try { state.play.focus({ preventScroll: true }); } catch (e) {}
     });
   }
@@ -1636,6 +1690,8 @@
     },
     play: function () { begin(null); },
     skip: skip,
+    /* Play on from scene index i (the ?dev=1 Scenes menu uses it). */
+    jump: jumpTo,
     /* Start the story again from its start card. While the story is still
        on screen it restarts in place; once the lesson has begun, the whole
        experience reloads, because the lesson cannot be paused underneath.

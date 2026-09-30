@@ -7,6 +7,8 @@
      - all five music sections heard (warm, playful, tension, hush, resolve)
      - one handoff, the blizzard, then the lesson from its first screen
      - no listeners left behind
+     - with ?dev=1, a Scenes menu over it: jump to a scene (before Play too), Back,
+       Next, and play on from there; without ?dev=1, no menu
    Screenshots of every scene at its held moment go to tests/output/story/.
 
    node tests/story.test.cjs                 all devices, Chromium
@@ -113,6 +115,43 @@ async function playThrough(browser, srv, tag, device) {
   return { tag, seconds, fail, sound: `voice ${voice.toFixed(1)} dB, music ${bed.toFixed(1)} dB, peak ${peak.toFixed(2)}` };
 }
 
+/* The review menu (?dev=1): the lesson's Screens navigator, listing the story's scenes. */
+async function scenesMenu(browser, srv) {
+  const fail = [];
+  const context = await browser.newContext({ viewport: { width: 1440, height: 810 } });
+  const page = await context.newPage();
+  const errors = [];
+  page.on('pageerror', e => { if (!/\{\{|attribute/.test(e.message)) errors.push(e.message); });
+  await page.goto(srv.url + '/?story=1&dev=1', { waitUntil: 'domcontentloaded' });
+  await page.waitForFunction(() => window.StoryIntro && StoryIntro.state().ready, null, { timeout: 60000 });
+  const nav = sel => page.locator('#story-scene-navigator').locator(sel);
+  const at = (scene, ms = 20000) => page.waitForFunction(n => StoryIntro.state().scene === n && StoryIntro.state().isVOPlaying, scene, { timeout: ms }).then(() => true, () => false);
+  if ((await nav('#toggle').textContent()) !== 'Scenes · 1') fail.push('menu does not start on scene 1');
+  await nav('#toggle').click();
+  const items = await nav('#list button').allTextContents();
+  if (items.length !== SCRIPT.length || !items[8].includes(SCRIPT[8][1])) fail.push('menu lists ' + items.length + ' scenes');
+  await nav('#list button').nth(5).click();               // before Play: starts the story on scene 6
+  if (!await at(6)) fail.push('jump before Play did not start scene 6');
+  await nav('#back').click();
+  if (!await at(5)) fail.push('Back did not go to scene 5');
+  await page.waitForTimeout(400);
+  await nav('#next').click(); await page.waitForTimeout(120); await nav('#next').click();   // two quick Nexts
+  if (!await at(7)) fail.push('Next, Next did not reach scene 7');
+  const lines = await page.evaluate(() => StoryIntro.state().history.filter(x => x.event === 'voice').map(x => x.scene));
+  if (lines.join() !== '6,5,7') fail.push('lines spoken: ' + lines.join());
+  await nav('#toggle').click(); await nav('#list button').nth(8).click();
+  const ended = await page.waitForFunction(() => !StoryIntro.state().active, null, { timeout: 60000 }).then(() => true, () => false);
+  if (!ended) fail.push('the last scene did not play on to the end');
+  if (await page.evaluate(() => !!document.getElementById('story-scene-navigator'))) fail.push('menu left behind after the story');
+  if (errors.length) fail.push('page errors: ' + errors.slice(0, 2).join(' | '));
+  const plain = await context.newPage();
+  await plain.goto(srv.url + '/?story=1', { waitUntil: 'domcontentloaded' });
+  await plain.waitForFunction(() => window.StoryIntro && StoryIntro.state().ready, null, { timeout: 60000 });
+  if (await plain.evaluate(() => !!document.getElementById('story-scene-navigator'))) fail.push('menu shown without ?dev=1');
+  await context.close();
+  return fail;
+}
+
 (async () => {
   fs.mkdirSync(OUT, { recursive: true });
   const srv = await serve(ROOT);
@@ -123,6 +162,9 @@ async function playThrough(browser, srv, tag, device) {
     console.log(`${r.fail.length ? 'FAIL' : 'PASS'} story on ${r.tag} (${r.seconds.toFixed(1)}s; ${r.sound})${r.fail.length ? '\n  - ' + r.fail.join('\n  - ') : ''}`);
     if (r.fail.length) failed++;
   }
+  const menu = await scenesMenu(browser, srv);
+  console.log(`${menu.length ? 'FAIL' : 'PASS'} ?dev=1 Scenes menu: jump, Back, Next, play on; none without ?dev=1${menu.length ? '\n  - ' + menu.join('\n  - ') : ''}`);
+  if (menu.length) failed++;
   await browser.close();
   await srv.close();
   process.exit(failed ? 1 : 0);
