@@ -1,4 +1,4 @@
-# Only the game ships: index.html, src/, styles/ and assets/.
+# Only the game ships: index.html, src/, styles/, assets/ and game/ (the runner).
 docs/
 tests/
 tools/

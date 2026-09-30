@@ -29,7 +29,8 @@
    starts are in src/story/story-voice.js; the art is assets/story/; the voice
    and music files are assets/audio/story/ (Ogg Opus, MP3 where Ogg won't play).
 
-   Skip it with ?story=0 (also ?intro=0 or ?preview=1). Automated browsers
+   Skip it with ?story=0 (also ?intro=0 or ?preview=1, and ?game=1, which opens
+   straight on the runner game after the lesson). Automated browsers
    (navigator.webdriver) skip it too, so the lesson checks see the page
    exactly as before; force it there with ?story=1.
    ========================================================================= */
@@ -91,7 +92,7 @@
   function skipRequested() {
     var q = params();
     if (q && q.get('story') === '1') return false;
-    if (q && (q.get('story') === '0' || q.get('intro') === '0' || q.get('preview') === '1')) return true;
+    if (q && (q.get('story') === '0' || q.get('intro') === '0' || q.get('preview') === '1' || q.get('game') === '1')) return true;
     return !!navigator.webdriver;
   }
   function reducedMotion() {

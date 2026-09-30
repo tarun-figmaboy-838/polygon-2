@@ -16,7 +16,8 @@
    and every particle here derives its vector from it, so nothing can drift out
    of agreement with the mist and streak angles.
 
-   Skip it with ?intro=0, or with ?preview=1 while authoring screens.
+   Skip it with ?intro=0, with ?preview=1 while authoring screens, or with ?game=1,
+   which opens straight on the runner game.
    ========================================================================= */
 (function () {
   'use strict';
@@ -123,7 +124,7 @@
   function skipRequested() {
     try {
       var q = new URLSearchParams(window.location.search);
-      return q.get('intro') === '0' || q.get('preview') === '1';
+      return q.get('intro') === '0' || q.get('preview') === '1' || q.get('game') === '1';
     } catch (e) { return false; }
   }
 

@@ -1,0 +1,60 @@
+/* ============================================================================
+   THE FROZEN PASS — the runner game's stage, after the lesson.
+
+   The game (game/) is a complete page of its own, with its own stylesheet, its
+   own audio graphs and its own URL flags, so it runs in an <iframe> rather than
+   being mounted into the lesson's document: nothing of its CSS (a global
+   box-sizing rule, body type, generic .card / .overlay / .stage names) can reach
+   the lesson, nothing of the lesson's can reach it, and the game's own test
+   suite still holds against exactly the files that ship here. Everything in
+   this file is the frame around it: the host, the curtain, and the rule that
+   stops the lesson painting while the game has the screen.
+   ========================================================================= */
+#runner-stage {
+  position: fixed;
+  inset: 0;
+  /* above the story (10060), the blizzard (10050) and the screen navigator (10000) */
+  z-index: 10070;
+  background: transparent;
+}
+#runner-stage[hidden] { display: none; }
+
+/* PRELOADING: on the page at full size, so the game lays out, decodes its art and
+   reaches its cover at the real stage size — but invisible and untouchable. The host
+   passes every pointer through to the lesson, and an invisible frame cannot take focus. */
+#runner-stage.is-loading { pointer-events: none; }
+#runner-stage.is-loading .runner-frame { visibility: hidden; opacity: 0; }
+#runner-stage.is-on { background: #0a2450; }   /* the game's own night blue */
+
+.runner-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+  background: #0a2450;
+}
+
+/* THE CURTAIN. Two moves, so there is never a frame of one page over the other: the
+   lesson dims to the game's night blue, the lesson is hidden and the game shown under
+   the curtain, then the curtain lifts on the cover. */
+.runner-curtain {
+  position: absolute;
+  inset: 0;
+  background: #0a2450;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 320ms ease-in;
+}
+#runner-stage.is-arriving .runner-curtain { opacity: 1; }
+#runner-stage.is-on .runner-curtain { opacity: 0; transition: opacity 560ms ease-out; }
+
+/* While the game has the screen, the lesson underneath is not painted at all: its
+   snow, its sparkles and its guide would otherwise keep animating behind an opaque
+   frame for as long as the game is played. */
+html[data-runner="on"] .game-viewport { visibility: hidden; }
+
+@media (prefers-reduced-motion: reduce) {
+  .runner-curtain { transition: none; }
+}

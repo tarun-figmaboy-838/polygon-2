@@ -27,6 +27,9 @@ The displayed screen number is the position in `steps()`, starting at 1. Interna
 | Story look (balloon lettering, comic page and panel) | `styles/story-intro.css` |
 | Story behaviour (sequencing, audio, effects) | `src/story/story-intro.js` |
 | Swiftee's animation sheets | `tools/build-swiftee.cjs` (writes `assets/swiftee/` and `src/lesson/swiftee-sheets.js`) |
+| The completion screen's Help Momo / Play again buttons | `index.html`: `viewEnd`, `startRunner` |
+| The hand-off to the runner game: when it loads, the curtain, its URL flags | `src/runner/runner-stage.js`, `styles/runner-stage.css` |
+| The runner game itself: its seven crossings, tutorial, art and sound | `game/js/engine.js`: `CFG.levelOne.phases`; `game/js/tutorial.js`; see [game/RUNNER.md](game/RUNNER.md) |
 
 Narration text is matched to recordings by wording. When you change a spoken sentence, check its entry in `src/lesson/recordings.js` too.
 
@@ -35,8 +38,9 @@ Narration text is matched to recordings by wording. When you change a spoken sen
 1. **The story.** `src/story/story-intro.js` shows its start card, plays on **Play**, and releases `StoryIntro.gate` when it ends or is skipped.
 2. **The blizzard.** `src/intro/ice-intro.js` starts from that gate, plays for 5.8 s, and releases `IceIntro.gate`.
 3. **The lesson.** `boot()` in `index.html` waits on `IceIntro.gate`, then runs screen 1.
+4. **The Frozen Pass.** As screen 48 opens, `runStep` asks `src/runner/runner-stage.js` to preload the game (`game/index.html`) in an invisible frame; the screen's **Help Momo** button calls `RunnerStage.start()`, which hides the lesson and lifts a curtain on the game's cover. `?game=1` starts here directly; `?game=0` leaves this stage out.
 
-Each overlay removes itself completely (DOM, timers, audio) when it finishes.
+Each overlay removes itself completely (DOM, timers, audio) when it finishes. The runner's frame stays up: its own **Play again** restarts the game.
 
 ## Screen map
 
@@ -70,11 +74,12 @@ All functions in this table are in `index.html`.
 | 45 | Find the non-polygon | `C3` | `viewTapOne` |
 | 46 | Select pentagons | `C4` | `viewMulti` |
 | 47 | Sort hexagons / heptagons | `C5` | `viewSort` |
-| 48 | Completion | `END` | `viewEnd` |
+| 48 | Completion: Help Momo (the runner game) or Play again | `END` | `viewEnd`, `startRunner` |
 
 ## Other documents
 
 - [design/](design/): the lesson scene notes, the button design, and the original bubble reference supplied for the story (`story-dialogue-box.png`).
 - [voice/](voice/): the narration script and line exports for voice recording, the recordings manifest and transcript, and notes on word timing.
+- [game/](game/): the runner game's own contract, animation and voice notes, as they came with it.
 - [sfx.md](sfx.md): where the lesson's sound effects come from.
 - [../tests/checks/README.md](../tests/checks/README.md): what each lesson check covers.

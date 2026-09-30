@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* Runs the QA suite in order and prints one summary.
-     npm test                 lesson smoke + story on every screen + user flows
+     npm test                 lesson smoke + story on every screen + user flows + the runner hand-off
      npm test -- --quick      lesson smoke + story on desktop only
    Add ENGINE=webkit to run it all in Safari's engine. */
 const { spawnSync } = require('child_process');
@@ -10,8 +10,9 @@ const quick = process.argv.includes('--quick');
 const suites = [
   ['Lesson smoke', 'lesson.test.cjs', {}],
   ['Story, every screen', 'story.test.cjs', quick ? { DEVICES: 'desktop' } : {}],
-  ['User flows', 'flows.test.cjs', {}]
-].filter(s => !(quick && s[1] === 'flows.test.cjs'));
+  ['User flows', 'flows.test.cjs', {}],
+  ['The Frozen Pass hand-off', 'runner.test.cjs', {}]
+].filter(s => !(quick && /^(flows|runner)\.test\.cjs$/.test(s[1])));
 
 const summary = [];
 for (const [name, file, env] of suites) {

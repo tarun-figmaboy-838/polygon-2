@@ -42,6 +42,12 @@
      has mounted anything; the lesson then waits on IceIntro.gate. -->
 <link rel="stylesheet" href="styles/ice-intro.css">
 <script src="src/intro/ice-intro.js"></script>
+<!-- The Frozen Pass: the runner game in game/, played after the lesson in a frame of
+     its own. It starts loading as the completion screen opens and takes the screen
+     from that screen's "Help Momo" button. ?game=1 opens straight on it; ?game=0
+     leaves it out. See src/runner/runner-stage.js. -->
+<link rel="stylesheet" href="styles/runner-stage.css">
+<script src="src/runner/runner-stage.js"></script>
 </head>
 <body>
 <x-dc>
@@ -952,7 +958,12 @@ class Component extends DCLogic {
          the real screen to crossfade into, but screen 1 — Swiftee's entrance,
          the narration, the first point — is held until the cinematic has
          finished and handed control over. */
-      const begin = () => { if (!this._gone) this.runStep(0, true); };
+      /* ?game=1 opens straight on the runner (src/runner/runner-stage.js brings it up
+         by itself); the lesson then keeps its first screen, silent, underneath. */
+      const begin = () => {
+        if (this._gone || (window.RunnerStage && window.RunnerStage.autostart)) return;
+        this.runStep(0, true);
+      };
       const intro = window.IceIntro && window.IceIntro.gate;
       this.setState({ ready: true, k: 0, userPts: null }, () => {
         if (intro && intro.then) intro.then(begin, begin); else begin();
@@ -1857,7 +1868,12 @@ class Component extends DCLogic {
           return;
         }
         if (s.ph === 'draw') this.setState({ storyContent: true });
-        if (s.sc === 'END') this.later(() => this.confetti(), 260);
+        if (s.sc === 'END') {
+          this.later(() => this.confetti(), 260);
+          /* The runner game loads now, invisibly, so its cover is ready by the time the
+             last line has been read and "Help Momo" is pressed. */
+          if (window.RunnerStage && window.RunnerStage.enabled) window.RunnerStage.preload();
+        }
         if (s.ph === 'point') { this.later(go, 500); return; }
         if (s.ph === 'draw') {
           /* The point does not blink out here and reappear at the shape's first
@@ -5480,6 +5496,19 @@ class Component extends DCLogic {
       this.runStep(0, false);
     });
   };
+  /* Hand the screen to the runner game (src/runner/runner-stage.js). The lesson's own
+     voice stops here and its controls lock; the component stays mounted underneath,
+     hidden by the stage, so nothing has to be torn down and RunnerStage.close() could
+     give it back. */
+  startRunner = () => {
+    if (this.locked() || !(window.RunnerStage && window.RunnerStage.enabled)) return;
+    this.sfx('tap');
+    this.clearNudge();
+    if (this._stopRecordedVoice) this._stopRecordedVoice();
+    try { window.speechSynthesis.cancel(); } catch (e) {}
+    this.setState({ interactive: false });
+    window.RunnerStage.start();
+  };
   viewEnd(V, s) {
     const row = [['triangle', this.P.C.purple], ['quad', this.P.C.orange], ['pentagon', this.P.C.blue],
       ['hexagon', this.P.C.green], ['heptagon', this.P.C.pink], ['octagon', this.P.C.teal]];
@@ -5511,12 +5540,26 @@ class Component extends DCLogic {
         boxShadow: '0 8px 0 rgba(198,146,44,0.35)', animation: 'pop 620ms ease-out both'
       }
     }];
-    V.targets = [{
-      text: 'Play again', click: this.restart, nudge: '', buttonTone: 'primary',
-      style: Object.assign({
-        position: 'absolute', left: reference ? lane + 'px' : '50%', top: reference ? '872px' : '620px', translate: '-50% 0', zIndex: 8
-      }, this.bigBtn(300, 'Play again'))
-    }];
+    /* Two things to do at the end, side by side under the pill. HELP MOMO takes the
+       learner on to the Frozen Pass (the runner game, src/runner/runner-stage.js): it is
+       where the journey goes next, and the lesson has just given the learner everything
+       the game asks for. PLAY AGAIN restarts the lesson. Without the game (?game=0, or a
+       page that never loaded the stage) Play again stands alone where it always did. */
+    const runner = typeof window !== 'undefined' && window.RunnerStage && window.RunnerStage.enabled;
+    const y = reference ? '872px' : '620px';
+    const button = (text, click, x, nudge) => ({
+      text, click, nudge, buttonTone: 'primary',
+      style: Object.assign({ position: 'absolute', left: x, top: y, translate: '-50% 0', zIndex: 8 }, this.bigBtn(300, text))
+    });
+    if (!runner) { V.targets = [button('Play again', this.restart, reference ? lane + 'px' : '50%', '')]; return; }
+    /* Centred as a pair on the lane; each button is exactly as wide as its own label
+       needs (bigBtn never squeezes a label), so the pair is measured from those widths. */
+    const between = 36, wHelp = buttonMinWidth('Help Momo'), wAgain = buttonMinWidth('Play again');
+    const mid = reference ? lane : SAFE.w / 2, half = (wHelp + between + wAgain) / 2;
+    V.targets = [
+      button('Help Momo', this.startRunner, (mid - half + wHelp / 2) + 'px', '1'),
+      button('Play again', this.restart, (mid + half - wAgain / 2) + 'px', '')
+    ];
   }
 }
 

@@ -7,6 +7,7 @@
     "test:lesson": "node tests/lesson.test.cjs",
     "test:story": "node tests/story.test.cjs",
     "test:flows": "node tests/flows.test.cjs",
+    "test:runner": "node tests/runner.test.cjs",
     "test:checks": "node tests/checks/run-all.cjs",
     "build:swiftee": "node tools/build-swiftee.cjs",
     "build:story-voice": "python3 tools/story/build-story-voice.py",

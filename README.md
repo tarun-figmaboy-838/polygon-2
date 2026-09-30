@@ -1,6 +1,6 @@
 # Polygon Adventure
 
-A playful polygon lesson for young learners. It opens with **Momo and Polo**, a nine-panel animated comic story, then a short blizzard, then the 48-screen lesson where Swiftee the bird teaches open and closed figures, straight and curved boundaries, sides, vertices and angles, and polygon names from triangle to octagon.
+A playful polygon lesson for young learners. It opens with **Momo and Polo**, a nine-panel animated comic story, then a short blizzard, then the 48-screen lesson where Swiftee the bird teaches open and closed figures, straight and curved boundaries, sides, vertices and angles, and polygon names from triangle to octagon. When the lesson is done, **the Frozen Pass**: a runner game in which Momo crosses the broken ice by cutting down the right polygon, seven crossings, to reach his friend.
 
 **Play it:** https://tarun-figmaboy-838.github.io/polygon-2/
 
@@ -20,6 +20,8 @@ npx serve .
 | `?intro=0` | Skip the story and the blizzard, and start the lesson |
 | `?preview=1` | Authoring mode: skips both and goes straight to screen 1 |
 | `?story=1` | Force the story in automated browsers, which skip it by default |
+| `?game=1` | Straight to the Frozen Pass runner game: the story, the blizzard and the lesson are skipped |
+| `?game=0` | Leave the game out: the completion screen keeps only Play again |
 
 ## Folders
 
@@ -30,7 +32,8 @@ src/
   intro/              the blizzard cinematic
   lesson/             lesson data, layout, voice playback, Swiftee's sheet tables
   runtime/            the component runtime that boots the lesson
-styles/               all CSS (lesson, story, blizzard, buttons, fonts)
+  runner/             the hand-off to the Frozen Pass game after the lesson
+styles/               all CSS (lesson, story, blizzard, buttons, fonts, the game's stage)
 assets/
   story/              the nine story scenes (WebP)
   images/             lesson backgrounds and artwork (WebP)
@@ -40,9 +43,12 @@ assets/
   audio/story/        story voices and music (Ogg + MP3)
   fonts/              Baloo 2, Nunito and Comic Neue (with licences)
   vendor/             React and React DOM
+game/                 THE FROZEN PASS: the runner game, a complete page of its own
+                      (its markup, stylesheets, modules and about 20 MB of art and sound)
 tools/                build scripts (media, story voices and music, Swiftee sheets, voice exports)
 tests/                Playwright QA and the lesson checks
 docs/                 folder guide and screen map, design notes, voice scripts
+  game/               the runner's own contract (RUNNER.md), animation and voice notes
 source-art/           Swiftee's character pack, used by tools/build-swiftee.cjs
 ```
 
@@ -77,13 +83,29 @@ The voices are **placeholder takes** made with the macOS Indian English voices (
 
 The music is an original score rendered by `npm run build:story-music`: one file with a section per mood (warm, playful, tension, hush, resolve) that the story crossfades between. To use a studio track instead, give it the same sections and times, or change the table in `story-data.js`.
 
+## The Frozen Pass (the runner game)
+
+`game/` is the Ice Age runner from the `running-mammoth` repository, brought in as it ships there: `game/index.html`, its two stylesheets, the modules in `game/js/` and its art and sound. One change was made to it: Baloo 2 comes from the lesson's own font file (`styles/fonts.css`) instead of Google Fonts, so the whole experience still ships every font with the page. That is also why the game has to be served from this folder rather than from `game/` on its own.
+
+It plays in an `<iframe>`, not inside the lesson's document. The game's stylesheet carries global rules and generic class names, the two pages read different meanings into `?intro=0`, and each keeps its own audio and keyboard focus. `src/runner/runner-stage.js` puts the frame on the page invisibly as the lesson's completion screen opens, so the game loads while the last line is read; the **Help Momo** button on that screen dims the lesson to the game's night blue and lifts the curtain on the game's cover. **Play again** inside the game restarts the game; **Play again** on the lesson's completion screen restarts the lesson.
+
+| To change | Edit |
+|---|---|
+| The seven crossings: which polygon, which distractors, the wording | `game/js/engine.js`: `CFG.levelOne.phases`. Read [docs/game/RUNNER.md](docs/game/RUNNER.md) first: it is the contract |
+| The tutorial's seven lines | `game/js/tutorial.js` (their recording is `game/assets/audio/vo-lines`) |
+| When the game loads, the curtain, which URL flags reach it | `src/runner/runner-stage.js`, `styles/runner-stage.css` |
+| The completion screen's two buttons | `index.html`: `viewEnd`, `startRunner` |
+
+Three files under `game/js/` are generated and should not be edited by hand: `game.bundle.js` (the modules concatenated for opening `game/index.html` straight off the disk; this project always serves the game over HTTP, so it is not used here, but rebuild it with `node tools/build-bundle.mjs` in the running-mammoth repository whenever a module changes so the two can never disagree), `option-shapes.js` and `asset-versions.js`. The game's own Playwright suite lives in that repository and runs against exactly these files.
+
 ## Testing
 
 ```bash
 npm install                            # newer npm may ask you to approve the install
                                        # scripts: npm install-scripts approve ffmpeg-static
 npx playwright install chromium        # and `webkit` to test Safari's engine
-npm test                               # lesson smoke + story on 6 screens + user flows (~6 min)
+npm test                               # lesson smoke + story on 6 screens + user flows + the runner hand-off (~8 min)
+npm run test:runner                    # just the hand-off: ?game=1, the Help Momo button, ?game=0 (~2 min)
 npm run test:checks                    # 32 focused lesson checks incl. the full 48-screen playthrough (~20 min)
 ENGINE=webkit npm test                 # the same in Safari's engine
 ```
@@ -93,9 +115,9 @@ Screenshots of every story panel on every screen size are saved to `tests/output
 ## Deploy
 
 - **GitHub Pages** serves the `main` branch as it is. Every push updates the live game within a minute or two.
-- **Vercel** works too: framework preset **Other**, no build command. `.vercelignore` keeps tools, tests, docs and source art out of the deploy.
+- **Vercel** works too: framework preset **Other**, no build command. `.vercelignore` keeps tools, tests, docs and source art out of the deploy; `game/` ships with the page.
 
 ## Notes
 
-- The screen navigator (a "Screens" button at the top left) ships enabled so reviewers can jump between screens. Delete its `<script>` tag in `index.html` for a public release.
+- The screen navigator (a "Screens" button at the top left) ships enabled so reviewers can jump between screens. Delete its `<script>` tag in `index.html` for a public release. The runner has a review control of its own, a "Skip to ending" pill in its bottom-left corner; `game/index.html` says how to remove it.
 - Text files are stored with LF line endings (`.gitattributes`), so an editor that switches line endings can no longer make files look modified.
