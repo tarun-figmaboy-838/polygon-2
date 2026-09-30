@@ -4,6 +4,8 @@ Fetched on 30 September 2026 from the published previews, with the files each ki
 
 Nothing here is shipped: `source-art/` is left out of the deployment. Copy a file into `assets/` or `game/assets/` when it is put to use.
 
+The working copies are at the project root, where the site serves them: `assets/ui/` (the Play button and the four pills), `assets/char/` (the run and jump sheets), `src/fx/snowflake.js`, and the two kit pages `buttons-kit.html` and `momo-jump-kit.html`. The root `momo-jump-kit.html` reads its sheets from `assets/char/`. The hi-DPI jump sheet is only here, in `momo-jump-kit/game/assets/char/hd/`.
+
 ## buttons-kit
 
 From https://polygon-part-1.vercel.app/part1-swiftee-lesson/previews/buttons-kit.html
