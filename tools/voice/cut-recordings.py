@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Cut the delivered voice recordings into the lines the experience plays.
 
-The voices were delivered as six long recordings, several lines to a file
+The voices were delivered as long recordings, several lines to a file
 (assets/audio/source/). docs/voice/cue-map.json says where every line is in its
 file and when each of its words starts; this reads that map and builds, from the
 recordings and nothing else:
@@ -28,7 +28,10 @@ voice keeps its own dynamics from line to line. Word starts are measured from th
 cut, so the words on screen land on the words being said.
 
 Usage (from the project folder, after `npm install`):
-    npm run build:recorded-voice
+    npm run build:recorded-voice                 everything
+    npm run build:recorded-voice -- --only L79   just these lesson or bridge lines (ids from the
+                                                 cue map, comma-separated); the story's parts and
+                                                 the game's windows are always built together
 """
 import array
 import hashlib
@@ -108,8 +111,11 @@ def write_wav(path, samples):
 
 def encode(wav, base):
     os.makedirs(os.path.dirname(base), exist_ok=True)
-    run([FFMPEG, '-y', '-v', 'error', '-i', wav, '-c:a', 'libopus', '-b:a', '40k', '-application', 'voip', base + '.ogg'])
-    run([FFMPEG, '-y', '-v', 'error', '-i', wav, '-c:a', 'libmp3lame', '-b:a', '128k', base + '.mp3'])
+    # bitexact: no random Ogg stream serial, so the same cut always makes the same file
+    run([FFMPEG, '-y', '-v', 'error', '-i', wav, '-c:a', 'libopus', '-b:a', '40k', '-application', 'voip',
+         '-fflags', '+bitexact', '-flags:a', '+bitexact', base + '.ogg'])
+    run([FFMPEG, '-y', '-v', 'error', '-i', wav, '-c:a', 'libmp3lame', '-b:a', '128k',
+         '-fflags', '+bitexact', '-flags:a', '+bitexact', base + '.mp3'])
 
 
 def window(line, prev, nxt, total):
@@ -153,9 +159,19 @@ def read_catalogue(path):
 def main():
     cue = json.load(open(CUES, encoding='utf-8'))
     lines = cue['lines']
+    only = None
+    if '--only' in sys.argv[1:]:
+        only = set(sys.argv[sys.argv.index('--only') + 1].split(','))
+        known = {l['id']: l['use'] for l in lines}
+        for i in only:
+            if i not in known:
+                raise SystemExit('no line %s in the cue map' % i)
+            if known[i] in ('story', 'game', 'skip'):
+                raise SystemExit('%s is a %s line: the story and the game are built whole; run without --only' % (i, known[i]))
     by_file = {}
     for l in lines:
-        by_file.setdefault(l['file'], []).append(l)
+        if only is None or l['file'] in {m['file'] for m in lines if m['id'] in only}:
+            by_file.setdefault(l['file'], []).append(l)
 
     head, catalogue = read_catalogue(os.path.join(ROOT, 'src', 'lesson', 'recordings.js'))
     story_parts, game_windows, made = {}, {}, []
@@ -175,7 +191,7 @@ def main():
             print('%-18s %6.1fs  %5.1f LUFS, peak %5.1f dB  -> gain %+.1f dB' % (name, total, i_lufs, peak, gain))
             spoken = [l for l in group]          # every line, for the pauses either side
             for k, line in enumerate(spoken):
-                if line['use'] == 'skip':
+                if line['use'] == 'skip' or (only is not None and line['id'] not in only):
                     continue
                 prev = spoken[k - 1] if k else None
                 nxt = spoken[k + 1] if k + 1 < len(spoken) else None

@@ -9,11 +9,11 @@ Every line the learner hears, taken from the code as it ships today (2026-10-01)
 | 1 Momo + Popo story | Narrator | 6 | recorded (`story-narrator.mp3`) | 0 |
 | 1 Momo + Popo story | Momo | 3 | recorded (`story-momo.mp3`) | 0 |
 | 1 Momo + Popo story | Popo | 7 | recorded (`story-popo.mp3`) | 0 |
-| 2 Lesson | Swiftee | 77 | 76 recorded (`swiftee-lesson-1.mp3`, `swiftee-lesson-2.mp3`), 1 stand-in (L79) | 1 |
+| 2 Lesson | Swiftee | 77 | all recorded (`swiftee-lesson-1.mp3`, `-2.mp3`, `-3.mp3`) | 0 |
 | 3 Help Momo (the Broken Path) | Swiftee | 3 | 2 recorded (`swiftee-lesson-2.mp3`), 1 stand-in (B3) | 1 |
 | 4 Frozen Rush game | Game voice | 14 | recorded (`frozen-rush-voice.mp3`) | 0 |
 
-**Must record:** 2 lines. Everything else is recorded: the six recordings delivered on 2026-10-01 (`assets/audio/source/`) hold every line but two, and each line is cut from them and played on its own, at its own moment, with its words appearing as they are said (`docs/voice/cue-map.json` says where every line is). The two still on a stand-in voice are L79, "You know all about polygons now. You are ready to help Momo." (the summary's last line), and B3, "But for that first you need to learn about polygons." (the Broken Path's last line). The summary at the end of the lesson says seven lines the lesson already has (Closed, Polygon, Sides, Vertex, Angle, 5 sides, 3 to 8 sides) and then L79.
+**Must record:** 1 line, B3: "But for that first you need to learn about polygons." (the Broken Path's last line), still a stand-in made with the macOS voice. Everything else is recorded: seven recordings delivered on 2026-10-01 (`assets/audio/source/`) hold every other line, and each line is cut from them and played on its own, at its own moment, with its words appearing as they are said (`docs/voice/cue-map.json` says where every line is). The summary at the end of the lesson says seven lines the lesson already has (Closed, Polygon, Sides, Vertex, Angle, 5 sides, 3 to 8 sides) and then L79.
 
 ## How to deliver
 
@@ -138,7 +138,7 @@ In the order a learner first hears them. The *File* is the name the lesson alrea
 | L75 | Well done! Hexagons have 6 sides and heptagons have 7 sides. | Screen 47 (CFU 5): right answer | Delighted, warm praise. A real smile, not a cheer. Stress: sides, heptagons. | `63_Well_done_Hexagons_have_six_sides_and_heptagons_have_seven_sid.wav` | Recorded: `swiftee-lesson-2.mp3`, 23.94-29.29 s |
 | L76 | Count the sides of the ones you placed wrong. | Screen 47 (CFU 5): first wrong try | Gentle and encouraging. Never disappointed; a small nudge. Stress: sides. | `64_Count_the_sides_of_the_ones_you_placed_wrong.wav` | Recorded: `swiftee-lesson-2.mp3`, 30.03-32.25 s |
 | L77 | 6 sides make a hexagon, 7 make a heptagon. | Screen 47 (CFU 5): second wrong try | Patient and kind; gives the answer away a little more. Stress: sides, hexagon, heptagon. | `65_Six_sides_make_a_hexagon_seven_make_a_heptagon.wav` | Recorded: `swiftee-lesson-2.mp3`, 32.82-36.44 s |
-| L79 | You know all about polygons now. You are ready to help Momo. | Screen 47, the summary: its last line, after the seven ideas; then Next and the game's cover | Proud and warm, then a turn back to the story: Momo needs you. Stress: polygons, help Momo. | `90_You_know_all_about_polygons_now_You_are_ready_to_help_Momo.wav` | **Record** — Stand-in: macOS voice (Tara), `tools/voice/build-swiftee-lines.py` |
+| L79 | You know all about polygons now. You are ready to help Momo. | Screen 47, the summary: its last line, after the seven ideas; then Next and the game's cover | Proud and warm, then a turn back to the story: Momo needs you. Stress: polygons, help Momo. | `90_You_know_all_about_polygons_now_You_are_ready_to_help_Momo.wav` | Recorded: `swiftee-lesson-3.mp3`, 0.03-4.75 s |
 
 ## 3. Help Momo, the Broken Path (Swiftee)
 
@@ -182,7 +182,7 @@ The voices arrive as long recordings, several lines to a file, and are kept as d
 | Help Momo (Broken Path) | B1 and B2 in `assets/audio/bridge/`, with rows in `src/lesson/recordings.js`, where the scene finds all three of its lines by their words |
 | Game | the take itself as `game/assets/audio/vo-lines` and a window per line, with its word starts, in `CFG.vo.lines` (`game/js/engine.js` and its bundle), and the take's content hash in the game's asset versions |
 
-Each line keeps a short breath of room either side, never past halfway into the pause, and each recording is levelled with one gain, so a voice keeps its own dynamics from line to line. For a new recording: put it in `assets/audio/source/`, add its lines to the cue map (or measure them again), and run the build. The two lines still on a stand-in (B3, L79) are rebuilt with `npm run build:swiftee-lines` until they are recorded.
+Each line keeps a short breath of room either side, never past halfway into the pause, and each recording is levelled with one gain, so a voice keeps its own dynamics from line to line. For a new recording: put it in `assets/audio/source/`, add its lines to the cue map (or measure them again), and run the build. The one line still on a stand-in (B3) is rebuilt with `npm run build:swiftee-lines` until it is recorded. A single new take can be put in on its own: add it to the cue map and run `npm run build:recorded-voice -- --only <id>`.
 
 ## Recordings that are no longer used
 

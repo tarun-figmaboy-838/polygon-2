@@ -3381,58 +3381,58 @@ window.POLYGON_RECORDINGS = [
   {
     "text": "You know all about polygons now. You are ready to help Momo.",
     "src": "assets/audio/lesson/90_You_know_all_about_polygons_now_You_are_ready_to_help_Momo.mp3",
-    "duration": 4.82,
+    "duration": 4.829,
     "words": [
       {
         "word": "You",
-        "start": 0.02
+        "start": 0.03
       },
       {
         "word": "know",
-        "start": 0.26
+        "start": 0.24
       },
       {
         "word": "all",
-        "start": 0.512
+        "start": 0.48
       },
       {
         "word": "about",
-        "start": 0.752
+        "start": 0.9
       },
       {
         "word": "polygons",
-        "start": 1.22
+        "start": 1.26
       },
       {
         "word": "now.",
-        "start": 2.475
+        "start": 1.86
       },
       {
         "word": "You",
-        "start": 2.9
+        "start": 2.695
       },
       {
         "word": "are",
-        "start": 3.112
+        "start": 2.96
       },
       {
         "word": "ready",
-        "start": 3.324
+        "start": 3.22
       },
       {
         "word": "to",
-        "start": 3.736
+        "start": 3.46
       },
       {
         "word": "help",
-        "start": 3.937
+        "start": 3.792
       },
       {
         "word": "Momo.",
-        "start": 4.16
+        "start": 4.24
       }
     ],
-    "source": "macOS say -v Tara, pitch +150 cents, pace x0.74 (placeholder take); word starts measured from the rendered audio"
+    "source": "Swiftee's recorded take: swiftee-lesson-3.mp3, 0.00-4.83 s; word starts measured from the recording"
   },
   {
     "text": "Is the boundary straight or curved?",

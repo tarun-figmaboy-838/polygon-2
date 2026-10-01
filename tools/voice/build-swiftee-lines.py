@@ -39,9 +39,9 @@ LINES = [
     # the Help Momo scene, after the story: why the lesson comes first
     {'file': '89_But_for_that_first_you_need_to_learn_about_polygons',
      'text': 'But for that first you need to learn about polygons.'},
-    # the end of the lesson, before Part 2
-    {'file': '90_You_know_all_about_polygons_now_You_are_ready_to_help_Momo',
-     'text': 'You know all about polygons now. You are ready to help Momo.'},
+    # (L79, "You know all about polygons now. You are ready to help Momo.", is recorded now:
+    #  assets/audio/source/swiftee-lesson-3.mp3, built by tools/voice/cut-recordings.py.
+    #  It is not rendered here, so this cannot overwrite it.)
 ]
 
 

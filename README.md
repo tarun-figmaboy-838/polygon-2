@@ -123,7 +123,7 @@ Three files under `game/js/` are generated and should not be edited by hand: `ga
 
 ## The voices
 
-Every voice the learner hears is recorded. They were delivered as six files, several lines to a file, and are kept as delivered in `assets/audio/source/`:
+Every voice the learner hears is recorded but one line. They were delivered as seven files, most of them several lines to a file, and are kept as delivered in `assets/audio/source/`:
 
 | File | Voice | Holds |
 |---|---|---|
@@ -132,9 +132,10 @@ Every voice the learner hears is recorded. They were delivered as six files, sev
 | `story-momo.mp3` | Momo | his three story lines |
 | `swiftee-lesson-1.mp3` | Swiftee | the lesson, from "Look! A point." to "Which figure breaks the rule for a polygon?" |
 | `swiftee-lesson-2.mp3` | Swiftee | the last two quizzes, then the Broken Path's two lines (and the game's tutorial again, which is not used) |
+| `swiftee-lesson-3.mp3` | Swiftee | the summary's last line, "You know all about polygons now. You are ready to help Momo." |
 | `frozen-rush-voice.mp3` | Game voice | Frozen Rush: the seven tutorial lines and the seven signs |
 
-`docs/voice/cue-map.json` is the line-level map: for every line, which file, where it starts and ends, and when each word is said. It was measured from the recordings (a speech recogniser placed the words, then the waveform's own pauses decided where each line begins and ends). `npm run build:recorded-voice` (`tools/voice/cut-recordings.py`) builds everything the experience plays from the recordings and that map: the story's joined file and table, one file per lesson line under the name its row in `src/lesson/recordings.js` already uses (and that row's length and word times), Swiftee's two Broken Path takes in `assets/audio/bridge/`, and the game's take with its windows in `CFG.vo.lines`. So every line is played on its own, at its own moment, and its words appear as they are said. Two of Swiftee's lines are not in the recordings and keep their stand-in voice: "But for that first you need to learn about polygons." and "You know all about polygons now. You are ready to help Momo." ([docs/voice/VO-LIST.md](docs/voice/VO-LIST.md) lists every line and what it is recorded with).
+`docs/voice/cue-map.json` is the line-level map: for every line, which file, where it starts and ends, and when each word is said. It was measured from the recordings (a speech recogniser placed the words, then the waveform's own pauses decided where each line begins and ends). `npm run build:recorded-voice` (`tools/voice/cut-recordings.py`) builds everything the experience plays from the recordings and that map: the story's joined file and table, one file per lesson line under the name its row in `src/lesson/recordings.js` already uses (and that row's length and word times), Swiftee's two Broken Path takes in `assets/audio/bridge/`, and the game's take with its windows in `CFG.vo.lines`. So every line is played on its own, at its own moment, and its words appear as they are said. One of Swiftee's lines is not recorded yet and keeps its stand-in voice: "But for that first you need to learn about polygons." (the Broken Path's last line). [docs/voice/VO-LIST.md](docs/voice/VO-LIST.md) lists every line and what it is recorded with. A new take for one line goes in on its own: add it to the cue map and run `npm run build:recorded-voice -- --only <id>`.
 
 ## Testing
 
