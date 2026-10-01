@@ -10,8 +10,8 @@
 #bridge-story {
   position: fixed;
   inset: 0;
-  /* above the lesson and its screen navigator (10000), the blizzard (10050) and the
-     story (10060), which is still fading out for a frame or two when the scene comes up */
+  /* above the lesson and its screen navigator (10000) and the story (10060), which is still
+     fading out for a frame or two when the scene comes up */
   z-index: 10065;
   overflow: hidden;
   outline: none;
@@ -32,9 +32,10 @@
 #bridge-story.is-open .bridge-canvas { visibility: visible; }
 
 /* THE STORY'S DARK. The story fades to this colour at its end; the scene comes up out of
-   it, and Next fades the scene back into it, which is the blizzard's first frame
-   (styles/story-intro.css: --story-dark). Story, scene, blizzard and lesson follow one
-   another with no cut and no glimpse of the lesson in between. */
+   it, and Next fades the scene back into it, which the lesson then comes up out of
+   (styles/story-intro.css: --story-dark). Story, scene and lesson follow one another with
+   no cut and no glimpse of the lesson in between: the lesson comes up out of the same dark
+   (src/intro/opening.js). */
 #bridge-story .bridge-dusk {
   position: absolute;
   inset: 0;

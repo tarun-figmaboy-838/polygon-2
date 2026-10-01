@@ -18,8 +18,8 @@ const server=http.createServer((req,res)=>{
   // Accelerate real audio, preserving its clock, word events and end gates.
   await page.addInitScript(()=>{const play=HTMLMediaElement.prototype.play;HTMLMediaElement.prototype.play=function(){this.playbackRate=6;return play.call(this);};});
   await page.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>r.abort());
-  // The walkthrough ends by pressing Play again, which the summary offers where there is
-  // no game (?game=0); its Next into the game is tests/runner.test.cjs.
+  // The walkthrough ends by pressing Play again, which the last screen offers where there is
+  // no game (?game=0); the game starting by itself after it is tests/runner.test.cjs.
   // ?dev=1: it jumps between screens with the screen navigator, a review control.
   await page.goto('http://127.0.0.1:9351/?preview=1&bridge=0&dev=1&game=0');
   await page.waitForFunction(()=>window.__poly?.state.ready);
@@ -32,6 +32,7 @@ const server=http.createServer((req,res)=>{
     if(await recovery.isVisible())await recovery.click();
     await page.waitForTimeout(200);
   }await page.waitForFunction(k=>__poly.state.k===k&&!__poly.locked()&&__poly.state.storyControls,k,{timeout:1000});await page.locator('.story-surface[data-controls="ready"]').waitFor();};
+  const recap=()=>page.waitForFunction(()=>__poly.state.k===40&&window.PolygonRecap&&window.PolygonRecap.state().active,null,{timeout:90000});
   const jump=async(k)=>{await page.getByRole('button',{name:/^Screens/}).click();await page.getByRole('button',{name:new RegExp('^'+(k+1)+'\\. ')}).click();await ready(k);};
   const tailOnly=process.env.REVIEW_FROM==='40';
   if(!tailOnly){
@@ -93,15 +94,14 @@ const server=http.createServer((req,res)=>{
   for(let i=0;i<5;i++)await page.getByRole('button',{name:'Increase number of sides'}).last().click();
   await ready(35);
   for(const i of [0,2,3])await page.locator('.story-surface > .game-action').nth(i).click();
-  await ready(40);
+  await recap();
   console.log('PASS before/after counting, quadrilateral selection and polygon naming sequence');
-  }else await jump(40);
-  assert.equal(await page.evaluate(()=>__poly.state.n),3,'Recall starts at a triangle');
-  for(let n=4;n<=8;n++){
-    await page.getByRole('button',{name:'Increase number of sides',exact:true}).click();
-    await page.waitForFunction(n=>__poly.state.n===n&&!__poly.state.morph,n);
-  }
-  // Reaching the octagon finishes the recall: the lesson moves on by itself.
+  }else{await page.getByRole('button',{name:/^Screens/}).click();await page.getByRole('button',{name:/^41\. /}).click();await recap();}
+  // Screen 41, the recap (tests/recap.test.cjs plays it in full): taken to its end, and its
+  // Next, the only thing on it that takes a tap, goes on into the quizzes.
+  await page.waitForTimeout(1200);
+  await page.evaluate(()=>window.PolygonRecap.skipToEnd());
+  await page.locator('.lsum .lsum-next').click();
   await ready(41);
   for(const i of [0,2])await page.locator('.story-surface > .game-action').nth(i).click();
   await ready(42);
@@ -120,10 +120,8 @@ const server=http.createServer((req,res)=>{
     await page.getByRole('button',{name:zone?'Heptagon':'Hexagon',exact:true}).click();
     await page.waitForFunction(n=>Object.keys(__poly.state.sortAt).length===n,i+1);
   }
-  // the last screen, the one summary (tests/summary.test.cjs plays it in full): straight to its end
-  await page.waitForFunction(()=>__poly.state.k===46&&window.PolygonSummary.state().active,null,{timeout:60000});
-  await page.waitForTimeout(1200);
-  await page.evaluate(()=>window.PolygonSummary.skipToEnd());
+  // the last screen: Swiftee's line back to Momo, and then (without the game) Play again
+  await page.waitForFunction(()=>__poly.state.k===46&&__poly.state.endReady,null,{timeout:60000});
   await page.screenshot({path:path.join(out,'completed-playthrough.png')});
   await page.getByRole('button',{name:'Play again',exact:true}).click();
   await page.waitForFunction(()=>__poly.state.k===0);

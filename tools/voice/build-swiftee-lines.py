@@ -15,7 +15,8 @@ To use a studio take instead, put its .ogg and .mp3 under the same name and give
 its row the take's own word starts (tools/voice/extract-word-timings.cjs).
 
 Usage (macOS only, from the project folder, after `npm install`):
-    npm run build:swiftee-lines
+    npm run build:swiftee-lines              every line below
+    npm run build:swiftee-lines -- 91 92     only the files whose names start with these
 """
 import importlib.util
 import json
@@ -39,6 +40,14 @@ LINES = [
     # the Help Momo scene, after the story: why the lesson comes first
     {'file': '89_But_for_that_first_you_need_to_learn_about_polygons',
      'text': 'But for that first you need to learn about polygons.'},
+    # the recap before the quizzes (screen 41): its opening line, and the turn to the names
+    {'file': '91_Lets_recall_what_we_learnt_today',
+     'text': "Let's recall what we learnt today."},
+    {'file': '92_Polygons_have_different_names_based_on_their_number_of_sides',
+     'text': 'Polygons have different names based on their number of sides.'},
+    # the last screen, after the quizzes: the line back to Momo, then the game starts
+    {'file': '93_Now_you_know_everything_about_polygons_You_are_ready_to_help_Momo',
+     'text': 'Now you know everything about polygons. You are ready to help Momo.'},
     # (L79, "You know all about polygons now. You are ready to help Momo.", is recorded now:
     #  assets/audio/source/swiftee-lesson-3.mp3, built by tools/voice/cut-recordings.py.
     #  It is not rendered here, so this cannot overwrite it.)
@@ -52,7 +61,10 @@ def main():
     rows = []
     with tempfile.TemporaryDirectory() as tmp:
         timepitch = SV.compile_timepitch(tmp)
+        wanted = [a for a in sys.argv[1:] if not a.startswith('-')]
         for line in LINES:
+            if wanted and not any(line['file'].startswith(w) for w in wanted):
+                continue
             clip, sr, entry, _ = SV.build({'speaker': 'swiftee', 'text': line['text']}, timepitch, tmp)
             wav = os.path.join(tmp, 'take.wav')
             SV.write_wav(wav, clip, sr)

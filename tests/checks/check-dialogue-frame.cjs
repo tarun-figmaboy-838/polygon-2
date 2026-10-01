@@ -13,7 +13,7 @@ const server=http.createServer((req,res)=>{const p=path.resolve(root,'.'+decodeU
   for(const viewport of [{width:1440,height:810},{width:1024,height:768}]){
   await page.setViewportSize(viewport);
   for(let n=1;n<=await page.evaluate(()=>__poly.steps().length);n++){
-   if(await page.evaluate(n=>__poly.steps()[n-1].sc==='END',n))continue; // The summary draws its own dialogue (tests/summary.test.cjs).
+   if(await page.evaluate(n=>__poly.steps()[n-1].sc==='END'||!!__poly.steps()[n-1].recap,n))continue; // The recap and the end draw their own dialogue.
    await page.evaluate(n=>{const g=__poly,k=n-1;g.setState({k});g.runStep(k,false);g.prepareNarratorReveal(g.instructionPages(g.steps()[k].narr)[0]);g._voiceLocked=false;g.setState({wordReveal:'complete',ocWords:{open:true,closed:true},storyContent:true,storyDialogue:true,storyControls:true,interactive:true,speaking:false,boundaryTravel:false,polygonTravel:false,reveal:true,voiceElapsedMs:10000});},n);
    await page.waitForTimeout(220);
    assert(await page.evaluate(()=>[...document.querySelectorAll('button,[role="button"],.ice-button')].every(e=>getComputedStyle(e).textDecorationLine==='none'&&[...e.querySelectorAll('*')].every(child=>getComputedStyle(child).textDecorationLine==='none'))),'Clean button labels on Screen '+n);

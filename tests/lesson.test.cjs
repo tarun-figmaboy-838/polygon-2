@@ -1,13 +1,12 @@
 #!/usr/bin/env node
 /* Lesson smoke test, fast: the game opens exactly as a user gets it and the
    lesson's first screen starts talking; nothing it asks for is missing.
-     - default load: story (skipped for automated browsers) -> blizzard ->
-       screen 1 narration
+     - default load: story (skipped for automated browsers) -> screen 1 narration
      - ?preview=1 authoring mode still goes straight to screen 1
      - the screen navigator (Screens, Back, Next) is not on the page for a learner,
        and is there with ?dev=1
-     - the Part 1 buttons kit is in: the story's round gold Play (with its crystals), and
-       the summary's blue Next pill, and with ?game=0 its gold Play again
+     - the Part 1 buttons kit is in: the story's round gold Play (with its crystals), the
+       recap's blue Next pill, and with ?game=0 the last screen's gold Play again
      - no request returns an error, no script error (the lesson template's
        own {{ }} placeholder warnings are known and ignored)
      - every narration recording in the catalog exists in its shipped format,
@@ -99,21 +98,25 @@ async function open(browser, srv, query) {
   check('the gold Play starts the story', await e.waitForFunction(() => window.StoryIntro.state().playing, null, { timeout: 5000 }).then(() => true, () => false));
   await e.goto(srv.url + '/?preview=1&bridge=0', { waitUntil: 'domcontentloaded' });
   await e.waitForFunction(() => window.__poly && window.__poly.state.ready, null, { timeout: 30000 });
-  const endPill = async (query) => {
-    await e.goto(srv.url + '/' + query, { waitUntil: 'domcontentloaded' });
-    await e.waitForFunction(() => window.__poly && window.__poly.state.ready, null, { timeout: 30000 });
-    await e.evaluate(() => { const g = window.__poly, k = g.steps().length - 1; g.setState({ k }, () => g.runStep(k, false)); });
-    await e.waitForFunction(() => window.PolygonSummary && window.PolygonSummary.state().active, null, { timeout: 20000 }).catch(() => {});
-    await e.evaluate(() => window.PolygonSummary.skipToEnd());
-    await e.waitForTimeout(400);
-    return e.evaluate(() => [...document.querySelectorAll('.lsum .kit-btn')].filter(b => !b.hidden).map(b => ({
-      text: b.textContent.trim(), nav: b.classList.contains('kit-btn--nav'), gold: b.classList.contains('kit-btn--primary'),
-      ice: b.classList.contains('ice-button'), art: getComputedStyle(b).borderImageSource })));
-  };
-  const next = await endPill('?preview=1&bridge=0');
-  check("the summary ends on Next, the kit's blue pill", next.length === 1 && next[0].text === 'Next' && next[0].nav && /btn-uiNav/.test(next[0].art) && !next[0].ice, JSON.stringify(next));
-  const again = await endPill('?preview=1&game=0');
-  check("without the game (?game=0) it ends on Play again, the kit's gold pill", again.length === 1 && again[0].text === 'Play again' && again[0].gold && /btn-uiPrimary/.test(again[0].art), JSON.stringify(again));
+  const pills = sel => e.evaluate(sel => [...document.querySelectorAll(sel)].filter(b => !b.hidden && b.offsetParent !== null).map(b => ({
+    text: b.textContent.trim(), nav: b.classList.contains('kit-btn--nav'), gold: b.classList.contains('kit-btn--primary'),
+    ice: b.classList.contains('ice-button'), art: getComputedStyle(b).borderImageSource })), sel);
+  const jump = find => e.evaluate(find => { const g = window.__poly, k = find === 'last' ? g.steps().length - 1 : g.steps().findIndex(s => s.recap); g.setState({ k }, () => g.runStep(k, false)); }, find);
+  // the recap, at its end
+  await jump('recap');
+  await e.waitForFunction(() => window.PolygonRecap && window.PolygonRecap.state().active, null, { timeout: 20000 }).catch(() => {});
+  await e.evaluate(() => window.PolygonRecap.skipToEnd());
+  await e.waitForTimeout(400);
+  const next = await pills('.lsum .kit-btn');
+  check("the recap ends on Next, the kit's blue pill", next.length === 1 && next[0].text === 'Next' && next[0].nav && /btn-uiNav/.test(next[0].art) && !next[0].ice, JSON.stringify(next));
+  // the last screen, without the game
+  await e.goto(srv.url + '/?preview=1&game=0', { waitUntil: 'domcontentloaded' });
+  await e.waitForFunction(() => window.__poly && window.__poly.state.ready, null, { timeout: 30000 });
+  await jump('last');
+  await e.waitForFunction(() => window.__poly.state.endReady, null, { timeout: 30000 }).catch(() => {});
+  await e.waitForTimeout(300);
+  const again = await pills('.story-surface .kit-btn');
+  check("without the game (?game=0) the last screen ends on Play again, the kit's gold pill", again.length === 1 && again[0].text === 'Play again' && again[0].gold && /btn-uiPrimary/.test(again[0].art), JSON.stringify(again));
   check('buttons kit: no script errors', !eErrors.length, eErrors.join(' | '));
   await e.close();
 

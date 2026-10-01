@@ -92,10 +92,11 @@ const judge=(where,m)=>{
     await page.waitForFunction(()=>window.__poly?.state.ready&&window.__poly.state.k===0,null,{timeout:60000});
     await page.evaluate(()=>document.fonts.ready);
     await page.waitForTimeout(2000);
-    const steps=await page.evaluate(()=>__poly.steps().map(s=>({sc:s.sc,label:s.label,fb:Object.values(s.fb||{}).filter(t=>typeof t==='string')})));
+    const steps=await page.evaluate(()=>__poly.steps().map(s=>({sc:s.sc,label:s.label,recap:!!s.recap,fb:Object.values(s.fb||{}).filter(t=>typeof t==='string')})));
     const worst={unstable:0,empty:0,flash:0};
     for(let k=0;k<steps.length;k++){
-      if(steps[k].sc==='END') continue;   // the summary draws its own bubble (tests/summary.test.cjs)
+      // the recap draws its own bubble (tests/recap.test.cjs), and so does the end, in the Help Momo scene
+      if(steps[k].recap||steps[k].sc==='END') continue;
       const n=k+1, where='Screen '+n+' ('+steps[k].label+')';
       await page.evaluate(k=>{const g=__poly;g.setState({k},()=>g.runStep(k,false));},k);
       /* Her real voice: the bubble every 40 ms until she has finished and the screen is hers to use. */

@@ -146,7 +146,8 @@ with it. Geometry itself is never defined there: a phase names a shape from
 `js/polygons.js`, which is the single authority for all fourteen of them.
 
 URL overrides for playtesting: `?speed=300–900`, `?sound=0`, `?reduced=1`,
-`?skip=1`, `?fast=1–8`.
+`?skip=1`, `?fast=1–8`. For a page that carries the game: `?cover=0`, no cover and no PLAY,
+the run started by the page with `window.iceAgeBegin()` (see docs/game/RUNNER.md).
 
 ## Audio
 

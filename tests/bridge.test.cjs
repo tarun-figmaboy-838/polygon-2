@@ -10,10 +10,13 @@
      - nothing but Next takes a tap or a key: clicks, Enter, Space, arrows and Escape
        during the story change nothing, and Tab cannot reach the lesson underneath
      - Next takes one press, and the lesson begins at screen 1
-     - after the story: the story's hand-over brings the scene up, and its Next goes on
-       through the blizzard into the lesson; ?bridge=0 leaves the scene out
-     - the lesson's ending: its one summary, whose Next brings up the Part 2 cover; Play
-       starts the game once and its voice says each line once; the scene is not shown again
+     - the avalanche opens it, as the game's opens the game: the wall of snow behind him, the
+       path coming apart at his heels, the game's sounds
+     - after the story: the story's hand-over brings the scene up, and its Next goes on into
+       the lesson, with no blizzard between; ?bridge=0 leaves the scene out
+     - the lesson's ending: Swiftee's line back to Momo, and then Part 2 starts by itself, with
+       no cover and no Play, once; its voice comes after hers and says each line once; the
+       scene is not shown again
      - without sound, with reduced motion, on an upright and a sideways phone, and in a
        hidden tab, it still gets to Next
      - the voice windows it takes from the game still match the game's own table, and its
@@ -62,7 +65,7 @@ const SCENARIOS = {
   /* The whole story, watched: order, motion, locking, voice, Next, and the hand-off. */
   async order(browser, srv) {
     const { page, context, errors, missing } = await open(browser, srv, '?bridge=1');
-    check('?bridge=1: the story and the blizzard are skipped, and the scene opens the page', await page.waitForFunction(() =>
+    check('?bridge=1: the story is skipped, and the scene opens the page', await page.waitForFunction(() =>
       window.BridgeStory && window.BridgeStory.state().active && !document.getElementById('story-intro') && !document.getElementById('ice-intro'),
       null, { timeout: 15000 }).then(() => true, () => false));
 
@@ -71,7 +74,7 @@ const SCENARIOS = {
     const samples = [];
     for (let i = 0; i < 14; i++) {
       const s = await state(page);
-      if (s.momo) samples.push({ t: s.clock, x: s.momo.x, wx: s.worldX, phase: s.phase, next: s.nextShown, cam: s.cam });
+      if (s.momo) samples.push({ t: s.clock, x: s.momo.x, mark: s.momo.mark, wx: s.worldX, phase: s.phase, next: s.nextShown, cam: s.cam, av: s.avalanche });
       if (i === 3) {
         await page.mouse.click(720, 400);
         await page.mouse.click(1300, 740);
@@ -83,9 +86,13 @@ const SCENARIOS = {
     check('Momo enters from off the left of the screen', run.length && run[0].x < run[0].cam.l + 200, JSON.stringify(run[0]));
     /* judged as a speed on the scene's own clock, so a sample that happens to land late is not
        a jump: he enters at ~1.04 px/ms (easing out), so anything past 1.4 would be a skip */
-    const steps = run.slice(1).map((s, i) => ({ dx: s.x - run[i].x, dt: Math.max(1, s.t - run[i].t) }));
-    check('Momo runs in smoothly: never a jump, never backwards', steps.every(v => v.dx >= -1 && v.dx / v.dt < 1.4),
+    /* his mark never goes back; where he is drawn is carried ahead of the avalanche and eased
+       back to it as the snow settles (the game's own draw offset), which is slow, not a jump */
+    const steps = run.slice(1).map((s, i) => ({ dx: s.x - run[i].x, dm: s.mark - run[i].mark, dt: Math.max(1, s.t - run[i].t) }));
+    check('Momo runs in smoothly: never a jump, his mark never backwards', steps.every(v => v.dm >= -1 && v.dx / v.dt < 1.4 && v.dx / v.dt > -0.3),
       steps.map(v => v.dx + 'px/' + v.dt + 'ms').join(','));
+    check('the avalanche comes down behind him, and the path comes apart at his heels', run.some(s => s.av && s.av.started && s.av.parts > 0) && run.some(s => s.av && s.av.trail > 0),
+      JSON.stringify(run.map(s => s.av)));
     check('the path scrolls while he runs', run.length > 2 && run[run.length - 1].wx > run[0].wx + 300, run.map(s => Math.round(s.wx)).join(','));
     check('Next is not on the page while he runs', samples.every(s => !s.next));
     const afterPoke = await state(page);
@@ -183,11 +190,14 @@ const SCENARIOS = {
         ['skid', 'tremble', 'whoosh', 'flutter'].every(n => heard.filter(x => x === n).length === 1) &&
         first('skid') < first('tremble') && first('tremble') < first('whoosh') && first('whoosh') < first('flutter'), heard.join(','));
       check('no footsteps once he has stopped', r.sounds.filter(x => x.name === 'step').every(x => x.at <= r.history.find(h => h.phase === 'MOMO_AT_DITCH').at));
+      check("the avalanche's own sounds, in the game's order: the build, the rumble, the cracks, his squeak, the swoosh, the boing, all before the skid",
+        ['anticipate', 'rumble', 'squeak', 'swoosh', 'boing'].every(n => heard.includes(n)) && heard.filter(x => x === 'crack').length >= 3 &&
+        first('anticipate') < first('squeak') && first('squeak') < first('swoosh') && first('swoosh') < first('boing') && first('boing') < first('skid'), heard.join(','));
     }
     const nb = await page.locator('#bridge-story .bridge-next').boundingBox();
-    check("Next is the Part 1 buttons kit's blue pill", await page.evaluate(() => {
+    check("Next is the Part 1 buttons kit's gold pill", await page.evaluate(() => {
       const n = document.querySelector('#bridge-story .bridge-next');
-      return n.classList.contains('kit-btn') && n.classList.contains('kit-btn--nav') && /btn-uiNav/.test(getComputedStyle(n).borderImageSource);
+      return n.classList.contains('kit-btn') && n.classList.contains('kit-btn--primary') && /btn-uiPrimary/.test(getComputedStyle(n).borderImageSource);
     }));
     check('Next is on the screen and clear of the bubble', nb && nb.x + nb.width <= vp.width && nb.y + nb.height <= vp.height &&
       (nb.x > r.say.box.left + r.say.box.w || nb.y > r.say.box.top + r.say.box.h), JSON.stringify({ nb, box: r.say.box }));
@@ -230,7 +240,8 @@ const SCENARIOS = {
         s.history.filter(h => h.event === 'say').length === 3; }, ORDER.join(' ')));
     check('the lesson is still waiting', await page.evaluate(() => !window.__poly._voiceStarted));
     await page.locator('#bridge-story .bridge-next').click();
-    check('Next goes on through the blizzard', await page.waitForFunction(() => !!document.getElementById('ice-intro'), null, { timeout: 5000 }).then(() => true, () => false));
+    check('Next goes on into the lesson, with no blizzard between', await page.waitForFunction(() => !document.getElementById('bridge-story') && !document.getElementById('ice-intro'), null, { timeout: 5000 }).then(() => true, () => false) &&
+      await page.evaluate(() => !document.getElementById('ice-intro')));
     check('and the lesson begins at screen 1', await page.waitForFunction(() => window.__poly.state.k === 0 && window.__poly.state.narrShow === 'Look! A point.', null, { timeout: 60000 }).then(() => true, () => false));
     check('after the story: no script errors', !errors.length, errors.join(' | '));
     await context.close();
@@ -241,40 +252,41 @@ const SCENARIOS = {
     await b.page.waitForTimeout(600);
     await b.page.evaluate(() => StoryIntro.jump(8));
     const straight = await b.page.waitForFunction(() => !!document.getElementById('ice-intro') || window.__poly._voiceStarted, null, { timeout: 60000 }).then(() => true, () => false);
-    check('?bridge=0: no scene; the blizzard and the lesson follow the story', straight && await b.page.evaluate(() => !window.BridgeStory.enabled && !document.getElementById('bridge-story')));
+    check('?bridge=0: no scene; the lesson follows the story', straight && await b.page.evaluate(() => !window.BridgeStory.enabled && !document.getElementById('bridge-story')));
     await b.context.close();
   },
 
-  /* The lesson's ending: its one summary (tests/summary.test.cjs plays it in full), whose Next
-     brings up the Part 2 cover. */
+  /* The lesson's ending: back at the broken path, in this scene, Swiftee's line back to Momo,
+     then Part 2 starts by itself. */
   async lesson(browser, srv) {
     const { page, context, errors } = await open(browser, srv, '?preview=1');
     await page.waitForFunction(() => window.__poly && window.__poly.state.ready, null, { timeout: 30000 });
     await page.evaluate(() => { const g = window.__poly, k = g.steps().length - 1; g.setState({ k }, () => g.runStep(k, false)); });
-    const up = await page.waitForFunction(() => window.PolygonSummary && window.PolygonSummary.state().active, null, { timeout: 20000 }).then(() => true, () => false);
-    check('the last screen is the summary', up);
-    await page.waitForTimeout(1500);
-    check('the Part 2 cover does not come up while the summary plays', await page.evaluate(() => !(window.RunnerStage.state && window.RunnerStage.state().shown)));
-    await page.evaluate(() => window.PolygonSummary.skipToEnd());
-    await page.locator('.lsum .lsum-next').click();
-    const cover = await page.waitForFunction(() => window.RunnerStage.state && window.RunnerStage.state().shown, null, { timeout: 15000 }).then(() => true, () => false);
-    check("the summary's Next brings up the Part 2 cover", cover);
-    check('the Help Momo scene is not shown again', await page.evaluate(() => !window.BridgeStory.state().active && !window.BridgeStory.state().history.length));
+    const says = await page.waitForFunction(() => { const s = window.BridgeStory.state(); return s.active && s.mode === 'ending' && s.phase === 'ENDING_LINE'; }, null, { timeout: 30000 }).then(() => true, () => false);
+    const at = await state(page);
+    check('the last line is said back at the broken path: Momo at the edge, Swiftee beside him', says && at.momo && at.momo.mode === 'hold' && at.swiftee && at.swiftee.standing &&
+      at.history.some(h => h.event === 'say' && h.id === 'ready-momo' && h.text === 'Now you know everything about polygons. You are ready to help Momo.'), JSON.stringify({ momo: at.momo, swiftee: at.swiftee }));
+    await page.waitForTimeout(1200);
+    const mid = await state(page);
+    check('word by word, with nothing to press and no game yet', mid.say && mid.say.shown > 0 && mid.say.shown < mid.say.words && !mid.nextShown &&
+      await page.evaluate(() => !window.RunnerStage.state().shown), JSON.stringify(mid.say));
+    await page.screenshot({ path: path.join(OUT, ENGINE + '-8-ending.png') });
+    const runs = await page.waitForFunction(() => window.RunnerStage.state().phase === 'FROZEN_RUSH_RUNNING', null, { timeout: 30000 }).then(() => true, () => false);
+    const end = await state(page);
+    check('once it is said and read, Part 2 starts by itself, with no Play pressed', runs && end.history.some(h => h.event === 'said' && h.id === 'ready-momo') &&
+      end.history.filter(h => h.event === 'phase').map(h => h.phase).join(' ') === 'LESSON_COMPLETE ENDING_ENTER ENDING_LINE ENDING_READ TRANSITION_TO_GAME', end.history.filter(h => h.event === 'phase').map(h => h.phase).join(' '));
+    check('the scene goes once the game is on screen', await page.waitForFunction(() => !document.getElementById('bridge-story'), null, { timeout: 10000 }).then(() => true, () => false));
     const frame = await (async () => { for (let i = 0; i < 100; i++) { const f = gameFrame(page); if (f) return f; await page.waitForTimeout(200); } return null; })();
-    const loaded = frame && await frame.waitForFunction(() => window.iceAgeGame && window.iceAgeGame.state() === 'TITLE', null, { timeout: 120000 }).then(() => true, () => false);
-    const before = loaded && await frame.evaluate(() => ({ state: window.iceAgeGame.state(), said: window.iceAgeGame._voice().said.length }));
-    check('Part 2 waits at its cover: no gameplay and no voice before Play', before && before.state === 'TITLE' && before.said === 0, JSON.stringify(before));
+    const going = frame && await frame.waitForFunction(() => window.iceAgeGame && !['BOOT', 'TITLE'].includes(window.iceAgeGame.state()), null, { timeout: 120000 }).then(() => true, () => false);
+    check('Part 2 runs, with no cover and no Play on the screen', going && !(await frame.locator('#cover').isVisible()) && !(await frame.locator('#btn-play').isVisible()));
     await page.waitForTimeout(1500);
-    await page.screenshot({ path: path.join(OUT, ENGINE + '-8-part2-cover.png') });
-    if (loaded) {
-      await frame.locator('#btn-play').dblclick();
-      const started = await frame.waitForFunction(() => window.iceAgeGame.state() !== 'TITLE', null, { timeout: 15000 }).then(() => true, () => false);
-      check('Play starts Part 2', started);
+    await page.screenshot({ path: path.join(OUT, ENGINE + '-9-part2-running.png') });
+    if (going) {
       await page.waitForTimeout(6000);
       /* the game's own log: 'id' when a line plays, 'id:queued' / 'id:after' while it waits */
       const said = await frame.evaluate(() => window.iceAgeGame._voice().said.map(String));
       const spoken = said.filter(x => !/:(queued|after|too-late|no-window|muted)$/.test(x)).map(x => x.split(':')[0]);
-      check('Part 2 says each line once (a double tap on Play starts it once)', spoken.length > 0 && new Set(spoken).size === spoken.length, said.join(','));
+      check('Part 2 says each line once', spoken.length > 0 && new Set(spoken).size === spoken.length, said.join(','));
     }
     check('the ending: no script errors', !errors.length, errors.join(' | '));
     await context.close();

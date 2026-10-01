@@ -13,7 +13,7 @@
 #runner-stage {
   position: fixed;
   inset: 0;
-  /* above the story (10060), the blizzard (10050) and the screen navigator (10000) */
+  /* above the story (10060), the Help Momo scene (10065) and the screen navigator (10000) */
   z-index: 10070;
   background: transparent;
 }

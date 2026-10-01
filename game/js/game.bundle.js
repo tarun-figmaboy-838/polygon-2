@@ -12639,6 +12639,8 @@ class Tutorial {
      index.html?sound=0        start muted
      index.html?reduced=1      reduced-motion mode (less shake, fewer particles)
      index.html?skip=1         skip the cover/select screens and run immediately
+     index.html?cover=0        no cover: the page carrying the game starts the run itself,
+                               once, with window.iceAgeBegin() (see `hosted` below)
      index.html?tutorial=0     never show the first-play tutorial
      index.html?tutorial=1     always show it, however many times it has been seen
      index.html?intro=0        no opening avalanche (it is off already under ?skip=1)
@@ -12678,6 +12680,25 @@ const options = {
 };
 
 let front = null;
+
+/* ?cover=0: THE PAGE THAT CARRIES THE GAME STARTS IT. The lesson plays the game in a frame
+   and goes straight from its last line into the run, so there is no cover and no PLAY to
+   press: the frame loads and waits, and the lesson calls window.iceAgeBegin() when its own
+   hand-over is done. Asked before the art is in, the run starts the moment it is; asked
+   twice, it starts once. The opening avalanche and the tutorial follow as they do after
+   PLAY. iceAgeReady says whether the art is in, for a host that waits on it. */
+const hosted = !flag('cover', true);
+let hostReady = false, hostAsked = false, begun = false;
+/* The same two words as messages, for a page that cannot reach into the frame: opened
+   straight off the disk, every file is its own origin, so the page can neither call
+   iceAgeBegin nor read iceAgeReady. postMessage works either way. */
+const tellHost = word => { try { if (window.parent && window.parent !== window) window.parent.postMessage({ iceAge: word }, '*'); } catch (e) {} };
+const beginRun = () => { if (begun) return; begun = true; game.begin(); startTutorial(); tellHost('running'); };
+if (hosted) {
+  window.iceAgeBegin = () => { hostAsked = true; if (hostReady) beginRun(); return begun; };
+  Object.defineProperty(window, 'iceAgeReady', { get: () => hostReady });
+  window.addEventListener('message', e => { if (e.data && e.data.iceAge === 'begin') window.iceAgeBegin(); });
+}
 
 let tut = null;
 let lastComplete = false;
@@ -12752,6 +12773,7 @@ const game = createGame(canvas, {
   hdArt: wantHd(),
   renderScaleForced: params.has('rs'),   // a forced scale is a request; the fps guard leaves it alone
   onReady: () => {
+    if (hosted) { hostReady = true; tellHost('ready'); if (hostAsked) beginRun(); return; }
     if (flag('skip', false)) { game.begin(); startTutorial(); return; }
     /* THE COVER IS ALREADY UP (see below); the art has finished loading, so PLAY goes live.
        Before this the cover itself waited for the whole art set — five to six seconds of
@@ -12865,7 +12887,7 @@ game.setOptions(options);
 /* THE COVER SHOWS AT ONCE, with PLAY held until the art has loaded. The cover needs only
    its own picture and the PLAY art, which the stylesheet fetches on its own, so there is no
    reason to sit on a blank page while the sheets and sounds arrive behind it. */
-if (!flag('skip', false)) {
+if (!flag('skip', false) && !hosted) {
   front = new Frontend(document, game);
   front.init({ onStart: () => { game.begin(); startTutorial(); } });
   front.setLoading(true);

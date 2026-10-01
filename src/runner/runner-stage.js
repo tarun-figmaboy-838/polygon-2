@@ -1,7 +1,7 @@
 /* ============================================================================
    THE FROZEN PASS — the runner game, played after the lesson.
 
-   Momo has been through the story, the blizzard and the polygon lesson; this
+   Momo has been through the story, the broken path and the polygon lesson; this
    is where what the lesson taught is put to work. The game itself lives in
    game/ (its contract is docs/game/RUNNER.md): a mammoth runs across an ice
    shelf, the ice gives way, glacier blocks hang on ropes above the hole, and
@@ -18,18 +18,25 @@
    controller can still read the game's state (window.iceAgeGame) for the
    checks without touching a line of the game.
 
-   WHEN. The lesson calls preload() as its completion screen opens, so the game
-   lays out, decodes its art and reaches its cover while the last line is read;
-   the "Help Momo" button on that screen calls start(), which dims the lesson
-   to the game's night blue, hides it, and lifts the curtain on the cover.
+   WHEN. The lesson calls preload() as its last screen opens, so the game lays
+   out and decodes its art while Swiftee's last line is said; then, by itself,
+   start(): the lesson dims to the game's night blue, the run begins under the
+   curtain and the curtain lifts on it. There is no cover and no PLAY: the game
+   is loaded with ?cover=0, which makes it wait for the page to start its run
+   (window.iceAgeBegin in game/js/main.js), and it is started once.
 
-     ?game=0   no game: the completion screen keeps only "Play again"
-     ?game=1   straight to the game — the story, the blizzard and the lesson
-               are skipped — for review and for the tests
+   start() reports where it is in `phase`, in order:
+     TRANSITION_TO_GAME    the lesson is dimming to the night blue
+     FROZEN_RUSH_INIT      the game is the page, under the curtain, waiting for its art
+     FROZEN_RUSH_RUNNING   its run has begun (the opening avalanche, then the tutorial)
+
+     ?game=0   no game: the lesson's last screen ends on "Play again"
+     ?game=1   straight to the game — the story and the lesson are skipped —
+               for review and for the tests
 
    The game's own playtest flags travel with it: ?sound=0, ?reduced=1, ?fast=N,
    ?speed=N, ?tutorial=0|1, ?rs=N, ?hd=0|1. Its ?intro and ?skip deliberately do
-   NOT pass through: ?intro=0 means "skip the story and the blizzard" on this
+   NOT pass through: ?intro=0 means "skip the story" on this
    page and "no opening avalanche" on that one.
    ========================================================================= */
 (function () {
@@ -37,6 +44,8 @@
 
   var GAME_URL = 'game/index.html';
   var PASS_THROUGH = ['sound', 'reduced', 'fast', 'speed', 'tutorial', 'rs', 'hd'];
+  /* The longest the curtain waits for the game's art before starting the run anyway. */
+  var READY_CAP = 20000;
   /* The curtain's two moves, matching the transitions in styles/runner-stage.css
      with a little slack so a class is never changed mid-fade. */
   var CURTAIN_IN = 340, CURTAIN_OUT = 580;
@@ -49,10 +58,20 @@
   var enabled = flag !== '0';
   var autostart = flag === '1';
 
-  var host = null, frame = null, curtain = null, shown = false, starting = null;
+  var host = null, frame = null, curtain = null, shown = false, starting = null, phase = 'IDLE';
+  /* What the game has said (game/js/main.js, ?cover=0): 'ready' once its art is in. Heard as a
+     message, because a page opened straight off the disk cannot reach into the frame. */
+  var said = { ready: false, running: false };
+  window.addEventListener('message', function (e) {
+    var w = null;
+    try { w = frame && frame.contentWindow; } catch (x) { w = null; }
+    if (!w || e.source !== w || !e.data || typeof e.data.iceAge !== 'string') return;
+    if (e.data.iceAge === 'ready') said.ready = true;
+    if (e.data.iceAge === 'running') said.running = true;
+  });
 
   function gameSrc() {
-    var out = [];
+    var out = ['cover=0'];
     if (q) PASS_THROUGH.forEach(function (k) {
       if (q.has(k)) out.push(k + '=' + encodeURIComponent(q.get(k)));
     });
@@ -97,6 +116,7 @@
     if (starting) return starting;
     preload();
     if (!host) return Promise.resolve(false);
+    phase = 'TRANSITION_TO_GAME';
     starting = new Promise(function (resolve) {
       shown = true;
       // 1. the lesson dims to the game's night blue
@@ -108,16 +128,48 @@
         host.removeAttribute('aria-hidden');
         frame.tabIndex = 0;
         try { frame.focus(); } catch (e) { /* focus is a courtesy, not a requirement */ }
-        requestAnimationFrame(function () {
+        phase = 'FROZEN_RUSH_INIT';
+        // 3. once its art is in, the run starts, once, and the curtain lifts on it
+        ready().then(function () {
+          /* asked two ways, and again every half second until the game says its run has
+             begun: it starts once however often it is asked (main.js holds it to one run),
+             and a word lost on the way (a frame still settling) cannot leave it at its title */
+          var tries = 0;
+          (function ask() {
+            if (said.running || !frame) return;
+            var w = null;
+            try { w = frame.contentWindow; } catch (e) { w = null; }
+            try { if (w && w.iceAgeBegin) w.iceAgeBegin(); } catch (e) {}
+            try { if (w) w.postMessage({ iceAge: 'begin' }, '*'); } catch (e) {}
+            if (++tries < 60) setTimeout(ask, 500);
+          })();
+          phase = 'FROZEN_RUSH_RUNNING';
           requestAnimationFrame(function () {
-            // 3. the curtain lifts on the cover
-            host.classList.add('is-on');
-            setTimeout(function () { host.classList.remove('is-arriving'); resolve(true); }, CURTAIN_OUT);
+            requestAnimationFrame(function () {
+              host.classList.add('is-on');
+              setTimeout(function () { host.classList.remove('is-arriving'); resolve(true); }, CURTAIN_OUT);
+            });
           });
         });
       }, CURTAIN_IN);
     });
     return starting;
+  }
+
+  /* Resolves when the game says its art is in (iceAgeReady), or after READY_CAP regardless:
+     a run asked for before then starts the moment the art arrives (see game/js/main.js). */
+  function ready() {
+    var t0 = Date.now();
+    return new Promise(function (resolve) {
+      (function poll() {
+        var w = null;
+        try { w = frame && frame.contentWindow; } catch (e) { w = null; }
+        var ok = said.ready;
+        try { ok = ok || !!(w && w.iceAgeReady); } catch (e) { /* off the disk: the message says it */ }
+        if (ok || !frame || Date.now() - t0 > READY_CAP) { resolve(); return; }
+        setTimeout(poll, 100);
+      })();
+    });
   }
 
   /* Take the game down and give the lesson back. Nothing in the game calls this — its
@@ -130,6 +182,8 @@
     host = frame = curtain = null;
     shown = false;
     starting = null;
+    phase = 'IDLE';
+    said = { ready: false, running: false };
   }
 
   window.RunnerStage = {
@@ -141,7 +195,7 @@
     /* For the tests: is the game on the page, is it on screen, and what state does it report. */
     state: function () {
       var g = game();
-      return { enabled: enabled, loaded: !!host, shown: shown, game: g ? g.state() : null };
+      return { enabled: enabled, loaded: !!host, shown: shown, phase: phase, game: g ? g.state() : null, ready: said.ready, running: said.running };
     }
   };
 

@@ -22,16 +22,17 @@ The displayed screen number is the position in `steps()`, starting at 1. Interna
 | Screen jump menu and Back / Next (review only, shown with `?dev=1`) | `src/lesson/screen-navigator.js`; the story's Scenes menu is `mountNavigator` / `jumpTo` in `src/story/story-intro.js` |
 | Background, dialogue bubble, and bird landing | `index.html`: `BOARD`, `GUIDE_BOX`, `enterScreen`, `storyVoiceStart` (see [design/STORY_SCENE.md](design/STORY_SCENE.md)) |
 | Where Swiftee's bubble sits and how big it grows | `index.html`: `DIALOGUE`, `dialogueLayout`, `dialogueEdge`, `fittedDialogue` (see "The dialogue's room" in [design/STORY_SCENE.md](design/STORY_SCENE.md)) |
-| Blizzard timing, wind direction, storm strength | `styles/ice-intro.css`: the variables on `#ice-intro` |
-| Blizzard snow, gust audio, lesson handoff | `src/intro/ice-intro.js`: `FIELDS`, `DUST`, `GAIN_CURVE`; the lesson's gate is `boot()` in `index.html` |
+| The opening's order and the lesson's way in (out of the story's dark) | `src/intro/opening.js`; the lesson's gate is `boot()` in `index.html` |
+| The Help Momo scene's avalanche: its beats, the wall, the trail, its sounds | `src/bridge/bridge-story.js`: `AV`, `avUpdate`, `drawAvalanche` (a port of `game/js/avalanche.js`) |
 | Story lines, coloured words, balloon position and tail, effects, timing | `src/story/story-data.js` |
 | Story look (the narration label and speech bubbles, comic page and panel) | `styles/story-intro.css` |
 | Story behaviour (sequencing, audio, effects) | `src/story/story-intro.js` |
 | Swiftee's animation sheets | `tools/build-swiftee.cjs` (writes `assets/swiftee/` and `src/lesson/swiftee-sheets.js`) |
 | The Help Momo scene between the story and the lesson (the Broken Path): timing, lines, layout, states | `src/bridge/bridge-story.js`, `styles/bridge-story.css` |
-| When it plays: after the story, before the blizzard | `src/intro/ice-intro.js` `autostart`, `BridgeStory.afterStory` |
+| When it plays: after the story, before the lesson; and at the end | `src/intro/opening.js` `autostart`, `BridgeStory.afterStory`, `BridgeStory.ending` |
 | The lesson's ending: its two lines, then the game's cover | `index.html`: `lessonComplete`, `queuePart2`, `startPart2` |
-| The summary, the lesson's last screen (after the Part 1 Summary Kit): its ideas, its look, its states and timing | `index.html`: `summaryConcepts`, `startSummary`; `src/lesson/summary.js` (states at the top), `styles/summary.css`, `assets/ui/panel.webp`, `assets/images/summary-ice-vista.webp` |
+| The recap, screen 41 before the quizzes (presented the Part 1 Summary Kit's way): what it says, its look, its states and timing | `index.html`: `recapConcepts`, `startRecap`; `src/lesson/recap.js` (states at the top), `styles/recap.css`, `assets/ui/panel.webp` |
+| The end: the last line, then the game by itself | `index.html`: `finishLesson`, `startPart2`; `src/runner/runner-stage.js`; `game/js/main.js` (`?cover=0`, `window.iceAgeBegin`) |
 | The hand-off to the runner game: when it loads, the curtain, its URL flags | `src/runner/runner-stage.js`, `styles/runner-stage.css` |
 | The gold Play and the pill buttons (Next, Help Momo, Play again) | `styles/buttons-kit.css`, `src/fx/play-fx.js`, `assets/ui/`; in the lesson `pillBtn` / `pillWidth` in `index.html` |
 | Momo's jump in the runner game (the 24-cell sheet) | `game/js/engine.js`: `sheets.jump`, `frames.jump`, the JUMP_START / JUMP_AIR / LAND cases in `PlayerController.draw` |
@@ -42,11 +43,10 @@ Narration text is matched to recordings by wording. When you change a spoken sen
 ## Start-up order
 
 1. **The story.** `src/story/story-intro.js` shows its start card, plays on **Play**, and releases `StoryIntro.gate` when it ends or is skipped. Once it is playing, `src/bridge/bridge-story.js` preloads the Help Momo scene's art and voice.
-2. **Help Momo.** `src/intro/ice-intro.js` waits on that gate and calls `BridgeStory.afterStory()`: if the story played, the scene comes up out of the story's dark, speaks its three lines through the lesson's AudioContext (unlocked by the story's Play), and settles its promise when **Next** has been pressed and it has faded back to the dark. `?bridge=1` starts here directly; `?bridge=0` leaves it out.
-3. **The blizzard.** `ice-intro.js` then plays for 5.8 s and releases `IceIntro.gate`.
-4. **The lesson.** `boot()` in `index.html` waits on `IceIntro.gate`, then runs screen 1.
-5. **The ending.** The last screen, 47, is the summary (`startSummary`, `src/lesson/summary.js`): it asks `src/runner/runner-stage.js` to preload the game (`game/index.html`) in an invisible frame, plays the lesson's seven ideas one card at a time in the Summary Kit's way, then Swiftee's "You know all about polygons now. You are ready to help Momo.", and shows Next; Next calls `startPart2`. With `?game=0` it ends on Play again.
-6. **The Frozen Pass.** `RunnerStage.start()` (from the summary's Next) hides the lesson and lifts a curtain on the game's cover, where **Play** starts the game. `?game=1` starts here directly; `?game=0` leaves the game and the Help Momo scene out.
+2. **Help Momo.** `src/intro/opening.js` waits on that gate and calls `BridgeStory.afterStory()`: if the story played, the scene comes up out of the story's dark on the game's avalanche, Momo runs ahead of it to the break, and the scene speaks its three lines through the lesson's AudioContext (unlocked by the story's Play), and settles its promise when **Next** has been pressed and it has faded back to the dark. `?bridge=1` starts here directly; `?bridge=0` leaves it out.
+3. **The lesson.** `opening.js` then lifts a veil of the same dark off the lesson and releases `Opening.gate`; `boot()` in `index.html` waits on it, then runs screen 1.
+4. **The ending.** Screen 41 is the recap (`startRecap`, `src/lesson/recap.js`): the lesson's ideas one card at a time in the Summary Kit's way, then Next into the quizzes. The last screen, 47, is the line back to Momo (`finishLesson`): it asks `src/runner/runner-stage.js` to preload the game (`game/index.html`) in an invisible frame, the Help Momo scene comes back at the break (`BridgeStory.ending`), Swiftee says "Now you know everything about polygons. You are ready to help Momo.", and once it has been read it calls `startPart2` by itself. With `?game=0` it ends on Play again.
+5. **The Frozen Pass.** `RunnerStage.start()` hides the lesson under the night blue, waits for the game's art, starts its run (`window.iceAgeBegin`, once) and lifts the curtain on it: there is no cover and no Play. `?game=1` starts here directly; `?game=0` leaves the game and the Help Momo scene out.
 
 Each overlay removes itself completely (DOM, timers, audio) when it finishes. The runner's frame stays up: its own **Play again** restarts the game.
 
@@ -75,13 +75,13 @@ All functions in this table are in `index.html`.
 | 34–35 | Triangle / Quadrilateral | `S17` | `viewName` |
 | 36 | Select quadrilaterals | `S18` | `viewMulti` |
 | 37–40 | Pentagon / Hexagon / Heptagon / Octagon | `S19`–`S22` | `viewName` |
-| 41 | Recall polygon names | `S23` | `viewRecall` |
+| 41 | The recap: "Let's recall what we learnt today.", then the polygon, its sides, a vertex and an angle, then "Polygons have different names based on their number of sides." and the six names, one card at a time; Next into the quizzes | `S23` (`recap`) | `startRecap`, `recapConcepts`, `viewRecap`; `src/lesson/recap.js`, `styles/recap.css` |
 | 42 | Select polygons | `C1` | `viewMulti` |
 | 43 | Sort polygon / not polygon | `C2` | `viewSort` |
 | 44 | Find the non-polygon | `C3` | `viewTapOne` |
 | 45 | Select pentagons | `C4` | `viewMulti` |
 | 46 | Sort hexagons / heptagons | `C5` | `viewSort` |
-| 47 | The summary: one screen, the lesson's seven ideas one card at a time (closed, polygon, sides, vertex, angle, still 5 sides, 3 to 8 sides), then "You know all about polygons now. You are ready to help Momo." and Next to the runner game's cover (Play again with `?game=0`) | `END` | `startSummary`, `summaryConcepts`, `startPart2`; `src/lesson/summary.js`, `styles/summary.css` |
+| 47 | The end: "Now you know everything about polygons. You are ready to help Momo.", locked, then the runner game starts by itself, no Next and no Play (Play again with `?game=0`) | `END` | `finishLesson`, `startPart2`, `viewEnd` |
 
 ## Other documents
 

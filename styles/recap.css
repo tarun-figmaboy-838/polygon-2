@@ -1,6 +1,7 @@
 /* ============================================================================
-   THE SUMMARY — the lesson's last screen (src/lesson/summary.js), in the Part 1
-   Summary Kit's look (its .sk-stage, .sk-presenter, .sk-bubble and .sk-next). It is
+   THE RECAP — screen 41, before the quizzes (src/lesson/recap.js), in the Part 1
+   Summary Kit's look (its .sk-presenter, .sk-bubble and .sk-next), over the lesson's
+   own background. It is
    drawn inside the lesson's own 1980 x 1114 stage, so every size here is a stage px:
    the kit's own sizes, which are for its 1000-wide board, are doubled (x 1.98) and
    the lesson's scaling does the rest.
@@ -17,14 +18,13 @@
   inset: 0;
   overflow: hidden;
   pointer-events: auto;
-  background: #cfeeff url("../assets/images/summary-ice-vista.webp") center / cover no-repeat;   /* the kit's ice vista */
+  background: transparent;              /* the lesson's own background, under it */
   -webkit-user-select: none;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
 /* the kit's board, 1000 x 562, over the whole stage (the same 16:9) */
 .lsum .lsum-board { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; overflow: visible; }
-.lsum .summary-card.tappable { cursor: pointer; }
 
 /* SWIFTEE, behind the card: the board's card hides her body as she rises */
 .lsum .lsum-presenter {
@@ -52,13 +52,14 @@
 .lsum .lsum-bubble .w.in { opacity: 1; }
 .lsum .lsum-bubble .w.key { color: #f07b12; }
 
-/* NEXT, once the last line has been read: the kit's pill, at the lesson's size */
+/* NEXT, once the recap has been looked at: the kit's pill, at the lesson's size, in the clear
+   space at the bottom of the board between the two albums */
 .lsum .lsum-next {
-  position: absolute; z-index: 5; right: 59px; bottom: 45px;
-  opacity: 0; translate: 0 10px; transition: opacity 240ms ease, translate 240ms cubic-bezier(.22, 1, .36, 1);
+  position: absolute; z-index: 5; left: 50%; bottom: 150px;
+  opacity: 0; translate: -50% 10px; transition: opacity 240ms ease, translate 240ms cubic-bezier(.22, 1, .36, 1);
 }
 .lsum .lsum-next[hidden] { display: none !important; }
-.lsum .lsum-next.is-in { opacity: 1; translate: 0 0; }
+.lsum .lsum-next.is-in { opacity: 1; translate: -50% 0; }
 
 @media (prefers-reduced-motion: reduce) {
   .lsum .lsum-presenter, .lsum .lsum-bubble, .lsum .lsum-next, .lsum .lsum-bubble .w { transition: none; }

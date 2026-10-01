@@ -15,31 +15,28 @@ vm.runInContext(fs.readFileSync('index.html', 'utf8').match(/<script[^>]*data-dc
 const g = new ctx.Game(); g.P = ctx.window.POLY;
 g.stopDrawingSound = g.clearNudge = g.sfx = g.armNudge = () => {}; g.locked = () => false;
 g.later = () => {};
-const shape = n => g.recallPoints(n);
+// the regular polygons the naming screens morph between (the recall stepper's were the same)
+const shape = n => g.P.reg(n, 500, 500, 300, 180 / n);
 function frame(time) { now = time; const work = [...frames.values()]; frames.clear(); work.forEach(f => f(time)); }
 function hasCorners(outline, corners) {
   corners.forEach(p => assert(outline.some(q => Math.hypot(p[0] - q[0], p[1] - q[1]) < 1e-6), 'Every original corner is retained'));
 }
-// The counter and starting geometry must be committed together, before any RAF.
-assert.equal(g.state.n, 3);
-g.bumpN(-1)(); assert.equal(g.state.n, 3); assert.equal(g.state.recallLimit, -1);
+// The state the morph carries and its starting geometry are committed together, before any RAF.
 updates.length = 0;
-g.bumpN(1)(); assert.equal(g.state.n, 4); hasCorners(g.state.morph, shape(3));
-assert(updates[0].n === 4 && updates[0].recallNameN === 4 && updates[0].morph);
+g.morphTo(shape(3), shape(4), 520, null, { n: 4 }); assert.equal(g.state.n, 4); hasCorners(g.state.morph, shape(3));
+assert(updates[0].n === 4 && updates[0].morph);
 frame(200); const visible = g.state.morph.map(p => [...p]);
 const previousSpeed = g._morphVelocity.map(p => [...p]);
 assert(previousSpeed.some(v => Math.hypot(...v) > 0.01));
-assert.equal(g.state.recallNameN, 4, 'Name and count share the same transition target');
 const stale = [...frames.values()][0];
-g.bumpN(1)(); hasCorners(g.state.morph, visible); assert.equal(frames.size, 1);
+// retargeted mid-way: it goes on from where it is drawn, at the speed it had
+g.morphTo(shape(4), shape(5), 520, null, { n: 5 }); hasCorners(g.state.morph, visible); assert.equal(frames.size, 1);
 visible.forEach((p, i) => {
   const j = g.state.morph.findIndex(q => Math.hypot(p[0] - q[0], p[1] - q[1]) < 1e-6);
   assert(Math.hypot(g._morphVelocity[j][0] - previousSpeed[i][0], g._morphVelocity[j][1] - previousSpeed[i][1]) < 1e-6, 'Retarget preserves velocity');
 });
 const current = g.state.morph; stale(); assert.strictEqual(g.state.morph, current);
 frame(720); assert.equal(g.state.morph, null); assert.equal(g.state.n, 5);
-assert.equal(g.state.recallNameN, 5);
-g.state.n = 8; g.bumpN(1)(); assert.equal(g.state.n, 8); assert.equal(g.state.recallLimit, 1);
 for (let n = 3; n <= 8; n++) {
   const pts = shape(n);
   assert.equal(pts[0][1], pts[n - 1][1], 'All polygons retain a horizontal top side');

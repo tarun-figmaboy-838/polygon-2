@@ -1,39 +1,40 @@
 /* ============================================================================
-   THE SUMMARY — the lesson's last screen: one screen, everything it taught, one
-   idea at a time, then Swiftee's line back to Momo and Next.
+   THE RECAP — screen 41, the one look back before the quizzes: one screen, what the
+   lesson taught, one idea at a time, then Next into the quizzes.
 
-   The method is the Part 1 Summary Kit's (polygon-part-1.vercel.app/
-   part1-swiftee-lesson/previews/summary-kit.html): its board, its card (the
-   kit's own panel.webp), its layout numbers, its states and timings, its word
-   cues, its album of collected cards and its final gathering, and its look: its
-   ice-vista background, its speech bubble (Fredoka, every word faint until it is
-   said, the key words orange), its name plates and its blue Next pill. What it says
-   and shows is this lesson's own: its recorded lines and their word times
-   (src/lesson/recordings.js), its terms, its Swiftee sheets (window.SWIFTEE). The
-   lesson hands the ideas in (index.html: summaryConcepts); nothing here teaches
-   anything new. Three things differ from the kit, as the lesson's brief asks: a
-   card's evidence appears on the word that names it, not before; the last bubble is
-   kept clear of the album; and the key words are the lesson's own.
+   It is presented the Part 1 Summary Kit's way (polygon-part-1.vercel.app/
+   part1-swiftee-lesson/previews/summary-kit.html): its board, its card (the kit's own
+   panel.webp), its layout numbers, its states and timings, its word cues, its album of
+   collected cards and its final gathering, its speech bubble (Fredoka, every word faint
+   until it is said, the key words orange), its name plates and its blue Next pill. It is
+   drawn over the lesson's own background. What it says and shows is this lesson's own:
+   its recorded lines and their word times (src/lesson/recordings.js), its terms, its
+   Swiftee sheets (window.SWIFTEE). The lesson hands the ideas in (index.html:
+   recapConcepts); nothing here teaches anything new, and nothing on it takes a tap but
+   Next: it is Swiftee going over the lesson, not a question.
 
    ONE SCREEN, SEVERAL TEACHING STATES, as state() reports them:
-     SUMMARY_ENTER    the screen opens; nothing else is on it yet
-     for each idea, in the order the lesson taught them:
+     RECAP_ENTER      the screen opens; nothing else is on it yet
+     for each item, in the order the lesson taught them:
+       a line with no card ("Let's recall what we learnt today.", and the turn to the names):
+       LINE             Swiftee comes up in the clear middle and says it, then goes down
+       an idea, on its own card:
        CARD_ENTER       a big card comes into the clear middle
        CONCEPT_REVEAL   the figure on it arrives (drawn round, or faded in)
        SWIFTEE_ENTER    Swiftee rises from behind the card's top edge
        EXPLANATION      her line, word by word on the recording's own times; each key
-                        word shows the part of the figure it names as it is said (a side
-                        lights as "side" is said, a corner as "vertex"...), and never before
+                        word shows the part of the figure it names as it is said (the
+                        polygon on "polygon", the sides on "sides", one corner on "vertex",
+                        the angle on "angle", a name's sides counted on its number), and
+                        never before
        READING_PAUSE    a breath after the line, the figure held
        SWIFTEE_EXIT     she sinks back behind the card
-       CARD_COLLECT     the card shrinks into a 2 x 2 album at the side, with its name
+       CARD_COLLECT     the card shrinks into the album at the side, with its name: the
+                        polygon and its parts on the left, the six names on the right
        NEXT_CONCEPT     ...and the next card comes in
-     FINAL_SUMMARY    every highlight stops, the albums gather in, the clean summary
-     COMPLETION       Swiftee comes up in the middle: "You know all about polygons now.
-                      You are ready to help Momo.", word by word with its recording
-     READY            a reading pause, then Next (Play again where there is no game);
-                      a tap on a collected card shows its idea and says its line again
-     DONE             Next was pressed; play() resolves true
+     FINAL_SUMMARY    every highlight stops, the albums gather in, a pause to look at it all
+     READY            Next comes up
+     DONE             Next was pressed; play() resolves true, and the quizzes begin
    Each state waits for the one before it (the voice, the words, the animation), so no two
    overlap, and nothing can be pressed while a line is being said.
 
@@ -50,8 +51,12 @@
   var SUM = {
     card: { cx: 500, cy: 322, w: 300 },
     shape: { cx: 500, cy: 326, r: 86 },
-    mini: { w: 132, x: [[80, 224], [776, 920]], y: [200, 378], zoom: 1.12, plate: { w: 118, h: 27, size: 15.5, rim: 2 } },
-    enterMs: 420, collectMs: 580, readMs: 700
+    /* the two albums sit inside the lesson's ice board (board x 50-950, y 54-509), clear of the
+       big card in the middle (x 350-650) and below the bubble over it (its foot is at y 88, and
+       it drops 6 more as it fades): the polygon and its parts 2 x 2 on the left, the six names
+       2 x 3 on the right, each row's name plates a clear 10 above the row under it */
+    mini: { w: 112, x: [[128, 272], [728, 872]], y: [[213, 344], [148, 279, 410]], zoom: 1.12, plate: { w: 104, h: 24, size: 14, rim: 2 } },
+    enterMs: 420, collectMs: 580, readMs: 700, lookMs: 1200
   };
   var FRAME = { src: 'assets/ui/panel.webp', w: 1024, h: 984 };
   var HI = { fill: '#34b4a4', edge: '#0b4f9e', line: '#eafcff', lit: '#4be0ff' };
@@ -92,19 +97,19 @@
 
   var S = null;   // the run on screen
 
-  /** Play the summary into `opts.host()`. Resolves true when Next (or Play again) is pressed,
-      false when stopped. opts: { host, concepts: [{ id, label, text, visual }], done: { text },
-      finish: 'Next' | 'Play again', inkOf(word) -> colour | null, sfx(name), onState(state, id) } */
+  /** Play the recap into `opts.host()`. Resolves true when Next is pressed, false when stopped.
+      opts: { host, concepts: [{ id, text, line } | { id, label, text, album, visual }],
+      inkOf(word, text) -> colour | null, sfx(name), onState(state, id) } */
   function play(opts) {
     stop();
     opts = opts || {};
     var run = S = {
       opts: opts, gen: 0, timers: [], cards: {}, collected: [], active: null, state: null, audio: null,
-      done: null, busy: false, raf: 0
+      busy: false, raf: 0
     };
     run.finished = new Promise(function (resolve) { run.resolve = resolve; });
     build(run);
-    setState(run, 'SUMMARY_ENTER');
+    setState(run, 'RECAP_ENTER');
     sequence(run);
     return run.finished;
   }
@@ -140,7 +145,7 @@
   function build(run) {
     var root = el('div', 'lsum');
     root.setAttribute('role', 'region');
-    root.setAttribute('aria-label', 'Summary');
+    root.setAttribute('aria-label', "Let's recall what we learnt today");
     var svg = mk('svg', { class: 'lsum-board', viewBox: '0 0 ' + W + ' ' + H, preserveAspectRatio: 'xMidYMid meet', 'aria-hidden': 'true' }, root);
     run.defs = mk('defs', {}, svg);
     run.layer = mk('g', {}, svg);
@@ -153,11 +158,10 @@
     var say = el('div', 'lsum-bubble', root);
     say.setAttribute('aria-live', 'polite');
     run.say = { el: say, box: say, text: say, spans: [] };
-    /* Next: the Part 1 buttons kit's blue pill at the lesson's size; Play again, gold, without a game */
-    var finish = run.opts.finish || 'Next';
-    var next = el('button', 'kit-btn kit-btn--lesson lsum-next ' + (finish === 'Next' ? 'kit-btn--nav kit-btn--next' : 'kit-btn--primary'), root);
+    /* Next: the Part 1 buttons kit's blue pill at the lesson's size */
+    var next = el('button', 'kit-btn kit-btn--lesson lsum-next kit-btn--nav kit-btn--next', root);
     next.type = 'button';
-    next.textContent = finish;
+    next.textContent = 'Next';
     next.hidden = true;
     next.addEventListener('click', function () {
       if (S !== run || run.state !== 'READY' || run.busy) return;
@@ -169,10 +173,6 @@
       later(run, 60, function () { resolve(true); });
     });
     run.next = next;
-    run.layer.addEventListener('pointerdown', function (e) {
-      var g = e.target.closest && e.target.closest('.summary-card');
-      if (g && S === run && run.state === 'READY') replay(run, g.getAttribute('data-concept'));
-    });
     run.root = root;
     attach(run);
     /* the lesson's renderer can replace the container between frames: keep the screen in it */
@@ -260,7 +260,7 @@
   function card(run, c) {
     var V = c.visual || {}, w = SUM.card.w, h = w * FRAME.h / FRAME.w, s = SUM.shape;
     var x = SUM.card.cx - w / 2, y = SUM.card.cy - h / 2;
-    var g = mk('g', { class: 'summary-card', 'data-concept': c.id }, run.layer);
+    var g = mk('g', { class: 'recap-card', 'data-concept': c.id }, run.layer);
     g._rect = { x: x, y: y, w: w, h: h }; g._c = c;
     var pp = mk('g', {}, g); g._pop = pp;
     var img = mk('image', { x: x, y: y, width: w, height: h, preserveAspectRatio: 'none', href: FRAME.src }, pp);
@@ -301,13 +301,14 @@
     mk('path', { d: arc, fill: 'none', stroke: '#fff4c9', 'stroke-width': 2.5, 'stroke-linecap': 'round' }, g._wedge);
     return g._wedge;
   }
-  /* the sides counted: 1, 2, 3... just inside the middle of each side, clear of the name plate */
+  /* the sides counted: 1, 2, 3... just outside the middle of each side, as the lesson's naming
+     screens number them (inside, a triangle's three numbers crowd its small middle) */
   function counts(g) {
     if (g._counts) return g._counts;
     var v = g._verts, c = centroid(v);
     g._counts = v.map(function (a, i) {
       var b = v[(i + 1) % v.length], mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2, dx = mx - c.x, dy = my - c.y, d = Math.hypot(dx, dy) || 1;
-      var x = mx - dx / d * 24, y = my - dy / d * 24, t = mk('g', { opacity: 0 }, g._marks);
+      var x = mx + dx / d * 21, y = my + dy / d * 21, t = mk('g', { opacity: 0 }, g._marks);
       mk('circle', { cx: x, cy: y, r: 13, fill: '#fffbea', stroke: '#e08a00', 'stroke-width': 2.5 }, t);
       mk('text', { x: x, y: y + 5.5, 'text-anchor': 'middle', 'font-size': 16, 'font-weight': 900, 'font-family': 'Nunito, system-ui, sans-serif', fill: '#7a4100', text: String(i + 1) }, t);
       return t;
@@ -330,29 +331,6 @@
       later(run, 40, function () { sfx(run, 'trace'); });
       t = 600;
     } else if (!reduced() && out.animate) { try { out.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 220, fill: 'backwards' }); } catch (e) {} t = 240; }
-    /* a corner moves (the lesson's drag): the figure changes, and it is still a polygon */
-    if (V.move) {
-      var M = V.move, s = SUM.shape, from = { x: g._verts[M[0]].x, y: g._verts[M[0]].y }, to = { x: s.cx + M[1] * s.r, y: s.cy + M[2] * s.r };
-      var mover = knob(g, M[0]);
-      later(run, t, function () { pop(mover, 0, true); sfx(run, 'pick'); });
-      var put = function (e) {
-        var v = g._verts.slice(); v[M[0]] = { x: from.x + (to.x - from.x) * e, y: from.y + (to.y - from.y) * e };
-        setVerts(g, v); mover.setAttribute('cx', v[M[0]].x.toFixed(1)); mover.setAttribute('cy', v[M[0]].y.toFixed(1));
-      };
-      if (reduced()) put(1);
-      else later(run, t + 160, function () {
-        var gg = run.gen, t0 = null;
-        var step = function (now) {
-          if (!alive(run, gg)) return; if (t0 == null) t0 = now;
-          var k = Math.min(1, (now - t0) / 520), e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
-          put(e);
-          if (k < 1) requestAnimationFrame(step);
-          else { sfx(run, 'snap'); try { mover.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260, delay: 200, fill: 'forwards' }); } catch (x) { mover.setAttribute('opacity', 0); } }
-        };
-        requestAnimationFrame(step);
-      });
-      t += 160 + 520 + 300;
-    }
     return t;
   }
 
@@ -387,34 +365,15 @@
       else trace(run, cs);
     }
     else if (/^angles?$/.test(w)) { var wg = wedge(c, i); if (wg.getAttribute('opacity') !== '1') { pop(wg, 0, true); sfx(run, 'tick'); } else warmPulse([wg], '1.25'); }
-    else if ((w === '5' || w === 'five') && id === 'still5') {
-      counts(c).forEach(function (n, k) { later(run, k * 150, function () { pop(n, 0); sfx(run, 'tick'); }); });
+    else if (V.count && (w === String(V.n) || w === NUM[V.n])) {
+      // a name's number: its sides counted, one after another
+      counts(c).forEach(function (n, k) { later(run, k * 130, function () { pop(n, 0); sfx(run, 'tick'); }); });
     }
-    else if (/^sides?$/.test(w) && id === 'still5') { later(run, 760, function () { trace(run, allSides(c).map(function (l) { l.setAttribute('opacity', 0); return l; })); }); }
-    else if (w === 'number' && id === 'names') namesCycle(run, c);
-    else if (/^names?$/.test(w) && id === 'names') { if (c._name) warmPulse([c._name], '1.12'); }
-    else if (/^polygons?$/.test(w)) warmPulse([c._tag], '1.08');
+    else if (V.count && /^sides?$/.test(w)) later(run, (V.n || 5) * 130 + 80, function () { trace(run, allSides(c).map(function (l) { l.setAttribute('opacity', 0); return l; })); });
+    else if (V.count && w === word(c._c.label)) warmPulse([c._tag], '1.1');
+    else if (/^polygons?$/.test(w) && id === 'polygon') { warmPulse([c._tag], '1.1'); warmPulse([c._outline], '1.06'); }
   }
-  /* NAMES: the figure takes each number of sides the lesson named, 3 to 8, with the number in
-     its middle and the name under it, and stays on the last */
-  var NAMES = { 3: 'Triangle', 4: 'Quadrilateral', 5: 'Pentagon', 6: 'Hexagon', 7: 'Heptagon', 8: 'Octagon' };
-  function namesCycle(run, c) {
-    if (c._cycling) return;
-    c._cycling = true;
-    var s = SUM.shape;
-    var num = c._num || (c._num = mk('text', { x: s.cx, y: s.cy + 13, 'text-anchor': 'middle', 'font-size': 38, 'font-weight': 900, 'font-family': 'Nunito, system-ui, sans-serif', fill: '#ffffff', opacity: 0, style: 'paint-order: stroke; stroke: #2f5fc4; stroke-width: 4px' }, c._marks));
-    var nm = c._name || (c._name = mk('text', { x: s.cx, y: s.cy - s.r - 14, 'text-anchor': 'middle', 'font-size': 22, 'font-weight': 900, 'font-family': 'Nunito, system-ui, sans-serif', fill: '#7b249c', opacity: 0 }, c._marks));
-    [3, 4, 5, 6, 7, 8].forEach(function (n, k) {
-      later(run, k * 420, function () {
-        setVerts(c, regular(n, s.r, s.cx, s.cy));
-        num.textContent = String(n); nm.textContent = NAMES[n];
-        num.setAttribute('opacity', 1); nm.setAttribute('opacity', 1);
-        if (!reduced() && c._outline.animate) { try { c._outline.animate([{ opacity: 0.35 }, { opacity: 1 }], { duration: 200 }); } catch (e) {} }
-        sfx(run, 'tick');
-      });
-    });
-  }
-
+  var NUM = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
   /* ---------------------------------------------------------- her line, said */
   function hush(run) {
     run.say.el.classList.remove('show');
@@ -543,10 +502,12 @@
   }
 
   /* --------------------------------------------------------------- the flow */
+  /* where a card lands: its own album (`album`: 0 the left, 1 the right), filled two across */
   function slot(run, id) {
-    var order = run.opts.concepts.map(function (k) { return k.id; }), i = Math.max(0, order.indexOf(id)), half = Math.ceil(order.length / 2) || 4;
-    var col = i < half ? 0 : 1, k = col ? i - half : i;
-    return { x: SUM.mini.x[col][k % 2], y: SUM.mini.y[Math.floor(k / 2)], col: col };
+    var cards = run.opts.concepts.filter(function (k) { return !k.line; });
+    var me = cards.filter(function (k) { return k.id === id; })[0] || cards[0];
+    var col = me.album ? 1 : 0, k = cards.filter(function (q) { return (q.album ? 1 : 0) === col; }).indexOf(me);
+    return { x: SUM.mini.x[col][k % 2], y: SUM.mini.y[col][Math.floor(k / 2)], col: col };
   }
   function show(run, c) {
     var g = run.cards[c.id] || (run.cards[c.id] = card(run, c));
@@ -595,7 +556,7 @@
       requestAnimationFrame(step);
     });
   }
-  /* the clean summary: every highlight stopped, the albums gathered in a step toward her */
+  /* the whole recap at rest: every highlight stopped, the albums gathered in a step toward her */
   function gather(run) {
     setState(run, 'FINAL_SUMMARY'); sfx(run, 'done');
     while (run.fx.firstChild) run.fx.removeChild(run.fx.firstChild);
@@ -621,29 +582,18 @@
     run.next.disabled = false;
     void run.next.offsetWidth;
     run.next.classList.add('is-in');
-    run.collected.forEach(function (id) { run.cards[id].classList.add('tappable'); });
-  }
-  /* READY: a tap on a collected card shows its idea and says its line again, the others resting */
-  function replay(run, id) {
-    var c = run.cards[id];
-    if (!c || run.busy) return;
-    run.busy = true;
-    setState(run, 'CARD_REPLAY', id);
-    run.collected.forEach(function (k) { var o = k === id ? '' : '.42'; [run.cards[k], run.cards[k]._mini].forEach(function (e) { e.style.transition = 'opacity 240ms ease'; e.style.opacity = o; }); });
-    if (!reduced() && c._pop.animate) { try { c._pop.animate([{ scale: '1' }, { scale: '1.06', offset: 0.45 }, { scale: '1' }], { duration: 360, easing: 'cubic-bezier(.3,1.4,.5,1)' }); } catch (e) {} }
-    run.active = id;
-    if (run.presenter) run.presenter.pose('talking');
-    say(run, c._c.text, 'middle').then(function () {
-      hush(run); run.active = null;
-      if (run.presenter) run.presenter.pose('happy');
-      run.collected.forEach(function (k) { [run.cards[k], run.cards[k]._mini].forEach(function (e) { e.style.opacity = ''; }); });
-      run.busy = false;
-      if (S === run) setState(run, 'READY');
-    });
   }
   function sequence(run) {
     var g = run.gen, P = run.presenter, chain = hold(run, 300);
     run.opts.concepts.forEach(function (c) {
+      if (c.line) {
+        /* a line with no card: she comes up in the clear middle, says it, and goes down */
+        chain = chain.then(function (ok) { if (!ok || !alive(run, g)) return false; setState(run, 'LINE', c.id); return P ? P.rise('middle').then(function () { return alive(run, g); }) : true; })
+          .then(function (ok) { if (!ok) return false; if (P) P.pose('talking'); return say(run, c.text, 'middle'); })
+          .then(function (ok) { if (!ok) return false; hush(run); if (P) P.pose('happy'); return hold(run, 260); })
+          .then(function (ok) { if (!ok) return false; return P ? P.sink().then(function () { return alive(run, g); }) : true; });
+        return;
+      }
       chain = chain.then(function (ok) { return ok && alive(run, g) && show(run, c); })
         .then(function (ok) { if (!ok) return false; setState(run, 'SWIFTEE_ENTER', c.id); return P ? P.rise('peek').then(function () { return alive(run, g); }) : true; })
         .then(function (ok) { if (!ok) return false; setState(run, 'EXPLANATION', c.id); if (P) P.pose('talking'); return say(run, c.text, 'peek'); })
@@ -651,16 +601,10 @@
         .then(function (ok) { if (!ok) return false; setState(run, 'SWIFTEE_EXIT', c.id); return P ? P.sink().then(function () { return alive(run, g); }) : true; })
         .then(function (ok) { return ok && collect(run, c.id); });
     });
+    /* the whole recap, gathered and still, and a moment to look at it before Next */
     chain.then(function (ok) { return ok && hold(run, 400); })
       .then(function (ok) { return ok && gather(run); })
-      .then(function (ok) { return ok && hold(run, 600); })
-      .then(function (ok) {
-        if (!ok) return false;
-        setState(run, 'COMPLETION');
-        return P ? P.rise('middle').then(function () { P.pose('celebrating'); return alive(run, g); }) : true;
-      })
-      .then(function (ok) { return ok && run.opts.done ? say(run, run.opts.done.text, 'middle') : ok; })
-      .then(function (ok) { if (!ok) return false; hush(run); if (P) P.pose('happy'); return hold(run, 500); })
+      .then(function (ok) { if (!ok) return false; if (P) { P.rise('middle'); P.pose('happy'); } return hold(run, SUM.lookMs); })
       .then(function (ok) { if (ok && alive(run, g)) ready(run); });
   }
 
@@ -668,28 +612,20 @@
   function settle(run, g) {
     var V = g._c.visual || {}, id = g._c.id, i = V.at || 0, s = SUM.shape;
     g._outline.setAttribute('opacity', 1);
-    if (V.move) { var v = g._verts.slice(); v[V.move[0]] = { x: s.cx + V.move[1] * s.r, y: s.cy + V.move[2] * s.r }; setVerts(g, v); }
     if (id === 'sides') allSides(g).forEach(function (l) { l.setAttribute('opacity', 1); });
     if (id === 'vertex') knob(g, i).setAttribute('opacity', 1);
     if (id === 'vertex' || id === 'angle') cornerSides(g, i).forEach(function (l) { l.setAttribute('opacity', 1); });
     if (id === 'angle') wedge(g, i).setAttribute('opacity', 1);
-    if (id === 'still5') counts(g).forEach(function (n) { n.setAttribute('opacity', 1); });
-    if (id === 'names') { c8(); }
-    function c8() {
-      setVerts(g, regular(8, s.r, s.cx, s.cy));
-      var num = g._num || (g._num = mk('text', { x: s.cx, y: s.cy + 13, 'text-anchor': 'middle', 'font-size': 38, 'font-weight': 900, 'font-family': 'Nunito, system-ui, sans-serif', fill: '#ffffff', style: 'paint-order: stroke; stroke: #2f5fc4; stroke-width: 4px' }, g._marks));
-      var nm = g._name || (g._name = mk('text', { x: s.cx, y: s.cy - s.r - 14, 'text-anchor': 'middle', 'font-size': 22, 'font-weight': 900, 'font-family': 'Nunito, system-ui, sans-serif', fill: '#7b249c' }, g._marks));
-      num.textContent = '8'; nm.textContent = NAMES[8]; num.setAttribute('opacity', 1); nm.setAttribute('opacity', 1);
-    }
+    if (V.count) counts(g).forEach(function (n) { n.setAttribute('opacity', 1); });
   }
   /* FOR REVIEW AND THE TESTS (the kit's own shortcut): every card as its line leaves it, in the
-     album, and straight to READY, with Next. Swiftee's last line is not said. */
+     album, and straight to READY, with Next. */
   function skipToEnd() {
     var run = S;
     if (!run || run.state === 'READY' || run.state === 'DONE') return false;
     run.gen++; run.timers.forEach(clearTimeout); run.timers = []; hush(run);
     while (run.fx.firstChild) run.fx.removeChild(run.fx.firstChild);
-    run.opts.concepts.forEach(function (c) {
+    run.opts.concepts.filter(function (c) { return !c.line; }).forEach(function (c) {
       var g = run.cards[c.id] || (run.cards[c.id] = card(run, c));
       if (g._pop.getAnimations) g._pop.getAnimations({ subtree: true }).forEach(function (a) { try { a.finish(); } catch (x) {} });
       settle(run, g);
@@ -702,11 +638,11 @@
     return true;
   }
 
-  window.PolygonSummary = {
+  window.PolygonRecap = {
     play: play,
     stop: stop,
     skipToEnd: skipToEnd,
-    /* for the tests: where the summary is and what is on it */
+    /* for the tests: where the recap is and what is on it */
     state: function () {
       if (!S) return { active: false };
       var run = S;

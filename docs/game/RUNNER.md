@@ -295,6 +295,12 @@ success beats (they are the feedback — a splash cut short teaches nothing).
 `?speed=300–900`, `?fast=1–8` (steps the simulation N times per rendered frame — same
 physics, less wall clock; the only way to reach phase 6 quickly).
 
+**Hosted:** `?cover=0` has no cover and no PLAY: the game loads, says it is ready
+(`window.iceAgeReady`) and waits for the page carrying it to start the run with
+`window.iceAgeBegin()`, once; a second call does nothing. The opening avalanche and the
+tutorial follow as they do after PLAY. The lesson loads the game this way, so the run starts
+by itself after Swiftee's last line (`src/runner/runner-stage.js` in the lesson's repository).
+
 ---
 
 ## 7. What the tests will hold you to

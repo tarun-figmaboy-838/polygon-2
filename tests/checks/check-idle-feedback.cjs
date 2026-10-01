@@ -94,9 +94,6 @@ g.counterHints(counts); assert.equal(counts.counters[1].minusNudge, '1');
 assert.equal(counts.counters[0].nudge, '');
 counts.counters[1].value = '4'; g.counterHints(counts); assert.equal(counts.counters[1].nudge, '1');
 counts.counters[1].value = '5'; g.counterHints(counts); assert.equal(counts.nudgeCheck, '1');
-g.state.k = g.steps().findIndex(s => s.q === 'recall');
-const recall = {showCounter:true,counters:[{value:'8',plusDisabled:true}]};
-g.counterHints(recall); assert.equal(recall.counters[0].minusNudge, '1');
 /* Select-all activities no longer carry a Check button. Picking the right
    figures IS the answer, and the screen settles by itself -- so there is no
    button to leave behind, and none of them may quietly grow one back. */

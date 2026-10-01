@@ -14,6 +14,10 @@ const server=http.createServer((req,res)=>{
     page.on('pageerror',e=>errors.push(e.message));
     await page.goto('http://127.0.0.1:9380/?intro=0&dev=1');await page.waitForFunction(()=>window.__poly?.state.ready);
     await page.evaluate(()=>{const g=__poly;g._stopRecordedVoice?.();g.timers.forEach(clearTimeout);g._guideGreeted=true;g.later=()=>0;g.narrate=()=>{};});
+    // every face the screens use, in before the first measurement: a face arriving mid-pass
+    // (the recap's Fredoka) re-fits the bubble on the screen after it, and the reference
+    // would be taken from that moment instead of from the screen at rest
+    await page.evaluate(()=>Promise.all(['700 42px Fredoka','800 46px Nunito','800 46px "Baloo 2"'].map(f=>document.fonts.load(f).catch(()=>{}))).then(()=>document.fonts.ready));
     const out=path.join(__dirname,'output','scene-aspect');fs.mkdirSync(out,{recursive:true});
     await page.addStyleTag({content:'*,*::before,*::after{animation:none!important;transition:none!important}'});
     let checked=0;const reference=[];
@@ -78,10 +82,10 @@ const server=http.createServer((req,res)=>{
     const straight=page.getByRole('button',{name:'Figure 1: Straight',exact:true});
     assert((await straight.boundingBox()).height>0);
     await straight.click();assert.equal(await page.evaluate(()=>__poly.state.dd[0]),'Straight');
-    await show(40);
+    await show(23);
     const plus=page.getByRole('button',{name:'Increase number of sides',exact:true});
     assert((await plus.boundingBox()).width>0);
-    await plus.click();assert.equal(await page.evaluate(()=>__poly.state.n),4);
+    await plus.click();assert.equal(await page.evaluate(()=>__poly.state.cnt[0]),1);
     await show(22);
     await page.getByRole('button',{name:'Side',exact:true}).dragTo(page.locator('[data-label-target="side"]'));
     await page.waitForFunction(()=>__poly.state.placed.side==='Side');

@@ -1,10 +1,10 @@
 /* ============================================================================
    MOMO + POPO STORY — the sequence controller.
 
-   A self-contained overlay that plays the nine-scene story before the
-   blizzard intro and then takes itself out. The lesson is untouched: the
-   blizzard (src/intro/ice-intro.js) waits on StoryIntro.gate, and the lesson
-   already waits on the blizzard, so nothing starts underneath the story.
+   A self-contained overlay that plays the nine-scene story before the Help
+   Momo scene and then takes itself out. The lesson is untouched: the opening
+   (src/intro/opening.js) waits on StoryIntro.gate, and the lesson waits on the
+   opening, so nothing starts underneath the story.
 
    It is told like a comic: each scene is a panel on a comic page, and the
    words appear in ONE box, a short part of the line at a time — the dialogue
@@ -275,7 +275,7 @@
     var live = el('div', 'story-live', root);
     live.setAttribute('aria-live', 'polite');
 
-    /* The whole page fades to the blizzard's first colour at the end. */
+    /* The whole page fades to the story's dark at the end, which the next scene comes up out of. */
     S.curtain = el('div', 'story-curtain', root);
 
     S.root = root; S.stage = stage; S.start = start; S.play = play; S.playWrap = playWrap;
@@ -1168,7 +1168,7 @@
     });
   }
 
-  /* Fade the whole page to the blizzard's first colour, then hand over.
+  /* Fade the whole page to the story's dark, then hand over.
      Used by the natural ending, by skip (Escape), and after any error; only ever once. */
   function finishStory(gen, fadeMs) {
     if (!S || S.handedOff || S.ending) return Promise.resolve();
@@ -1190,7 +1190,8 @@
     var state = S;
     var done = state.replayDone;
     releaseGate();
-    /* The blizzard builds its (dark) overlay synchronously off the gate;
+    /* What comes next (the Help Momo scene, or the opening's veil of the same dark) is put
+       up synchronously off the gate;
        leave ours in place two frames so there is no frame of lesson between. */
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {

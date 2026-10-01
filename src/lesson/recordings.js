@@ -3529,5 +3529,141 @@ window.POLYGON_RECORDINGS = [
       }
     ],
     "source": "Swiftee's recorded take: swiftee-lesson-2.mp3, 43.58-45.99 s; word starts measured from the recording"
+  },
+  {
+    "text": "Let's recall what we learnt today.",
+    "src": "assets/audio/lesson/91_Lets_recall_what_we_learnt_today.mp3",
+    "duration": 2.33,
+    "words": [
+      {
+        "word": "Let's",
+        "start": 0.01
+      },
+      {
+        "word": "recall",
+        "start": 0.24
+      },
+      {
+        "word": "what",
+        "start": 0.837
+      },
+      {
+        "word": "we",
+        "start": 1.15
+      },
+      {
+        "word": "learnt",
+        "start": 1.408
+      },
+      {
+        "word": "today.",
+        "start": 1.721
+      }
+    ],
+    "source": "macOS say -v Tara, pitch +150 cents, pace x0.74 (placeholder take); word starts measured from the rendered audio"
+  },
+  {
+    "text": "Polygons have different names based on their number of sides.",
+    "src": "assets/audio/lesson/92_Polygons_have_different_names_based_on_their_number_of_sides.mp3",
+    "duration": 4.26,
+    "words": [
+      {
+        "word": "Polygons",
+        "start": 0.0
+      },
+      {
+        "word": "have",
+        "start": 0.683
+      },
+      {
+        "word": "different",
+        "start": 0.926
+      },
+      {
+        "word": "names",
+        "start": 1.62
+      },
+      {
+        "word": "based",
+        "start": 2.21
+      },
+      {
+        "word": "on",
+        "start": 2.642
+      },
+      {
+        "word": "their",
+        "start": 2.852
+      },
+      {
+        "word": "number",
+        "start": 3.096
+      },
+      {
+        "word": "of",
+        "start": 3.538
+      },
+      {
+        "word": "sides.",
+        "start": 3.748
+      }
+    ],
+    "source": "macOS say -v Tara, pitch +150 cents, pace x0.74 (placeholder take); word starts measured from the rendered audio"
+  },
+  {
+    "text": "Now you know everything about polygons. You are ready to help Momo.",
+    "src": "assets/audio/lesson/93_Now_you_know_everything_about_polygons_You_are_ready_to_help_Momo.mp3",
+    "duration": 5.04,
+    "words": [
+      {
+        "word": "Now",
+        "start": 0.01
+      },
+      {
+        "word": "you",
+        "start": 0.275
+      },
+      {
+        "word": "know",
+        "start": 0.54
+      },
+      {
+        "word": "everything",
+        "start": 0.818
+      },
+      {
+        "word": "about",
+        "start": 1.85
+      },
+      {
+        "word": "polygons.",
+        "start": 2.351
+      },
+      {
+        "word": "You",
+        "start": 3.11
+      },
+      {
+        "word": "are",
+        "start": 3.367
+      },
+      {
+        "word": "ready",
+        "start": 3.624
+      },
+      {
+        "word": "to",
+        "start": 4.126
+      },
+      {
+        "word": "help",
+        "start": 4.37
+      },
+      {
+        "word": "Momo.",
+        "start": 4.58
+      }
+    ],
+    "source": "macOS say -v Tara, pitch +150 cents, pace x0.74 (placeholder take); word starts measured from the rendered audio"
   }
 ];

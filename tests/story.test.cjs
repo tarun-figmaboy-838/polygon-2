@@ -5,8 +5,8 @@
      - the exact script, one line at a time, with the right speaker
      - every line voiced, voices clearly above the music, no clipping
      - all five music sections heard (warm, playful, tension, hush, resolve)
-     - one handoff, then the Help Momo scene (its three lines; the lesson waits), its
-       Next, the blizzard, then the lesson from its first screen
+     - one handoff, then the Help Momo scene (the avalanche, its three lines; the lesson
+       waits), its Next, then the lesson from its first screen, with no blizzard between
      - no listeners left behind
      - with ?dev=1, a Scenes menu over it: jump to a scene (before Play too), Back,
        Next, and play on from there; without ?dev=1, no menu
@@ -75,8 +75,8 @@ async function playThrough(browser, srv, tag, device) {
   }
   const seconds = (Date.now() - t0) / 1000;
   const run = await page.evaluate(() => window.StoryIntro.state().lastRun);
-  /* Then the Help Momo scene (tests/bridge.test.cjs covers it in full): its three lines,
-     the lesson waiting underneath, and its Next on into the blizzard. */
+  /* Then the Help Momo scene (tests/bridge.test.cjs covers it in full): the avalanche, its
+     three lines, the lesson waiting underneath, and its Next straight on into the lesson. */
   const scene = await page.waitForFunction(() => window.BridgeStory && window.BridgeStory.state().nextEnabled, null, { timeout: 60000 }).then(() => true, () => false);
   if (!scene) fail.push('the Help Momo scene did not reach Next after the story');
   else {
@@ -87,8 +87,7 @@ async function playThrough(browser, srv, tag, device) {
     const next = page.locator('#bridge-story .bridge-next');
     if (device.hasTouch) await next.tap(); else await next.click();
   }
-  const blizzard = await page.waitForSelector('#ice-intro', { timeout: 5000 }).then(() => true, () => false);
-  await page.waitForFunction(() => !document.getElementById('ice-intro'), null, { timeout: 15000 }).catch(() => fail.push('blizzard did not finish'));
+  const blizzard = await page.waitForSelector('#ice-intro', { timeout: 2500 }).then(() => true, () => false);
   await page.waitForFunction(() => window.__poly && window.__poly.state.narr, null, { timeout: 12000 }).catch(() => {});
   const lesson = await page.evaluate(() => ({ k: window.__poly.state.k, narr: window.__poly.state.narr, overlay: !!document.getElementById('story-intro') }));
 
@@ -109,7 +108,7 @@ async function playThrough(browser, srv, tag, device) {
   if (voices.length !== lines.length || voices.some(v => !v.withAudio)) fail.push('voiced lines: ' + voices.filter(v => v.withAudio).length + '/' + lines.length);
   if (h.filter(e => e.event === 'handoff').length !== 1) fail.push('handoff count');
   if (!run || run.listeners !== 0) fail.push('listeners left after the story');
-  if (!blizzard) fail.push('blizzard never started');
+  if (blizzard) fail.push('a blizzard came between the Help Momo scene and the lesson');
   if (lesson.overlay) fail.push('story overlay still on the page');
   if (!(lesson.k <= 1 && lesson.narr)) fail.push('lesson did not start from the beginning: ' + JSON.stringify(lesson));
 

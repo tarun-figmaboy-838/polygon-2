@@ -1,12 +1,15 @@
 #!/usr/bin/env node
-/* The Frozen Pass hand-off: the runner game in game/ takes the screen after the lesson.
-     - ?game=1 opens straight on the game: its cover and PLAY are up, its engine reports
-       TITLE, the lesson underneath is hidden, the story and the blizzard never ran, no
-       request fails and nothing throws in either document
-     - the lesson's last screen, its summary, ends on Next; the game is already loading
-       behind it, and Next brings the game up at its cover (?bridge=0 changes nothing here:
-       it only leaves the Help Momo scene out, tests/bridge.test.cjs)
-     - ?game=0 leaves the game out: the summary ends on Play again, and nothing loaded
+/* The Frozen Pass hand-off: the runner game in game/ takes the screen after the lesson, by
+   itself, with no cover and no PLAY.
+     - ?game=1 opens straight on the game: no cover and no PLAY, its run starts by itself, the
+       lesson underneath is hidden, the story never ran, no request fails and nothing throws
+       in either document
+     - the lesson's last screen: Swiftee's line back to Momo, with no Next and no Play; the
+       game loads behind it and stays down until the line has been said, then comes up and
+       starts its run by itself, once, in order (TRANSITION_TO_GAME, FROZEN_RUSH_INIT,
+       FROZEN_RUSH_RUNNING); the lesson's voice has stopped by then (?bridge=0 changes
+       nothing here: it only leaves the Help Momo scene out, tests/bridge.test.cjs)
+     - ?game=0 leaves the game out: the last screen ends on Play again, and nothing loaded
      - Momo's jump is the Momo jump kit's (mammoth-jump-v2): the push-off cell, the flight
        cells in order with the arc, the three landing cells, and the run picked up on cell 24,
        at the base size and on a hi-DPI screen (the hd/ sheet)
@@ -51,18 +54,17 @@ const waitOn = (page, ms = 8000) => page.waitForFunction(() => {
     document.documentElement.getAttribute('data-runner') === 'on';
 }, null, { timeout: ms }).then(() => true, () => false);
 
-/** Jump the lesson to its last screen, the summary, and take it to its end (Next). */
+/** Jump the lesson to its last screen, Swiftee's line back to Momo. */
 async function toEnd(page) {
   await page.waitForFunction(() => window.__poly && window.__poly.state.ready, null, { timeout: 30000 });
   await page.evaluate(() => {
     const g = window.__poly, k = g.steps().length - 1;
     g.setState({ k }, () => g.runStep(k, false));
   });
-  await page.waitForFunction(() => window.PolygonSummary && window.PolygonSummary.state().active, null, { timeout: 30000 });
-  await page.waitForTimeout(600);
-  await page.evaluate(() => window.PolygonSummary.skipToEnd());
-  await page.waitForFunction(() => window.PolygonSummary.state().state === 'READY', null, { timeout: 10000 });
+  await page.waitForFunction(() => window.__poly.state.endPhase === 'MOMO_READY_MESSAGE' && window.__poly.state.speaking, null, { timeout: 30000 });
 }
+/** The game's run is going: past its title, in the opening or after it. */
+const RUNNING = ['AVALANCHE', 'RUN_SEGMENT_1', 'TUTORIAL'];
 
 (async () => {
   const srv = await serve(ROOT);
@@ -71,49 +73,73 @@ async function toEnd(page) {
   /* 1. straight to the game */
   const a = await open(browser, srv, '?game=1');
   const up = await waitForGame(a.page).then(() => true, () => false);
+  const runs = await a.page.waitForFunction(names => {
+    const s = window.RunnerStage.state();
+    return s.phase === 'FROZEN_RUSH_RUNNING' && names.includes(s.game);
+  }, RUNNING, { timeout: 60000 }).then(() => true, () => false);
   const s1 = await stage(a.page);
-  check('?game=1: the game is up and at its cover', up && s1 && s1.game === 'TITLE', JSON.stringify(s1));
+  check('?game=1: the game is up and its run starts by itself', up && runs, JSON.stringify(s1));
   const f1 = gameFrame(a.page);
-  const coverUp = !!f1 && await f1.locator('#cover').isVisible() && await f1.locator('#btn-play').isVisible();
-  check('?game=1: the cover and PLAY are visible in the frame', coverUp);
+  check('?game=1: no cover and no PLAY in the frame', !!f1 && !(await f1.locator('#cover').isVisible()) && !(await f1.locator('#btn-play').isVisible()));
   check('?game=1: the curtain has lifted on the game', await waitOn(a.page));
   check('?game=1: the lesson underneath is hidden', await a.page.evaluate(() => {
     const v = document.querySelector('.game-viewport');
     return !!v && getComputedStyle(v).visibility === 'hidden';
   }));
-  check('?game=1: no story and no blizzard', await a.page.evaluate(() => !document.getElementById('story-intro') && !document.getElementById('ice-intro')));
+  check('?game=1: no story', await a.page.evaluate(() => !document.getElementById('story-intro')));
   await a.page.waitForTimeout(1500);
   const miss = a.missing();
   check('?game=1: every request succeeds', !miss.length, miss.join(', '));
   check('?game=1: no script errors', !a.errors.length, a.errors.join(' | '));
   await a.page.close();
 
-  /* 2. the hand-off from the completion screen, without the story between */
+  /* 2. the hand-off from the last screen, without the story between */
   const b = await open(browser, srv, '?preview=1&bridge=0');
   await toEnd(b.page);
-  const help = b.page.getByRole('button', { name: 'Next', exact: true });
-  check("the summary ends on Next (and nothing else)", await help.count() === 1 &&
-    await b.page.getByRole('button', { name: 'Play again', exact: true }).count() === 0 && await b.page.getByRole('button', { name: 'Help Momo', exact: true }).count() === 0);
-  check('the summary: the game is already loading underneath', await b.page.evaluate(() => {
+  check('the last screen: no Next and no Play while Swiftee says her line',
+    await b.page.getByRole('button', { name: 'Next', exact: true }).count() === 0 &&
+    await b.page.getByRole('button', { name: 'Play', exact: true }).count() === 0 &&
+    await b.page.getByRole('button', { name: 'Play again', exact: true }).count() === 0);
+  check('the last screen: the game is loading underneath, and stays down', await b.page.evaluate(() => {
     const s = window.RunnerStage.state();
-    return s.loaded && !s.shown && document.getElementById('runner-stage').classList.contains('is-loading');
+    return s.loaded && !s.shown && s.phase === 'IDLE' && document.getElementById('runner-stage').classList.contains('is-loading');
   }));
-  await help.click();
-  const handed = await waitForGame(b.page).then(() => true, () => false);
-  const s2 = await stage(b.page);
-  check("the summary's Next brings the game up at its cover", handed && s2 && s2.game === 'TITLE', JSON.stringify(s2));
+  const phases = await b.page.evaluate(() => new Promise(resolve => {
+    const seen = [], t0 = performance.now();
+    (function look() {
+      const tag = window.__poly.state.endPhase + '/' + window.RunnerStage.state().phase + '/' + (window.__poly.state.speaking ? 'speaking' : 'quiet');
+      if (seen[seen.length - 1] !== tag) seen.push(tag);
+      if (window.RunnerStage.state().phase === 'FROZEN_RUSH_RUNNING' || performance.now() - t0 > 60000) resolve(seen); else setTimeout(look, 50);
+    })();
+  }));
+  check('it hands over by itself, in order, only once the line has been said', phases[0] === 'MOMO_READY_MESSAGE/IDLE/speaking' &&
+    phases.includes('TRANSITION_TO_GAME/TRANSITION_TO_GAME/quiet') && phases[phases.length - 1] === 'TRANSITION_TO_GAME/FROZEN_RUSH_RUNNING/quiet' &&
+    !phases.some(p => /speaking/.test(p) && !/^MOMO_READY_MESSAGE\/IDLE/.test(p)), phases.join(' > '));
+  const runs2 = await b.page.waitForFunction(names => names.includes(window.RunnerStage.state().game), RUNNING, { timeout: 60000 }).then(() => true, () => false);
+  check('the game starts its run with no Play pressed', runs2, JSON.stringify(await stage(b.page)));
   check('hand-off: the curtain has lifted and the stage covers the lesson', await waitOn(b.page));
+  const f2 = gameFrame(b.page);
+  check('hand-off: no cover and no PLAY in the frame', !!f2 && !(await f2.locator('#cover').isVisible()) && !(await f2.locator('#btn-play').isVisible()));
+  const once = await f2.evaluate(() => new Promise(resolve => {
+    // a second start would reset the run: the ground covered would go back to nothing
+    const g = window.iceAgeGame, before = g.debug().worldX;
+    window.iceAgeBegin(); window.iceAgeBegin();
+    setTimeout(() => resolve({ before, after: g.debug().worldX, state: g.state() }), 400);
+  }));
+  check('it starts once: asking again does not restart the run', once.after > once.before, JSON.stringify(once));
+  check("hand-off: the lesson's voice has stopped", await b.page.evaluate(() => !window.__poly.state.speaking && !window.__poly._voiceLocked));
   check('hand-off: no script errors', !b.errors.length, b.errors.join(' | '));
   await b.page.close();
 
   /* 3. without the game */
   const c = await open(browser, srv, '?preview=1&game=0');
   await toEnd(c.page);
-  check('?game=0: the summary ends on Play again alone',
-    await c.page.getByRole('button', { name: 'Next', exact: true }).count() === 0 &&
-    await c.page.getByRole('button', { name: 'Play again', exact: true }).count() === 1);
-  await c.page.getByRole('button', { name: 'Play again', exact: true }).click();
-  check('?game=0: Play again starts the lesson over', await c.page.waitForFunction(() => window.__poly.state.k === 0 && !window.PolygonSummary.state().active, null, { timeout: 10000 }).then(() => true, () => false));
+  const again = c.page.getByRole('button', { name: 'Play again', exact: true });
+  check('?game=0: once the line is said, the last screen ends on Play again alone',
+    await again.waitFor({ timeout: 30000 }).then(() => true, () => false) &&
+    await c.page.getByRole('button', { name: 'Next', exact: true }).count() === 0);
+  await again.click();
+  check('?game=0: Play again starts the lesson over', await c.page.waitForFunction(() => window.__poly.state.k === 0, null, { timeout: 10000 }).then(() => true, () => false));
   check('?game=0: nothing was loaded', await c.page.evaluate(() => !document.getElementById('runner-stage')));
   check('?game=0: no script errors', !c.errors.length, c.errors.join(' | '));
   await c.page.close();
@@ -128,8 +154,7 @@ async function toEnd(page) {
     await pg.goto(srv.url + '/?game=1&tutorial=0&sound=0', { waitUntil: 'domcontentloaded' });
     await waitForGame(pg);
     const fr = gameFrame(pg);
-    await fr.waitForFunction(() => { const c = document.getElementById('cover'); return c && !c.classList.contains('loading'); }, null, { timeout: 60000 });
-    await fr.locator('#btn-play').click({ force: true });
+    // no cover: the run starts by itself, with the opening avalanche before it
     await fr.waitForFunction(() => window.iceAgeGame.state() === 'RUN_SEGMENT_1' && window.iceAgeGame.debug().jumpEnabled === true, null, { timeout: 60000 });
     const seen = await fr.evaluate(() => new Promise(resolve => {
       const g = window.iceAgeGame, out = [];

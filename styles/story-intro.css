@@ -19,7 +19,7 @@
 }
 
 #story-intro {
-  --story-dark: #0b1c33;          /* matches the blizzard intro's first frame */
+  --story-dark: #0b1c33;          /* the dark the Help Momo scene and the lesson come up out of */
   --ink: #151515;
   --paper: #f6efdd;
   --story-scale: 1;
@@ -35,7 +35,7 @@
 
   position: fixed;
   inset: 0;
-  z-index: 10060;                 /* above the blizzard (10050) and navigator (10000) */
+  z-index: 10060;                 /* above the lesson's screen navigator (10000) */
   overflow: hidden;
   background:
     radial-gradient(circle at 50% 50%, rgba(160, 120, 60, 0.13) 1.6px, transparent 2px) 0 0 / 15px 15px,

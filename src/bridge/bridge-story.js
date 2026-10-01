@@ -6,26 +6,32 @@
    game's own world and drawn from its own art (game/assets), placed the way
    game/js/engine.js places it:
 
-     Momo runs in along the ice path and the path starts to scroll. The break
-     comes into view ahead, and he skids to a stop short of the edge. He looks
-     down at the drop, trembles a little and settles. Swiftee flies in on a
-     curve, slows, and lands between him and the edge. She looks at the gap,
-     looks back at Momo, and then speaks in her own Part 1 dialogue box, word by
-     word with her voice: the two lines Part 2's tutorial also says at this moment, "Oh
-     no! The path is broken." and "Help Momo cross the Frozen Pass!", and then the
-     line that turns it into the lesson, "But for that first you need to learn
-     about polygons." It stays up to be read, and then Next appears.
+     It opens as the game opens, on its avalanche (game/js/avalanche.js, ported below):
+     a wall of snow comes down the pass, Momo bolts in along the ice path ahead of
+     it, the path cracks and yawns behind his heels, and the snow spends itself.
+     He runs on, the break comes into view ahead, and he skids to a stop short of
+     the edge. He looks down at the drop, trembles a little and settles. Swiftee
+     flies in on a curve, slows, and lands between him and the edge. She looks at
+     the gap, looks back at Momo, and then speaks in her own Part 1 dialogue box,
+     word by word with her voice: the two lines Part 2's tutorial also says at this
+     moment, "Oh no! The path is broken." and "Help Momo cross the Frozen Pass!", and
+     then the line that turns it into the lesson, "But for that first you need to
+     learn about polygons." It stays up to be read, and then Next appears.
 
-   Next fades the scene back to the story's dark, which is the blizzard's first frame,
-   and the blizzard carries on into the lesson (src/intro/ice-intro.js waits for this
-   scene, and the lesson waits for the blizzard). So the learner meets Momo's problem,
-   then learns the polygons that solve it. The lesson ends on Swiftee's "You know all
-   about polygons now. You are ready to help Momo." and then brings up the Part 2 cover
-   itself; this scene is not shown a second time.
+   Next fades the scene back to the story's dark, and the lesson comes up out of it
+   (src/intro/opening.js waits for this scene, and the lesson waits for the opening).
+   So the learner meets Momo's problem, then learns the polygons that solve it.
 
-   THE SOUND is the game's own: its recorded snow footsteps on each footfall, its
-   skid, its cartoon pips as Momo shivers at the edge, its whoosh (lighter, for a
-   small bird) as Swiftee swoops in, and its interface tap on Next.
+   AND IT COMES BACK AT THE END (ending, runEnding): after the lesson's last quiz the
+   scene returns at the break, Momo at the edge and Swiftee beside him, for her line
+   "Now you know everything about polygons. You are ready to help Momo.", and the game
+   then starts by itself over it.
+
+   THE SOUND is the game's own: the avalanche's (the kit's build, squeak, swoosh and
+   boing, game/js/sfx.js, its recorded rumble and its synthesised cracks), its recorded
+   snow footsteps on each footfall, its skid, its cartoon pips as Momo shivers at the
+   edge, its whoosh (lighter, for a small bird) as Swiftee swoops in, and its interface
+   tap on Next.
 
    THE STATES, in order, as state().phase reports them:
      STORY_COMPLETE   the story has handed over and start() was called
@@ -37,7 +43,7 @@
      DIALOGUE         her three lines, word by word with the voice
      STORY_READY      the last line is said; it stays up to be read
      NEXT_ENABLED     Next is on screen and takes a tap
-     LESSON_START     Next was pressed; the scene fades, and the blizzard and the lesson follow
+     LESSON_START     Next was pressed; the scene fades back to the dark, and the lesson follows
 
    NOTHING ELSE TAKES A TAP OR A KEY. From start() until the hand-off, the page
    under the scene is inert, the scene swallows every pointer and key that is
@@ -61,7 +67,7 @@
    URL flags:
      ?bridge=0   leave this scene out: the lesson follows the story at once, and its
                  completion screen offers Help Momo (Part 2) and Play again
-     ?bridge=1   open straight on this scene (the story and the blizzard are skipped);
+     ?bridge=1   open straight on this scene (the story is skipped);
                  its Next goes straight into the lesson. For review and for the tests
    With ?game=0 there is no Part 2, so there is no scene either.
    ========================================================================= */
@@ -159,6 +165,11 @@
     return line.take;
   }
   LINES.forEach(lessonTake);
+  /* THE ENDING: after the lesson's last quiz the scene comes back, at the break, for one line:
+     Swiftee's back to Momo, the lesson's own recording (the lesson hands its text in). */
+  var ENDING = [{ id: 'ready-momo', text: 'Now you know everything about polygons. You are ready to help Momo.', lesson: true,
+    at: 0, dur: 5, words: [], focus: { 'polygons.': 1, 'Momo.': 1 } }];
+  ENDING.forEach(lessonTake);
   /* THE GAME'S OWN SOUNDS (CFG.sfx in game/js/engine.js), at its gains under its 0.7 master:
      the recorded snow footsteps, cut at each footfall found in the waveform and taken in
      turn; the owner's cartoon pips for the tremble at the edge; the whoosh, pitched up
@@ -168,7 +179,8 @@
     step:    { src: 'assets/audio/freesound_community-foot_steps_snow_heavy-38297.mp3', mode: 'onset', dur: 0.40, gain: 0.42, rate: 0.10 },
     tremble: { src: 'assets/audio/dragon-studio-cartoon-blinking-372481.mp3', mode: 'window', at: 0.04, dur: 0.50, gain: 0.55, rate: 0.03 },
     whoosh:  { src: 'assets/audio/dragon-studio-heavy-whoosh-06-414584.mp3', mode: 'onset', dur: 0.55, gain: 0.16, rate: 0.04, pitch: 1.5 },
-    ui:      { src: 'assets/audio/floraphonic-punchy-taps-ui-5-183901.mp3', mode: 'onset', dur: 0.22, gain: 0.45, rate: 0.08 }
+    ui:      { src: 'assets/audio/floraphonic-punchy-taps-ui-5-183901.mp3', mode: 'onset', dur: 0.22, gain: 0.45, rate: 0.08 },
+    rumble:  { src: 'assets/audio/themediaguy-earthquake-rumble-amp-cracking-379298.mp3', mode: 'window', at: 0, dur: 2.60, gain: 0.55, rate: 0.02 }
   };
 
   /* THE TIMELINE, in ms of scene time. The run is short on purpose: in, a stretch of
@@ -176,8 +188,9 @@
   var T = {
     dusk: 440,         // the story's dark holds a moment before the scene comes up
     loadCap: 8000,     // longest the scene waits for its art in the dark
-    enter: 1730,       // Momo runs in while the path picks up speed
-    cruise: 900,       // running, with the break in view
+    enter: 1730,       // Momo runs in while the path picks up speed (and the avalanche roars)
+    cruise: 2970,      // running: the avalanche sweeps behind him and settles (AV_TOTAL from
+                       // the start of the run), then 900 more with the break in view
     beforeBird: 450,   // he has settled; a breath before Swiftee
     fly: 1900,         // her flight in, slowing to the end
     settle: 500,       // wings folding after the touchdown
@@ -186,7 +199,8 @@
     partOut: 160,      // a line fading out before the next takes the box
     lineGap: 420,      // the pause between one line and the next
     read: 1100,        // the last line stays up alone, to be read, before Next
-    leave: 420,        // Next: the scene fades back to the dark the blizzard starts from
+    endingIn: 700,     // the ending: the scene is up at the break, a breath before her line
+    leave: 420,        // Next: the scene fades back to the dark the lesson comes up out of
     stillLook: 900     // reduced motion: how long he is shown looking down
   };
   var WORD_LEAD = 0.04;  // a word shows this far ahead of its sound
@@ -205,8 +219,237 @@
   }
   var HOLE_WX = worldAt(STOP_AT) + LIP;   // the near lip, in world px from where the run starts
 
+  /* ============ THE OPENING AVALANCHE, AS THE GAME PLAYS IT ============
+     Ported from game/js/avalanche.js, with the game's own numbers and its own sounds (the kit,
+     game/js/sfx.js, and the recorded rumble): the scene opens as the Frozen Rush game opens.
+     A wall of snow comes down the pass, Momo bolts ahead of it, the path comes apart behind
+     his heels, and when it has spent itself he runs on to the break. Read the game's comments
+     there for why each piece is what it is (no outline, a leading edge, it stops at his tail,
+     normal blending with a lit crown, deterministic puffs); keep the two in step.
+     It plays over the first AV_TOTAL ms of the run: roar (the ground shakes, snow lifts, he
+     startles), sweep (the wall crosses behind him, he is carried forward, the trail opens),
+     settle (the dust falls out and he eases back to his mark). Reduced motion has no run, so
+     no avalanche: he is already at the edge. */
+  var AV = { roar: 900, sweep: 1900, settle: 1000 };
+  var AV_TOTAL = AV.roar + AV.sweep + AV.settle;
+  var AV_N = 210, AV_STREAKS = 70, AV_MIN = 84, AV_BUDGET_MS = 7;
+  var avQuality = 1;
+  function avEaseOut(t) { return 1 - Math.pow(1 - t, 3); }
+  function avEaseInOut(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+  function avHash(n) { return Math.abs((Math.sin(n) * 43758.5453) % 1); }
+  function rnd(a, b) { return a + Math.random() * (b - a); }
+  /* how far ahead of his mark he is carried while it lasts (a draw offset, as in the game) */
+  function avLead(t) {
+    if (t <= 0 || t >= AV_TOTAL) return 0;
+    var inK = avEaseOut(clamp(t / (AV.roar + AV.sweep * 0.5), 0, 1));
+    var outK = avEaseInOut(clamp((t - (AV.roar + AV.sweep)) / AV.settle, 0, 1));
+    return 300 * inK * (1 - outK);
+  }
+  /* The game's SFX kit (game/js/sfx.js, loaded by the page) for the comic beats. */
+  function kit(name, opts) {
+    var K = window.SFX;
+    if (!K || typeof K.play !== 'function' || !running()) return;
+    try { K.play(name, opts || {}); heard(name); } catch (e) {}
+  }
+  /* the rumble, from the game's recording, or the game's own synth without it */
+  function avRumble() {
+    if (cue('rumble')) return;
+    if (!running()) return;
+    noise(1.5, 190, 'lowpass', 0.1, 0.5, 0, 70);
+    warble(52, 1.6, 0.17, 'sine', 32, 2, 3);
+    heard('rumble');
+  }
+  /* the ground going: the game's crack (AudioManager.crack) */
+  function avCrack() {
+    if (!running()) return;
+    noise(0.09, 5200, 'highpass', 0.16, 1.0);
+    noise(0.34, 2100, 'bandpass', 0.11, 3.2, 0.03);
+    warble(760, 0.11, 0.04, 'triangle', 240, 4, 20);
+    heard('crack');
+  }
+  /* screen shake, the game's two kinds: the long rumble (quake) and the short punch (shake) */
+  function avShake(px, ms, delay) { S.av.shakes.push({ px: px, ms: ms, at: S.clock + (delay || 0) }); }
+  function avShakeOffset() {
+    var ox = 0, oy = 0, now = S.clock;
+    S.av.shakes = S.av.shakes.filter(function (q) { return now < q.at + q.ms; });
+    S.av.shakes.forEach(function (q, i) {
+      if (now < q.at) return;
+      var e = 1 - (now - q.at) / q.ms;
+      ox += Math.sin(now * 0.091 + i * 1.7) * q.px * e;
+      oy += Math.cos(now * 0.113 + i) * q.px * e * 0.6;
+    });
+    return { x: ox, y: oy };
+  }
+  /* the game's particles for the wave's foot: a cartoon poof of snow, and ice chips */
+  function avPoof(x, y, n, size) {
+    for (var i = 0; i < n; i++) {
+      var a = -Math.PI / 2 + (i / Math.max(1, n - 1) - 0.5) * 2.4 + rnd(-0.25, 0.25), v = rnd(70, 160) * size;
+      S.av.parts.push({ kind: 'puff', x: x + rnd(-16, 16) * size, y: y + rnd(-6, 2), vx: Math.cos(a) * v * 1.5, vy: Math.sin(a) * v * 0.5 - 24,
+        r: rnd(10, 19) * size, dur: rnd(0.5, 0.9), t: 0, swell: rnd(1.5, 2.2) });
+    }
+  }
+  function avChips(x, y, n, vy0) {
+    for (var i = 0; i < n; i++) S.av.parts.push({ kind: 'ice', x: x + rnd(-70, 70), y: y + rnd(-10, 20), vx: rnd(-70, 70), vy: rnd(vy0, vy0 + 90),
+      r: rnd(4, 10), dur: rnd(0.7, 1.2), t: 0, rot: rnd(0, 6.28), vr: rnd(-4, 4) });
+  }
+  function avParts(dt) {
+    var k = dt / 1000;
+    S.av.parts = S.av.parts.filter(function (p) {
+      p.t += k;
+      if (p.t >= p.dur) return false;
+      if (p.kind === 'puff') { p.vx *= (1 - 2.6 * k); p.vy = p.vy * (1 - 2.6 * k) - 34 * k; }
+      else { p.vy += 900 * k; p.rot += p.vr * k; }
+      p.x += p.vx * k; p.y += p.vy * k;
+      return true;
+    });
+  }
+  function drawAvParts(ctx) {
+    S.av.parts.forEach(function (p) {
+      var life = 1 - p.t / p.dur;
+      if (p.kind === 'ice') {
+        ctx.globalAlpha = clamp(life * 1.2, 0, 1);
+        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+        ctx.fillStyle = '#A9E7FA'; ctx.beginPath();
+        ctx.moveTo(0, -p.r); ctx.lineTo(p.r * 0.8, 0); ctx.lineTo(0, p.r); ctx.lineTo(-p.r * 0.8, 0); ctx.closePath(); ctx.fill();
+        ctx.restore();
+        return;
+      }
+      var R = p.r * (1 + (1 - life) * (p.swell || 1.6));
+      var lobes = [[0, 0, 1], [-0.74, 0.2, 0.74], [0.76, 0.16, 0.7], [0.06, -0.52, 0.66]];
+      ctx.globalAlpha = clamp(life * 1.15, 0, 1) * 0.94;
+      ctx.save(); ctx.translate(p.x, p.y);
+      ctx.fillStyle = 'rgba(112,168,218,0.7)'; ctx.beginPath();
+      lobes.forEach(function (l) { ctx.moveTo(l[0] * R + l[2] * R + 2.4, l[1] * R); ctx.arc(l[0] * R, l[1] * R, l[2] * R + 2.4, 0, 6.2832); });
+      ctx.fill();
+      ctx.fillStyle = '#FFFFFF'; ctx.beginPath();
+      lobes.forEach(function (l) { ctx.moveTo(l[0] * R + l[2] * R, l[1] * R); ctx.arc(l[0] * R, l[1] * R, l[2] * R, 0, 6.2832); });
+      ctx.fill();
+      ctx.restore();
+    });
+    ctx.globalAlpha = 1;
+  }
+  /* the crevasse's crack before it opens: the game's crack polyline */
+  function avCrackPts() {
+    var p = [], x = 0, y = 0;
+    for (var i = 0; i < 6; i++) { x += (i % 2 ? 11 : -11) + rnd(-6, 6); y += 22; p.push({ x: x, y: y }); }
+    return p;
+  }
+  /* THE AVALANCHE'S CLOCK, each frame of the run (avalanche.update) */
+  function avUpdate(dt, t, him) {
+    var A = S.av;
+    avParts(dt);
+    if (t >= AV_TOTAL) { A.trail = A.trail.filter(function (g) { return g.wx + g.w - S.worldX > S.cam.l - 400; }); return; }
+    if (!A.started) {
+      A.started = true;
+      S.history.push({ event: 'avalanche', at: Math.round(S.clock) });
+      kit('anticipate', { volume: 0.8, vary: 0 });
+      avRumble();
+      avShake(13, AV.roar + AV.sweep, AV.roar);
+    }
+    var q = clamp((t - AV.roar) / AV.sweep, 0, 1);
+    if (q > 0 && q < 1 && t - A.puff > 55) {
+      A.puff = t;
+      var fx = him + rnd(-790, -210) + q * 300;
+      avPoof(fx, SURFACE - rnd(0, 90), 2, 1.7);
+      avChips(fx, SURFACE - rnd(10, 60), 1, -rnd(140, 320));
+    }
+    /* the path comes apart behind him, the whole way: a crevasse just behind his heels every
+       so often, which cracks, yawns and slides away with the rest of the world */
+    if (t < AV.roar + AV.sweep && t - A.gap > 620) {
+      A.gap = t;
+      A.trail.push({ wx: S.worldX + (him - avLead(t)) - 300, w: 190 + rnd(0, 120), born: t, pts: avCrackPts() });
+      avCrack();
+    }
+    if (t > AV.roar * 0.55 && !A.squealed) { A.squealed = true; kit('squeak', { volume: 0.85, vary: 0.15 }); S.knock = Math.max(S.knock || 0, 0.65 * 34); }
+    if (t > AV.roar && !A.roared) { A.roared = true; avCrack(); kit('swoosh', { volume: 0.9, vary: 0.1 }); avShake(6, 400); }
+    if (t > AV.roar + AV.sweep * 0.45 && !A.cracked) { A.cracked = true; avCrack(); kit('boing', { volume: 0.5, vary: 0.2 }); }
+    A.trail = A.trail.filter(function (g) { return g.wx + g.w - S.worldX > S.cam.l - 400; });
+  }
+  /* how far each trail crevasse has got: the crack, then the opening */
+  function avGapState(g, t) {
+    var age = t - g.born;
+    return { crack: clamp(age / 260, 0, 1), open: clamp((age - 180) / 320, 0, 1) };
+  }
+  /* THE WALL ITSELF (avalanche.draw): a falling field of soft puffs gated on a front that
+     chases where he is drawn, streaks of snow carried down, and a haze over what it has taken */
+  function drawAvalanche(ctx, t, him) {
+    var roar = AV.roar, sweep = AV.sweep, settle = AV.settle, c = S.cam;
+    if (t <= 0 || t >= AV_TOTAL) return;
+    var rise = avEaseOut(clamp(t / (roar * 1.25), 0, 1));
+    var fade = avEaseInOut(clamp((AV_TOTAL - t) / settle, 0, 1));
+    var amp = Math.min(rise, fade);
+    if (amp <= 0.01) return;
+    var sec = t / 1000;
+    var q = clamp((t - roar) / (sweep + settle), 0, 1);
+    var front = Math.min(lerp(-620, him + 420, Math.pow(q, 0.8)), him - 340);
+    var t0 = (window.performance && performance.now) ? performance.now() : 0;
+    var puffs = Math.max(AV_MIN, Math.round(AV_N * avQuality));
+    var top = Math.min(0, c.t);
+    ctx.save();
+    for (var i = 0; i < puffs; i++) {
+      var a1 = avHash(i * 12.9898), a2 = avHash(i * 21.94 + 4.1), a3 = avHash(i * 29.67 + 9.7);
+      var speed = 0.55 + a2 * 0.75;
+      var ph = (sec * speed * 0.62 + a3) % 1;
+      var y = top - 220 + ph * (H - top + 300) + Math.cos(sec * 1.9 + i * 0.7) * 18;
+      var yFrac = clamp(y / H, 0, 1);
+      var lean = (1 - yFrac) * 620;
+      var back = a1;
+      var x = front + lean - back * 920 + Math.sin(sec * 1.6 + i) * 26;
+      var grow = Math.sin(clamp(ph, 0, 1) * Math.PI);
+      var r = (58 + a2 * 74) * (0.45 + grow * 0.85);
+      var body = clamp(back / 0.08, 0, 1) * clamp(1 - (back - 0.55) / 0.55, 0, 1);
+      if (body <= 0.01) continue;
+      var dens = amp * body * (0.52 + grow * 0.72) * (0.6 + a1 * 0.5);
+      if (dens <= 0.01) continue;
+      var sh = ctx.createRadialGradient(x, y, 0, x, y, r);
+      sh.addColorStop(0, 'rgba(196,219,238,' + (0.78 * dens).toFixed(3) + ')');
+      sh.addColorStop(0.55, 'rgba(206,228,244,' + (0.46 * dens).toFixed(3) + ')');
+      sh.addColorStop(1, 'rgba(206,228,244,0)');
+      ctx.fillStyle = sh;
+      ctx.beginPath(); ctx.arc(x, y, r, 0, 6.2832); ctx.fill();
+      var lx = x - r * 0.26, ly = y - r * 0.3, lr = r * 0.78;
+      var li = ctx.createRadialGradient(lx, ly, 0, lx, ly, lr);
+      li.addColorStop(0, 'rgba(255,255,255,' + (0.92 * dens).toFixed(3) + ')');
+      li.addColorStop(0.6, 'rgba(250,253,255,' + (0.38 * dens).toFixed(3) + ')');
+      li.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = li;
+      ctx.beginPath(); ctx.arc(lx, ly, lr, 0, 6.2832); ctx.fill();
+    }
+    ctx.lineCap = 'round';
+    var streaks = Math.round(AV_STREAKS * (puffs / AV_N));
+    for (var j = 0; j < streaks; j++) {
+      var b1 = avHash(j * 7.13), b2 = avHash(j * 3.71 + 2.2);
+      var sp = (sec * (1.5 + b2 * 1.4) + b1) % 1;
+      var sy = top - 140 + sp * (H - top + 220);
+      var sx = front + (1 - clamp(sy / H, 0, 1)) * 620 - b1 * 900;
+      var len = 34 + b2 * 62;
+      var al = amp * 0.62 * Math.sin(clamp(sp, 0, 1) * Math.PI) * clamp(1 - b1 / 0.85, 0, 1);
+      if (al <= 0.02) continue;
+      ctx.strokeStyle = 'rgba(255,255,255,' + al.toFixed(3) + ')';
+      ctx.lineWidth = 2 + b2 * 3;
+      ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(sx + len * 0.55, sy + len); ctx.stroke();
+    }
+    ctx.restore();
+    if (t0) {
+      var cost = performance.now() - t0;
+      if (cost > AV_BUDGET_MS) avQuality = Math.max(AV_MIN / AV_N, avQuality * 0.8);
+      else if (cost < AV_BUDGET_MS * 0.5) avQuality = Math.min(1, avQuality * 1.04);
+    }
+    /* the haze over the ground it has already taken, behind the front only */
+    ctx.save();
+    ctx.globalAlpha = amp * 0.8 * clamp((t - roar * 0.4) / roar, 0, 1);
+    var hx = clamp(front, c.l - 400, c.l + c.w + 400);
+    var veil = ctx.createLinearGradient(hx - 1500, 0, hx + 60, 0);
+    veil.addColorStop(0, 'rgba(238,248,255,0.88)');
+    veil.addColorStop(0.62, 'rgba(238,248,255,0.42)');
+    veil.addColorStop(1, 'rgba(238,248,255,0)');
+    ctx.fillStyle = veil;
+    ctx.fillRect(c.l - 20, c.t - 20, c.w + 40, c.h + 40);
+    ctx.restore();
+  }
+
   var SW = window.SWIFTEE || null;
-  var BIRD_CLIPS = ['flying', 'flapping', 'blinking', 'curious', 'talk_start', 'talking', 'talk_stop'];
+  var BIRD_CLIPS = ['flying', 'flapping', 'blinking', 'curious', 'talk_start', 'talking', 'talk_stop', 'happy_start', 'happy'];
   var REQUIRED = ['sky', 'path', 'capL', 'capR', 'run', 'skid', 'tremble', 'bird:flying', 'bird:blinking', 'bird:talking'];
 
   var S = null;          // the run on screen, or null
@@ -338,7 +581,7 @@
       });
       if (SW && SW.clips) BIRD_CLIPS.forEach(function (c) { if (SW.clips[c]) add('bird:' + c, SW.clips[c].image); });
       if (document.fonts && document.fonts.load) jobs.push(document.fonts.load('600 46px Fredoka').catch(noop));
-      LINES.forEach(function (l) {
+      LINES.concat(ENDING).forEach(function (l) {
         var take = lessonTake(l);
         if (take) bytes[l.id] = fetchBytes(window.polygonAudioSrc ? window.polygonAudioSrc(take.src) : take.src);
       });
@@ -370,7 +613,7 @@
     if (ctx.state === 'suspended') { try { ctx.resume().catch(noop); } catch (e) {} }
     /* Decode the take and the sounds with this context, once preload has started fetching
        them. decodeAudioData detaches what it is given, so each gets a copy. */
-    var takes = LINES.filter(function (l) { return l.take; }).map(function (l) { return l.id; });
+    var takes = LINES.concat(ENDING).filter(function (l) { return l.take; }).map(function (l) { return l.id; });
     versions().then(function () { takes.concat(Object.keys(SFX)).forEach(function (name) {
       if (!bytes[name]) return;
       bytes[name].then(function (ab) {
@@ -578,14 +821,15 @@
     var live = el('div', 'bridge-live', root);
     live.setAttribute('aria-live', 'polite');
 
-    /* the Part 1 buttons kit's blue navigation pill (styles/buttons-kit.css) */
-    var next = el('button', 'kit-btn kit-btn--nav bridge-next', root);
+    /* the Part 1 buttons kit's gold pill (styles/buttons-kit.css): the kit's blue one is the
+       colour of the ice and the water behind it here, and all but disappeared into them */
+    var next = el('button', 'kit-btn kit-btn--primary bridge-next', root);
     next.type = 'button';
     next.hidden = true;
     next.disabled = true;
     next.innerHTML = '<span>Next</span><span class="chev" aria-hidden="true">&#9654;</span>';
 
-    /* the story's dark, which the scene comes up out of and goes back into for the blizzard */
+    /* the story's dark, which the scene comes up out of and goes back into for the lesson */
     var dusk = el('div', 'bridge-dusk', root);
     dusk.setAttribute('aria-hidden', 'true');
 
@@ -644,17 +888,37 @@
     ctx.clearRect(0, 0, S.canvas.width, S.canvas.height);
     if (!S.open) return;
     ctx.drawImage(backdrop(), 0, 0);
-    var k = c.dpr * c.s;
-    ctx.setTransform(k, 0, 0, k, -c.l * k, -c.t * k);
+    var k = c.dpr * c.s, sh = avShakeOffset();
+    ctx.setTransform(k, 0, 0, k, (sh.x - c.l) * k, (sh.y - c.t) * k);
     var wx = S.worldX, x0 = HOLE_WX - wx, x1 = x0 + GAP, t = S.clock / 1000;
     var holeSeen = x0 < c.l + c.w + CAP.w * CAP_S && x1 > c.l - CAP.w * CAP_S;
     var crack = holeSeen ? ditchPath(x0, x1) : null;
+    /* the avalanche's trail: each crevasse as wide as it has opened, at 24 px steps */
+    var runT = S.momo && S.momo.mode === 'run' ? S.clock - S.momo.t0 : Infinity;
+    var trail = S.av.trail.map(function (g) {
+      var st = avGapState(g, runT), cx = g.wx + g.w / 2 - wx, w = Math.round(g.w * st.open / 24) * 24;
+      return { cx: cx, crack: st.crack, open: st.open, pts: g.pts, x0: cx - w / 2, x1: cx + w / 2, path: w >= 24 ? ditchPath(cx - w / 2, cx + w / 2) : null };
+    });
+    var cuts = trail.filter(function (g) { return g.path; }).map(function (g) { return g.path; });
+    if (crack) cuts.push(crack);
     // the game's own order (game/js/engine.js, the frame's ground pass)
+    trail.forEach(function (g) { if (g.path) { drawDitch(ctx, g.x0, g.x1, g.path, t); drawWaterFront(ctx, g.x0, g.x1, g.path, t); } });
     if (crack) { drawDitch(ctx, x0, x1, crack, t); drawWaterFront(ctx, x0, x1, crack, t); }
-    drawPath(ctx, wx, crack, t);
+    drawPath(ctx, wx, cuts, t);
     drawRiverLife(ctx, t);
+    trail.forEach(function (g) {
+      if (g.path && g.open > 0.25) drawLips(ctx, g.x0, g.x1);
+      if (g.crack > 0 && g.open < 0.9) {
+        ctx.save();
+        ctx.strokeStyle = 'rgba(20,70,120,0.85)'; ctx.lineWidth = 4; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(g.cx, SURFACE - 4);
+        for (var i = 0; i < g.pts.length; i++) { if ((i + 1) / g.pts.length > g.crack) break; ctx.lineTo(g.cx + g.pts[i].x, SURFACE - 4 + g.pts[i].y); }
+        ctx.stroke(); ctx.restore();
+      }
+    });
     if (crack) drawLips(ctx, x0, x1);
     drawMomo(ctx);
+    if (runT < AV_TOTAL + 1200) { drawAvParts(ctx); drawAvalanche(ctx, runT, S.pose ? S.pose.x : MOMO_X); }
     drawBird(ctx);
   }
 
@@ -662,13 +926,13 @@
      break is: the game's GroundManager.draw, with the same even-odd clip, so the lips
      are the only edge the path has and the sea never paints into the crevasse (the
      crevasse draws its own stretch of the same water). */
-  function drawPath(ctx, wx, crack, t) {
+  function drawPath(ctx, wx, cuts, t) {
     var c = S.cam, from = c.l - 20, to = c.l + c.w + 20;
     ctx.save();
-    if (crack) {
+    if (cuts && cuts.length) {
       var p = new Path2D();
       p.rect(from - 200, TILE_Y - 40, to - from + 400, Math.max(TILE_H + 80, c.t + c.h + 80 - TILE_Y));
-      p.addPath(crack);
+      cuts.forEach(function (cut) { p.addPath(cut); });
       ctx.clip(p, 'evenodd');
     }
     drawDeepWater(ctx, t);
@@ -711,7 +975,7 @@
   function keepWall(key, art) {
     S.walls[key] = art;
     var keys = Object.keys(S.walls);
-    for (var i = 0; i < keys.length - 12; i++) delete S.walls[keys[i]];
+    for (var i = 0; i < keys.length - 40; i++) delete S.walls[keys[i]];   // the avalanche's opening gaps come in many widths
     return art;
   }
   function ditchBottom() { var c = S.cam; return Math.max(H + 80, c.t + c.h + 80); }
@@ -965,13 +1229,13 @@
     var m = S.momo, t = S.clock - m.t0;
     if (m.mode === 'run') {
       var x = t < T.enter ? lerp(m.from, MOMO_X, easeOut(t / T.enter, 2)) : MOMO_X;
-      var wx = worldAt(t);
+      var wx = worldAt(t), lead = avLead(t) - (S.knock || 0);
       if (t < RUN_END) {
         var dist = wx + (x - m.from);
-        return { sheet: 'run', f: Math.floor(dist / RUN.stride * RUN.frames) % RUN.frames, x: x, wx: wx };
+        return { sheet: 'run', f: Math.floor(dist / RUN.stride * RUN.frames) % RUN.frames, x: x + lead, wx: wx, mark: x };
       }
       var u = clamp((t - RUN_END) / SKID.slide, 0, 1);
-      return { sheet: 'skid', f: Math.min(SKID.frames - 1, Math.floor(u * SKID.frames)), x: x, wx: wx };
+      return { sheet: 'skid', f: Math.min(SKID.frames - 1, Math.floor(u * SKID.frames)), x: x + lead, wx: wx, mark: x };
     }
     if (m.mode === 'look') {
       var acc = 0;
@@ -1236,9 +1500,11 @@
   }
   function update(dt) {
     if (!S.open) return;
+    if (S.knock > 0) S.knock = Math.max(0, S.knock - dt / 1000 * 34 * 3.1);
     var pose = momoPose(), m = S.momo;
     if (m.mode === 'run') {
       S.worldX = pose.wx;
+      avUpdate(dt, S.clock - m.t0, pose.x);
       if (pose.sheet === 'run') {
         if (RUN.contacts.indexOf(pose.f) >= 0 && pose.f !== S.lastStep) sfx.step();
         S.lastStep = pose.f;
@@ -1294,6 +1560,47 @@
       .then(guard(gen, function () { phase('DIALOGUE'); return dialogue(gen); }))
       .then(guard(gen, function () { phase('STORY_READY'); return waitMs(T.read); }))
       .then(guard(gen, function () { showNext(); }));
+  }
+
+  /* THE ENDING'S RUN. The scene comes up out of the dark already at the break: Momo holding
+     at the edge, breathing, Swiftee standing beside him, turned to him. She says her line, word
+     by word with her voice, gives a small happy beat, and the line stays up to be read; then
+     `said` settles and the lesson brings the game up over the scene (it closes the scene once
+     the game is on screen). No Next: nothing here takes a tap. Its phases:
+       LESSON_COMPLETE  the lesson's last quiz is done and asked for the scene
+       ENDING_ENTER     the scene comes up out of the dark, at the break
+       ENDING_LINE      her line
+       ENDING_READ      it stays up to be read
+       TRANSITION_TO_GAME  `said` has settled: the game takes the screen from here */
+  function runEnding(gen) {
+    phase('ENDING_ENTER');
+    return Promise.all([waitMs(T.dusk), withTimeout(loading || preload(), T.loadCap)])
+      .then(guard(gen, function (r) {
+        if (!r[1]) { S.history.push({ event: 'fallback', reason: 'art', at: Math.round(S.clock) }); if (S.resolveSaid) S.resolveSaid(false); return new Promise(noop); }
+        openAtBreak();
+        return waitMs(T.endingIn);
+      }))
+      .then(guard(gen, function () { phase('ENDING_LINE'); birdSet(birdPose('talking'), 120); return say(ENDING[0], false); }))
+      .then(guard(gen, function () {
+        var stop = art['bird:talk_stop'] ? [birdSeg('talk_stop', SW.clips.talk_stop.frames)] : [];
+        var happy = birdPose('happy');
+        birdSet(stop.concat(happy.length ? happy : birdPose('blinking')), 120);
+        phase('ENDING_READ');
+        return waitMs(T.read);
+      }))
+      .then(guard(gen, function () { phase('TRANSITION_TO_GAME'); if (S.resolveSaid) S.resolveSaid(true); }));
+  }
+  function openAtBreak() {
+    S.open = true;
+    document.documentElement.setAttribute('data-bridge', 'on');
+    S.root.classList.add('is-open');
+    S.worldX = worldAt(STOP_AT);
+    S.momo = { mode: 'hold', t0: S.clock, from: MOMO_X };
+    S.pose = null;
+    var b = S.bird;
+    b.on = true; b.standing = true; b.flip = true; b.alpha = 1; b.rot = 0;
+    b.cx = PERCH; b.cy = standCy();
+    birdSet(birdPose('blinking'));
   }
 
   /* The scene starts under the dark, the lesson underneath stops painting, and the dark
@@ -1431,9 +1738,9 @@
     S.history.push({ event: 'next', at: Math.round(S.clock) });
     handOff('next');
   }
-  /* The lesson takes the screen: the scene fades back to the story's dark, which is the
-     blizzard's first frame, and goes; the blizzard starts in the same moment (it waits on
-     the promise this settles) and carries on into the lesson. */
+  /* The lesson takes the screen: the scene fades back to the story's dark and goes, and the
+     lesson comes up out of the same dark (src/intro/opening.js waits on the promise this
+     settles). */
   function handOff(reason) {
     if (!S || S.handedOff) return;
     S.handedOff = true;
@@ -1510,12 +1817,16 @@
     var gen = (last && last.gen || 0) + 1;
     S = {
       gen: gen, clock: 0, lastT: 0, paused: false, open: false, handedOff: false, nextOn: false,
-      reduced: reducedMotion(), phase: 'STORY_COMPLETE', history: [], waiters: [], listeners: [],
-      worldX: 0, momo: null, pose: null, hand: null, bird: { on: false, alpha: 1, rot: 0 },
+      mode: opts.ending ? 'ending' : 'story',
+      reduced: reducedMotion(), phase: opts.ending ? 'LESSON_COMPLETE' : 'STORY_COMPLETE', history: [], waiters: [], listeners: [],
+      worldX: 0, momo: null, pose: null, hand: null, bird: { on: false, alpha: 1, rot: 0 }, knock: 0,
+      av: { started: false, puff: 0, gap: -9999, trail: [], parts: [], shakes: [], squealed: false, roared: false, cracked: false },
       speak: null, sayBox: null, audio: null, sounds: []
     };
-    S.history.push({ event: 'phase', phase: 'STORY_COMPLETE', at: 0 });
+    S.history.push({ event: 'phase', phase: S.phase, at: 0 });
     S.done = new Promise(function (resolve) { S.resolveDone = resolve; });
+    S.said = new Promise(function (resolve) { S.resolveSaid = resolve; });
+    if (opts.ending && opts.ending.text) ENDING[0].text = opts.ending.text;
     build();
     S.audio = openAudio(opts.audioContext);
     fit();
@@ -1530,7 +1841,7 @@
     on(S.next, 'click', onNext);
     try { S.root.focus({ preventScroll: true }); } catch (e) {}
     S.raf = requestAnimationFrame(tick);
-    run(gen);
+    if (S.mode === 'ending') runEnding(gen); else run(gen);
     return S.done;
   }
 
@@ -1547,9 +1858,10 @@
     }
     document.documentElement.removeAttribute('data-bridge');
     if (S.root && S.root.parentNode) S.root.parentNode.removeChild(S.root);
-    last = { gen: S.gen, phase: S.phase, history: S.history, sounds: S.sounds, handedOff: S.handedOff, listeners: 0 };
-    var resolve = S.resolveDone;
+    last = { gen: S.gen, mode: S.mode, phase: S.phase, history: S.history, sounds: S.sounds, handedOff: S.handedOff, listeners: 0 };
+    var resolve = S.resolveDone, said = S.resolveSaid;
     S = null;
+    if (said) said(true);
     if (resolve) resolve(true);
   }
 
@@ -1557,7 +1869,7 @@
     return S ? S.phase : last ? last.phase : (enabled ? 'IDLE' : 'OFF');
   }
 
-  /* THE STORY'S HAND-OVER. The blizzard (src/intro/ice-intro.js) calls this when the story
+  /* THE STORY'S HAND-OVER. The opening (src/intro/opening.js) calls this when the story
      hands over, and starts when it settles: the scene plays if the story did (skipped with
      Escape counts, left out by the address or in an automated browser does not), and the
      promise settles once Next has been pressed and the scene has gone. With ?bridge=1 it is
@@ -1584,19 +1896,32 @@
     })();
   }
 
+  /* THE LESSON'S ENDING: the scene once more, for Swiftee's last line (runEnding). Resolves
+     once the line has been said and read; the scene stays up until close(), so the game's
+     curtain comes up over it rather than over the lesson. */
+  function ending(opts) {
+    if (!enabled || !document.body) return Promise.resolve(false);
+    if (S) destroy();
+    start({ ending: opts || {} });
+    return S ? S.said : Promise.resolve(false);
+  }
+  function close() { if (S && S.mode === 'ending') destroy(); }
+
   window.BridgeStory = {
     enabled: enabled,
     autostart: autostart,
     preload: preload,
     start: start,
     afterStory: afterStory,
+    ending: ending,
+    close: close,
     /* The lesson says where its AudioContext is, so the scene speaks through it. */
     useAudio: function (source) { ctxSource = typeof source === 'function' ? source : null; },
     /* For the tests: where the story is, what has happened, and what is on screen. */
     state: function () {
       var src = S || last || {};
       var out = {
-        enabled: enabled, autostart: autostart, active: !!S, phase: phaseNow(),
+        enabled: enabled, autostart: autostart, active: !!S, phase: phaseNow(), mode: src.mode || null,
         history: (src.history || []).slice(), sounds: (src.sounds || []).slice(), nextShown: !!(S && S.next && !S.next.hidden),
         nextEnabled: !!(S && S.nextOn), lastRun: last ? { listeners: last.listeners, handedOff: last.handedOff } : null,
         holeWorldX: HOLE_WX, lip: LIP, momoX: MOMO_X, perch: PERCH
@@ -1610,7 +1935,8 @@
         out.audio = S.audio ? S.audio.ctx.state : 'none';
         out.voiceDecoded = !!(S.audio && LINES.every(function (l) { return !l.take || S.audio.buf[l.id]; }));
         out.decoded = S.audio ? Object.keys(S.audio.buf) : [];
-        out.momo = S.pose ? { mode: S.momo.mode, sheet: S.pose.sheet, frame: S.pose.f, x: Math.round(S.pose.x) } : null;
+        out.momo = S.pose ? { mode: S.momo.mode, sheet: S.pose.sheet, frame: S.pose.f, x: Math.round(S.pose.x), mark: Math.round(S.pose.mark != null ? S.pose.mark : S.pose.x) } : null;
+        out.avalanche = { started: S.av.started, trail: S.av.trail.length, parts: S.av.parts.length };
         var b = S.bird;
         out.swiftee = b.on && b.seg ? { clip: b.seg.clip, standing: !!b.standing, flying: !!b.fly, flip: !!b.flip,
           x: Math.round(b.cx), y: Math.round(b.cy), screen: toScreen(b.cx, b.cy) } : null;

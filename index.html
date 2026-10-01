@@ -11,7 +11,6 @@
 <link rel="preload" href="assets/fonts/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="styles/buttons.css">
 <link rel="stylesheet" href="styles/dialogue.css">
-<link rel="stylesheet" href="styles/summary.css">
 <link rel="stylesheet" href="styles/cards.css">
 <link rel="stylesheet" href="styles/weather.css">
 <style>
@@ -25,7 +24,7 @@
 <script src="src/lesson/screen-navigator.js"></script>
 <script src="src/lesson/recordings.js"></script>
 <script src="src/lesson/recorded-player.js"></script>
-<script src="src/lesson/summary.js"></script>
+<script src="src/lesson/recap.js"></script>
 <!-- Swiftee's sheet table, generated from the character pack's manifest by
      tools/build-swiftee.cjs. It loads here, not from the helmet below, because the
      lesson script reads it while it is being evaluated. -->
@@ -36,19 +35,17 @@
 <!-- The buttons kit from Swiftee & the Polygons (Part 1): the round gold Play (its glow,
      its crystals and its press) and the 3-slice pill buttons. See styles/buttons-kit.css. -->
 <link rel="stylesheet" href="styles/buttons-kit.css">
+<link rel="stylesheet" href="styles/recap.css">
 <script src="src/fx/snowflake.js"></script>
 <script src="src/fx/play-fx.js"></script>
-<!-- The Momo + Popo story plays first. The blizzard waits on StoryIntro.gate
-     exactly as the lesson waits on IceIntro.gate, so nothing starts under it. -->
+<!-- The Momo + Popo story plays first, then the Help Momo scene; the lesson waits on
+     Opening.gate (src/intro/opening.js), so nothing starts under them. -->
 <link rel="stylesheet" href="styles/story-intro.css">
 <script src="src/story/story-voice.js"></script>
 <script src="src/story/story-data.js"></script>
 <script src="src/story/story-intro.js"></script>
-<!-- The blizzard cinematic. It loads from the real head rather than the helmet
-     below so the overlay is styled and on screen before the lesson's runtime
-     has mounted anything; the lesson then waits on IceIntro.gate. -->
-<link rel="stylesheet" href="styles/ice-intro.css">
-<script src="src/intro/ice-intro.js"></script>
+<!-- The opening's sequence: the story, then the Help Momo scene, then the lesson. -->
+<script src="src/intro/opening.js"></script>
 <!-- The Frozen Pass: the runner game in game/, played after the lesson in a frame of
      its own. It starts loading as the completion screen opens and takes the screen
      from that screen's "Help Momo" button. ?game=1 opens straight on it; ?game=0
@@ -57,9 +54,12 @@
 <script src="src/runner/runner-stage.js"></script>
 <!-- Help Momo, the Broken Path: the scene between the story and the lesson. Momo runs
      to a broken path, Swiftee flies in, says what is wrong and that the polygons come
-     first, and Next goes on through the blizzard into the lesson. ?bridge=1 opens
+     first, and Next goes on into the lesson. ?bridge=1 opens
      straight on it; ?bridge=0 leaves it out. See src/bridge/bridge-story.js. -->
 <link rel="stylesheet" href="styles/bridge-story.css">
+<!-- the Frozen Rush game's comic sound kit (synthesised, no files), for the avalanche the
+     Help Momo scene opens on: the same cues the game plays for its own opening -->
+<script src="game/js/sfx.js"></script>
 <script src="src/bridge/bridge-story.js"></script>
 </head>
 <body>
@@ -417,8 +417,8 @@
 
 
     <div ref="{{ ghostRef }}" style="position:absolute;left:0;top:0;pointer-events:none;opacity:0;z-index:60"></div>
-    <!-- the summary, the lesson's last screen (src/lesson/summary.js); under the review navigator -->
-    <div class="canvas-summary" ref="{{ summaryRef }}" style="position:absolute;inset:0;pointer-events:none;z-index:9000"></div>
+    <!-- the recap, screen 41 (src/lesson/recap.js); under the review navigator -->
+    <div class="canvas-recap" ref="{{ recapRef }}" style="position:absolute;inset:0;pointer-events:none;z-index:9000"></div>
     <div class="canvas-navigation" ref="{{ navigationRef }}" style="position:absolute;inset:0;pointer-events:none;z-index:10000"></div>
 
 
@@ -522,6 +522,8 @@ const OPENING_BOARD = { x:816, y:116, w:992, h:834 };
    name always sits clear of the shape and inside the board however much of its
    box a given polygon happens to fill. */
 const NAME_FIGURE = { y: 128, h: 660 };
+/* How long the last line stays up, once said, before the game takes the screen. */
+const END_READ = 1300;
 const NAME_LABEL_GAP = 48;
 /* How far the camera leans toward the leaf on "look at this shape closely", and
    how long it takes. Small enough to read as attention rather than a jump. */
@@ -976,7 +978,7 @@ class SwifteeGuide {
 const audioSrc = src => (typeof window !== 'undefined' && window.polygonAudioSrc ? window.polygonAudioSrc(src) : src);
 class Component extends DCLogic {
   navigationRef = React.createRef();
-  summaryRef = React.createRef();
+  recapRef = React.createRef();
   state = {
     ready: false, k: 0, narr: '', speaking: false, voiceError: '', muted: false, scale: 1,
     /* The scenery is one picture that ships with the page; nothing has to load
@@ -990,7 +992,7 @@ class Component extends DCLogic {
     hoverK: null, pressK: null, fx: [],
     userPts: null, dragged: false, reveal: false, nums: 0, hlKind: null,
     chip: null, placed: {}, badPlace: null, sortAt: {}, pickedFig: null, justPlaced: null, tick: null, united: false, say: '',
-    n: 3, recallNameN: 3, recallLimit: null, recallLimitTick: 0, recallSeen: [3], morph: null, traceKey: 0, tracing: false, drawing: false, drawn: false, penAt: null,
+    n: 3, morph: null, traceKey: 0, tracing: false, drawing: false, drawn: false, penAt: null,
     zoomed: false, showHand: false, checked: false, phase: ''
   };
 
@@ -1032,17 +1034,17 @@ class Component extends DCLogic {
       /* The lesson always opens on screen 1 so the guide's entrance plays every
          time. Clear any progress an earlier build persisted. */
       try { localStorage.removeItem('polyLessonV1'); } catch (e) {}
-      /* The ice board lays itself out straight away so the blizzard intro has
-         the real screen to crossfade into, but screen 1 — Swiftee's entrance,
-         the narration, the first point — is held until the cinematic has
-         finished and handed control over. */
+      /* The ice board lays itself out straight away so the opening has the real
+         screen to come up out of the dark onto, but screen 1 — Swiftee's entrance,
+         the narration, the first point — is held until the opening (the story, the
+         Help Momo scene) has handed control over (src/intro/opening.js). */
       /* ?game=1 opens straight on the runner (src/runner/runner-stage.js brings it up
          by itself); the lesson then keeps its first screen, silent, underneath. */
-      /* The Help Momo scene (src/bridge/bridge-story.js) plays before the blizzard, which
-         this waits for, so screen 1 starts once its Next has been pressed; ?bridge=1 opens
-         on that scene and goes the same way. */
+      /* The Help Momo scene (src/bridge/bridge-story.js) is part of the opening, which this
+         waits for, so screen 1 starts once its Next has been pressed; ?bridge=1 opens on that
+         scene and goes the same way. */
       /* Screen 1 is Swiftee's entrance, so it waits for her critical sheets to be decoded
-         (see SwifteeGuide.mount). After the story and the blizzard they are long in; when the
+         (see SwifteeGuide.mount). After the story and the Help Momo scene they are long in; when the
          lesson opens at once (?intro=0, ?preview=1, a fast skip) this is what stops her flying
          in as an empty cell. A failed sheet resolves the wait too, so nothing can hold it. */
       /* The latest screen wins: if anything has run a screen while her sheets were still
@@ -1053,7 +1055,7 @@ class Component extends DCLogic {
         const gen = this.gen || 0;
         this.guide.whenReady().then(() => { if (!this._gone && (this.gen || 0) === gen) this.runStep(0, true); });
       };
-      const intro = window.IceIntro && window.IceIntro.gate;
+      const intro = window.Opening && window.Opening.gate;
       this.setState({ ready: true, k: 0, userPts: null }, () => {
         if (intro && intro.then) intro.then(begin, begin); else begin();
       });
@@ -1807,7 +1809,11 @@ class Component extends DCLogic {
       { sc: 'S20', label: '20 · Hexagon', narr: 'A polygon with 6 sides is called a hexagon.', fig: 'hexagon', count: 6, reveal: 'Hexagon', morphFrom: 'pentagon', auto: true },
       { sc: 'S21', label: '21 · Heptagon', narr: 'A polygon with 7 sides is called a heptagon.', fig: 'heptagon', count: 7, reveal: 'Heptagon', morphFrom: 'hexagon', auto: true },
       { sc: 'S22', label: '22 · Octagon', narr: 'A polygon with 8 sides is called an octagon.', fig: 'octagon', count: 8, reveal: 'Octagon', morphFrom: 'heptagon', auto: true },
-      { sc: 'S23', label: '23 · Recall', narr: "Let's recall the different types of polygons we learnt about.", q: 'recall' },
+      /* THE RECAP, the one look back before the quizzes. Nothing on it takes a tap: Swiftee goes
+         over the polygon and its parts, then the six names, one thing at a time, each line in its
+         own recording, and Next appears once she has finished (recapConcepts, startRecap, and
+         src/lesson/recap.js, which presents it the Part 1 Summary Kit's way). */
+      { sc: 'S23', label: '23 · Recap', narr: '', recap: true },
       {
         sc: 'C1', label: 'CFU 1', narr: 'Which of these are polygons?',
         /* No Check button: selecting both polygons is the answer, and the
@@ -1840,10 +1846,9 @@ class Component extends DCLogic {
         zones: ['Hexagon', 'Heptagon'], answer: [0, 1, 0, 1],
         fb: { ok: 'Well done! Hexagons have 6 sides and heptagons have 7 sides.', one: 'Count the sides of the ones you placed wrong.', two: '6 sides make a hexagon, 7 make a heptagon.' }
       },
-      /* THE SUMMARY: the lesson's one last screen (startSummary, src/lesson/summary.js). Its
-         ideas are summaryConcepts(); `done` is Swiftee's line back to Momo after them. */
-      { sc: 'END', label: 'Summary', narr: '',
-        done: 'You know all about polygons now. You are ready to help Momo.' }
+      /* THE END: not another summary, only the bridge back to Momo, whose broken path opened
+         the lesson; then the game starts by itself (finishLesson). */
+      { sc: 'END', label: 'Finished', narr: 'Now you know everything about polygons. You are ready to help Momo.' }
     ];
     return this._steps;
   }
@@ -1867,8 +1872,9 @@ class Component extends DCLogic {
     } else enter();
   };
   runStep(k, restoring) {
+    if (window.PolygonRecap) window.PolygonRecap.stop();
+    if (window.BridgeStory && window.BridgeStory.close && !this._toPart2) window.BridgeStory.close();
     if(this.stageRef?.current)this.stageRef.current.scrollTop=0;
-    if (window.PolygonSummary) window.PolygonSummary.stop();
     this.cancelMorph();
     if (this._vertexDragCleanup) this._vertexDragCleanup();
     this._vertexDragging = false;
@@ -1905,13 +1911,11 @@ class Component extends DCLogic {
     /* Before is already known and stated on screen; After starts empty so the
        learner counts it up themselves. */
     if (s.q === 'count2') { reset.cnt = [5, 0]; reset.count2Complete = false; reset.count2Pulsing = false; }
-    /* recallSeen starts holding the triangle: it is already on screen when
-       the step opens, so it counts as one of the shapes the learner has met. */
-    if (s.q === 'recall') { reset.n = 3; reset.recallNameN = 3; reset.recallLimit = null; reset.recallLimitTick = 0; reset.recallSeen = [3]; reset.recallComplete = false; }
     /* The comparison lesson and its follow-up share one persistent teaching scene. */
     const continuingComparison = ['S6','S7'].includes(this._lastSc) && ['S6','S7'].includes(s.sc);
     const fresh = this._lastSc !== s.sc && !continuingComparison;
     reset.storyControls = false;
+    reset.endReady = false; reset.endPhase = '';
     if (fresh) { reset.storyContent = false; reset.storyDialogue = false; }
     // Keep the existing board visible while it reshapes into the introduction layout.
     if (['S8','S9','S10','C3','C4'].includes(s.sc)) {
@@ -1953,11 +1957,8 @@ class Component extends DCLogic {
         this.narrate(s.narr, { hl: s.hl, then: () => this.advanceAfterCount() });
       };
       const start = () => {
-        if (s.sc === 'END') { this.startSummary(); return; }
-        if (s.q === 'recall') {
-          this.narrate(s.narr, {then:() => this.armNudge()});
-          return;
-        }
+        if (s.sc === 'END') { this.finishLesson(); return; }
+        if (s.recap) { this.startRecap(); return; }
         if (s.ph === 'draw') this.setState({ storyContent: true });
         if (s.ph === 'point') { this.later(go, 500); return; }
         if (s.ph === 'draw') {
@@ -2698,38 +2699,6 @@ class Component extends DCLogic {
     };
   }
 
-  /* ---------- recall stepper ---------- */
-  recallPoints(n) { return this.P.reg(n, 500, 500, 300, 180 / n); }
-  bumpN(d) {
-    return () => {
-      if (this.locked() || this.state.recallComplete) return;
-      this.clearNudge();
-      const cur = this.state.n, v = Math.max(3, Math.min(8, cur + d));
-      if (v === cur) {
-        const token = (this.state.recallLimitTick || 0) + 1;
-        this.setState({ recallLimit:d, recallLimitTick:token });
-        this.later(() => {
-          if (this.state.recallLimitTick === token) this.setState({ recallLimit:null });
-        }, 420);
-        this.armNudge();
-        return;
-      }
-      if (v !== 8) this.sfx('tick');
-      this.guide.onInteractionStart();
-      const from = this.recallPoints(cur), to = this.recallPoints(v);
-      const seen = this.state.recallSeen || [];
-      const nextSeen = seen.includes(v) ? seen : seen.concat(v);
-      if (v === 8) {
-        const generation = this.gen;
-        this.setState({recallComplete:true});
-        this.answerFeedback(true,true);
-        this.later(() => { if (generation === this.gen) this.advance(); },3000);
-      }
-      this.morphTo(from, to, 520, () => {
-        if (!this.state.recallComplete) this.armNudge();
-      }, { n:v, recallNameN:v, recallLimit:null, recallSeen:nextSeen });
-    };
-  }
 
   /* ---------- vertex dragging (screen 14) ---------- */
   handleDown(i) {
@@ -3437,7 +3406,7 @@ class Component extends DCLogic {
       effectsEnabled: !this.locked(), activateKey: this.activateKey,
       storyControls: !!st.storyControls,
       storyCounting: !!(st.ready && this.P && this.step().sc === 'S13' && this.step().ph === 'five'),
-      navigationRef:this.navigationRef, summaryRef:this.summaryRef,
+      navigationRef:this.navigationRef, recapRef:this.recapRef,
       backdropStyle,
       layoutScroll: () => this.clearNudge(), frameStyle:{position:'relative',width:'100%',height:'100%',overflow:'hidden'}, responsiveLayout:'canvas', viewportStyle, scalerStyle: scaler, narration: st.narrShow || st.narr || '', narratorParts: this.narratorParts(), screenLabel: 'loading',
       /* The gap closes with the retired option. Left at its full width it
@@ -3530,7 +3499,7 @@ class Component extends DCLogic {
     else if (s.sc === 'S13') this.viewCount(V, s);
     else if (s.sc === 'S14') this.viewDeform(V, s);
     else if (s.sc === 'S15' || s.sc === 'S16') this.viewBA(V, s);
-    else if (s.q === 'recall') this.viewRecall(V, s);
+    else if (s.recap) this.viewRecap(V, s);
     else if (s.q === 'multi') this.viewMulti(V, s);
     else if (s.q === 'sort') this.viewSort(V, s);
     else if (s.q === 'tap1') this.viewTapOne(V, s, false);
@@ -3576,7 +3545,7 @@ class Component extends DCLogic {
     }
     for (const key of ['chooseOpen', 'chooseClosed', 'check']) meta(V, V[key], 'game-action game-primary ice-button', key, 'ice-button');
     // a pill in the check slot (the recap screen's Next) wears the kit's classes instead of the ice button's
-    if (V.checkPill) V.checkClass = (V.check ? 'game-action game-primary ' : '') + 'kit-btn kit-btn--lesson kit-btn--next kit-btn--' + V.checkPill;
+    if (V.checkPill) V.checkClass = (V.check ? 'game-action game-primary ' : '') + 'kit-btn kit-btn--lesson ' + (V.checkLabel === 'Next' ? 'kit-btn--next ' : '') + 'kit-btn--' + V.checkPill;
     V.choiceDisabled = this.locked() || !!this.state.ok || !!this.state.ocReveal;
     for (const kind of ['open', 'closed']) {
       V[kind + 'Cued'] = this.state.ocWords[kind] ? 'true' : 'false';
@@ -3651,17 +3620,12 @@ class Component extends DCLogic {
       const mk = 'cm' + i, pk = 'cp' + i;
       c.mIn = this.hovOn(mk); c.pIn = this.hovOn(pk); c.out = this.hovOff;
       const unavailable = this.locked() || !!this.state.ok || !!c.fixed;
-      c.minusDisabled = unavailable || (!c.limitFeedback && Number(c.value) <= c.min);
-      c.plusDisabled = unavailable || (!c.limitFeedback && Number(c.value) >= c.max);
+      c.minusDisabled = unavailable || Number(c.value) <= c.min;
+      c.plusDisabled = unavailable || Number(c.value) >= c.max;
       const disabledStyle = {opacity:1,cursor:'default',transform:'none'};
       const base = Object.assign({position:'relative'},c.btn);
       c.btnM = c.minusDisabled ? Object.assign({},base,disabledStyle) : this.liftable(base,mk,{lift:2,scale:1.03});
       c.btnP = c.plusDisabled ? Object.assign({},base,disabledStyle) : this.liftable(base,pk,{lift:2,scale:1.03});
-      if (c.limitFeedback && this.state.recallLimit) {
-        const button = this.state.recallLimit < 0 ? c.btnM : c.btnP;
-        button.animation = this.reducedMotion() ? 'none' : (this.state.recallLimitTick % 2 ? 'wrongTapA' : 'wrongTapB') + ' 320ms ease-in-out';
-        button.outline = '3px solid #237cb5'; button.outlineOffset = '4px';
-      }
       c.hitStyle = this.counterHitStyle();
       c.valueLive = c.fixed ? 'off' : 'polite';
       c.valueLabel = c.value + (Number(c.value) === 1 ? ' side' : ' sides');
@@ -3689,22 +3653,6 @@ class Component extends DCLogic {
       V.nudgeCheck = '';
       if (Number(next.value) > 5 && !next.minusDisabled) next.minusNudge = '1';
       else if (!next.plusDisabled) next.nudge = '1';
-    } else if (q === 'recall' && counters[0]) {
-      const c = counters[0];
-      /* Once every polygon has been visited the stepper has nothing left to
-         show, so the hint moves to Next. Nudging minus at that point would
-         send the learner back through shapes they have already seen. */
-      const seen = this.state.recallSeen || [];
-      /* A counter with no range cannot have been explored -- without this the
-         empty loop below falls straight through and reports "seen everything"
-         for a stepper that has no shapes to step through. */
-      const min = Number(c.min), max = Number(c.max);
-      let explored = Number.isFinite(min) && Number.isFinite(max) && max >= min;
-      for (let sides = min; explored && sides <= max; sides++) if (!seen.includes(sides)) explored = false;
-      if (explored) { V.nudgeCheck = ''; return; }
-      V.nudgeCheck = '';
-      if (!c.plusDisabled && Number(c.value) < c.max) c.nudge = '1';
-      else if (!c.minusDisabled) c.minusNudge = '1';
     }
   }
 
@@ -4188,6 +4136,8 @@ class Component extends DCLogic {
   guideStyle() {
     const st = this.state;
     const box = { position: 'absolute', inset: 0 };
+    // the recap brings its own Swiftee (src/lesson/recap.js): the lesson's steps aside for it
+    if (this.P && st.ready && this.step().recap) return Object.assign(box, { opacity: 0, transition: 'opacity 200ms ease', pointerEvents: 'none' });
     /* The cell itself slides to the centre; this supplies the arc, so she hops
        between the two pentagons instead of gliding there flat. */
     if (st.compareHop && !this.reducedMotion()) return Object.assign(box, {
@@ -5373,51 +5323,58 @@ class Component extends DCLogic {
     }
   }
 
-  /* ----- recall ----- */
-  viewRecall(V, s) {
-    const st = this.state;
-    /* Keep the naming screens' stage and figure centre, reserving a little
-       extra room below the outline for the restored name and stepper. */
-    const reference = this.learningReferenceScene();
-    const size = reference ? 730 : 420;
-    const box = reference ? { x: 925, y: NAME_FIGURE.y, w: size, h: NAME_FIGURE.h - 60 }
-      : { x: (SAFE.w - size) / 2, y: 20, w: size, h: size };
-    const names = { 3: 'Triangle', 4: 'Quadrilateral', 5: 'Pentagon', 6: 'Hexagon', 7: 'Heptagon', 8: 'Octagon' };
-    const pts = st.morph || this.recallPoints(st.n);
-    /* Reserve a stable name and control band below every possible outline. */
-    const recallVb = '200 200 600 600';
-    V.cards = [this.buildCard({
-      key: 'recall', x: box.x, y: box.y, w: size, h: reference ? box.h : size, plain: true, snap: reference,
-      /* Cropped to the circumcircle the recall shapes are actually drawn in
-         (centre 500, radius 300). The old box carried 100 units of empty
-         padding on every side, which is why the shape came out noticeably
-         smaller than the very figures it is recalling. */
-      vb: recallVb, d: this.dPath(pts, true), stroke: this.sideColor(st.n), sw: 18,
-      fill: this.tint(this.sideColor(st.n))
-    })];
-    V.callouts = [{
-      text: names[st.recallNameN || st.n], style: {
-        position: 'absolute', left: reference ? (box.x + size / 2) + 'px' : '50%',
-        top: reference ? (box.y + box.h + 24) + 'px' : '452px', translate: '-50% 0',
-        padding: '10px 46px', borderRadius: '30px', background: '#fff8e2', border: '5px solid ' + GOLD,
-        font: '800 46px "Baloo 2", Nunito, sans-serif', color: '#8a5a12', whiteSpace: 'nowrap',
-        boxShadow: '0 8px 0 rgba(198,146,44,0.35)',
-        opacity: 1
-      }
-    }];
-    V.showCounter = true;
-    const counter = this.counter(0, '');
-    Object.assign(counter, { accessibleLabel:'Number of sides', value:String(st.n), min:3, max:8,
-      minus:this.bumpN(-1), plus:this.bumpN(1), limitFeedback:true, fixed:!!st.recallComplete });
-    V.counters = [counter];
-    if (reference) V.counterRowStyle = {position:'absolute',left:(box.x + box.w/2)+'px',top:'880px',
-      width:'max-content',translate:'-50% 0',display:'flex',alignItems:'center'};
-    V.showCheck = false;
-    V.check = null;
-    V.checkStyle = {display:'none'};
-    V.checkLabel = '';
-    V.targets = [];
+  /* ----- the recap (screen 41) -----
+     What the lesson taught, said again in the lesson's own words and recordings, one thing at
+     a time, presented by src/lesson/recap.js: the polygon and its parts on the left of its
+     album, then the six names on the right, each card in turn the one in focus. */
+  recapConcepts() {
+    return [
+      { id: 'recall', line: true, text: "Let's recall what we learnt today." },
+      { id: 'polygon', label: 'Polygon', text: 'A closed figure made of only straight line segments is called a polygon.', visual: { draw: true } },
+      { id: 'sides', label: 'Sides', text: 'These line segments are the sides of the polygon.', visual: {} },
+      { id: 'vertex', label: 'Vertex', text: 'The point where two sides meet is called a vertex.', visual: { at: 0 } },
+      { id: 'angle', label: 'Angle', text: 'When two sides meet, they also form an angle.', visual: { at: 0 } },
+      { id: 'names', line: true, text: 'Polygons have different names based on their number of sides.' },
+      { id: 'triangle', label: 'Triangle', album: 1, text: 'A polygon with 3 sides is called a triangle.', visual: { n: 3, count: true } },
+      { id: 'quad', label: 'Quadrilateral', album: 1, text: 'A polygon with 4 sides is called a quadrilateral.', visual: { n: 4, count: true } },
+      { id: 'pentagon', label: 'Pentagon', album: 1, text: 'A polygon with 5 sides is called a pentagon.', visual: { n: 5, count: true } },
+      { id: 'hexagon', label: 'Hexagon', album: 1, text: 'A polygon with 6 sides is called a hexagon.', visual: { n: 6, count: true } },
+      { id: 'heptagon', label: 'Heptagon', album: 1, text: 'A polygon with 7 sides is called a heptagon.', visual: { n: 7, count: true } },
+      { id: 'octagon', label: 'Octagon', album: 1, text: 'A polygon with 8 sides is called an octagon.', visual: { n: 8, count: true } }
+    ];
   }
+  /* The lesson underneath is locked while the recap plays; its Next goes on into the quizzes. */
+  startRecap() {
+    const P = window.PolygonRecap, gen = this.gen;
+    this.clearNudge();
+    this._voiceLocked = true;
+    this.setState({ storyDialogue: false, storyControls: false, interactive: false, speaking: false });
+    const onward = () => {
+      if (gen !== this.gen || this._gone) return;
+      this._voiceLocked = false;
+      this.setState({ interactive: true }, () => this.advance());
+    };
+    if (!P) { this.later(onward, 400); return; }
+    P.play({
+      host: () => this.recapRef.current,
+      concepts: this.recapConcepts(),
+      // the lesson's own rule for which words of a line are its key words, and their inks
+      inkOf: (w, text) => { const k = conceptKey(w); return k && this.learningKeywords(text).includes(k) ? highlightInk(k) : null; },
+      sfx: kind => this.sfx(kind)
+    }).then(ok => { if (ok) onward(); });
+  }
+  /* The recap draws itself over the stage: of the lesson's own, only its background shows.
+     Its bubble is hidden but kept in the layout (not display: none), so the next screen's line
+     is measured in a box that is really there and comes up at its own size. */
+  viewRecap(V) {
+    V.signStyle = Object.assign({}, V.signStyle, { visibility: 'hidden' });
+    V.cards = [];
+    V.targets = [];
+    V.callouts = [];
+    V.leaders = [];
+  }
+
+
 
 
   /* ----- multi select ----- */
@@ -5636,64 +5593,71 @@ class Component extends DCLogic {
   };
   /* ?bridge=0 leaves the Help Momo scene out (src/bridge/bridge-story.js). */
   bridgeOn() { return typeof window !== 'undefined' && !!(window.BridgeStory && window.BridgeStory.enabled); }
-  /* THE SUMMARY, the lesson's one last screen (src/lesson/summary.js, after the Part 1 Summary
-     Kit). It is handed what this lesson taught, in the order it taught it, each idea in the
-     lesson's own words with its own recording, and then Swiftee's line back to Momo; its Next
-     goes on to the game's cover (startPart2), or without a game, Play again starts the lesson
-     over. The lesson underneath is locked while it plays, and leaving the screen (runStep)
-     takes the summary away. */
-  summaryConcepts() {
-    return [
-      { id: 'closed', label: 'Closed', text: 'No gaps in its boundary. This shape is closed.', visual: { draw: true } },
-      { id: 'polygon', label: 'Polygon', text: 'A closed figure made of only straight line segments is called a polygon.', visual: {} },
-      { id: 'sides', label: 'Sides', text: 'These line segments are the sides of the polygon.', visual: {} },
-      { id: 'vertex', label: 'Vertex', text: 'The point where two sides meet is called a vertex.', visual: { at: 0 } },
-      { id: 'angle', label: 'Angle', text: 'When two sides meet, they also form an angle.', visual: { at: 0 } },
-      { id: 'still5', label: '5 sides', text: 'Both polygons still have 5 sides.', visual: { move: [1, 1.34, -0.58], hold: 500 } },
-      { id: 'names', label: '3 to 8 sides', text: 'So the number of sides gives us a good way to name polygons.', visual: { hold: 700 } }
-    ];
+  /* THE LESSON ENDS ON ONE LINE, and the game starts by itself. After the last quiz Swiftee
+     says her line back to Momo, word by word with her voice; nothing takes a tap while she
+     does. Once it is said she gives a small happy beat, the line stays up a moment to be
+     read, and then the screen goes to the game's night blue and the run begins (startPart2):
+     no Next, no Play. Its steps are kept as endPhase, in order:
+       LESSON_COMPLETE      the last quiz is done and this screen has opened
+       MOMO_READY_MESSAGE   her line, locked
+       TRANSITION_TO_GAME   the hand-over to the game (RunnerStage takes it from there)
+     Without the game (?game=0, a review flag) the screen ends on Play again instead. The
+     game has been loading, invisibly, since the screen opened. */
+  finishLesson() {
+    const s = this.step(), gen = this.gen, game = !!(window.RunnerStage && window.RunnerStage.enabled);
+    if (game) window.RunnerStage.preload();
+    this.setState({ endPhase: 'LESSON_COMPLETE', interactive: false });
+    const B = window.BridgeStory;
+    if (game && B && B.enabled && B.ending) {
+      /* Back at the broken path: the line is said in the Help Momo scene, with Momo at the
+         edge and Swiftee beside him (src/bridge/bridge-story.js, runEnding), and the game
+         comes up over it. Nothing of the lesson's own shows meanwhile. */
+      this._voiceLocked = true;
+      this.setState({ endPhase: 'MOMO_READY_MESSAGE', storyDialogue: false, speaking: false });
+      B.ending({ text: s.narr }).then(() => {
+        if (gen !== this.gen || this.step().sc !== 'END') { B.close(); return; }
+        this._voiceLocked = false;
+        this.setState({ endPhase: 'TRANSITION_TO_GAME' });
+        this.startPart2().then(() => B.close(), () => B.close());
+      });
+      return;
+    }
+    this.setState({ endPhase: 'MOMO_READY_MESSAGE' });
+    this.narrate(s.narr, { then: () => {
+      if (gen !== this.gen || this.step().sc !== 'END') return;
+      this.guide.onCorrectAnswer();
+      this.setState({ interactive: false });
+      this.later(() => {
+        if (gen !== this.gen || this.step().sc !== 'END') return;
+        if (game) { this.setState({ endPhase: 'TRANSITION_TO_GAME' }); this.startPart2(); }
+        else this.setState({ endReady: true, interactive: true });
+      }, END_READ);
+    } });
   }
-  startSummary() {
-    const P = window.PolygonSummary, part2 = !!(window.RunnerStage && window.RunnerStage.enabled);
-    // the runner game loads now, invisibly, so its cover is ready when Next is pressed
-    if (part2) window.RunnerStage.preload();
-    this.clearNudge();
-    this._voiceLocked = true;
-    this.setState({ storyDialogue: false, storyControls: false, interactive: false, speaking: false });
-    const gen = this.gen, s = this.step();
-    const onward = () => {
-      if (gen !== this.gen || this._gone) return;
-      this._voiceLocked = false;
-      if (part2) this.startPart2();
-      else this.setState({ interactive: true }, () => this.restart());
-    };
-    if (!P) { this.later(onward, 400); return; }
-    P.play({
-      host: () => this.summaryRef.current,
-      concepts: this.summaryConcepts(),
-      done: { text: s.done },
-      finish: part2 ? 'Next' : 'Play again',
-      // the lesson's own rule for which words of a line are its key words, and their inks
-      inkOf: (w, text) => { const k = conceptKey(w); return k && this.learningKeywords(text).includes(k) ? highlightInk(k) : null; },
-      sfx: kind => this.sfx(kind)
-    }).then(ok => { if (ok) onward(); });
-  }
-  /* The summary's Next: the runner game's cover (src/runner/runner-stage.js) takes the screen. The
-     lesson's own voice stops and its controls lock; it stays mounted underneath, hidden by the stage. */
+  /* The hand-over: the runner game (src/runner/runner-stage.js) takes the screen and starts its
+     run, once. The lesson's own voice stops and its controls lock; it stays mounted underneath,
+     hidden by the stage. */
   startPart2 = () => {
-    if (this._toPart2) return;
+    if (this._toPart2) return Promise.resolve(false);
     this._toPart2 = true;
     this.clearNudge();
     if (this._stopRecordedVoice) this._stopRecordedVoice();
     try { window.speechSynthesis.cancel(); } catch (e) {}
     this.setState({ interactive: false });
-    window.RunnerStage.start();
+    return window.RunnerStage.start();
   };
-  /* The summary draws itself over the stage (src/lesson/summary.js): nothing of the lesson's own shows on it. */
+  /* The end: nothing on the board but Swiftee and her line. Only without the game is there
+     anything to press: the kit's gold Play again. */
   viewEnd(V) {
-    V.signStyle = { display: 'none' };
     V.cards = [];
     V.targets = [];
+    if (!this.state.endReady) return;
+    V.showCheck = true;
+    V.checkLabel = 'Play again';
+    V.check = this.restart;
+    V.checkDisabled = this.locked();
+    V.checkPill = 'primary';
+    V.checkStyle = this.pillBtn();
   }
 }
 

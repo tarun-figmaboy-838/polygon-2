@@ -12,7 +12,7 @@ Run them from the project folder. Browser checks ask for Google Chrome; `run-all
 
 Two kinds of check live here:
 
-- **Browser checks** (Playwright) serve the project and drive the real page. They open it with `?intro=0` or `?preview=1`, so the story and the blizzard don't run in front of them.
+- **Browser checks** (Playwright) serve the project and drive the real page. They open it with `?intro=0` or `?preview=1`, so the story and the Help Momo scene don't run in front of them.
 - **Node checks** load the lesson's script directly and exercise its logic without a browser: timing, voice cues, sounds, geometry, and the like.
 
 | Check | Covers |
@@ -23,7 +23,6 @@ Two kinds of check live here:
 | `check-audio-recovery.cjs`, `check-voice-gate.cjs`, `check-recorded-voice.cjs`, `check-word-animation.cjs`, `check-word-browser.cjs`, `check-choice-voice-cues.cjs` | Narration: recordings, word timing, gating, recovery |
 | `check-guide-sync.cjs`, `check-idle-feedback.cjs` | Swiftee's expressions and idle behaviour |
 | `check-sfx.cjs`, `check-sfx-channel.cjs` | Sound effects |
-| `check-ice-intro.cjs` | The blizzard intro and its handoff to screen 1 |
 | `check-background-transition.cjs`, `check-canvas-scaling.cjs`, `check-scene-aspect.cjs`, `check-dialogue-frame.cjs`, `check-dialogue-tail.cjs` | Layout at many screen sizes and zoom levels |
 | `check-dialogue-fit.cjs` | Swiftee's bubble on every screen and for every feedback line, with her real voice: the fewest lines its strip allows, no lone last word, nothing covered or clipped, steady while the words appear, and through a resize |
 | All other `check-*.cjs` | Individual screens and interactions (open/closed, boundaries, labels, counting, morphing, sorting) |

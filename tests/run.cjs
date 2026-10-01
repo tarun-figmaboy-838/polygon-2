@@ -15,8 +15,8 @@ const suites = [
   ['The Frozen Pass hand-off', 'runner.test.cjs', {}],
   ['Help Momo and the ending', 'bridge.test.cjs', {}],
   ['Swiftee loading', 'swiftee.test.cjs', {}],
-  ['The summary', 'summary.test.cjs', {}]
-].filter(s => !(quick && /^(flows|runner|bridge|swiftee|summary)\.test\.cjs$/.test(s[1])));
+  ['The recap', 'recap.test.cjs', {}],
+].filter(s => !(quick && /^(flows|runner|bridge|swiftee|recap)\.test\.cjs$/.test(s[1])));
 
 const summary = [];
 for (const [name, file, env] of suites) {
