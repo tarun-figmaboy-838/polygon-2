@@ -5,8 +5,8 @@
    It is presented the Part 1 Summary Kit's way (polygon-part-1.vercel.app/
    part1-swiftee-lesson/previews/summary-kit.html): its board, its card (the kit's own
    panel.webp), its layout numbers, its states and timings, its word cues, its album of
-   collected cards and its final gathering, its speech bubble (Fredoka, every word faint
-   until it is said, the key words orange), its name plates and its blue Next pill. It is
+   collected cards and its final gathering, its speech bubble (Fredoka, each word appearing
+   as it is said, the key words orange), its name plates and its blue Next pill. It is
    drawn over the lesson's own background. What it says and shows is this lesson's own:
    its recorded lines and their word times (src/lesson/recordings.js), its terms, its
    Swiftee sheets (window.SWIFTEE). The lesson hands the ideas in (index.html:
@@ -379,7 +379,7 @@
     run.say.el.classList.remove('show');
     if (run.audio) { try { run.audio.pause(); } catch (e) {} run.audio = null; }
   }
-  /* the line in the bubble, every word in its place and faint until it is said (the kit's way);
+  /* the line in the bubble, every word in its place (so the bubble has its size) but unseen until it is said;
      the lesson's key words in the kit's orange */
   function layout(run, text, where) {
     var b = run.say, words = text.split(/\s+/).filter(Boolean);
@@ -538,6 +538,12 @@
       setState(run, 'NEXT_CONCEPT', id);
     };
     c._tag.setAttribute('opacity', 0);
+    /* a name's side numbers were for its explanation: they go as the card is collected, so the
+       album holds the shapes clean */
+    (c._counts || []).forEach(function (n) {
+      if (now || reduced() || !n.animate) { n.setAttribute('opacity', 0); return; }
+      try { var a = n.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260, easing: 'ease-out', fill: 'forwards' }); a.onfinish = function () { n.setAttribute('opacity', 0); a.cancel(); }; } catch (e) { n.setAttribute('opacity', 0); }
+    });
     if (now || reduced()) { land(); return Promise.resolve(true); }
     sfx(run, 'swap');
     var g0 = run.gen;

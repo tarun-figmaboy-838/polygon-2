@@ -32,7 +32,7 @@
   transition: transform 320ms cubic-bezier(.22, 1, .36, 1), opacity 200ms ease;
 }
 
-/* HER WORDS, in the kit's bubble, over her head; every word faint until it is said */
+/* HER WORDS, in the kit's bubble, over her head; each word appears as it is said */
 .lsum .lsum-bubble {
   position: absolute; z-index: 4; left: 50%; pointer-events: none;
   transform: translateX(-50%) translateY(12px) scale(.96);
@@ -48,7 +48,9 @@
   background: #FFFBEA; border: 8px solid #169F99; border-top: 0; border-left: 0; transform: rotate(45deg);
   border-bottom-right-radius: 8px;
 }
-.lsum .lsum-bubble .w { opacity: .18; transition: opacity 120ms linear; }
+/* a word is not on show until it is said: it holds its place (so the bubble keeps its size and
+   nothing moves) but is invisible, and comes in as Swiftee says it */
+.lsum .lsum-bubble .w { opacity: 0; transition: opacity 140ms linear; }
 .lsum .lsum-bubble .w.in { opacity: 1; }
 .lsum .lsum-bubble .w.key { color: #f07b12; }
 
