@@ -32,8 +32,8 @@
      `nav` says what it navigates:
        items()   [{ label, detail }]           current()  the index on screen
        go(i)     show item i                   ready()    whether it can navigate yet
-       hideNext() optional, true hides Next    word, title, name, list, steps, close,
-                                               search, searchLabel: its words
+       word, title, name, list, steps, close,  its words
+       search, searchLabel
      Returns { host, sync, dispose }: put host on the page, call sync() when the item
      on screen changes (the buttons and the menu follow). */
   function panel(nav) {
@@ -78,7 +78,6 @@
       const ready = nav.ready(), k = nav.current(), n = ready ? nav.items().length : 0;
       $('back').disabled = !ready || k <= 0;
       $('next').disabled = !ready || k >= n - 1;
-      $('next').hidden = !!(ready && nav.hideNext && nav.hideNext());
       if (k === last) return;
       last = k;
       toggle.textContent = `${nav.word} · ${k + 1}`;
@@ -108,7 +107,6 @@
         items: () => game.steps().map(step => ({ label: step.label, detail: step.narr })),
         current: () => game.state.k,
         ready: () => !!game.state.ready,
-        hideNext: () => game.step().q === 'recall',
         go: navigate
       });
       function navigate(index) {

@@ -6,13 +6,6 @@
    the kit's own sizes, which are for its 1000-wide board, are doubled (x 1.98) and
    the lesson's scaling does the rest.
    ========================================================================= */
-@font-face {
-  font-family: 'Fredoka';
-  font-style: normal;
-  font-weight: 300 700;
-  font-display: swap;
-  src: url('../assets/fonts/fredoka-latin.woff2') format('woff2');
-}
 .lsum {
   position: absolute;
   inset: 0;

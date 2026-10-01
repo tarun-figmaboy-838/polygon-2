@@ -514,7 +514,7 @@ const STAGE = { w: 1980, h: 1980 * 9 / 16 };
 /* Reserve the left rock for the guide; all activity layouts share the right surface. */
 const BOARD = { x: 378, y: 102, w: 1594, h: 886 };
 const OPENING_BOARD = { x:816, y:116, w:992, h:834 };
-/* The naming and recall screens share one figure band and one label gap, so the
+/* The naming screens share one figure band and one label gap, so the
    name always sits clear of the shape and inside the board however much of its
    box a given polygon happens to fill. */
 const NAME_FIGURE = { y: 128, h: 660 };
@@ -977,9 +977,6 @@ class Component extends DCLogic {
   recapRef = React.createRef();
   state = {
     ready: false, k: 0, narr: '', speaking: false, voiceError: '', muted: false, scale: 1,
-    /* The scenery is one picture that ships with the page; nothing has to load
-       before it can be shown. */
-    boundaryBackgroundReady: true,
     sel: [], dd: [null, null, null, null], ddOpen: -1, ddWrong: [false, false, false, false],
     cnt: [4, 4], attempts: 0, wrong: null, ok: null, ocReveal: null, ocRetire: false, ocWords: { open:false, closed:false }, nudge: null,
     guideHidden: true, interactive: false,
@@ -988,7 +985,7 @@ class Component extends DCLogic {
     hoverK: null, pressK: null, fx: [],
     userPts: null, dragged: false, reveal: false, nums: 0, hlKind: null,
     chip: null, placed: {}, badPlace: null, sortAt: {}, pickedFig: null, justPlaced: null, tick: null, united: false, say: '',
-    n: 3, morph: null, traceKey: 0, tracing: false, drawing: false, drawn: false, penAt: null,
+    morph: null, traceKey: 0, tracing: false, drawing: false, drawn: false, penAt: null,
     zoomed: false, showHand: false, checked: false, phase: ''
   };
 
@@ -1720,10 +1717,6 @@ class Component extends DCLogic {
       hexagon: C.green, heptagon: C.pink, octagon: C.teal,
       cross: C.teal, crescent: C.purple, leaf: C.blue, starClosed: C.blue
     }[name] || C.blue;
-  }
-  sideColor(count) {
-    const C = this.P.C;
-    return { 3: C.purple, 4: C.orange, 5: C.blue, 6: C.green, 7: C.pink, 8: C.teal }[count] || C.blue;
   }
   sets() {
     const C = this.P.C;
@@ -2546,63 +2539,40 @@ class Component extends DCLogic {
         if (this.state.checked) return;
         const sel = this.state.sel.slice();
         const at = sel.indexOf(i);
-        if (s.check) {
-          if (s.set === 'cfu1' && !s.correct.includes(i)) {
-            const token = this._wrongTapToken = (this._wrongTapToken || 0) + 1, generation = this.gen;
-            this.setState({ wrong: i }); this.answerFeedback(false);
-            this.later(() => {
-              if (generation === this.gen && token === this._wrongTapToken) this.setState({ wrong: null });
-            }, 650);
-            return;
-          }
-          if (at >= 0) { sel.splice(at, 1); this.sfx('tap'); } else sel.push(i);
+        if (s.correct.indexOf(i) >= 0) {
+          if (at >= 0) return;
+          sel.push(i);
+          const finished = s.correct.every((c) => sel.indexOf(c) >= 0);
           this.setState({ sel: sel, wrong: null });
-          if (at < 0) {
-            const correct = s.correct.includes(i);
-            this.answerFeedback(correct, correct);
-            if (!correct) {
-              const token = this._wrongTapToken = (this._wrongTapToken || 0) + 1;
-              this.setState({wrong:i});
-              this.later(() => { if (token === this._wrongTapToken) this.setState({wrong:null}); }, 650);
-            }
+          if (finished) this.react('happy'); else { this.burstHere(); this.answerFeedback(true, true); }
+          if (finished) {
+            this.setState({ checked: true });
+            this.feedback((s.fb && s.fb.ok) || 'That is right! These are the ones.', () => this.later(this.advance, 420));
           }
         } else {
-          if (s.correct.indexOf(i) >= 0) {
-            if (at >= 0) return;
-            sel.push(i);
-            const finished = s.correct.every((c) => sel.indexOf(c) >= 0);
-            this.setState({ sel: sel, wrong: null });
-            if (finished) this.react('happy'); else { this.burstHere(); this.answerFeedback(true, true); }
-            if (finished) {
-              this.setState({ checked: true });
-              this.feedback((s.fb && s.fb.ok) || 'That is right! These are the ones.', () => this.later(this.advance, 420));
-            }
-          } else {
-            /* Bump the token on every wrong tap, not just on the branch that
-               has a Check button. The card's shake animation is named from
-               this, and a CSS animation only restarts when its name changes --
-               so without it a second wrong tap re-used the same name and the
-               card sat still, giving less feedback than the first attempt. */
-            this._wrongTapToken = (this._wrongTapToken || 0) + 1;
-            const attempts = this.state.attempts + 1;
-            this.setState({ wrong: i, attempts: attempts }); this.react('wrong');
-            /* The step's own retry line: this branch now serves more than one
-               question, and 'a polygon is closed' says nothing to a learner
-               who has just mis-picked a pentagon. */
-            const correction = attempts > 1 && s.fb && s.fb.two
-              ? s.fb.two : (s.fb && s.fb.one) || 'A polygon is closed, with only straight sides.';
-            this.feedback(correction, () => {
-              this.setState({ wrong: null, hoverK: null, pressK: null,
-                ...(s.sc === 'S10' ? { rejectedOptions: [...new Set([...(this.state.rejectedOptions || []), i])] } : {}),
-                /* Clearing the whole selection punishes the shapes the
-                   learner already got right: on 'select all' questions a wrong
-                   tap took away their correct quadrilaterals too and made them
-                   start over. Only the wrong tap is cleared -- and it was
-                   never added to sel in the first place, so dropping the
-                   'wrong' flag above is the whole reset. */
-                ...(s.sc === 'C1' ? { sel: [] } : {}) }, () => this.restoreQuestion());
-            });
-          }
+          /* Bump the token on every wrong tap. The card's shake animation is
+             named from this, and a CSS animation only restarts when its name
+             changes -- so without it a second wrong tap re-used the same name
+             and the card sat still, giving less feedback than the first attempt. */
+          this._wrongTapToken = (this._wrongTapToken || 0) + 1;
+          const attempts = this.state.attempts + 1;
+          this.setState({ wrong: i, attempts: attempts }); this.react('wrong');
+          /* The step's own retry line: this branch now serves more than one
+             question, and 'a polygon is closed' says nothing to a learner
+             who has just mis-picked a pentagon. */
+          const correction = attempts > 1 && s.fb && s.fb.two
+            ? s.fb.two : (s.fb && s.fb.one) || 'A polygon is closed, with only straight sides.';
+          this.feedback(correction, () => {
+            this.setState({ wrong: null, hoverK: null, pressK: null,
+              ...(s.sc === 'S10' ? { rejectedOptions: [...new Set([...(this.state.rejectedOptions || []), i])] } : {}),
+              /* Clearing the whole selection punishes the shapes the
+                 learner already got right: on 'select all' questions a wrong
+                 tap took away their correct quadrilaterals too and made them
+                 start over. Only the wrong tap is cleared -- and it was
+                 never added to sel in the first place, so dropping the
+                 'wrong' flag above is the whole reset. */
+              ...(s.sc === 'C1' ? { sel: [] } : {}) }, () => this.restoreQuestion());
+          });
         }
         return;
       }
@@ -2616,33 +2586,14 @@ class Component extends DCLogic {
     };
   }
 
-  /* ---------- multi select check ---------- */
+  /* ---------- the Check button (the counting screens) ---------- */
   check = () => {
     if (this.locked()) return;
     this.clearNudge();
     const s = this.step();
     if (s.q === 'count' || s.q === 'count2') return this.checkCount();
-    if (s.q === 'multi' && s.check) {
-      if (this.state.checked) { this.advance(); return; }
-      if (!this.state.sel.length) return;
-      const sel = this.state.sel.slice().sort().join(','), truth = s.correct.slice().sort().join(',');
-      if (sel === truth) {
-        this.setState({ checked: true, ok: 1 }); this.react('happy');
-        this.feedback(s.fb.ok, () => this.later(this.advance, 420));
-      } else {
-        const a = this.state.attempts + 1;
-        this.setState({ attempts: a, wrong: 'set' }); this.react('wrong');
-        if (a >= 2) this.coach();
-        this.feedback(a >= 2 ? s.fb.two : s.fb.one, () => { this.setState({ wrong: null }); this.restoreQuestion(); });
-      }
-      return;
-    }
     if (this.state.checked) this.advance();
   };
-  coach() {
-    this.setState({ hlKind: 'coach' });
-    this.later(() => this.setState({ hlKind: null }), 4200);
-  }
   checkCount() {
     const s = this.step();
     if (s.q === 'count') {
@@ -4181,11 +4132,6 @@ class Component extends DCLogic {
   pillBtn() {
     return { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', userSelect: 'none', cursor: 'pointer' };
   }
-  /* How wide a pill comes out: its two 45px caps, its side padding, and the label in the kit's
-     Nunito 800 at 32px (about 0.58em a character), plus the arrow on a Next. */
-  pillWidth(label, arrow) {
-    return Math.ceil(90 + 20 + String(label || '').length * 32 * 0.58 + (arrow ? 30 : 0));
-  }
   bigBtn(w, label = 'Check') {
     const width = Math.max(Math.min(w, 180), buttonMinWidth(label));
     return Object.assign(this.buttonSkin(), {
@@ -4469,14 +4415,10 @@ class Component extends DCLogic {
         ? (ph === 'done' ? 'recapFigureCue ' : 'figureCue ') + (st.boundaryPulseMs || 600) + 'ms ease-in-out '
           + (st.boundaryPulseStart == null ? 'both' : '-' + (st.boundaryPulseElapsed || 0) + 'ms both paused')
         : null;
-      /* One figure is answered at a time. The others wait in blue: still fully
-         drawn, because the learner is comparing boundaries and hiding them
-         would remove what is being compared, but clearly not the one in hand. */
-      const mine = straightIdx.includes(i) ? 'Straight' : 'Curved';
-      const settled = ph === 'classify' && st.dd && st.dd[i] === mine;
-      const waitingTurn = ph === 'classify' && !!st.storyControls && !settled && i !== (st.ddActive || 0);
-      /* Answered and waiting figures keep their own colours: they are dimmed (the card's
-         opacity, in viewCompare) rather than turned grey, so each still reads as itself. */
+      /* One figure is answered at a time. Answered and waiting figures stay fully drawn,
+         because the learner is comparing boundaries, and keep their own colours: they are
+         dimmed (the card's opacity, in viewCompare) rather than turned grey, so each still
+         reads as itself but clearly not the one in hand. */
       const figStroke = it[1];
       const figFill = this.figFill(name, it[1], it[2]);
       const litBounds = !boundary && ph === 'bound';
@@ -5403,21 +5345,14 @@ class Component extends DCLogic {
     const w = n >= 6 ? 236 : (n === 5 ? 272 : 300), gap = n >= 6 ? 26 : 38;
     const total = n * w + (n - 1) * gap;
     const x0 = (SAFE.w - total) / 2, y = 130;
-    const done = s.correct.every((c) => st.sel.indexOf(c) >= 0) && st.sel.length === s.correct.length;
     V.cards = S.map((it, i) => {
       const F = this.fig(it[0]);
       const sel = st.sel.indexOf(i) >= 0;
       const rejected = s.sc === 'S10' && (st.rejectedOptions || []).includes(i);
       const figureColor = rejected ? '#7fb2d9' : it[1];
       let state = null;
-      if (st.wrong === i || (st.wrong === 'set' && sel && !s.correct.includes(i))) state = 'bad';
-      else if (sel && !s.check) state = 'ok';
-      else if (sel && s.check) state = st.checked || (pentagonChoice && s.correct.includes(i)) ? 'ok' : 'sel';
-      // Screen 45 is a selection activity: preserve the artwork and reserve
-      // the green underglow for correct choices; never add a yellow trace.
-      const selectionTint = pentagonChoice && state === 'sel'
-          ? Object.assign({}, this.cardStyleFor(null), {borderColor:ICE}) : undefined;
-      const coach = !pentagonChoice && st.hlKind === 'coach' && sel && s.correct.indexOf(i) < 0;
+      if (st.wrong === i) state = 'bad';
+      else if (sel) state = 'ok';
       const tileSize = discovery ? grid.tile : w;
       /* Four options as a square block in the right lane, beside Swiftee. A
          2 x 2 reads as one group at a glance; the 3 + 2 it replaced left a
@@ -5426,11 +5361,10 @@ class Component extends DCLogic {
       const tileY = discovery ? grid.y + Math.floor(i / 2) * (grid.tile + grid.gap) : y;
       const card = this.buildCard({
         key: it[0], x: tileX, y: tileY, w: tileSize, h: tileSize, vb: F.vb, d: this.figD(it[0]),
-        extra: F.extra || '', stroke: figureColor, sw: 20, fill: this.figFill(it[0], figureColor, rejected ? undefined : it[2]), state: state, tint: selectionTint,
-        badge: discovery ? '' : String.fromCharCode(65 + i), click: rejected ? null : this.tapCard(i), tick: discovery && sel && (!s.check || st.checked),
+        extra: F.extra || '', stroke: figureColor, sw: 20, fill: this.figFill(it[0], figureColor, rejected ? undefined : it[2]), state: state,
+        badge: discovery ? '' : String.fromCharCode(65 + i), click: rejected ? null : this.tapCard(i), tick: discovery && sel,
         nudge: !st.checked && i === s.correct.find(index => !st.sel.includes(index)),
-        traceD: F.traceD || this.figD(it[0]), traceStyle: coach ? this.traceStyleFor(true, 1500) : { opacity: 0 },
-        anim: state === 'bad' ? ((s.set === 'cfu1' || s.sc === 'S18' ? (this._wrongTapToken % 2 ? 'wrongTapA' : 'wrongTapB') : 'wig') + ' 420ms ease-in-out both') : (coach ? 'pop 900ms ease-in-out infinite' : 'none')
+        anim: state === 'bad' ? ((s.set === 'cfu1' || s.sc === 'S18' ? (this._wrongTapToken % 2 ? 'wrongTapA' : 'wrongTapB') : 'wig') + ' 420ms ease-in-out both') : 'none'
       });
       if (rejected) {
         card.disabled = true;
@@ -5455,16 +5389,6 @@ class Component extends DCLogic {
       }
       return card;
     });
-    if (s.check) {
-      V.showCheck = !st.checked;
-      V.checkDisabled = this.locked() || (!st.checked && !st.sel.length);
-      if (V.checkDisabled) V.check = null;
-      V.nudgeCheck = st.checked || done ? '1' : '';
-      V.checkLabel = 'Check';
-      V.checkStyle = this.bigBtn(250);
-
-      if (V.checkDisabled) Object.assign(V.checkStyle, {cursor:'default',transform:'none'});
-    }
   }
 
   /* ----- sort ----- */
@@ -5601,8 +5525,6 @@ class Component extends DCLogic {
       this.runStep(0, false);
     });
   };
-  /* ?bridge=0 leaves the Help Momo scene out (src/bridge/bridge-story.js). */
-  bridgeOn() { return typeof window !== 'undefined' && !!(window.BridgeStory && window.BridgeStory.enabled); }
   /* THE LESSON ENDS ON ONE LINE, and the game starts by itself. After the last quiz Swiftee
      says her line back to Momo, word by word with her voice; nothing takes a tap while she
      does. Once it is said she gives a small happy beat, the line stays up a moment to be

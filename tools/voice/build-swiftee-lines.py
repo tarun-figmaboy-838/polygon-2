@@ -12,7 +12,7 @@ Each line becomes one lesson recording, as the lesson's studio takes are:
 assets/audio/lesson/<file>.ogg + .mp3, and a row with its duration and word starts
 in src/lesson/recordings.js (added, or replaced when the text is already there).
 To use a studio take instead, put its .ogg and .mp3 under the same name and give
-its row the take's own word starts (tools/voice/extract-word-timings.cjs).
+its row the take's own word starts (docs/voice/cue-map.json, tools/voice/cut-recordings.py).
 
 Usage (macOS only, from the project folder, after `npm install`):
     npm run build:swiftee-lines              every line below

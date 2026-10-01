@@ -29,7 +29,6 @@ const server = http.createServer((req,res) => {
     },{k,pauseBackground});
     const source = ()=>page.locator('.lesson-background').getAttribute('src');
     await boot(page);
-    await page.waitForFunction(()=>__poly.state.boundaryBackgroundReady);
     // Both horizontal edges must follow the same interpolation, entering and leaving.
     const boardBox=()=>page.locator('.story-board').evaluate(e=>{const r=e.getBoundingClientRect();return {left:r.left,right:r.right,width:r.width};});
     await show(32);await page.waitForTimeout(1000);const sideBoard=await boardBox();

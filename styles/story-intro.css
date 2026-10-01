@@ -8,15 +8,8 @@
    by the script as an inked SVG outline; this file styles its lettering.
    ========================================================================= */
 
-/* Fredoka is the dialogue kit's lettering for Momo and Popo; the narrator is set in
-   the lesson's Nunito. A variable file, 300-700, so the 600 the bubbles use is real. */
-@font-face {
-  font-family: 'Fredoka';
-  font-style: normal;
-  font-weight: 300 700;
-  font-display: swap;
-  src: url('../assets/fonts/fredoka-latin.woff2') format('woff2');
-}
+/* Fredoka (styles/fonts.css) is the dialogue kit's lettering for Momo and Popo; the
+   narrator is set in the lesson's Nunito. */
 
 #story-intro {
   --story-dark: #0b1c33;          /* the dark the Help Momo scene and the lesson come up out of */

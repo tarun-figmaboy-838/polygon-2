@@ -318,11 +318,6 @@
     });
     return g._counts;
   }
-  function setVerts(g, v) {
-    g._verts = v;
-    g._outline.setAttribute('d', pathOf(v));
-  }
-
   /* the figure arrives: drawn round (the boundary with no gap) or faded in. Returns its length. */
   function reveal(run, g) {
     var V = g._c.visual || {}, out = g._outline, t = 0;

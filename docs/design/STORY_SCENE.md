@@ -102,5 +102,5 @@ and counters; `playwright-review.cjs` checks white text and label bounds on all 
   and the full playthrough (`playwright-game.cjs`) cover the scene across all 48 screens.
 
 Runtime scripts and fonts ship in `assets/vendor/` and `assets/fonts/`. The opening
-blizzard uses `src/intro/ice-intro.js` and `styles/ice-intro.css`; the bird entrance starts
-after its gate resolves.
+(the story, then the Help Momo scene) is sequenced by `src/intro/opening.js`; the bird
+entrance starts after its gate resolves.

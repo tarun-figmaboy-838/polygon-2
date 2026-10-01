@@ -41,7 +41,6 @@ function answered(k, state) {
   return { v, card: v.cards[v.cards.length - 1] };
 }
 /* The dashed span is the only highlight that is not the figure's own outline. */
-const spanOf = card => card.hl.find(h => /^M[-\d. ]+L[-\d. ]+$/.test(h.d));
 const sweepOf = card => card.hl.find(h => h.style && /sealSweep/.test(h.style.animation || ''));
 
 /* ---- the loose ends are read from the figure, and agree with the data ---- */

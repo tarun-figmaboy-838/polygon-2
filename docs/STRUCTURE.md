@@ -34,7 +34,7 @@ The displayed screen number is the position in `steps()`, starting at 1. Interna
 | The recap, screen 41 before the quizzes (presented the Part 1 Summary Kit's way): what it says, its look, its states and timing | `index.html`: `recapConcepts`, `startRecap`; `src/lesson/recap.js` (states at the top), `styles/recap.css`, `assets/ui/panel.webp` |
 | The end: the last line, then the game by itself | `index.html`: `finishLesson`, `startPart2`; `src/runner/runner-stage.js`; `game/js/main.js` (`?cover=0`, `window.iceAgeBegin`) |
 | The hand-off to the runner game: when it loads, the curtain, its URL flags | `src/runner/runner-stage.js`, `styles/runner-stage.css` |
-| The gold Play and the pill buttons (Next, Help Momo, Play again) | `styles/buttons-kit.css`, `src/fx/play-fx.js`, `assets/ui/`; in the lesson `pillBtn` / `pillWidth` in `index.html` |
+| The gold Play and the pill buttons (Next, Help Momo, Play again) | `styles/buttons-kit.css`, `src/fx/play-fx.js`, `assets/ui/`; in the lesson `pillBtn` in `index.html` |
 | Momo's jump in the runner game (the 24-cell sheet) | `game/js/engine.js`: `sheets.jump`, `frames.jump`, the JUMP_START / JUMP_AIR / LAND cases in `PlayerController.draw` |
 | The runner game itself: its seven crossings, tutorial, art and sound | `game/js/engine.js`: `CFG.levelOne.phases`; `game/js/tutorial.js`; see [game/RUNNER.md](game/RUNNER.md) |
 
