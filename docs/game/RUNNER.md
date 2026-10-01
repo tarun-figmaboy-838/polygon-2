@@ -1196,11 +1196,14 @@ the eye goes to the puzzle rather than to a looping character.
 
 ### The voice
 
-The owner recorded every line the learner is shown as ONE take (39 s, `assets/audio/vo-lines.mp3`),
-in the order of docs/VO-SCRIPT.md. One file is one download and one decode, so `CFG.vo.lines` names
-a WINDOW per line — [start, length] in seconds, measured off the recording's own energy envelope
-(the gaps between lines run 0.46-0.67 s; a two-sentence line has a shorter internal pause and is
-kept whole), each padded 60 ms before the attack and 120 ms after the tail. `audio.say(id)` plays
+The owner recorded every line the learner is shown as ONE take (30 s, `assets/audio/vo-lines.mp3`,
+delivered on 2026-10-01 and used as it came), in the order of docs/VO-SCRIPT.md. One file is one
+download and one decode, so `CFG.vo.lines` names a WINDOW per line — [start, length] in seconds and
+each word's start, measured off the recording's own pauses (the gaps between lines run 0.30-0.55 s;
+a two-sentence line has a shorter internal pause and is kept whole), each padded 60 ms before the
+attack and 120 ms after the tail, never past halfway into the gap. In the lesson's repository the
+take is `assets/audio/source/frozen-rush-voice.mp3`, its lines are in `docs/voice/cue-map.json`, and
+`tools/voice/cut-recordings.py` writes the windows here and into the bundle. `audio.say(id)` plays
 one and returns its length; one line at a time (a new line stops the one before it), the music
 ducks while it speaks, and nothing blocks: no file, no context or sound off and it returns 0 and
 the game is exactly as it was.

@@ -1,7 +1,7 @@
 /* ============================================================================
    HELP MOMO — the Broken Path, between the story and the lesson.
 
-   The Momo + Polo story ends with Polo's "Momo, keep going!" and fades to its dark
+   The Momo + Popo story ends with Popo's "Momo, keep going!" and fades to its dark
    (src/story/story-intro.js). This scene comes up out of that dark, set in the Part 2
    game's own world and drawn from its own art (game/assets), placed the way
    game/js/engine.js places it:
@@ -11,7 +11,7 @@
      down at the drop, trembles a little and settles. Swiftee flies in on a
      curve, slows, and lands between him and the edge. She looks at the gap,
      looks back at Momo, and then speaks in her own Part 1 dialogue box, word by
-     word with the voice: the two lines Part 2 has recorded for this moment, "Oh
+     word with her voice: the two lines Part 2's tutorial also says at this moment, "Oh
      no! The path is broken." and "Help Momo cross the Frozen Pass!", and then the
      line that turns it into the lesson, "But for that first you need to learn
      about polygons." It stays up to be read, and then Next appears.
@@ -44,11 +44,11 @@
    not meant for Next, and Next does not exist on screen until NEXT_ENABLED. A
    tap cannot skip Swiftee's entrance, start a line twice or press Next early.
 
-   THE VOICE. The first two lines are windows in the game's one recorded take
-   (game/assets/audio/vo-lines.*), with the word times the game itself uses
-   (CFG.vo.lines in game/js/engine.js; tests/bridge.test.cjs holds that the two
-   copies agree). The third is a lesson recording (src/lesson/recordings.js), with its
-   own word times. They play through the lesson's own AudioContext, which the tap on
+   THE VOICE is Swiftee's, all three lines: her recorded takes of the first two
+   (assets/audio/bridge/, cut from her delivered recording by tools/voice/cut-recordings.py)
+   and the lesson recording of the third, each with its own word times, all three found in
+   the lesson's catalogue (src/lesson/recordings.js) by their words. The game's tutorial
+   says the first two again in the game's own voice; this scene does not play that take. They play through the lesson's own AudioContext, which the tap on
    the story's Play has already unlocked, so the scene speaks without asking for another
    tap. Where there is no sound (no context, blocked autoplay, a failed download), the
    words still arrive on the same clock, silently, and the scene carries on. A story
@@ -126,20 +126,21 @@
   var FLY_FEET = 0.76;                    // where her feet sit in a flight frame (standing: SWIFTEE.baseline)
   var HEAD = 0.1;                         // the top of her head in her cell
 
-  /* The two lines, and the window each takes out of the game's recorded take. The
-     numbers are CFG.vo.lines['tut-5-broken'] and ['tut-2-goal'] in game/js/engine.js:
-     [start, length] in seconds and each word's start inside the window. */
+  /* Her three lines. All three are Swiftee's own recordings, in the lesson's catalogue
+     (src/lesson/recordings.js): the first two are her takes of the Broken Path lines
+     (assets/audio/bridge/), the third is a lesson recording. So each line's take, its
+     length and its word times are that recording's (see lessonTake); `dur` is only the
+     length the words keep without one. The ids are the game's, whose tutorial says the
+     same two lines in its own voice. */
   var LINES = [
-    { id: 'tut-5-broken', text: 'Oh no! The path is broken.', at: 11.23, dur: 2.86,
-      words: [0.06, 0.34, 1.13, 1.40, 1.86, 2.46], focus: { 'broken.': 1 } },
-    { id: 'tut-2-goal', text: 'Help Momo cross the Frozen Pass!', at: 4.28, dur: 2.95,
-      words: [0.07, 0.33, 0.95, 1.40, 1.65, 2.30], focus: { 'Frozen': 1, 'Pass!': 1 } },
-    /* The line into the lesson: a lesson recording, so its take, its length and its word
-       times are that recording's (see lessonTake). */
+    { id: 'tut-5-broken', text: 'Oh no! The path is broken.', lesson: true,
+      at: 0, dur: 2.4, words: [], focus: { 'broken.': 1 } },
+    { id: 'tut-2-goal', text: 'Help Momo cross the Frozen Pass!', lesson: true,
+      at: 0, dur: 2.5, words: [], focus: { 'Frozen': 1, 'Pass!': 1 } },
     { id: 'learn-first', text: 'But for that first you need to learn about polygons.', lesson: true,
       at: 0, dur: 3.6, words: [], focus: { 'polygons.': 1 } }
   ];
-  /* A lesson line takes its recording from the lesson's catalogue, looked up by its words
+  /* A line takes its recording from the lesson's catalogue, looked up by its words
      exactly as the lesson looks them up. Without the catalogue the words keep an even pace
      over the line's own length, silently. */
   function lessonTake(line) {
@@ -158,7 +159,6 @@
     return line.take;
   }
   LINES.forEach(lessonTake);
-  var VO_SRC = 'assets/audio/vo-lines.mp3';
   /* THE GAME'S OWN SOUNDS (CFG.sfx in game/js/engine.js), at its gains under its 0.7 master:
      the recorded snow footsteps, cut at each footfall found in the waveform and taken in
      turn; the owner's cartoon pips for the tremble at the edge; the whoosh, pitched up
@@ -338,7 +338,6 @@
       });
       if (SW && SW.clips) BIRD_CLIPS.forEach(function (c) { if (SW.clips[c]) add('bird:' + c, SW.clips[c].image); });
       if (document.fonts && document.fonts.load) jobs.push(document.fonts.load('600 46px Fredoka').catch(noop));
-      bytes.voice = fetchBytes(gameAudioUrl(V, VO_SRC));
       LINES.forEach(function (l) {
         var take = lessonTake(l);
         if (take) bytes[l.id] = fetchBytes(window.polygonAudioSrc ? window.polygonAudioSrc(take.src) : take.src);
@@ -372,7 +371,7 @@
     /* Decode the take and the sounds with this context, once preload has started fetching
        them. decodeAudioData detaches what it is given, so each gets a copy. */
     var takes = LINES.filter(function (l) { return l.take; }).map(function (l) { return l.id; });
-    versions().then(function () { ['voice'].concat(takes, Object.keys(SFX)).forEach(function (name) {
+    versions().then(function () { takes.concat(Object.keys(SFX)).forEach(function (name) {
       if (!bytes[name]) return;
       bytes[name].then(function (ab) {
         if (!ab || !S || S.audio !== A2) return;
@@ -1394,7 +1393,7 @@
       layoutSay(line);
       S.live.textContent = line.text;
     }).then(function () {
-      var at = line.lesson ? clip(line.id, 0, line.dur, 1, 0.02) : clip('voice', line.at, line.dur, 1, 0.02);
+      var at = line.take ? clip(line.id, 0, line.dur, 1, 0.02) : null;
       var c0 = S.clock, ctx = S.audio && S.audio.ctx;
       var clock = at !== null ? function () { return ctx.currentTime - at; } : function () { return (S.clock - c0) / 1000; };
       S.speak = { line: line, clock: clock, shown: 0 };
@@ -1609,7 +1608,7 @@
         out.worldX = S.worldX;
         out.hd = !!art.hd;
         out.audio = S.audio ? S.audio.ctx.state : 'none';
-        out.voiceDecoded = !!(S.audio && S.audio.buf.voice);
+        out.voiceDecoded = !!(S.audio && LINES.every(function (l) { return !l.take || S.audio.buf[l.id]; }));
         out.decoded = S.audio ? Object.keys(S.audio.buf) : [];
         out.momo = S.pose ? { mode: S.momo.mode, sheet: S.pose.sheet, frame: S.pose.f, x: Math.round(S.pose.x) } : null;
         var b = S.bird;

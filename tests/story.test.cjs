@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* Story end-to-end: plays the Momo + Polo story like a child would (tap Play,
+/* Story end-to-end: plays the Momo + Popo story like a child would (tap Play,
    watch to the end) on several screens, and checks:
      - scenes 1-9 in order, each with its own image
      - the exact script, one line at a time, with the right speaker
@@ -35,14 +35,14 @@ const DEVICES = {
 const PICK = process.env.DEVICES ? process.env.DEVICES.split(',') : Object.keys(DEVICES);
 
 const SCRIPT = [
-  ['narrator', 'Long ago, Momo the mammoth and Polo the polar bear were best friends.'],
-  ['narrator', 'One day, Polo spotted something shiny beneath the ice.'],
+  ['narrator', 'Long ago, Momo the mammoth and Popo the polar bear were best friends.'],
+  ['narrator', 'One day, Popo spotted something shiny beneath the ice.'],
   ['polo', 'Momo, look! Something is buried here!'],
   ['momo', 'Let us pull it out!'],
   ['polo', 'Almost there! One more pull!'],
   ['momo', 'Uh-oh...'],
   ['polo', 'Run!'],
-  ['momo', 'Polo!'],
+  ['momo', 'Popo!'],
   ['polo', 'Momo, keep going! I will find another way!']
 ];
 

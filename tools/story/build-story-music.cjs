@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* Composes and renders the Momo + Polo story music.
+/* Composes and renders the Momo + Popo story music.
 
    One file, five sections, each written for a stretch of the story:
      warm     scenes 1-3   8 bars   curious music box over a soft pad

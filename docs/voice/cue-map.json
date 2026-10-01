@@ -1,0 +1,1110 @@
+{
+ "about": "Every line in the delivered voice recordings: which file it is in, where it starts and ends (seconds), and when each word starts (seconds in that file; null for a token with no letters, such as a dash). Measured from the recordings themselves: faster-whisper (medium.en) placed the words, then the waveform decided the edges, a line starting where speech resumes after a pause and ending where the next pause begins, and a word after a pause starting where the voice resumes. tools/voice/cut-recordings.py builds everything the experience plays from this map.",
+ "sources": {
+  "story-narrator": {
+   "src": "assets/audio/source/story-narrator.mp3",
+   "voice": "Narrator"
+  },
+  "story-popo": {
+   "src": "assets/audio/source/story-popo.mp3",
+   "voice": "Popo"
+  },
+  "story-momo": {
+   "src": "assets/audio/source/story-momo.mp3",
+   "voice": "Momo"
+  },
+  "swiftee-lesson-1": {
+   "src": "assets/audio/source/swiftee-lesson-1.mp3",
+   "voice": "Swiftee"
+  },
+  "swiftee-lesson-2": {
+   "src": "assets/audio/source/swiftee-lesson-2.mp3",
+   "voice": "Swiftee"
+  },
+  "frozen-rush-voice": {
+   "src": "assets/audio/source/frozen-rush-voice.mp3",
+   "voice": "Game voice"
+  }
+ },
+ "uses": {
+  "story": "the Momo + Popo story: joined into assets/audio/story/story-voice with src/story/story-voice.js",
+  "lesson": "Swiftee's lesson lines: assets/audio/lesson/<file> and its row in src/lesson/recordings.js",
+  "bridge": "Swiftee's Broken Path lines (Help Momo): assets/audio/bridge/<file>, a row in src/lesson/recordings.js",
+  "game": "Frozen Rush: the take is game/assets/audio/vo-lines, with a window per line in CFG.vo.lines (game/js/engine.js)",
+  "unused": "recorded but no longer said",
+  "skip": "duplicate material, not played"
+ },
+ "lines": [
+  {
+   "id": "S1.1",
+   "file": "story-narrator",
+   "use": "story",
+   "text": "Long ago,",
+   "start": 0.05,
+   "end": 0.89,
+   "words": [0.05, 0.32],
+   "part": "scene-1/1"
+  },
+  {
+   "id": "S1.2",
+   "file": "story-narrator",
+   "use": "story",
+   "text": "Momo the mammoth and Popo the polar bear",
+   "start": 1.24,
+   "end": 4.08,
+   "words": [1.24, 1.82, 1.94, 2.61, 2.8, 3.28, 3.44, 3.74],
+   "part": "scene-1/2"
+  },
+  {
+   "id": "S1.3",
+   "file": "story-narrator",
+   "use": "story",
+   "text": "were best friends.",
+   "start": 4.3,
+   "end": 5.6,
+   "words": [4.3, 4.5, 4.96],
+   "part": "scene-1/3"
+  },
+  {
+   "id": "S2.1",
+   "file": "story-narrator",
+   "use": "story",
+   "text": "One day,",
+   "start": 6.09,
+   "end": 6.7,
+   "words": [6.09, 6.32],
+   "part": "scene-2/1"
+  },
+  {
+   "id": "S2.2",
+   "file": "story-narrator",
+   "use": "story",
+   "text": "Popo spotted something shiny",
+   "start": 7.04,
+   "end": 8.83,
+   "words": [7.04, 7.48, 7.82, 8.2],
+   "part": "scene-2/2"
+  },
+  {
+   "id": "S2.3",
+   "file": "story-narrator",
+   "use": "story",
+   "text": "beneath the ice.",
+   "start": 8.83,
+   "end": 9.78,
+   "words": [8.83, 9.04, 9.34],
+   "part": "scene-2/3"
+  },
+  {
+   "id": "S3.1",
+   "file": "story-popo",
+   "use": "story",
+   "text": "Momo, look!",
+   "start": 0.09,
+   "end": 0.9,
+   "words": [0.09, 0.56],
+   "part": "scene-3/1"
+  },
+  {
+   "id": "S3.2",
+   "file": "story-popo",
+   "use": "story",
+   "text": "Something is buried here!",
+   "start": 1.23,
+   "end": 2.61,
+   "words": [1.23, 1.62, 1.86, 2.22],
+   "part": "scene-3/2"
+  },
+  {
+   "id": "S5.1",
+   "file": "story-popo",
+   "use": "story",
+   "text": "Almost there!",
+   "start": 3.38,
+   "end": 4.49,
+   "words": [3.38, 3.92],
+   "part": "scene-5/1"
+  },
+  {
+   "id": "S5.2",
+   "file": "story-popo",
+   "use": "story",
+   "text": "One more pull!",
+   "start": 5.09,
+   "end": 6.27,
+   "words": [5.09, 5.44, 5.87],
+   "part": "scene-5/2"
+  },
+  {
+   "id": "S7.1",
+   "file": "story-popo",
+   "use": "story",
+   "text": "Run!",
+   "start": 7.06,
+   "end": 7.64,
+   "words": [7.06],
+   "part": "scene-7/1"
+  },
+  {
+   "id": "S9.1",
+   "file": "story-popo",
+   "use": "story",
+   "text": "Momo, keep going!",
+   "start": 8.01,
+   "end": 9.41,
+   "words": [8.01, 8.67, 8.82],
+   "part": "scene-9/1"
+  },
+  {
+   "id": "S9.2",
+   "file": "story-popo",
+   "use": "story",
+   "text": "I will find another way!",
+   "start": 9.79,
+   "end": 11.48,
+   "words": [9.79, 9.94, 10.12, 10.56, 11.08],
+   "part": "scene-9/2"
+  },
+  {
+   "id": "S4.1",
+   "file": "story-momo",
+   "use": "story",
+   "text": "Let us pull it out!",
+   "start": 0.08,
+   "end": 1.1,
+   "words": [0.08, 0.28, 0.44, 0.68, 0.82],
+   "part": "scene-4/1"
+  },
+  {
+   "id": "S6.1",
+   "file": "story-momo",
+   "use": "story",
+   "text": "Uh-oh...",
+   "start": 2.66,
+   "end": 3.48,
+   "words": [2.66],
+   "part": "scene-6/1"
+  },
+  {
+   "id": "S8.1",
+   "file": "story-momo",
+   "use": "story",
+   "text": "Popo!",
+   "start": 4.23,
+   "end": 4.9,
+   "words": [4.23],
+   "part": "scene-8/1"
+  },
+  {
+   "id": "L01",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Look! A point.",
+   "start": 0.1,
+   "end": 1.67,
+   "words": [0.1, 1.14, 1.2]
+  },
+  {
+   "id": "L02",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Woah! It drew a shape.",
+   "start": 2.57,
+   "end": 5.01,
+   "words": [2.57, 4.0, 4.18, 4.46, 4.7]
+  },
+  {
+   "id": "L03",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Let's look at this shape closely.",
+   "start": 5.9,
+   "end": 7.75,
+   "words": [5.9, 6.22, 6.42, 6.6, 6.78, 7.22]
+  },
+  {
+   "id": "L04",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "There are no gaps in its boundary.",
+   "start": 8.75,
+   "end": 10.74,
+   "words": [8.75, 8.96, 9.12, 9.38, 9.8, 10.02, 10.2]
+  },
+  {
+   "id": "L05",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Is it open or closed?",
+   "start": 11.58,
+   "end": 13.63,
+   "words": [11.58, 11.72, 12.3, 12.79, 12.96]
+  },
+  {
+   "id": "L06",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "No gaps in its boundary. This shape is closed.",
+   "start": 14.8,
+   "end": 18.73,
+   "words": [14.8, 15.06, 15.44, 15.68, 15.84, 17.07, 17.32, 17.93, 18.1]
+  },
+  {
+   "id": "L07",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "There is a gap in its boundary. It is open.",
+   "start": 19.9,
+   "end": 22.82,
+   "words": [19.9, 20.1, 20.24, 20.42, 20.74, 20.88, 21.08, 22.2, 22.32, 22.68]
+  },
+  {
+   "id": "L08",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Yes! It is closed.",
+   "start": 23.84,
+   "end": 25.87,
+   "words": [23.84, 24.83, 24.94, 25.23]
+  },
+  {
+   "id": "L09",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Yes! It is open.",
+   "start": 26.42,
+   "end": 28.13,
+   "words": [26.42, 27.37, 27.52, 27.68]
+  },
+  {
+   "id": "L10",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Is this shape open or closed?",
+   "start": 29.2,
+   "end": 31.48,
+   "words": [29.2, 29.36, 29.62, 30.12, 30.42, 30.8]
+  },
+  {
+   "id": "L11",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "What about this one?",
+   "start": 32.35,
+   "end": 33.42,
+   "words": [32.35, 32.52, 32.82, 33.08]
+  },
+  {
+   "id": "L12",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "And this?",
+   "start": 33.98,
+   "end": 34.67,
+   "words": [33.98, 34.2]
+  },
+  {
+   "id": "L13",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "How about this one?",
+   "start": 35.59,
+   "end": 36.8,
+   "words": [35.59, 35.76, 36.2, 36.4]
+  },
+  {
+   "id": "L14",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "These two shapes are open...",
+   "start": 37.67,
+   "end": 39.52,
+   "words": [37.67, 37.98, 38.28, 38.7, 39.0]
+  },
+  {
+   "id": "L15",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "...and these two shapes are closed.",
+   "start": 40.22,
+   "end": 42.34,
+   "words": [40.22, 40.44, 40.7, 40.98, 41.38, 41.74]
+  },
+  {
+   "id": "L16",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Look! The boundaries of the shapes are different too.",
+   "start": 43.32,
+   "end": 46.49,
+   "words": [43.32, 44.09, 44.28, 44.7, 44.98, 45.14, 45.44, 45.68, 45.98]
+  },
+  {
+   "id": "L17",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Some are straight and some are curved.",
+   "start": 47.14,
+   "end": 49.35,
+   "words": [47.14, 47.42, 47.64, 48.25, 48.42, 48.64, 48.9]
+  },
+  {
+   "id": "L18",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Which boundaries are straight and which are curved?",
+   "start": 50.08,
+   "end": 53.09,
+   "words": [50.08, 50.3, 50.8, 51.18, 52.02, 52.18, 52.34, 52.64],
+   "unrecognised": [
+    "curved?"
+   ]
+  },
+  {
+   "id": "L19",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Look! This boundary isn't curved. It is made of straight lines.",
+   "start": 54.19,
+   "end": 58.63,
+   "words": [54.19, 54.92, 55.16, 55.64, 56.06, 57.01, 57.12, 57.32, 57.5, 57.72, 58.0]
+  },
+  {
+   "id": "L20",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Look closely. This boundary bends smoothly. It is curved.",
+   "start": 59.4,
+   "end": 64.0,
+   "words": [59.4, 59.64, 60.48, 60.78, 61.28, 61.8, 63.15, 63.26, 63.48]
+  },
+  {
+   "id": "L21",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Is the boundary straight or curved?",
+   "start": 64.71,
+   "end": 66.81,
+   "words": [64.71, 64.86, 65.08, 65.4, 66.07, 66.26]
+  },
+  {
+   "id": "L22",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "You got it! These boundaries are straight, while these are curved.",
+   "start": 67.76,
+   "end": 72.09,
+   "words": [67.76, 67.9, 68.08, 68.86, 69.16, 69.6, 69.98, 70.65, 70.84, 71.24, 71.52]
+  },
+  {
+   "id": "L23",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Tap the closed figure made with straight lines.",
+   "start": 73.15,
+   "end": 75.71,
+   "words": [73.15, 73.47, 73.64, 73.96, 74.3, 74.58, 74.84, 75.1]
+  },
+  {
+   "id": "L24",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Yes! It is closed and made of straight lines.",
+   "start": 76.43,
+   "end": 79.95,
+   "words": [76.43, 77.5, 77.62, 77.88, 78.26, 78.56, 78.8, 79.04, 79.28]
+  },
+  {
+   "id": "L25",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Not quite. Look for a figure with no gaps and no curves.",
+   "start": 80.76,
+   "end": 84.76,
+   "words": [80.76, 80.98, 82.09, 82.26, 82.46, 82.62, 82.82, 83.02, 83.34, 83.7, 83.94, 84.16]
+  },
+  {
+   "id": "L26",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "We call this a polygon.",
+   "start": 85.27,
+   "end": 87.07,
+   "words": [85.27, 85.44, 85.74, 86.3, 86.52]
+  },
+  {
+   "id": "L27",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "A closed figure made of only straight line segments is called a polygon.",
+   "start": 87.69,
+   "end": 92.12,
+   "words": [87.69, 87.82, 88.28, 88.6, 88.84, 89.06, 89.36, 89.76, 90.08, 90.5, 90.82, 91.16, 91.44]
+  },
+  {
+   "id": "L28",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Which of these figures are polygons?",
+   "start": 92.75,
+   "end": 94.57,
+   "words": [92.75, 92.92, 93.08, 93.34, 93.6, 93.84]
+  },
+  {
+   "id": "L29",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Great job! You identified all the polygons.",
+   "start": 95.84,
+   "end": 99.08,
+   "words": [95.84, 96.18, 96.86, 97.0, 97.89, 98.16, 98.38]
+  },
+  {
+   "id": "L30",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "A polygon is closed, with only straight sides.",
+   "start": 99.58,
+   "end": 102.95,
+   "words": [99.58, 99.72, 100.18, 100.44, 101.25, 101.38, 101.8, 102.24]
+  },
+  {
+   "id": "L31",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "These line segments are the sides of the polygon.",
+   "start": 103.63,
+   "end": 106.23,
+   "words": [103.63, 103.9, 104.22, 104.6, 104.86, 105.04, 105.4, 105.56, 105.74]
+  },
+  {
+   "id": "L32",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "The point where two sides meet is called a vertex.",
+   "start": 106.91,
+   "end": 109.89,
+   "words": [106.91, 107.02, 107.3, 107.54, 107.84, 108.22, 108.52, 108.82, 109.18, 109.5]
+  },
+  {
+   "id": "L33",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "When two sides meet, they also form an angle.",
+   "start": 110.96,
+   "end": 113.79,
+   "words": [110.96, 111.1, 111.44, 111.76, 112.38, 112.54, 112.84, 113.24, 113.44]
+  },
+  {
+   "id": "L34",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Label the parts of the polygon.",
+   "start": 114.56,
+   "end": 116.07,
+   "words": [114.56, 114.82, 115.04, 115.32, 115.46, 115.62]
+  },
+  {
+   "id": "L35",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Perfect! Side, vertex and angle — all labelled.",
+   "start": 116.88,
+   "end": 121.32,
+   "words": [116.88, 117.75, 118.51, 118.92, 119.42, null, 120.27, 120.64]
+  },
+  {
+   "id": "L36",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Let's count the sides of the polygon.",
+   "start": 122.13,
+   "end": 123.88,
+   "words": [122.13, 122.4, 122.6, 122.8, 123.1, 123.24, 123.4]
+  },
+  {
+   "id": "L37",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Count each side carefully and try again.",
+   "start": 124.52,
+   "end": 127.15,
+   "words": [124.52, 124.78, 125.12, 125.46, 126.27, 126.4, 126.64]
+  },
+  {
+   "id": "L38",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Correct! This polygon has five sides.",
+   "start": 128.16,
+   "end": 131.16,
+   "words": [128.16, 129.15, 129.42, 129.9, 130.37, 130.66]
+  },
+  {
+   "id": "L39",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Now let's change how it looks.",
+   "start": 132.25,
+   "end": 133.67,
+   "words": [132.25, 132.46, 132.76, 133.12, 133.36, 133.52]
+  },
+  {
+   "id": "L40",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Drag any vertex. Stretch it, squash it, or resize it.",
+   "start": 134.57,
+   "end": 139.33,
+   "words": [134.57, 134.94, 135.42, 136.73, 137.06, 137.51, 137.86, 138.38, 138.56, 138.98]
+  },
+  {
+   "id": "L41",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Whoa! It looks quite different now.",
+   "start": 140.13,
+   "end": 142.57,
+   "words": [140.13, 141.15, 141.26, 141.46, 141.72, 142.14]
+  },
+  {
+   "id": "L42",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Its appearance has completely changed.",
+   "start": 143.11,
+   "end": 145.13,
+   "words": [143.11, 143.46, 143.7, 144.02, 144.54]
+  },
+  {
+   "id": "L43",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "But not everything has changed.",
+   "start": 145.92,
+   "end": 147.68,
+   "words": [145.92, 146.04, 146.3, 146.82, 147.12]
+  },
+  {
+   "id": "L44",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Let's count the sides again.",
+   "start": 148.3,
+   "end": 149.73,
+   "words": [148.3, 148.58, 148.8, 149.02, 149.3]
+  },
+  {
+   "id": "L45",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Both polygons still have five sides.",
+   "start": 150.31,
+   "end": 152.95,
+   "words": [150.31, 150.56, 151.14, 151.56, 152.06, 152.32]
+  },
+  {
+   "id": "L46",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "So the number of sides gives us a good way to name polygons.",
+   "start": 153.61,
+   "end": 156.87,
+   "words": [153.61, 153.76, 153.92, 154.16, 154.4, 154.76, 155.0, 155.14, 155.28, 155.44, 155.66, 155.9, 156.12]
+  },
+  {
+   "id": "L47",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "A polygon with three sides is called a triangle.",
+   "start": 157.5,
+   "end": 160.4,
+   "words": [157.5, 157.62, 158.08, 158.33, 158.56, 159.08, 159.38, 159.66, 159.9]
+  },
+  {
+   "id": "L48",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "A polygon with four sides is called a quadrilateral.",
+   "start": 160.93,
+   "end": 164.17,
+   "words": [160.93, 161.06, 161.44, 161.78, 161.96, 162.48, 162.72, 163.19, 163.42]
+  },
+  {
+   "id": "L49",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Select all the quadrilaterals.",
+   "start": 164.99,
+   "end": 166.92,
+   "words": [164.99, 165.4, 165.76, 165.98]
+  },
+  {
+   "id": "L50",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "That's right! Quadrilaterals are polygons with four sides.",
+   "start": 167.98,
+   "end": 172.03,
+   "words": [167.98, 168.26, 169.13, 170.02, 170.3, 170.8, 171.18, 171.42]
+  },
+  {
+   "id": "L51",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Quadrilaterals are polygons with four sides.",
+   "start": 172.6,
+   "end": 175.61,
+   "words": [172.6, 173.54, 173.74, 174.28, 174.7, 174.94]
+  },
+  {
+   "id": "L52",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Is this shape a quadrilateral?",
+   "start": 176.32,
+   "end": 178.22,
+   "words": [176.32, 176.48, 176.7, 177.08, 177.42]
+  },
+  {
+   "id": "L53",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "A polygon with five sides is called a pentagon.",
+   "start": 179.41,
+   "end": 182.72,
+   "words": [179.41, 179.56, 180.02, 180.38, 180.68, 181.16, 181.46, 181.84, 182.18]
+  },
+  {
+   "id": "L54",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "A polygon with six sides is called a hexagon.",
+   "start": 183.31,
+   "end": 186.56,
+   "words": [183.31, 183.46, 183.9, 184.1, 184.42, 184.86, 185.14, 185.65, 185.9]
+  },
+  {
+   "id": "L55",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "A polygon with seven sides is called a heptagon.",
+   "start": 187.15,
+   "end": 190.31,
+   "words": [187.15, 187.28, 187.7, 187.9, 188.28, 188.76, 189.0, 189.4, 189.87]
+  },
+  {
+   "id": "L56",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "A polygon with eight sides is called an octagon.",
+   "start": 190.9,
+   "end": 194.07,
+   "words": [190.9, 191.04, 191.46, 191.8, 192.02, 192.5, 192.76, 193.12, 193.44]
+  },
+  {
+   "id": "L57",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Let's recall the different types of polygons we learnt about.",
+   "start": 194.97,
+   "end": 197.91,
+   "words": [194.97, 195.24, 195.56, 195.78, 196.08, 196.4, 196.68, 197.04, 197.3, 197.52]
+  },
+  {
+   "id": "U86",
+   "file": "swiftee-lesson-1",
+   "use": "unused",
+   "text": "A polygon is a closed figure made only of straight sides.",
+   "start": 198.47,
+   "end": 202.36,
+   "words": [198.47, 198.58, 199.1, 199.32, 199.56, 199.9, 200.2, 200.5, 200.96, 201.28, 201.62],
+   "note": "no screen says this line any more; its catalogue row is kept in this voice"
+  },
+  {
+   "id": "L59",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Which of these are polygons?",
+   "start": 203.25,
+   "end": 204.91,
+   "words": [203.25, 203.44, 203.62, 203.9, 204.14]
+  },
+  {
+   "id": "L60",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Yes! Closed, with only straight sides.",
+   "start": 205.77,
+   "end": 209.06,
+   "words": [205.77, 206.48, 207.32, 207.44, 207.84, 208.34]
+  },
+  {
+   "id": "L61",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Not quite! A polygon is closed with only straight sides.",
+   "start": 209.96,
+   "end": 214.34,
+   "words": [209.96, 210.14, 211.19, 211.32, 211.8, 212.02, 212.52, 212.84, 213.22, 213.66]
+  },
+  {
+   "id": "L62",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Classify the figures as a polygon or not a polygon.",
+   "start": 214.89,
+   "end": 218.38,
+   "words": [214.89, 215.42, 215.6, 215.9, 216.18, 216.4, 217.04, 217.2, 217.5, 217.86]
+  },
+  {
+   "id": "L63",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Great job! You sorted the figures correctly.",
+   "start": 219.51,
+   "end": 222.13,
+   "words": [219.51, 219.72, 220.54, 220.74, 221.04, 221.26, 221.54]
+  },
+  {
+   "id": "L64",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Wrong group. Check for gaps or curved sides.",
+   "start": 223.01,
+   "end": 226.53,
+   "words": [223.01, 223.24, 224.3, 224.5, 224.76, 225.08, 225.4, 225.82]
+  },
+  {
+   "id": "L65",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Polygons are closed, with only straight sides. Try again.",
+   "start": 227.2,
+   "end": 231.73,
+   "words": [227.2, 227.74, 228.09, 228.58, 228.88, 229.28, 229.76, 231.03, 231.24]
+  },
+  {
+   "id": "L66",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Which figure is NOT a polygon?",
+   "start": 232.34,
+   "end": 234.48,
+   "words": [232.34, 232.54, 232.84, 233.16, 233.75, 233.96]
+  },
+  {
+   "id": "L67",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "You found it! That is not a polygon.",
+   "start": 235.4,
+   "end": 237.97,
+   "words": [235.4, 235.52, 235.82, 236.53, 236.68, 236.84, 237.18, 237.52]
+  },
+  {
+   "id": "L68",
+   "file": "swiftee-lesson-1",
+   "use": "lesson",
+   "text": "Which figure breaks the rule for a polygon?",
+   "start": 238.83,
+   "end": 241.2,
+   "words": [238.83, 239.04, 239.38, 239.76, 240.0, 240.2, 240.46, 240.66]
+  },
+  {
+   "id": "L69",
+   "file": "swiftee-lesson-2",
+   "use": "lesson",
+   "text": "Is it closed? Does it have only straight sides?",
+   "start": 0.15,
+   "end": 4.13,
+   "words": [0.15, 0.28, 0.46, 2.02, 2.24, 2.4, 2.64, 3.08, 3.5]
+  },
+  {
+   "id": "L70",
+   "file": "swiftee-lesson-2",
+   "use": "lesson",
+   "text": "Which of these are pentagons?",
+   "start": 5.15,
+   "end": 6.98,
+   "words": [5.15, 5.36, 5.58, 5.86, 6.2]
+  },
+  {
+   "id": "L71",
+   "file": "swiftee-lesson-2",
+   "use": "lesson",
+   "text": "Exactly! A pentagon always has five sides.",
+   "start": 7.99,
+   "end": 11.84,
+   "words": [7.99, 9.4, 9.46, 10.09, 10.5, 11.11, 11.38]
+  },
+  {
+   "id": "L72",
+   "file": "swiftee-lesson-2",
+   "use": "lesson",
+   "text": "Count the sides of each figure carefully.",
+   "start": 12.89,
+   "end": 14.92,
+   "words": [12.89, 13.14, 13.46, 13.78, 14.02, 14.28, 14.6]
+  },
+  {
+   "id": "L73",
+   "file": "swiftee-lesson-2",
+   "use": "lesson",
+   "text": "Look for every figure with exactly five sides.",
+   "start": 15.69,
+   "end": 18.98,
+   "words": [15.69, 15.92, 16.25, 16.62, 17.0, 17.26, 17.75, 18.3]
+  },
+  {
+   "id": "L74",
+   "file": "swiftee-lesson-2",
+   "use": "lesson",
+   "text": "Classify each figure as a hexagon or a heptagon.",
+   "start": 19.54,
+   "end": 23.02,
+   "words": [19.54, 20.18, 20.52, 20.88, 21.16, 21.4, 22.17, 22.32, 22.66]
+  },
+  {
+   "id": "L75",
+   "file": "swiftee-lesson-2",
+   "use": "lesson",
+   "text": "Well done! Hexagons have six sides and heptagons have seven sides.",
+   "start": 23.94,
+   "end": 29.29,
+   "words": [23.94, 24.22, 24.97, 25.54, 25.88, 26.24, 27.08, 27.58, 27.88, 28.26, 28.64]
+  },
+  {
+   "id": "L76",
+   "file": "swiftee-lesson-2",
+   "use": "lesson",
+   "text": "Count the sides of the ones you placed wrong.",
+   "start": 30.03,
+   "end": 32.25,
+   "words": [30.03, 30.22, 30.52, 30.82, 31.0, 31.12, 31.36, 31.52, 31.84]
+  },
+  {
+   "id": "L77",
+   "file": "swiftee-lesson-2",
+   "use": "lesson",
+   "text": "Six sides make a hexagon, seven make a heptagon.",
+   "start": 32.82,
+   "end": 36.44,
+   "words": [32.82, 33.14, 33.62, 33.9, 34.06, 34.95, 35.32, 35.74, 36.09]
+  },
+  {
+   "id": "U47",
+   "file": "swiftee-lesson-2",
+   "use": "unused",
+   "text": "You did it! Now you know what makes a figure a polygon.",
+   "start": 37.14,
+   "end": 40.61,
+   "words": [37.14, 37.3, 37.56, 38.19, 38.48, 38.68, 38.92, 39.18, 39.44, 39.6, 39.84, 40.12],
+   "note": "no screen says this line any more; its catalogue row is kept in this voice"
+  },
+  {
+   "id": "B1",
+   "file": "swiftee-lesson-2",
+   "use": "bridge",
+   "text": "Oh no! The path is broken.",
+   "start": 41.37,
+   "end": 43.44,
+   "words": [41.37, 41.56, 42.33, 42.46, 42.72, 42.96]
+  },
+  {
+   "id": "B2",
+   "file": "swiftee-lesson-2",
+   "use": "bridge",
+   "text": "Help Momo cross the Frozen Pass!",
+   "start": 43.72,
+   "end": 45.74,
+   "words": [43.72, 43.96, 44.36, 44.64, 44.86, 45.22]
+  },
+  {
+   "id": "dup-meet",
+   "file": "swiftee-lesson-2",
+   "use": "skip",
+   "text": "This is Momo. He needs to find his friend.",
+   "start": 46.33,
+   "end": 49.44,
+   "words": [46.33, 46.6, 47.0, 47.89, 48.04, 48.36, 48.6, 48.82, 49.02],
+   "note": "Frozen Rush's tutorial again: the game plays its own take of these (frozen-rush-voice), so these are not used"
+  },
+  {
+   "id": "dup-goal",
+   "file": "swiftee-lesson-2",
+   "use": "skip",
+   "text": "Help Momo cross the Frozen Pass!",
+   "start": 49.91,
+   "end": 52.29,
+   "words": [49.91, 50.16, 50.78, 51.04, 51.32, 51.7],
+   "note": "Frozen Rush's tutorial again: the game plays its own take of these (frozen-rush-voice), so these are not used"
+  },
+  {
+   "id": "dup-jump",
+   "file": "swiftee-lesson-2",
+   "use": "skip",
+   "text": "Tap to jump over obstacles.",
+   "start": 52.83,
+   "end": 54.56,
+   "words": [52.83, 53.06, 53.32, 53.58, 53.88],
+   "note": "Frozen Rush's tutorial again: the game plays its own take of these (frozen-rush-voice), so these are not used"
+  },
+  {
+   "id": "dup-broken",
+   "file": "swiftee-lesson-2",
+   "use": "skip",
+   "text": "Oh no! The path is broken.",
+   "start": 55.02,
+   "end": 56.69,
+   "words": [55.02, 55.22, 55.62, 55.72, 56.02, 56.22],
+   "note": "Frozen Rush's tutorial again: the game plays its own take of these (frozen-rush-voice), so these are not used"
+  },
+  {
+   "id": "dup-use",
+   "file": "swiftee-lesson-2",
+   "use": "skip",
+   "text": "Use the right ice piece to fix the path.",
+   "start": 57.13,
+   "end": 59.44,
+   "words": [57.13, 57.38, 57.62, 57.98, 58.2, 58.48, 58.7, 58.94, 59.12],
+   "note": "Frozen Rush's tutorial again: the game plays its own take of these (frozen-rush-voice), so these are not used"
+  },
+  {
+   "id": "dup-fit",
+   "file": "swiftee-lesson-2",
+   "use": "skip",
+   "text": "Perfect fit! Keep going!",
+   "start": 60.16,
+   "end": 62.05,
+   "words": [60.16, 60.58, 61.32, 61.61],
+   "note": "Frozen Rush's tutorial again: the game plays its own take of these (frozen-rush-voice), so these are not used"
+  },
+  {
+   "id": "tut-1-meet",
+   "file": "frozen-rush-voice",
+   "use": "game",
+   "text": "This is Momo. He needs to find his friend.",
+   "start": 0.04,
+   "end": 3.53,
+   "words": [0.04, 0.6, 0.9, 1.78, 1.98, 2.24, 2.5, 2.8, 3.04]
+  },
+  {
+   "id": "tut-2-goal",
+   "file": "frozen-rush-voice",
+   "use": "game",
+   "text": "Help Momo cross the Frozen Pass!",
+   "start": 3.94,
+   "end": 6.39,
+   "words": [3.94, 4.26, 4.72, 5.02, 5.3, 5.76]
+  },
+  {
+   "id": "tut-3-watch",
+   "file": "frozen-rush-voice",
+   "use": "game",
+   "text": "Watch out!",
+   "start": 6.94,
+   "end": 7.58,
+   "words": [6.94, 7.22]
+  },
+  {
+   "id": "tut-4-jump",
+   "file": "frozen-rush-voice",
+   "use": "game",
+   "text": "Tap to jump over obstacles.",
+   "start": 7.94,
+   "end": 9.82,
+   "words": [7.94, 8.16, 8.44, 8.68, 9.02]
+  },
+  {
+   "id": "tut-5-broken",
+   "file": "frozen-rush-voice",
+   "use": "game",
+   "text": "Oh no! The path is broken.",
+   "start": 10.29,
+   "end": 12.48,
+   "words": [10.29, 10.48, 11.2, 11.46, 11.68, 11.9]
+  },
+  {
+   "id": "tut-6-use",
+   "file": "frozen-rush-voice",
+   "use": "game",
+   "text": "Use the right ice piece to fix the path.",
+   "start": 12.85,
+   "end": 15.52,
+   "words": [12.85, 13.2, 13.54, 13.76, 14.1, 14.36, 14.64, 14.9, 15.18]
+  },
+  {
+   "id": "tut-7-fit",
+   "file": "frozen-rush-voice",
+   "use": "game",
+   "text": "Perfect fit! Keep going!",
+   "start": 16.05,
+   "end": 18.05,
+   "words": [16.05, 16.48, 17.32, 17.63]
+  },
+  {
+   "id": "sign-triangle",
+   "file": "frozen-rush-voice",
+   "use": "game",
+   "text": "Cut the triangle.",
+   "start": 18.42,
+   "end": 19.57,
+   "words": [18.42, 18.74, 18.9]
+  },
+  {
+   "id": "sign-quadrilateral",
+   "file": "frozen-rush-voice",
+   "use": "game",
+   "text": "Cut the quadrilateral.",
+   "start": 19.9,
+   "end": 21.12,
+   "words": [19.9, 20.18, 20.34]
+  },
+  {
+   "id": "sign-pentagon",
+   "file": "frozen-rush-voice",
+   "use": "game",
+   "text": "Cut the pentagon.",
+   "start": 21.5,
+   "end": 22.6,
+   "words": [21.5, 21.78, 21.97]
+  },
+  {
+   "id": "sign-hexagon",
+   "file": "frozen-rush-voice",
+   "use": "game",
+   "text": "Cut the hexagon.",
+   "start": 22.96,
+   "end": 24.04,
+   "words": [22.96, 23.24, 23.42]
+  },
+  {
+   "id": "sign-heptagon",
+   "file": "frozen-rush-voice",
+   "use": "game",
+   "text": "Cut the heptagon.",
+   "start": 24.42,
+   "end": 25.56,
+   "words": [24.42, 24.71, 24.84]
+  },
+  {
+   "id": "sign-pentagons",
+   "file": "frozen-rush-voice",
+   "use": "game",
+   "text": "Cut all the pentagons.",
+   "start": 25.95,
+   "end": 27.65,
+   "words": [25.95, 26.3, 26.64, 26.94]
+  },
+  {
+   "id": "sign-hexagons",
+   "file": "frozen-rush-voice",
+   "use": "game",
+   "text": "Cut all the hexagons.",
+   "start": 28.03,
+   "end": 29.81,
+   "words": [28.03, 28.43, 28.76, 28.98]
+  }
+ ]
+}

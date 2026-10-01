@@ -1,5 +1,5 @@
 /* ============================================================================
-   MOMO + POLO STORY — comic styles.
+   MOMO + POPO STORY — comic styles.
 
    Everything is scoped under #story-intro, so nothing here can reach the
    lesson. Each scene is a comic panel (the artwork's own 1980 x 1080 canvas,
@@ -8,7 +8,7 @@
    by the script as an inked SVG outline; this file styles its lettering.
    ========================================================================= */
 
-/* Fredoka is the dialogue kit's lettering for Momo and Polo; the narrator is set in
+/* Fredoka is the dialogue kit's lettering for Momo and Popo; the narrator is set in
    the lesson's Nunito. A variable file, 300-700, so the 600 the bubbles use is real. */
 @font-face {
   font-family: 'Fredoka';
@@ -141,7 +141,7 @@
 /* THE DIALOGUE KIT'S STORY BOX (POLYGON Part 1, previews/dialogue-kit.html: its
    .story-say rules), in this story's own coordinates. The narrator is a storybook
    label — cream paper and one brown line — that drops in with a bounce; Momo and
-   Polo speak in white bubbles that boing out of their tails, the bubble and its
+   Popo speak in white bubbles that boing out of their tails, the bubble and its
    tail one drawn outline (bubblePath in story-intro.js). Each word pops in as it
    is said, a line's parts take the box in turn, and the key words arrive in
    colour. Sizes are stage pixels (the 1980-wide panel, scaled as one by
@@ -227,7 +227,7 @@
 }
 #story-intro .story-say.revealing .w { opacity: 0; scale: .62; translate: 0 7px; }
 #story-intro .story-say.revealing .w.in { opacity: 1; scale: 1; translate: 0 0; }
-/* THE KEY WORDS: the kit's lettering in this story's colours (Momo orange, Polo blue, the
+/* THE KEY WORDS: the kit's lettering in this story's colours (Momo orange, Popo blue, the
    treasure gold, action red, encouragement green, worry purple); the comma or the "!" after
    one stays ink, and it lands with a bigger pop than its neighbours */
 #story-intro .story-say .w.k .kw { color: #e65c00; }

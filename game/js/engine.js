@@ -903,11 +903,14 @@ export const CFG = {
      camera move and a snap. It runs alongside the pair's own 900ms glide to centre stage
      so the two settle together. */
   ending: { zoomK: 1.42, zoomMs: 1700 },
-  /* THE VOICE-OVER. The owner recorded every line the learner is shown as ONE take (39 s), in
+  /* THE VOICE-OVER. The owner recorded every line the learner is shown as ONE take (30 s), in
      the order of docs/VO-SCRIPT.md. One file is one download and one decode, so instead of
      sixteen files this names a WINDOW per line: [start, length] in seconds, measured off the
-     recording's own energy envelope (the gaps between lines run 0.46-0.67 s; the two-sentence
-     lines have a shorter internal pause and are kept whole). Each window is padded 60 ms before
+     recording's own pauses (the gaps between lines run 0.30-0.55 s; the two-sentence lines
+     have a shorter internal pause and are kept whole). The take is the owner's delivered file
+     as it came (assets/audio/source/frozen-rush-voice.mp3 in the lesson's repository); its
+     windows and word starts are written here by tools/voice/cut-recordings.py from
+     docs/voice/cue-map.json there. Each window is padded 60 ms before
      the attack and 120 ms after the tail, which is well inside the gap either side.
 
      The keys are the ids in docs/VO-SCRIPT.md. say(id) plays one; the text reveals in step
@@ -915,20 +918,20 @@ export const CFG = {
   vo: {
     src: 'assets/audio/vo-lines.mp3', gain: 1,
     lines: {
-      'tut-1-meet':   [0.00, 3.93, [0.05, 0.63, 0.97, 2.06, 2.48, 2.59, 2.77, 3.14, 3.42]],   // "This is Momo. He needs to find his friend."
-      'tut-2-goal':   [4.28, 2.95, [0.07, 0.33, 0.95, 1.40, 1.65, 2.30]],   // "Help Momo cross the Frozen Pass!"
-      'tut-3-watch':  [7.54, 0.90, [0.06, 0.33]],   // "Watch out!"
-      'tut-4-jump':   [8.56, 2.49, [0.06, 0.33, 0.41, 0.99, 1.54]],   // "Tap to jump over obstacles."
-      'tut-5-broken': [11.23, 2.86, [0.06, 0.34, 1.13, 1.40, 1.86, 2.46]],  // "Oh no! The path is broken."
-      'tut-6-use':    [14.48, 3.30, [0.06, 0.54, 1.22, 1.62, 1.98, 2.19, 2.45, 2.63, 2.79]],  // "Use the right ice piece to fix the path."
-      'tut-7-fit':    [18.31, 2.43, [0.06, 0.59, 1.48, 1.77]],  // "Perfect fit! Keep going!"
-      'sign-triangle':      [20.87, 1.40, [0.06, 0.33, 0.60]],
-      'sign-quadrilateral': [22.63, 1.67, [0.06, 0.33, 0.56]],
-      'sign-pentagon':      [24.70, 1.37, [0.06, 0.33, 0.59]],
-      'sign-hexagon':       [26.46, 1.42, [0.06, 0.34, 0.84]],
-      'sign-heptagon':      [28.29, 1.44, [0.06, 0.37, 0.80]],
-      'sign-pentagons':     [30.12, 1.98, [0.06, 0.39, 1.05, 1.66]],
-      'sign-hexagons':      [32.47, 2.05, [0.06, 0.42, 1.29, 1.76]],
+      'tut-1-meet':      [0.00, 3.65, [0.04, 0.60, 0.90, 1.78, 1.98, 2.24, 2.50, 2.80, 3.04]],   // "This is Momo. He needs to find his friend."
+      'tut-2-goal':      [3.88, 2.63, [0.06, 0.38, 0.84, 1.14, 1.42, 1.88]],   // "Help Momo cross the Frozen Pass!"
+      'tut-3-watch':     [6.88, 0.82, [0.06, 0.34]],   // "Watch out!"
+      'tut-4-jump':      [7.88, 2.06, [0.06, 0.28, 0.56, 0.80, 1.14]],   // "Tap to jump over obstacles."
+      'tut-5-broken':    [10.23, 2.37, [0.06, 0.25, 0.97, 1.23, 1.45, 1.67]],   // "Oh no! The path is broken."
+      'tut-6-use':       [12.79, 2.85, [0.06, 0.41, 0.75, 0.97, 1.31, 1.57, 1.85, 2.11, 2.39]],   // "Use the right ice piece to fix the path."
+      'tut-7-fit':       [15.99, 2.18, [0.06, 0.49, 1.33, 1.64]],   // "Perfect fit! Keep going!"
+      'sign-triangle':   [18.36, 1.33, [0.06, 0.38, 0.54]],   // "Cut the triangle."
+      'sign-quadrilateral': [19.84, 1.40, [0.06, 0.34, 0.50]],   // "Cut the quadrilateral."
+      'sign-pentagon':   [21.44, 1.28, [0.06, 0.34, 0.53]],   // "Cut the pentagon."
+      'sign-hexagon':    [22.90, 1.26, [0.06, 0.34, 0.52]],   // "Cut the hexagon."
+      'sign-heptagon':   [24.36, 1.32, [0.06, 0.35, 0.48]],   // "Cut the heptagon."
+      'sign-pentagons':  [25.89, 1.88, [0.06, 0.41, 0.75, 1.05]],   // "Cut all the pentagons."
+      'sign-hexagons':   [27.97, 1.96, [0.06, 0.46, 0.79, 1.01]],   // "Cut all the hexagons."
       /* THE ENDING SPEAKS NO MORE. 'win-title' ("You did it!") and 'win-sub' ("Momo crossed
          the Frozen Pass!") lived here and were cut with the banner that showed them: the
          ending is the dance now, the camera pushes in on it, and a voice over the top was

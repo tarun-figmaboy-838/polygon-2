@@ -1,5 +1,5 @@
 /* ============================================================================
-   MOMO + POLO STORY — scene data.
+   MOMO + POPO STORY — scene data.
 
    Everything that makes one scene different from another lives here, so the
    controller in story-intro.js has no per-scene code. Coordinates are pixels
@@ -9,11 +9,14 @@
    The words appear in ONE box, a short part of the line at a time (the
    dialogue kit's story box, see story-intro.js): the box shows a part, the part
    is spoken, then it leaves and the next comes up in its place. The narrator's
-   box is a storybook label with no tail; Momo and Polo speak in white bubbles
+   box is a storybook label with no tail; Momo and Popo speak in white bubbles
    whose tail points at whoever is talking.
 
    Per scene:
-     image, speaker, text   the final art and the exact script line
+     image, speaker, text   the final art and the exact script line. The speakers are
+                            narrator | momo | polo: `polo` is Popo's id (he was Polo
+                            when the ids were made; the recorded voices name him Popo,
+                            and so do the words on screen)
      lines                  the script cut into single lines, shown and spoken
                             one after another. Joined with spaces they are
                             exactly `text` (the tests check this).
@@ -69,10 +72,10 @@ window.STORY_DATA = {
   scenes: [
     {
       id: 1, image: 'scene-1.webp', speaker: 'narrator', voice: 'scene-1',
-      text: 'Long ago, Momo the mammoth and Polo the polar bear were best friends.',
+      text: 'Long ago, Momo the mammoth and Popo the polar bear were best friends.',
       lines: [
         { text: 'Long ago,' },
-        { text: 'Momo the mammoth and Polo the polar bear', gap: 300, focus: { Momo: 'momo', Polo: 'polo' } },
+        { text: 'Momo the mammoth and Popo the polar bear', gap: 300, focus: { Momo: 'momo', Popo: 'polo' } },
         { text: 'were best friends.', gap: 260, focus: { best: 'good', 'friends.': 'good' } }
       ],
       box: { x: 990, y: 112 },
@@ -87,15 +90,15 @@ window.STORY_DATA = {
     },
     {
       id: 2, image: 'scene-2.webp', speaker: 'narrator', voice: 'scene-2',
-      text: 'One day, Polo spotted something shiny beneath the ice.',
+      text: 'One day, Popo spotted something shiny beneath the ice.',
       lines: [
         { text: 'One day,' },
-        { text: 'Polo spotted something shiny', gap: 280, focus: { Polo: 'polo', something: 'gold', shiny: 'gold' } },
+        { text: 'Popo spotted something shiny', gap: 280, focus: { Popo: 'polo', something: 'gold', shiny: 'gold' } },
         { text: 'beneath the ice.', gap: 240 }
       ],
       box: { x: 990, y: 112 },
       enter: 550, boxAt: 700, voiceAt: 860, hold: 950, boxOut: 240,
-      /* A slow push toward Polo and the ball draws the eye down to it. */
+      /* A slow push toward Popo and the ball draws the eye down to it. */
       camera: { from: { s: 1, x: 0, y: 0 }, to: { s: 1.03, x: 0, y: -6 }, origin: [1110, 780], ms: 7500 },
       cues: [
         { at: 260, sfx: 'chime' },
@@ -216,10 +219,10 @@ window.STORY_DATA = {
     },
     {
       id: 8, image: 'scene-8.webp', speaker: 'momo', voice: 'scene-8',
-      text: 'Polo!',
+      text: 'Popo!',
       /* Fast to still: a slower fade, almost no motion, time to see the gap. */
       lines: [
-        { text: 'Polo!', focus: { 'Polo!': 'polo' } }
+        { text: 'Popo!', focus: { 'Popo!': 'polo' } }
       ],
       box: { x: 704, y: 180, tail: [556, 300] },
       feel: 'shout',
@@ -241,7 +244,7 @@ window.STORY_DATA = {
       ],
       box: { x: 1480, y: 160, tail: [1566, 410] },
       enter: 650, boxAt: 900, voiceAt: 1000, hold: 1250, boxOut: 280,
-      /* A small drift toward Polo and a soft lift in the light on his side. */
+      /* A small drift toward Popo and a soft lift in the light on his side. */
       camera: { from: { s: 1, x: 0, y: 0 }, to: { s: 1.02, x: -6, y: 0 }, origin: [1600, 560], ms: 7000 },
       cues: [
         { at: 150, sfx: 'warm-cue' },

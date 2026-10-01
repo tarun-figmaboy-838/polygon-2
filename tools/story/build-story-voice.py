@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
-"""Render the Momo + Polo story lines with the macOS speech voices.
+"""Render the Momo + Popo story lines with the macOS speech voices.
 
 These are PLACEHOLDER takes, made so the story plays with sound and with
 word-synchronised text until studio recordings exist.
+
+THE STORY NOW PLAYS RECORDED VOICES, built from the delivered recordings by
+tools/voice/cut-recordings.py (`npm run build:recorded-voice`). Running this
+would replace them with the macOS voices, so it asks to be told so:
+    python3 tools/story/build-story-voice.py --placeholders
 
 The story shows one short line at a time ("Momo, look!" ... "Something is
 buried here!"), so each line is its own take. All takes are joined into ONE file, assets/audio/story/story-voice
@@ -59,10 +64,10 @@ VOICES = {
 # `rate` overrides the speaker's pace for one line.
 PARTS = [
     {'id': 'scene-1/1', 'speaker': 'narrator', 'text': 'Long ago,'},
-    {'id': 'scene-1/2', 'speaker': 'narrator', 'text': 'Momo the mammoth and Polo the polar bear'},
+    {'id': 'scene-1/2', 'speaker': 'narrator', 'text': 'Momo the mammoth and Popo the polar bear'},
     {'id': 'scene-1/3', 'speaker': 'narrator', 'text': 'were best friends.'},
     {'id': 'scene-2/1', 'speaker': 'narrator', 'text': 'One day,'},
-    {'id': 'scene-2/2', 'speaker': 'narrator', 'text': 'Polo spotted something shiny'},
+    {'id': 'scene-2/2', 'speaker': 'narrator', 'text': 'Popo spotted something shiny'},
     {'id': 'scene-2/3', 'speaker': 'narrator', 'text': 'beneath the ice.'},
     {'id': 'scene-3/1', 'speaker': 'polo', 'text': 'Momo, look!'},
     {'id': 'scene-3/2', 'speaker': 'polo', 'text': 'Something is buried here!'},
@@ -71,7 +76,7 @@ PARTS = [
     {'id': 'scene-5/2', 'speaker': 'polo', 'text': 'One more pull!'},
     {'id': 'scene-6/1', 'speaker': 'momo', 'text': 'Uh-oh...', 'rate': 0.62},   # small and cautious
     {'id': 'scene-7/1', 'speaker': 'polo', 'text': 'Run!', 'rate': 1.0},        # the urgent beat
-    {'id': 'scene-8/1', 'speaker': 'momo', 'text': 'Polo!', 'rate': 0.68},      # calling across the crack
+    {'id': 'scene-8/1', 'speaker': 'momo', 'text': 'Popo!', 'rate': 0.68},      # calling across the crack
     {'id': 'scene-9/1', 'speaker': 'polo', 'text': 'Momo, keep going!', 'rate': 0.86},
     {'id': 'scene-9/2', 'speaker': 'polo', 'text': 'I will find another way!', 'rate': 0.86},
 ]
@@ -269,6 +274,9 @@ def build(line, timepitch, tmp):
 
 
 def main():
+    if '--placeholders' not in sys.argv[1:]:
+        raise SystemExit('The story plays the recorded voices (npm run build:recorded-voice). '
+                         'To replace them with the macOS placeholder voices, run this with --placeholders.')
     if sys.platform != 'darwin':
         raise SystemExit('This builder uses the macOS `say` voices.')
     os.makedirs(OUT_DIR, exist_ok=True)

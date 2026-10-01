@@ -177,7 +177,7 @@ const SCENARIOS = {
     check('every word of the last line is up', r.say.shown === r.say.words);
     if (AUDIO) {
       const heard = r.sounds.map(x => x.name), first = n => heard.indexOf(n);
-      check("the game's sounds and the lesson's take were all decoded", ['voice', 'learn-first', 'step', 'tremble', 'whoosh', 'ui'].every(n => r.decoded.includes(n)), r.decoded.join(','));
+      check("the game's sounds and Swiftee's three takes were all decoded", ['tut-5-broken', 'tut-2-goal', 'learn-first', 'step', 'tremble', 'whoosh', 'ui'].every(n => r.decoded.includes(n)), r.decoded.join(','));
       check('footsteps on his run (the recorded crunch)', heard.filter(n => n === 'step').length >= 4, heard.join(','));
       check('the skid as he stops, the pips as he shivers, a whoosh and wing beats for Swiftee, in that order',
         ['skid', 'tremble', 'whoosh', 'flutter'].every(n => heard.filter(x => x === n).length === 1) &&
@@ -360,22 +360,25 @@ const SCENARIOS = {
     await context.close();
   },
 
-  /* The voice windows are the game's own: the same ids, text, starts, lengths and word times. */
+  /* All three of her lines are Swiftee's own recordings, found in the lesson's catalogue by
+     their words: the two Broken Path takes and the lesson recording that leads into the lesson. */
   async data(browser, srv) {
-    const src = fs.readFileSync(path.join(ROOT, 'game', 'js', 'engine.js'), 'utf8');
     const { page, context } = await open(browser, srv, '?bridge=1');
     const lines = await page.evaluate(() => window.BridgeStory.lines);
-    for (const l of lines) {
-      const m = new RegExp("'" + l.id + "':\\s*\\[([\\d.]+),\\s*([\\d.]+),\\s*\\[([^\\]]*)\\]\\],\\s*//\\s*\"([^\"]+)\"").exec(src);
-      const words = m ? m[3].split(',').map(Number) : [];
-      check('voice window ' + l.id + ' matches the game', m && +m[1] === l.at && +m[2] === l.dur && m[4] === l.text &&
-        words.length === l.words.length && words.every((w, i) => w === l.words[i]), m ? m.slice(1).join(' | ') : 'not found in engine.js');
-      check('line ' + l.id + ' has a time for every word', l.text.split(' ').length === l.words.length);
-    }
+    check('no line borrows the game\'s take', lines.length === 0, JSON.stringify(lines));
     const lesson = await page.evaluate(() => window.BridgeStory.lessonLines);
-    check('its last line is a lesson recording, word for word, with a time for every word', lesson.length === 1 &&
-      lesson[0].text === 'But for that first you need to learn about polygons.' && /^assets\/audio\/lesson\/.+\.mp3$/.test(lesson[0].src || '') &&
-      lesson[0].words.length === lesson[0].text.split(' ').length && lesson[0].words.every((w, i) => !i || w > lesson[0].words[i - 1]), JSON.stringify(lesson));
+    const want = [
+      ['tut-5-broken', 'Oh no! The path is broken.', /^assets\/audio\/bridge\/.+\.mp3$/],
+      ['tut-2-goal', 'Help Momo cross the Frozen Pass!', /^assets\/audio\/bridge\/.+\.mp3$/],
+      ['learn-first', 'But for that first you need to learn about polygons.', /^assets\/audio\/lesson\/.+\.mp3$/]
+    ];
+    check('her three lines are her recordings, word for word, with a time for every word', lesson.length === 3 &&
+      want.every(([id, text, re], i) => lesson[i].id === id && lesson[i].text === text && re.test(lesson[i].src || '') &&
+        lesson[i].words.length === text.split(' ').length && lesson[i].words.every((w, k) => !k || w > lesson[i].words[k - 1])), JSON.stringify(lesson));
+    for (const l of lesson) {
+      check('the take for ' + l.id + ' is on disk, .mp3 and .ogg', !!l.src && fs.existsSync(path.join(ROOT, l.src)) &&
+        fs.existsSync(path.join(ROOT, l.src.replace(/\.mp3$/, '.ogg'))), l.src);
+    }
     await context.close();
   }
 };

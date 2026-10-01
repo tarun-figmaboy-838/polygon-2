@@ -1,5 +1,5 @@
 /* ============================================================================
-   MOMO + POLO STORY — the sequence controller.
+   MOMO + POPO STORY — the sequence controller.
 
    A self-contained overlay that plays the nine-scene story before the
    blizzard intro and then takes itself out. The lesson is untouched: the
@@ -9,7 +9,7 @@
    It is told like a comic: each scene is a panel on a comic page, and the
    words appear in ONE box, a short part of the line at a time — the dialogue
    kit's story box from POLYGON Part 1 (see "the narration box" below). The
-   narrator's label drops in; Momo's and Polo's bubbles boing out of their
+   narrator's label drops in; Momo's and Popo's bubbles boing out of their
    tails, which point at whoever is talking; the box shakes for a shout and
    trembles when someone is worried. Each word pops in as it is said, the key
    words in colour. Sounds, music, sparkles, hearts, ink emanata, speed lines
@@ -225,7 +225,7 @@
     root.id = 'story-intro';
     root.setAttribute('role', 'dialog');
     root.setAttribute('aria-modal', 'true');
-    root.setAttribute('aria-label', 'Story: Momo and Polo');
+    root.setAttribute('aria-label', 'Story: Momo and Popo');
     root.setAttribute('data-phase', 'loading');
     root.setAttribute('data-scene', '0');
 
@@ -904,7 +904,7 @@
     var b = S.box;
     /* THE NARRATOR IS HEARD, NOT SHOWN. Their lines keep their voice, their timing and their
        place in the story (and the screen reader still hears each one, from the live region),
-       but no box comes up for them: only Momo and Polo speak in bubbles. */
+       but no box comes up for them: only Momo and Popo speak in bubbles. */
     if (b.sc && b.sc.speaker === 'narrator') { b.shown = true; return; }
     b.el.classList.add('revealing');
     if (again) b.el.classList.add('again');
@@ -1271,7 +1271,7 @@
   }
   function mountNavigator(state) {
     var N = window.PolygonScreenNavigator;
-    var who = { narrator: 'Narrator', momo: 'Momo', polo: 'Polo' };
+    var who = { narrator: 'Narrator', momo: 'Momo', polo: 'Popo' };
     state.nav = N && N.panel && N.panel({
       id: 'story-scene-navigator', word: 'Scenes', title: 'Jump to a scene', name: 'Story scene navigator',
       list: 'Story scenes', steps: 'Scene navigation', close: 'Close scene navigator',

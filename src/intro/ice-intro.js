@@ -534,7 +534,7 @@
     skip: finish
   };
 
-  /* The Momo + Polo story (story-intro.js) plays first when it is present, and then
+  /* The Momo + Popo story (story-intro.js) plays first when it is present, and then
      the Help Momo scene (src/bridge/bridge-story.js), whose Next ends on this storm's
      first frame: the storm starts the moment that scene has gone, or at once where
      there is no scene. */
