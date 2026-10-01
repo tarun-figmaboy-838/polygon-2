@@ -468,11 +468,6 @@ const buttonLabelFont = (text, boxWidth, padding = 36) => {
   return BUTTON_LABEL.weight + ' ' + size + 'px ' + BUTTON_LABEL.family;
 };
 const SHAPE_YELLOW = '#E9A11B';
-/* Figures waiting their turn in the sorting question. They stay fully drawn
-   and fully readable -- the learner is comparing boundaries, so hiding them
-   would remove the very thing being compared -- but they are plainly not the
-   one being asked about. */
-const WAIT_BLUE = '#7fb2d9';
 /* The rim every card falls back to. It is also each card's `color`, because a
    border-color that is briefly missing resolves to currentColor -- and a card
    whose colour is the default black both rests black and, worse, transitions
@@ -4473,9 +4468,10 @@ class Component extends DCLogic {
       const mine = straightIdx.includes(i) ? 'Straight' : 'Curved';
       const settled = ph === 'classify' && st.dd && st.dd[i] === mine;
       const waitingTurn = ph === 'classify' && !!st.storyControls && !settled && i !== (st.ddActive || 0);
-      const neutral = waitingTurn || settled;
-      const figStroke = neutral ? WAIT_BLUE : it[1];
-      const figFill = neutral ? this.figFill(name, WAIT_BLUE) : this.figFill(name, it[1], it[2]);
+      /* Answered and waiting figures keep their own colours: they are dimmed (the card's
+         opacity, in viewCompare) rather than turned grey, so each still reads as itself. */
+      const figStroke = it[1];
+      const figFill = this.figFill(name, it[1], it[2]);
       const litBounds = !boundary && ph === 'bound';
       const trace = st.tracing && ph === 'sc';
       let state = null;
@@ -4545,7 +4541,9 @@ class Component extends DCLogic {
         background:'linear-gradient(150deg,#fffef8,#f4fcff)',
         boxShadow:confirming ? '0 5px 0 rgba(127,178,217,.22), ' + CORRECT_GLOW : active ? '0 0 0 5px rgba(23,156,211,.2), 0 7px 16px rgba(23,156,211,.16)' : '0 5px 0 rgba(127,178,217,.22)',
         /* No blur: these are boundaries the learner is meant to compare. */
-        filter:'none', opacity:pending ? .86 : 1,
+        /* dimmed, not greyed: one answered or not yet asked about sits back at low opacity
+           in its own colours; the one in hand, and one just answered, stay full */
+        filter:'none', opacity:(pending || (done && ph === 'classify' && !confirming)) ? .45 : 1,
         transform:'none',
         transition:this.reducedMotion() ? 'none' : 'opacity 360ms ease, transform 380ms cubic-bezier(.22,.9,.24,1), box-shadow 360ms ease, border-color 360ms ease'
       });

@@ -47,12 +47,15 @@ const server=http.createServer((req,res)=>{
     assert.equal(await page.getByRole('button',{name:/^Figure [234]:/}).count(),0,'Only the figure in hand can be answered');
     /* Nothing is blurred. These are boundaries the learner is being asked to
        compare, and a blurred boundary cannot be compared -- the waiting ones
-       stay fully drawn and simply wait in blue. */
+       stay fully drawn, in their own colours, and simply sit back, dimmed. */
     const filters=await page.locator('.story-surface svg').evaluateAll(es=>es.map(e=>getComputedStyle(e.parentElement).filter));
     assert.deepEqual(filters,['none','none','none','none'],'No figure is blurred');
     const strokes=await page.locator('.story-surface svg').evaluateAll(es=>es.map(e=>e.querySelector('path').getAttribute('stroke')));
-    assert(strokes.slice(1).every(s=>s==='#7fb2d9'),'Figures awaiting their turn wait in blue: '+strokes);
-    assert(strokes[0]!=='#7fb2d9','The figure in hand keeps its own colour');
+    // dimmed, not greyed: every figure keeps its own colour, and the ones waiting sit back at low opacity
+    assert(new Set(strokes).size===4 && !strokes.includes('#7fb2d9'),'Every figure keeps its own colour: '+strokes);
+    await page.waitForTimeout(450);
+    const dims=await page.locator('.story-surface svg').evaluateAll(es=>es.map(e=>parseFloat(getComputedStyle(e.parentElement).opacity)));
+    assert(dims[0]===1 && dims.slice(1).every(o=>o<0.6),'The figure in hand is full, the waiting ones dimmed: '+dims);
     /* The answer row clears the figures rather than sitting on them. */
     const gap=await page.evaluate(()=>{
       const cards=[...document.querySelectorAll('.story-surface svg')].map(s=>s.closest('div').getBoundingClientRect());
@@ -111,15 +114,16 @@ const server=http.createServer((req,res)=>{
         assert(await page.evaluate(i=>{
           const v=__poly.renderVals(),t=v.targets.find(x=>x.label.startsWith('Figure '+(i+1)+': '));
           const c=v.cards[i];
-          return !!t && !t.selected && t.feedback==='' && t.disabled && c.wrap.opacity===1 && c.wrap.transform==='none' && !c.wrap.boxShadow.includes('23,156,211');
-        },i),'Completed figure and answer remain visible in their default state');
+          return !!t && !t.selected && t.feedback==='' && t.disabled && c.wrap.opacity<0.6 && c.wrap.transform==='none' && !c.wrap.boxShadow.includes('23,156,211');
+        },i),'Completed figure and answer stay where they are, dimmed');
         const answerBox=await choice.boundingBox();
         const cardBox=await page.locator('.story-surface svg').nth(i).evaluate(e=>{const r=e.parentElement.getBoundingClientRect();return {x:r.x,width:r.width};});
         assert(Math.abs(answerBox.x+answerBox.width/2-cardBox.x-cardBox.width/2)<1,'Accepted answer is centered below its own card');
         assert(Math.abs(answerBox.y-originalBox.y)<.1,'Answer baseline stays fixed');
         assert(Math.abs(answerBox.width-originalBox.width)<.1,'Answer width stays fixed');
-        assert.equal(await page.locator('.story-surface svg').nth(i).locator('path').first().getAttribute('stroke'),'#7fb2d9','Completed figure returns to muted blue');
-        assert(await choice.evaluate(e=>{const s=getComputedStyle(e);return e.classList.contains('completed-answer')&&s.opacity==='1'&&s.color==='rgb(53, 90, 112)'&&s.getPropertyValue('--button-face').trim()!==s.getPropertyValue('--concept-button-face').trim();}),'Completed answer uses a readable neutral blue face');
+        assert.notEqual(await page.locator('.story-surface svg').nth(i).locator('path').first().getAttribute('stroke'),'#7fb2d9','Completed figure keeps its own colour');
+        await page.waitForTimeout(450);
+        assert(await choice.evaluate(e=>{const s=getComputedStyle(e);return e.classList.contains('completed-answer')&&parseFloat(s.opacity)<0.6&&s.getPropertyValue('--button-face').trim()===s.getPropertyValue('--concept-button-face').trim();}),'Completed answer keeps its yellow face, dimmed');
         assert.deepEqual(await page.locator('.story-surface svg').nth(i).boundingBox(),originalFigure,'The completed figure never moves or resizes');
         assert.equal(await page.locator('.story-surface svg').count(),4);
         assert.equal(await page.locator('[data-sequence-state="complete"]').count(),i+1);
@@ -149,6 +153,6 @@ const server=http.createServer((req,res)=>{
     await page.emulateMedia({reducedMotion:'reduce'});await start();
     assert.equal(await enabled().first().evaluate(e=>getComputedStyle(e).transitionDuration),'0s');
     assert.deepEqual(errors,[]);
-    console.log('PASS: sequential guards, waiting figures in blue and unblurred, staggered choices clear of the figures, one checked result, keyboard handoff, all four figures, re-entry cancellation and reduced motion.');
+    console.log('PASS: sequential guards, waiting figures dimmed in their own colours and unblurred, staggered choices clear of the figures, one checked result, keyboard handoff, all four figures, re-entry cancellation and reduced motion.');
   }finally{await browser.close();server.close();}
 })().catch(e=>{console.error(e);server.close();process.exitCode=1;});
