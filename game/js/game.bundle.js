@@ -44,8 +44,8 @@ const ASSET_V = {
   "assets/audio/universfield-ground-impact-352053.ogg": "f6742c2a",
   "assets/audio/universfield-sad-trumpet-278822.mp3": "318bbc84",
   "assets/audio/universfield-sad-trumpet-278822.ogg": "202ea116",
-  "assets/audio/vo-lines.mp3": "81bea6c8",
-  "assets/audio/vo-lines.ogg": "c254d776",
+  "assets/audio/vo-lines.mp3": "e97e9a31",
+  "assets/audio/vo-lines.ogg": "1dcdd5cd",
   "assets/char/bear.webp": "ac7771ee",
   "assets/char/duo-celebrate.webp": "7845cb0a",
   "assets/char/hd/bear.webp": "d257b5b8",
@@ -10547,6 +10547,8 @@ function createGame(canvas, hooks = {}) {
       audio.resume();
       if (audio.music) { const p = audio.music.el.play(); if (p && p.catch) p.catch(() => {}); }
     },
+    /** Fade the music bed out over ms: the polygon lesson's hand-over, where its own bed takes over. */
+    fadeMusic(ms) { audio._musicTo(0, ms || 900); },
     /** Sound on/off from the HUD. Returns the new state. */
     toggleSound() {
       audio.start(); audio.resume();
@@ -11353,10 +11355,18 @@ class Tutorial {
   /**
    * @param {Document} root
    * @param {object} game  the engine handle from createGame()
+   * @param {object} [opts]
+   *   script      'full' (the game's own, the default), 'intro' or 'end' (see steps)
+   *   holdAtEnd   when it finishes, leave the game frozen where it is (the lesson takes over)
+   *   onDone      called once, when it finishes, with this tutorial
+   *   onHost      called when a step is the host's to present: (id, where()); the host
+   *               answers with didAction('host')
    */
-  constructor(root, game) {
+  constructor(root, game, opts) {
     this.root = root;
     this.game = game;
+    this.opts = opts || {};
+    this.script = this.opts.script || 'full';
     this.el = {
       layer: root.getElementById('tutorial'),
       veil: root.getElementById('tut-veil'),
@@ -11477,7 +11487,7 @@ class Tutorial {
       const ry = 58;
       return { x: hx, y: hy + ry, rx: 86, ry, aimX: hx, world: true };
     };
-    return [
+    const all = [
       {
         id: 'meet',
         at: g => ['RUN_SEGMENT_1', 'JUMP_CHALLENGE_1'].includes(g.state),
@@ -11606,6 +11616,30 @@ class Tutorial {
         advance: 0, pause: false
       }
     ];
+    /* THE LESSON'S TWO SCRIPTS. The polygon lesson carries this game twice (main.js,
+       ?lesson=intro|end), and each time it tells only part of the story. Where Swiftee has
+       something to say, the LESSON says it: she flies in over the frozen game, in her own
+       dialogue box and voice (src/intro/swiftee-cameo.js), so this layer only stops and asks.
+
+         intro   before the lesson: lines 1-5 as above, Momo, his goal, the jump, the broken
+                 path. Then it finishes with the world held still (holdAtEnd), and the lesson
+                 has Swiftee tell the learner why they must go and learn first.
+         end     after the lesson: nothing at all until the ditch; there the game stops for
+                 Swiftee ("Now let's help Momo.", a host step), then 6 on the plank as in the
+                 full script, and the plank asks its own question ("Cut the TRIANGLE.").
+
+       The full script is the game's own and is unchanged. */
+    this._all = all;
+    const by = id => all.find(s => s.id === id);
+    if (this.script === 'intro') {
+      // whatever happened on the way (a jump never made), the opening always reaches the break
+      const reached = by('gap').at;
+      return [by('meet'), by('goal'), by('rock'), by('jump')].map(st => Object.assign({}, st, { overtaken: reached })).concat([by('gap')]);
+    }
+    if (this.script === 'end') {
+      return [{ id: 'help', at: by('gap').at, spot: () => null, text: '', host: true, advance: 'host', pause: true }, by('use')];
+    }
+    return all;
   }
 
   /* ---- where things are ---- */
@@ -11856,6 +11890,7 @@ class Tutorial {
 
   next() {
     if (this.game.saySign) this.game.saySign('');      // the plank goes back to its question
+    this._hostAsked = false;
     this.step++;
     this.t = 0;
     this.spoke = false;                                // the new step has not been read aloud yet
@@ -11873,10 +11908,34 @@ class Tutorial {
     // the tutorial is over: the game must never be left believing a line is still up
     this._presenting = false;
     if (this.game.setDialogue) this.game.setDialogue(false);
-    this.resume();
+    /* held: the lesson is taking the screen, so the world stays as it is under the curtain */
+    if (this.opts.holdAtEnd) this.game.setPaused(true); else this.resume();
     this.hideFocus();
     if (this.el.layer) this.el.layer.hidden = true;
     this._bubbleKey = null;
+    const done = this.opts.onDone;
+    this.opts.onDone = null;
+    if (done) { try { done(this); } catch (e) { console.error('the tutorial\'s hand-over failed', e); } }
+  }
+
+  /** Where Momo's head and the far lip of the hole are on the stage now (after the zoom), and
+      where the stage sits in the window, as fractions of it: for the lesson, which flies Swiftee
+      in over the game (src/intro/swiftee-cameo.js). */
+  where() {
+    const g = this.game.debug();
+    if (!this._all) void this.steps;
+    const meet = (this._all || []).find(s => s.id === 'meet');
+    let head = null, lip = null;
+    try { const m = meet && meet.spot(g); if (m) head = this.toView({ x: m.x, y: m.y - m.ry, world: true }, g); } catch (e) { /* not up */ }
+    const gp = (g.gapsThisPhase || [])[0];
+    if (gp) lip = this.toView({ x: gp.x1 - g.worldX, y: 845, world: true }, g);
+    const el = this.root && this.root.getElementById ? this.root.getElementById('stage') : null;
+    const r = el ? el.getBoundingClientRect() : null;
+    const vw = window.innerWidth || 1, vh = window.innerHeight || 1;
+    return {
+      head: head && { x: head.x, y: head.y }, lip: lip && { x: lip.x, y: lip.y }, zoom: g.zoom || 1,
+      stage: r && r.width ? { x: r.left / vw, y: r.top / vh, w: r.width / vw, h: r.height / vh } : { x: 0, y: 0, w: 1, h: 1 }
+    };
   }
 
   pause(asking) {
@@ -11967,6 +12026,8 @@ class Tutorial {
 
     const s = this.steps[this.step];
     if (!s) { this.finish(); return; }
+    /* A STEP OVERTAKEN by the moment of a later one is over (the lesson's opening only). */
+    if (s.overtaken && s.overtaken(g)) { this.next(); return; }
 
     /* NOT READY YET is a normal state, not an error. A step waits for its own moment —
        a rock coming into range, the blocks arriving — and while it waits the game runs
@@ -11985,6 +12046,24 @@ class Tutorial {
       if (this.t > 0 && typeof s.advance === 'number') { this.next(); return; }
       if (s.advance === 'cut' && (g.attempts || 0) > 0) { this.next(); return; }
       this.resume(); this.show(null); return;
+    }
+    /* A HOST STEP is the lesson's: the game stops, the layer shows nothing, and the host is
+       asked once (onHost) and answers with didAction('host'). A host that never answers cannot
+       hold the game: the step lets go by itself after `wait` seconds. */
+    if (s.host) {
+      this.t += dt;
+      this.pause(false);
+      this.hideFocus();
+      this.show(null);
+      if (this.game.setDialogue) this.game.setDialogue(true);
+      if (!this._hostAsked) {
+        this._hostAsked = true;
+        const ask = this.opts.onHost;
+        if (!ask) { this.next(); return; }
+        try { ask(s.id, this.where()); } catch (e) { this.next(); return; }
+      }
+      if (this.t > (s.wait || 16)) this.next();
+      return;
     }
     /* A SIGN STEP HAS NO TARGET. Its words are on the plank, so it points at nothing — and the
        missing box used to skip it silently, which left the tutorial stuck on the line before it
@@ -12643,6 +12722,11 @@ class Tutorial {
                                once, with window.iceAgeBegin() (see `hosted` below)
      index.html?tutorial=0     never show the first-play tutorial
      index.html?tutorial=1     always show it, however many times it has been seen
+     index.html?lesson=intro   the polygon lesson's opening: the cover and PLAY, then the tutorial
+                               up to the broken path, and the game is left frozen there while
+                               the lesson takes over (see lessonPart)
+     index.html?lesson=end     with ?cover=0, the lesson's return: the avalanche and the run, no
+                               tutorial until the ditch, where Swiftee speaks before the plank
      index.html?intro=0        no opening avalanche (it is off already under ?skip=1)
      index.html?intro=1        play the opening avalanche even under ?skip=1
      index.html?fast=4         fast-forward: simulation steps per rendered frame (1–8).
@@ -12692,7 +12776,7 @@ let hostReady = false, hostAsked = false, begun = false;
 /* The same two words as messages, for a page that cannot reach into the frame: opened
    straight off the disk, every file is its own origin, so the page can neither call
    iceAgeBegin nor read iceAgeReady. postMessage works either way. */
-const tellHost = word => { try { if (window.parent && window.parent !== window) window.parent.postMessage({ iceAge: word }, '*'); } catch (e) {} };
+const tellHost = (word, more) => { try { if (window.parent && window.parent !== window) window.parent.postMessage(Object.assign({ iceAge: word }, more || {}), '*'); } catch (e) {} };
 const beginRun = () => {
   if (begun) return;
   begun = true;
@@ -12700,6 +12784,31 @@ const beginRun = () => {
   if (options.sound) { game.setOptions({ sound: true }); game.sfx('resume'); }
   game.begin(); startTutorial(); tellHost('running');
 };
+/* ?lesson=intro|end: THE POLYGON LESSON CARRIES THE GAME TWICE, and each time it plays only its
+   part of the tutorial (Tutorial's scripts). The opening is this page as it is, cover and PLAY
+   included, up to the broken path; there the world is held as it is and the lesson is told
+   ('lesson', with where Momo and the hole are) so Swiftee can fly in and then the lesson can take
+   the screen. The return is hosted (?cover=0): Momo runs, and at the ditch the game stops for
+   Swiftee ('swiftee') until the lesson says she has spoken ('said'). The lesson asks for the bed
+   to go ('quiet') as it takes the screen. Without the flag nothing here changes. */
+const lessonPart = params.get('lesson');
+/* and in the lesson there is no way round it: no Skip on the tutorial, and no review jump to
+   the ending (the HUD's TEMPORARY control) */
+if (lessonPart) ['tut-skip', 'btn-skip-end'].forEach(id => { const b = document.getElementById(id); if (b) b.remove(); });
+const whereOf = t => { try { return t.where(); } catch (e) { return null; } };
+const tutorialOptions = () => {
+  if (lessonPart === 'intro') return { script: 'intro', holdAtEnd: true, onDone: t => tellHost('lesson', { where: whereOf(t) }) };
+  if (lessonPart === 'end') return { script: 'end', onHost: (id, where) => tellHost('swiftee', { id, where }) };
+  return {};
+};
+if (lessonPart) {
+  window.addEventListener('message', e => {
+    const d = e.data;
+    if (!d || e.source !== window.parent) return;
+    if (d.iceAge === 'said' && tut) tut.didAction('host');
+    if (d.iceAge === 'quiet') { game.fadeMusic(900); setTimeout(() => game.suspendAudio(), 1000); }
+  });
+}
 if (hosted) {
   window.iceAgeBegin = () => { hostAsked = true; if (hostReady) beginRun(); return begun; };
   Object.defineProperty(window, 'iceAgeReady', { get: () => hostReady });
@@ -12725,7 +12834,8 @@ let lastComplete = false;
  * suppresses it, which is what the test suite passes.
  */
 const tutFlag = params.get('tutorial');
-const wantTutorial = tutFlag !== '0' && tutFlag !== 'false';
+/* the lesson's opening IS its tutorial script: without it there would be nothing to hand over on */
+const wantTutorial = (tutFlag !== '0' && tutFlag !== 'false') || lessonPart === 'intro';
 
 /* THE BACKBUFFER AT SCREEN RESOLUTION. The stage is CSS-fitted to the window; the canvas
    behind it renders at (stage CSS width x devicePixelRatio) / 1920 times its 1920x1080
@@ -12785,6 +12895,7 @@ const game = createGame(canvas, {
        Before this the cover itself waited for the whole art set — five to six seconds of
        blank page on the deployment before anything appeared at all. */
     if (front) front.setLoading(false);
+    if (lessonPart) tellHost('ready');   // the lesson's opening: PLAY is live
   },
   onHud: state => {
     hud.update(state);
@@ -12817,7 +12928,7 @@ const game = createGame(canvas, {
    point, and the tutorial reads what it needs from debug() itself. */
 function startTutorial() {
   if (!wantTutorial || tut) return;
-  tut = new Tutorial(document, game);
+  tut = new Tutorial(document, game, tutorialOptions());
   tut.begin();
   let last = performance.now();
   const tick = now => {
@@ -12897,7 +13008,7 @@ game.setOptions(hosted ? Object.assign({}, options, { sound: false }) : options)
    reason to sit on a blank page while the sheets and sounds arrive behind it. */
 if (!flag('skip', false) && !hosted) {
   front = new Frontend(document, game);
-  front.init({ onStart: () => { game.begin(); startTutorial(); } });
+  front.init({ onStart: () => { tellHost('play'); game.begin(); startTutorial(); } });
   front.setLoading(true);
 }
 /* Re-pick the backbuffer scale when the window changes (a zoom, a monitor swap, a rotate).

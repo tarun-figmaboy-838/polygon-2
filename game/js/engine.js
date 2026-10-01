@@ -9238,6 +9238,8 @@ export function createGame(canvas, hooks = {}) {
       audio.resume();
       if (audio.music) { const p = audio.music.el.play(); if (p && p.catch) p.catch(() => {}); }
     },
+    /** Fade the music bed out over ms: the polygon lesson's hand-over, where its own bed takes over. */
+    fadeMusic(ms) { audio._musicTo(0, ms || 900); },
     /** Sound on/off from the HUD. Returns the new state. */
     toggleSound() {
       audio.start(); audio.resume();

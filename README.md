@@ -1,6 +1,8 @@
 # Polygon Adventure
 
-A playful polygon lesson for young learners. It opens with **Momo and Popo**, a nine-panel animated comic story, then **Help Momo**: an avalanche comes down the pass, Momo runs ahead of it to a broken path, Swiftee flies in, tells him what is wrong and that the polygons come first. Then the lesson, where Swiftee the bird teaches open and closed figures, straight and curved boundaries, sides, vertices and angles, and polygon names from triangle to octagon. Before the quizzes, one recap screen goes over each idea in turn; after them, Swiftee tells the learner they are ready to help Momo, and the runner game begins by itself, in which Momo crosses the broken ice by cutting down the right polygon, seven crossings, to reach his friend.
+A playful polygon lesson for young learners. It opens on **Frozen Rush** itself: the game's own banner and Play, its avalanche, and its tutorial as far as the broken path ("This is Momo. He needs to find his friend." ... "Oh no! The path is broken."). There the game stops, **Swiftee flies in**, lands on the path across the ditch, looks at it, and tells the learner "Momo needs your help. But for that first you need to learn about polygons." A flurry of snow blows across and the game fades away onto the lesson, which starts by itself. Then the lesson, where Swiftee the bird teaches open and closed figures, straight and curved boundaries, sides, vertices and angles, and polygon names from triangle to octagon. Before the quizzes, one recap screen goes over each idea in turn; after them, Swiftee tells the learner they are ready to help Momo, and the runner game begins by itself, avalanche and all, with no tutorial: at the ditch Swiftee flies in again ("Now let's help Momo."), and Momo crosses the broken ice by cutting down the right polygon, seven crossings, to reach his friend.
+
+The **Momo and Popo** comic story and the **Help Momo** scene that used to open it are kept **on draft**: `?story=1` brings them back in place of the game's opening.
 
 **Play it:** https://tarun-figmaboy-838.github.io/polygon-2/
 
@@ -16,14 +18,15 @@ npx serve .
 
 | URL option | What it does |
 |---|---|
-| `?story=0` | Skip the Momo and Popo story |
-| `?intro=0` | Skip the story, and start the lesson |
+| `?intro=0` | Skip the game's opening (its cover and tutorial) and start the lesson |
+| `?intro=1` | Force the game's opening in automated browsers, which skip it by default |
 | `?preview=1` | Authoring mode: goes straight to screen 1 |
-| `?story=1` | Force the story in automated browsers, which skip it by default |
-| `?game=1` | Straight to the Frozen Pass runner game: the story and the lesson are skipped |
-| `?game=0` | Leave the game out (and with it the Help Momo scene): the last screen ends on Play again |
-| `?bridge=1` | Straight to the Help Momo scene between the story and the lesson (the Broken Path); its Next goes into the lesson |
-| `?bridge=0` | Leave that scene out: the lesson follows the story |
+| `?story=1` | The drafted opening instead: the Momo and Popo story, then the Help Momo scene (and that scene again at the end) |
+| `?game=1` | Straight to the Frozen Pass runner game after the lesson: the opening and the lesson are skipped |
+| `?game=0` | Leave the game out: no opening, and the last screen ends on Play again |
+| `?bridge=1` | Straight to the drafted Help Momo scene (the Broken Path); its Next goes into the lesson |
+| `?bridge=on` | The drafted Help Momo scene at the lesson's end only |
+| `?bridge=0` | With `?story=1`, leave that scene out: the lesson follows the story |
 | `?dev=1` | Review mode: shows the screen navigator (Screens jump menu, Back and Next) at the top of the lesson, and the same Scenes menu over the story (with `?story=1` in automated browsers) |
 
 ## Folders
@@ -32,7 +35,8 @@ npx serve .
 index.html            the page: the lesson template and its script
 src/
   story/              Momo + Popo story: controller, scene data, voice timings
-  intro/              the opening's order: the story, Help Momo, the lesson
+  intro/              the opening's order (the game's cover and tutorial, or the drafted story),
+                      and Swiftee flying in over the game (swiftee-cameo.js)
   lesson/             lesson data, layout, voice playback, Swiftee's sheet tables
   runtime/            the component runtime that boots the lesson
   bridge/             Help Momo (the Broken Path): the scene between the story and the lesson
@@ -77,7 +81,9 @@ npm run optimize:media -- assets/audio/lesson --speech   # narration: mono, spee
 
 The round gold **Play** and the pill buttons come from the buttons kit of Swiftee & the Polygons (Part 1): the art is in `assets/ui/`, the styles in `styles/buttons-kit.css`, the Play button's glow, crystals and press in `src/fx/play-fx.js` (with `src/fx/snowflake.js`). The story's start card has the gold Play. **Next** is the blue pill, on the story into the game and on the lesson's recap screen, and with `?bridge=0` the completion screen offers a blue **Help Momo** and a gold **Play again**. The lesson's other buttons (Check and the answers) are still its ice buttons. The kit's own pages are `buttons-kit.html` and `momo-jump-kit.html`.
 
-## The Momo + Popo story
+## The Momo + Popo story (on draft)
+
+On draft: the experience opens on the game now (see [The Frozen Pass](#the-frozen-pass-the-runner-game)). `?story=1` plays this story, and the Help Momo scene after it, in place of that opening.
 
 It is told like a comic: each scene is a panel on a comic page. The narrator is **heard only**: their lines are voiced, with no box on screen. Momo and Popo speak in **one box**, a short part of the line at a time, using the dialogue kit from POLYGON Part 1: white bubbles that boing out of their tails, the bubble and its tail one drawn outline reaching to the speaker's head. Each word pops in as it is said, and a later part of a line takes the box with a smaller pop. The box shakes for a shout and trembles for a worry. Key words are coloured (Momo orange, Popo blue, the treasure gold, action red, encouragement green). Sounds, music, sparkles, hearts, ink emanata, speed lines and gentle shakes keep it lively; there are no written sound effects.
 
@@ -93,7 +99,9 @@ The voices are **recorded**: the narrator, Momo and Popo each delivered one file
 
 The music is an original score rendered by `npm run build:story-music`: one file with a section per mood (warm, playful, tension, hush, resolve) that the story crossfades between. To use a studio track instead, give it the same sections and times, or change the table in `story-data.js`.
 
-## Help Momo (the Broken Path, between the story and the lesson)
+## Help Momo (the Broken Path, on draft with the story)
+
+On draft with the story (`?story=1`, or `?bridge=1` for the scene alone, `?bridge=on` for its ending alone). Without it, Swiftee's last line is said in the lesson's own bubble, and her lines at the broken path are said over the game itself.
 
 The story ends on Popo's "Momo, keep going!" and fades to dark, and this scene comes up out of it, in the game's own world at dawn, on the game's own opening: its avalanche (a port of `game/js/avalanche.js`, with its sounds), a wall of snow coming down the pass while Momo runs in along the ice path ahead of it and the path cracks open behind his heels. When the snow has settled he runs on, sees the break ahead, skids to a stop short of the edge, looks down and holds there, breathing, the way the game's mammoth waits at a crack. Swiftee flies in on a curve, lands beside him, looks at the gap and then at Momo, and says three lines word by word, in her own recorded voice: "Oh no! The path is broken." and "Help Momo cross the Frozen Pass!" (the game's own approved lines, which its tutorial says again in the game's voice), and then "But for that first you need to learn about polygons." When the last line has been read, **Next** appears. It fades back to the story's dark, and the lesson comes up out of it. The scene comes back once more at the end of the lesson: Momo at the edge and Swiftee beside him, for her line "Now you know everything about polygons. You are ready to help Momo.", and then the game starts by itself.
 
@@ -105,11 +113,13 @@ Nothing takes a tap or a key during the scene except Next, and Next does not exi
 
 **The music.** Under the whole lesson plays Frozen Rush's own bed (`game/assets/audio/bgm-ice-hunt`), at the game's level and with the game's manners: it fades in when screen 1 starts, dips under every line Swiftee says (in the lesson, the recap and the Help Momo scene) and fades out as the game takes the screen, where the game's own copy carries on. It streams and is never waited on; a browser that will not start it yet is asked again on the next tap. The player is `src/lesson/lesson-music.js`.
 
-**The end**, after the last quiz, is not another summary: the Help Momo scene comes back at the broken path, Momo at the edge and Swiftee beside him, and she says "Now you know everything about polygons. You are ready to help Momo.", word by word, with a small happy beat and nothing to press. Once it has been said and read, the screen goes to the game's night blue and Frozen Rush starts by itself: there is no cover and no Play. The game starts once, and its own voice begins only after hers. With `?game=0` the end offers Play again instead.
+**The end**, after the last quiz, is not another summary: Swiftee says "Now you know everything about polygons. You are ready to help Momo.", word by word, with a small happy beat and nothing to press. Once it has been said and read, the screen goes to the game's night blue and Frozen Rush starts by itself: there is no cover and no Play, and no tutorial. Its avalanche comes down and Momo runs; at the ditch the game stops, Swiftee flies in, lands across it and says "Now let's help Momo.", and flies off; then the plank says "Use the right ice piece to fix the path." and asks its question, "Cut the TRIANGLE." The game starts once, and its own voice begins only after hers. With `?game=0` the end offers Play again instead. (With `?story=1` the end is said in the drafted Help Momo scene.)
 
 ## The Frozen Pass (the runner game)
 
 `game/` is the Ice Age runner from the `running-mammoth` repository, brought in as it ships there: `game/index.html`, its two stylesheets, the modules in `game/js/` and its art and sound. One change was made to it: Baloo 2 comes from the lesson's own font file (`styles/fonts.css`) instead of Google Fonts, so the whole experience still ships every font with the page. That is also why the game has to be served from this folder rather than from `game/` on its own.
+
+**The opening and the return.** The game is carried twice, by `src/runner/runner-stage.js`. First as the page itself, with `?lesson=intro`: its cover and Play, its avalanche, and its tutorial's first five lines (the 'intro' script in `game/js/tutorial.js`); at the broken path it holds its world still and tells the page where Momo and the hole are, and Swiftee flies in over it (`src/intro/swiftee-cameo.js`: the lesson's own sheets and dialogue box, the game's whoosh, her recorded voice where the line has a take). Then the hand-over in the snow: a flurry of the lesson's snowflakes blows across, the lesson starts underneath, and the game fades away under the snow onto it; the frame is then taken off the page. After the lesson the game is loaded again, with `?lesson=end`, and at the ditch it stops for Swiftee in the same way (a host step) before the plank. In both, the game's Skip and Skip to ending are taken out. Opened on its own, the game is unchanged.
 
 It plays in an `<iframe>`, not inside the lesson's document. The game's stylesheet carries global rules and generic class names, the two pages read different meanings into `?intro=0`, and each keeps its own audio and keyboard focus. While it waits hidden, the game makes no sound: its sound is turned on when its run begins. `src/runner/runner-stage.js` puts the frame on the page invisibly while the last screen plays, so the game has loaded by the time it is needed. After the last screen's line the screen dims to the game's night blue and the curtain lifts on the game's run, which starts by itself: the game is loaded with `?cover=0`, so it has no cover and no Play and waits for the page to start it (`window.iceAgeBegin` in `game/js/main.js`), once. **Play again** inside the game restarts the game. With `?game=0` there is no game, and the last screen ends on **Play again**, which restarts the lesson.
 
@@ -119,7 +129,9 @@ It plays in an `<iframe>`, not inside the lesson's document. The game's styleshe
 | The tutorial's seven lines | `game/js/tutorial.js` (their recording is `game/assets/audio/vo-lines`, windows in `CFG.vo.lines`; see [The voices](#the-voices)) |
 | When the game loads, the curtain, which URL flags reach it | `src/runner/runner-stage.js`, `styles/runner-stage.css` |
 | The Help Momo scene: its timing, lines, layout and states | `src/bridge/bridge-story.js`, `styles/bridge-story.css` |
-| When it plays: after the story, before the lesson; and again at the end | `src/intro/opening.js`: `autostart`; `BridgeStory.afterStory`, `BridgeStory.ending` |
+| The opening: the game's cover and tutorial, Swiftee at the broken path, the snow into the lesson | `src/intro/opening.js`, `src/runner/runner-stage.js` (`opening`, `toLesson`, `flurry`); `src/intro/swiftee-cameo.js`; `game/js/tutorial.js` (the intro and end scripts) |
+| Swiftee over the game: her flight, her look at the ditch, her box, what she says | `src/intro/swiftee-cameo.js`; her lines are `OPENING_LINES` and `DITCH_LINES` in `src/runner/runner-stage.js` |
+| When the drafted Help Momo scene plays (`?story=1`) | `src/intro/opening.js`: `storyFirst`; `BridgeStory.afterStory`, `BridgeStory.ending` |
 | The recap before the quizzes: what it says, its look | `index.html`: `recapConcepts`, `startRecap`; `src/lesson/recap.js`, `styles/recap.css` |
 | The end of the lesson: the last line, then the game by itself | `index.html`: `finishLesson`, `startPart2`; `src/runner/runner-stage.js` |
 
@@ -140,7 +152,7 @@ Every voice the learner hears is recorded. They were delivered as eight files, m
 | `swiftee-lesson-4.mp3` | Swiftee | the Broken Path's last line, the recap's two own lines, and the end's line back to Momo |
 | `frozen-rush-voice.mp3` | Game voice | Frozen Rush: the seven tutorial lines and the seven signs |
 
-`docs/voice/cue-map.json` is the line-level map: for every line, which file, where it starts and ends, and when each word is said. It was measured from the recordings (a speech recogniser placed the words, then the waveform's own pauses decided where each line begins and ends). `npm run build:recorded-voice` (`tools/voice/cut-recordings.py`) builds everything the experience plays from the recordings and that map: the story's joined file and table, one file per lesson line under the name its row in `src/lesson/recordings.js` already uses (and that row's length and word times), Swiftee's two Broken Path takes in `assets/audio/bridge/`, and the game's take with its windows in `CFG.vo.lines`. So every line is played on its own, at its own moment, and its words appear as they are said. There are no stand-in voices left. [docs/voice/VO-LIST.md](docs/voice/VO-LIST.md) lists every line and what it is recorded with. A new take for one line goes in on its own: add it to the cue map and run `npm run build:recorded-voice -- --only <id>`.
+`docs/voice/cue-map.json` is the line-level map: for every line, which file, where it starts and ends, and when each word is said. It was measured from the recordings (a speech recogniser placed the words, then the waveform's own pauses decided where each line begins and ends). `npm run build:recorded-voice` (`tools/voice/cut-recordings.py`) builds everything the experience plays from the recordings and that map: the story's joined file and table, one file per lesson line under the name its row in `src/lesson/recordings.js` already uses (and that row's length and word times), Swiftee's two Broken Path takes in `assets/audio/bridge/`, and the game's take with its windows in `CFG.vo.lines`. So every line is played on its own, at its own moment, and its words appear as they are said. There are no stand-in voices. Two of Swiftee's lines over the game have no take yet, and are shown and read without a voice until they are recorded: "Momo needs your help." and "Now let's help Momo." (her "But for that first you need to learn about polygons." is the Broken Path's recorded line). [docs/voice/VO-LIST.md](docs/voice/VO-LIST.md) lists every line and what it is recorded with. A new take for one line goes in on its own: add it to the cue map and run `npm run build:recorded-voice -- --only <id>`.
 
 ## Testing
 
@@ -150,6 +162,8 @@ npm install                            # newer npm may ask you to approve the in
 npx playwright install chromium        # and `webkit` to test Safari's engine
 npm test                               # lesson smoke + story on 6 screens + user flows + the runner hand-off
                                        # + the story into the game + Swiftee loading (~14 min)
+npm run test:opening                   # the game's cover and tutorial, Swiftee at the broken path, the snow into the lesson,
+                                       # and the return: the avalanche, Swiftee at the ditch, the plank (~3 min)
 npm run test:runner                    # just the hand-off: ?game=1, the Help Momo button, ?game=0 (~2 min)
 npm run test:bridge                    # Help Momo and the lesson's ending: order, locking, voice, Next, the game starting by itself (~5 min)
 npm run test:swiftee                   # Swiftee loading: sheet table, cold / slow / warm loads, state races (~2 min)

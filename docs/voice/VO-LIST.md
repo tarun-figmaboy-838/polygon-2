@@ -12,8 +12,9 @@ Every line the learner hears, taken from the code as it ships today (2026-10-01)
 | 2 Lesson | Swiftee | 78 | all recorded (`swiftee-lesson-1.mp3`, `-2.mp3`, `-4.mp3`) | 0 |
 | 3 Help Momo (the Broken Path) | Swiftee | 3 | all recorded (`swiftee-lesson-2.mp3`, `-4.mp3`) | 0 |
 | 4 Frozen Rush game | Game voice | 14 | recorded (`frozen-rush-voice.mp3`) | 0 |
+| 5 Swiftee over the game | Swiftee | 3 | 1 (B3, "But for that first you need to learn about polygons.") | 2 |
 
-**Must record:** nothing. Every line is recorded: the recordings delivered on 2026-10-01 (`assets/audio/source/`) hold every line the learner hears, and each line is cut from them and played on its own, at its own moment, with its words appearing as they are said (`docs/voice/cue-map.json` says where every line is). The recap at screen 41 says, besides its own two lines (L57a, L57b), ten lines the lesson already has: L27, L31, L32, L33, and L47, L48, L53-L56.
+**Must record (Swiftee, over the game):** "Momo needs your help." (at the broken path, before the lesson, just before B3) and "Now let's help Momo." (at the ditch, after the lesson). Until then they are shown and read without a voice. Everything else is recorded: the recordings delivered on 2026-10-01 (`assets/audio/source/`) hold every line the learner hears, and each line is cut from them and played on its own, at its own moment, with its words appearing as they are said (`docs/voice/cue-map.json` says where every line is). The recap at screen 41 says, besides its own two lines (L57a, L57b), ten lines the lesson already has: L27, L31, L32, L33, and L47, L48, L53-L56.
 
 ## How to deliver
 

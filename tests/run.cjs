@@ -16,7 +16,8 @@ const suites = [
   ['Help Momo and the ending', 'bridge.test.cjs', {}],
   ['Swiftee loading', 'swiftee.test.cjs', {}],
   ['The recap', 'recap.test.cjs', {}],
-].filter(s => !(quick && /^(flows|runner|bridge|swiftee|recap)\.test\.cjs$/.test(s[1])));
+  ['The opening and the return', 'opening.test.cjs', {}],
+].filter(s => !(quick && /^(flows|runner|bridge|swiftee|recap|opening)\.test\.cjs$/.test(s[1])));
 
 const summary = [];
 for (const [name, file, env] of suites) {

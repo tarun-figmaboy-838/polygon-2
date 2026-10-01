@@ -39,19 +39,23 @@
 <link rel="stylesheet" href="styles/recap.css">
 <script src="src/fx/snowflake.js"></script>
 <script src="src/fx/play-fx.js"></script>
-<!-- The Momo + Popo story plays first, then the Help Momo scene; the lesson waits on
-     Opening.gate (src/intro/opening.js), so nothing starts under them. -->
+<!-- The game's own cover and tutorial open the experience (src/intro/opening.js); the lesson
+     waits on Opening.gate, so nothing starts under them. The Momo + Popo story and the Help
+     Momo scene are on draft: ?story=1 brings them back in place of the game's opening. -->
 <link rel="stylesheet" href="styles/story-intro.css">
 <script src="src/story/story-voice.js"></script>
 <script src="src/story/story-data.js"></script>
 <script src="src/story/story-intro.js"></script>
-<!-- The opening's sequence: the story, then the Help Momo scene, then the lesson. -->
+<!-- The opening's sequence: the game's cover and tutorial (or, on ?story=1, the story and the
+     Help Momo scene), then the lesson. -->
 <script src="src/intro/opening.js"></script>
-<!-- The Frozen Pass: the runner game in game/, played after the lesson in a frame of
-     its own. It starts loading as the completion screen opens and takes the screen
-     from that screen's "Help Momo" button. ?game=1 opens straight on it; ?game=0
-     leaves it out. See src/runner/runner-stage.js. -->
+<!-- Frozen Rush, the runner game in game/, in a frame of its own: first as the opening (its
+     cover, PLAY and tutorial up to the broken path), then again after the lesson, from the
+     recap on, starting by itself after Swiftee's last line. ?game=1 opens straight on the
+     second; ?game=0 leaves the game out. See src/runner/runner-stage.js. -->
 <link rel="stylesheet" href="styles/runner-stage.css">
+<!-- Swiftee flying in over the game at the broken path, before the lesson and after it -->
+<script src="src/intro/swiftee-cameo.js"></script>
 <script src="src/runner/runner-stage.js"></script>
 <!-- Help Momo, the Broken Path: the scene between the story and the lesson. Momo runs
      to a broken path, Swiftee flies in, says what is wrong and that the polygons come
@@ -5561,8 +5565,8 @@ class Component extends DCLogic {
     }
     this.sayLastLine(gen, game);
   }
-  /* The last line in the lesson's own bubble: without the Help Momo scene (?bridge=0), or when
-     it could not come up. */
+  /* The last line in the lesson's own bubble: the Help Momo scene is on draft (it comes back
+     with ?story=1), or it could not come up. */
   sayLastLine(gen, game) {
     const s = this.step();
     this.setState({ endPhase: 'MOMO_READY_MESSAGE' });

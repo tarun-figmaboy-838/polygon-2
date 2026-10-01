@@ -259,7 +259,7 @@ const SCENARIOS = {
   /* The lesson's ending: back at the broken path, in this scene, Swiftee's line back to Momo,
      then Part 2 starts by itself. */
   async lesson(browser, srv) {
-    const { page, context, errors } = await open(browser, srv, '?preview=1');
+    const { page, context, errors } = await open(browser, srv, '?preview=1&bridge=on');
     await page.waitForFunction(() => window.__poly && window.__poly.state.ready, null, { timeout: 30000 });
     await page.evaluate(() => { const g = window.__poly, k = g.steps().length - 1; g.setState({ k }, () => g.runStep(k, false)); });
     const says = await page.waitForFunction(() => { const s = window.BridgeStory.state(); return s.active && s.mode === 'ending' && s.phase === 'ENDING_LINE'; }, null, { timeout: 30000 }).then(() => true, () => false);
@@ -286,7 +286,9 @@ const SCENARIOS = {
       /* the game's own log: 'id' when a line plays, 'id:queued' / 'id:after' while it waits */
       const said = await frame.evaluate(() => window.iceAgeGame._voice().said.map(String));
       const spoken = said.filter(x => !/:(queued|after|too-late|no-window|muted)$/.test(x)).map(x => x.split(':')[0]);
-      check('Part 2 says each line once', spoken.length > 0 && new Set(spoken).size === spoken.length, said.join(','));
+      // the return has no tutorial (game/js/tutorial.js, the 'end' script): nothing is said until the ditch
+      check('Part 2 says no tutorial line on its way to the ditch, and nothing twice', !spoken.some(id => /^tut-/.test(id)) &&
+        new Set(spoken).size === spoken.length, said.join(','));
     }
     check('the ending: no script errors', !errors.length, errors.join(' | '));
     await context.close();

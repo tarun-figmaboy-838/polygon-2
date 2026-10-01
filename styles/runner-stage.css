@@ -1,5 +1,6 @@
 /* ============================================================================
-   THE FROZEN PASS — the runner game's stage, after the lesson.
+   THE FROZEN PASS — the runner game's stage: the opening (#runner-opening, the game's cover
+   and its tutorial before the lesson) and the game after it (#runner-stage).
 
    The game (game/) is a complete page of its own, with its own stylesheet, its
    own audio graphs and its own URL flags, so it runs in an <iframe> rather than
@@ -10,7 +11,7 @@
    this file is the frame around it: the host, the curtain, and the rule that
    stops the lesson painting while the game has the screen.
    ========================================================================= */
-#runner-stage {
+#runner-stage, #runner-opening {
   position: fixed;
   inset: 0;
   /* above the story (10060), the Help Momo scene (10065) and the screen navigator (10000) */
@@ -24,7 +25,7 @@
    passes every pointer through to the lesson, and an invisible frame cannot take focus. */
 #runner-stage.is-loading { pointer-events: none; }
 #runner-stage.is-loading .runner-frame { visibility: hidden; opacity: 0; }
-#runner-stage.is-on { background: #0a2450; }   /* the game's own night blue */
+#runner-stage.is-on, #runner-opening { background: #0a2450; }   /* the game's own night blue */
 
 .runner-frame {
   position: absolute;
@@ -47,8 +48,8 @@
   pointer-events: none;
   transition: opacity 320ms ease-in;
 }
-#runner-stage.is-arriving .runner-curtain { opacity: 1; }
-#runner-stage.is-on .runner-curtain { opacity: 0; transition: opacity 560ms ease-out; }
+#runner-stage.is-arriving .runner-curtain, #runner-opening.is-arriving .runner-curtain { opacity: 1; }
+#runner-stage.is-on .runner-curtain, #runner-opening.is-on .runner-curtain { opacity: 0; transition: opacity 560ms ease-out; }
 
 /* While the game has the screen, the lesson underneath is not painted at all: its
    snow, its sparkles and its guide would otherwise keep animating behind an opaque
@@ -57,4 +58,49 @@ html[data-runner="on"] .game-viewport { visibility: hidden; }
 
 @media (prefers-reduced-motion: reduce) {
   .runner-curtain { transition: none; }
+}
+
+/* THE SNOW BETWEEN THE OPENING AND THE LESSON (runner-stage.js, flurry): above both, and never
+   in the way of a finger. Each flake is placed and moved by its own animation. */
+.opening-snow { position: fixed; inset: 0; z-index: 10080; pointer-events: none; overflow: hidden; }
+.opening-flake { position: absolute; left: 0; top: 0; will-change: transform, opacity; }
+.opening-flake.is-dot { border-radius: 50%; background: #f0fbff; box-shadow: 0 0 6px rgba(186, 226, 255, .85); }
+
+/* SWIFTEE OVER THE GAME (src/intro/swiftee-cameo.js): above the game's frame, under the snow.
+   Her box is the lesson's own (styles/dialogue.css), lettered and brought in as the Help Momo
+   scene's is (styles/bridge-story.css). */
+#swiftee-cameo { position: fixed; inset: 0; z-index: 10075; pointer-events: none; }
+#swiftee-cameo .cameo-bird {
+  position: absolute; left: 0; top: 0;
+  background-repeat: no-repeat;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+#swiftee-cameo .cameo-say { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+#swiftee-cameo .cameo-box {
+  width: max-content;
+  max-width: 640px;
+  opacity: 0;
+  transform: scale(0.94);
+  transform-origin: var(--ox, 30%) 100%;
+  transition: opacity 240ms ease-out, transform 240ms cubic-bezier(0.22, 0.8, 0.25, 1);
+}
+#swiftee-cameo .cameo-say.show .cameo-box { opacity: 1; transform: none; }
+#swiftee-cameo .cameo-say.out .cameo-box { opacity: 0; transform: scale(0.97); transition: opacity 150ms ease-in, transform 150ms ease-in; }
+#swiftee-cameo .cameo-say-text {
+  position: relative;
+  display: block;
+  font: 800 44px/1.2 Nunito, 'Baloo 2', sans-serif;
+  letter-spacing: 0.005em;
+  color: #174b52;
+  text-align: center;
+  white-space: normal;
+  text-wrap: balance;
+}
+#swiftee-cameo .cameo-say .w { display: inline-block; opacity: 0; }
+#swiftee-cameo .cameo-say .w.in { opacity: 1; }
+#swiftee-cameo .cameo-say .w.k { color: #7b249c; font-weight: 900; }
+#swiftee-cameo .cameo-live { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+@media (prefers-reduced-motion: reduce) {
+  #swiftee-cameo .cameo-say.show .cameo-box, #swiftee-cameo .cameo-say.out .cameo-box { transform: none; transition: opacity 200ms ease; }
 }

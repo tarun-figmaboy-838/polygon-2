@@ -12,12 +12,3 @@
   font-display: swap;
   src: url('../assets/fonts/nunito-latin.woff2') format('woff2');
 }
-/* the dialogue kit's lettering: the story's bubbles, the Help Momo scene and the recap.
-   A variable file, 300-700, so the 600 the bubbles use is real. */
-@font-face {
-  font-family: 'Fredoka';
-  font-style: normal;
-  font-weight: 300 700;
-  font-display: swap;
-  src: url('../assets/fonts/fredoka-latin.woff2') format('woff2');
-}

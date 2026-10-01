@@ -31,10 +31,9 @@
    starts are in src/story/story-voice.js; the art is assets/story/; the voice
    and music files are assets/audio/story/ (Ogg Opus, MP3 where Ogg won't play).
 
-   Skip it with ?story=0 (also ?intro=0 or ?preview=1, and ?game=1, which opens
-   straight on the runner game after the lesson). Automated browsers
-   (navigator.webdriver) skip it too, so the lesson checks see the page
-   exactly as before; force it there with ?story=1.
+   ON DRAFT. The experience opens on the game's own cover and tutorial now
+   (src/intro/opening.js); this story plays only with ?story=1, and then the
+   Help Momo scene follows it as before.
    ========================================================================= */
 (function () {
   'use strict';
@@ -91,11 +90,11 @@
   function params() {
     try { return new URLSearchParams(window.location.search); } catch (e) { return null; }
   }
+  /* ON DRAFT: the experience opens on the game's own cover and tutorial now
+     (src/intro/opening.js). The story is kept, and plays only when asked for with ?story=1. */
   function skipRequested() {
     var q = params();
-    if (q && q.get('story') === '1') return false;
-    if (q && (q.get('story') === '0' || q.get('intro') === '0' || q.get('preview') === '1' || q.get('game') === '1' || q.get('bridge') === '1')) return true;
-    return !!navigator.webdriver;
+    return !(q && q.get('story') === '1');
   }
   function reducedMotion() {
     return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);

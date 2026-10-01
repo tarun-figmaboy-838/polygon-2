@@ -60,15 +60,15 @@
    words still arrive on the same clock, silently, and the scene carries on. A story
    that cannot talk is never a story that stops.
 
-   WHEN IT PLAYS: after the story, whenever the story played (a learner who skipped it
-   with Escape still meets Momo's problem). Where the story is left out (?story=0,
-   ?intro=0, ?preview=1, automated browsers) so is this scene, and the lesson opens as
-   it did.
+   ON DRAFT, WITH THE STORY. The experience opens on the game's own cover and tutorial
+   now (src/intro/opening.js). With ?story=1 the old opening comes back: this scene plays
+   after the story, and again at the end for Swiftee's last line.
    URL flags:
      ?bridge=0   leave this scene out: the lesson follows the story at once, and its
                  completion screen offers Help Momo (Part 2) and Play again
      ?bridge=1   open straight on this scene (the story is skipped);
                  its Next goes straight into the lesson. For review and for the tests
+     ?bridge=on  only the lesson's ending, back at the broken path
    With ?game=0 there is no Part 2, so there is no scene either.
    ========================================================================= */
 (function () {
@@ -80,7 +80,12 @@
   var q = params();
   var flag = q ? q.get('bridge') : null;
   var RS = window.RunnerStage;
-  var enabled = !!(RS && RS.enabled && !RS.autostart) && flag !== '0';
+  /* ON DRAFT, with the story: the scene plays only where the story is asked for (?story=1), on
+     its own with ?bridge=1, or only at the lesson's end with ?bridge=on. Otherwise the game's own
+     tutorial opens the experience and the lesson's last line is said in its own bubble
+     (src/intro/opening.js, finishLesson). */
+  var drafted = !!(q && (q.get('story') === '1' || flag === '1' || flag === 'on'));
+  var enabled = !!(RS && RS.enabled && !RS.autostart) && flag !== '0' && drafted;
   var autostart = enabled && flag === '1';
 
   /* ------------------------------------------------------------ the world */

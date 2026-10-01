@@ -301,6 +301,15 @@ physics, less wall clock; the only way to reach phase 6 quickly).
 tutorial follow as they do after PLAY. The lesson loads the game this way, so the run starts
 by itself after Swiftee's last line (`src/runner/runner-stage.js` in the lesson's repository).
 
+**The lesson's two parts:** `?lesson=intro` is the lesson's opening: the cover and PLAY as
+usual, then only the tutorial's first five lines; at the broken path the world is held still
+and the page is told (`{ iceAge: 'lesson', where }`), and the page asks for the music to go
+(`quiet`). `?lesson=end` (with `?cover=0`) is the return: the avalanche and the run with no
+tutorial, and at the ditch a host step stops the game (`{ iceAge: 'swiftee', id, where }`)
+until the page answers `said` (or 16 s pass), then line 6 on the plank. `where` is Momo's head
+and the far lip of the hole in stage space after the zoom, and the stage's place in the window
+(`Tutorial.where`). In both, the tutorial's Skip and the HUD's Skip to ending are taken out.
+
 ---
 
 ## 7. What the tests will hold you to

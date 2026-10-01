@@ -1,5 +1,5 @@
 /* ============================================================================
-   THE FROZEN PASS — the runner game, played after the lesson.
+   THE FROZEN PASS — the runner game, which opens the experience and closes it.
 
    Momo has been through the story, the broken path and the polygon lesson; this
    is where what the lesson taught is put to work. The game itself lives in
@@ -26,6 +26,23 @@
    is loaded with ?cover=0, which makes it wait for the page to start its run
    (window.iceAgeBegin in game/js/main.js), and it is started once.
 
+   AND FIRST, THE OPENING (opening()). The experience starts on the game itself: its own
+   cover and PLAY, its opening avalanche, and its tutorial as far as the broken path, where it
+   says why the learner must learn about polygons first (game/js/tutorial.js, the 'intro'
+   script; the frame is loaded with ?lesson=intro). There the game holds its world still and
+   says 'lesson', and the two change places IN THE SNOW: a flurry blows across the screen,
+   the lesson starts underneath, and the game fades away under the snow to show it, Swiftee
+   already flying in. No curtain, no Play, nothing blank in between (src/intro/opening.js
+   opens the lesson). After the lesson the game is loaded again with ?lesson=end: Momo runs,
+   and nothing is said until the ditch.
+
+   opening() reports where it is in `opening.phase`, in order:
+     OPENING_COVER         the game's cover is the page (PLAY waits for its art)
+     OPENING_TUTORIAL      PLAY has been pressed: the avalanche, the run, the tutorial
+     OPENING_SWIFTEE       the game is frozen at the broken path and Swiftee is speaking
+     OPENING_TO_LESSON     the game has said 'lesson': the snow, the lesson starting under it
+     OPENING_DONE          the frame is gone and the lesson has the screen
+
    start() reports where it is in `phase`, in order:
      TRANSITION_TO_GAME    the lesson is dimming to the night blue
      FROZEN_RUSH_INIT      the game is the page, under the curtain, waiting for its art
@@ -45,6 +62,28 @@
 
   var GAME_URL = 'game/index.html';
   var PASS_THROUGH = ['sound', 'reduced', 'fast', 'speed', 'tutorial', 'rs', 'hd'];
+  /* The opening's safety nets: no cover after this long (the game failed to load), or no
+     hand-over this long after PLAY (it stopped), and the lesson opens anyway. */
+  var OPENING_LOAD_CAP = 45000, OPENING_PLAY_CAP = 180000;
+  /* The hand-over in the snow: the flurry thickens for SNOW_LEAD before the game starts to fade,
+     the fade takes SNOW_FADE, and the flakes go on falling over the lesson after it. */
+  var SNOW_LEAD = 420, SNOW_FADE = 1300;
+  /* Swiftee's lines over the frozen game (src/intro/swiftee-cameo.js): before the lesson, why
+     the learner must learn first; after it, at the ditch. A visit that has not finished by
+     SWIFTEE_CAP lets the game go on regardless. */
+  var OPENING_LINES = [{ text: 'Momo needs your help.' }, { text: 'But for that first you need to learn about polygons.' }];
+  var DITCH_LINES = [{ text: "Now let's help Momo." }];
+  var SWIFTEE_CAP = 20000;
+  function lessonAudio() {
+    try { return window.__poly && window.__poly.ac ? window.__poly.ac() : null; } catch (e) { return null; }
+  }
+  /* Swiftee flies in over a frame and says her lines; resolves when she has, or at the cap. */
+  function swiftee(f, where, lines, leave) {
+    var S = window.SwifteeCameo;
+    if (!S) return Promise.resolve(false);
+    var visit = S.visit({ frame: f, where: where, lines: lines, audio: lessonAudio, leave: leave }).catch(function () { return false; });
+    return Promise.race([visit, new Promise(function (r) { setTimeout(function () { r(false); }, SWIFTEE_CAP); })]);
+  }
   /* The longest the curtain waits for the game's art before starting the run anyway. */
   var READY_CAP = 20000;
   /* The curtain's two moves, matching the transitions in styles/runner-stage.css
@@ -64,19 +103,156 @@
      message, because a page opened straight off the disk cannot reach into the frame. */
   var said = { ready: false, running: false };
   window.addEventListener('message', function (e) {
-    var w = null;
+    var w = null, o = null;
     try { w = frame && frame.contentWindow; } catch (x) { w = null; }
+    try { o = open && open.frame && open.frame.contentWindow; } catch (x) { o = null; }
+    if (o && e.source === o && e.data && typeof e.data.iceAge === 'string') { openingSaid(e.data.iceAge, e.data); return; }
     if (!w || e.source !== w || !e.data || typeof e.data.iceAge !== 'string') return;
+    /* at the ditch, after the lesson: Swiftee flies in, says her line and flies off, and the game
+       is told so it can go on to the plank */
+    if (e.data.iceAge === 'swiftee') {
+      var src = w;
+      swiftee(frame, e.data.where, DITCH_LINES, 'right').then(function () {
+        try { src.postMessage({ iceAge: 'said', id: e.data.id }, '*'); } catch (x) {}
+      });
+    }
     if (e.data.iceAge === 'ready') said.ready = true;
     if (e.data.iceAge === 'running') said.running = true;
   });
 
-  function gameSrc() {
-    var out = ['cover=0'];
+  function gameSrc(first) {
+    var out = first || ['cover=0', 'lesson=end'];
     if (q) PASS_THROUGH.forEach(function (k) {
       if (q.has(k)) out.push(k + '=' + encodeURIComponent(q.get(k)));
     });
     return GAME_URL + (out.length ? '?' + out.join('&') : '');
+  }
+
+  /* ------------------------------------------------------------ the opening */
+  var open = null;   // { host, frame, curtain, phase, said, done, timers }
+  var openPhase = 'IDLE';
+  function openingSaid(word, data) {
+    if (!open) return;
+    open.said[word] = true;
+    if (word === 'play' && open.phase === 'OPENING_COVER') { open.phase = openPhase = 'OPENING_TUTORIAL'; arm(OPENING_PLAY_CAP); }
+    if (word === 'ready') clearTimeout(open.loadCap);
+    if (word === 'lesson' && open.phase !== 'OPENING_SWIFTEE') {
+      /* the game is frozen at the broken path: Swiftee flies in and tells the learner why they
+         must learn first, and stays for the snow */
+      open.phase = openPhase = 'OPENING_SWIFTEE';
+      var mine = open;
+      swiftee(open.frame, data && data.where, OPENING_LINES, 'stay').then(function () { if (open === mine) toLesson(); });
+    }
+  }
+  function arm(ms) {
+    clearTimeout(open.cap);
+    open.cap = setTimeout(toLesson, ms);
+  }
+  function reducedMotion() {
+    return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }
+  /* A FLURRY, the lesson's own snow blown hard for a moment: the crystals of src/fx/snowflake.js
+     (the lesson's weather is drawn with them), most small and a few big, falling and turning on a
+     wind from the left, over the game and the lesson both. Nothing in it is solid, so the screen
+     is never covered: what is under the snow is always one picture or the other. */
+  function flurry() {
+    var box = document.createElement('div');
+    box.className = 'opening-snow';
+    box.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(box);
+    var W = window.innerWidth || 1280, H = window.innerHeight || 720;
+    var n = Math.round(Math.max(44, Math.min(96, W * H / 14000))), end = 0;
+    for (var i = 0; i < n; i++) {
+      var size = Math.round(10 + Math.pow(Math.random(), 1.9) * 62);
+      var el = document.createElement('div');
+      el.className = 'opening-flake';
+      if (window.Snowflake) el.innerHTML = window.Snowflake.svg(size, i % 3, { weight: Math.max(1.1, size * 0.05) });
+      else { el.style.width = el.style.height = Math.round(size / 3) + 'px'; el.className += ' is-dot'; }
+      box.appendChild(el);
+      var x0 = Math.random() * (W + 240) - 200, drift = 80 + Math.random() * 200;
+      var y0 = -size - Math.random() * H * 0.35, y1 = H + size;
+      var spin = (Math.random() < 0.5 ? -1 : 1) * (80 + Math.random() * 200);
+      var dur = Math.round(1500 + Math.random() * 1100 + (72 - size) * 12), delay = Math.round(Math.random() * 900);
+      end = Math.max(end, dur + delay);
+      try {
+        el.animate([
+          { transform: 'translate(' + x0 + 'px,' + y0 + 'px) rotate(0deg)', opacity: 0 },
+          { opacity: 0.95, offset: 0.12 },
+          { opacity: 0.9, offset: 0.78 },
+          { transform: 'translate(' + (x0 + drift) + 'px,' + y1 + 'px) rotate(' + spin + 'deg)', opacity: 0 }
+        ], { duration: dur, delay: delay, easing: 'linear', fill: 'both' });
+      } catch (e) { el.style.display = 'none'; }
+    }
+    setTimeout(function () { if (box.parentNode) box.parentNode.removeChild(box); }, end + 120);
+  }
+  /* The game has handed over (or a safety net has fired). The snow comes, the lesson starts
+     under the game (`done` settles: src/intro/opening.js opens the lesson's gate) and is
+     painted again, and the game fades away under the snow to show it. */
+  function toLesson() {
+    if (!open || open.phase === 'OPENING_TO_LESSON' || open.phase === 'OPENING_DONE') return;
+    open.phase = openPhase = 'OPENING_TO_LESSON';
+    clearTimeout(open.cap); clearTimeout(open.loadCap);
+    var mine = open, still = reducedMotion();
+    if (!still) flurry();
+    // the game's bed goes as the lesson's comes, and Swiftee flies off toward the lesson's rock
+    try { mine.frame.contentWindow.postMessage({ iceAge: 'quiet' }, '*'); } catch (e) {}
+    if (window.SwifteeCameo) window.SwifteeCameo.leave('left');
+    setTimeout(function () {
+      if (open !== mine) return;
+      document.documentElement.removeAttribute('data-runner');   // the lesson paints again, under the frame
+      mine.resolve(true);
+      mine.host.style.transition = 'opacity ' + (still ? 300 : SNOW_FADE) + 'ms ease-in-out';
+      requestAnimationFrame(function () { mine.host.style.opacity = '0'; });
+      setTimeout(function () { if (open === mine) closeOpening(); }, (still ? 300 : SNOW_FADE) + 80);
+    }, still ? 0 : SNOW_LEAD);
+  }
+  /* Show the game's cover as the page, now, and resolve true once the game has handed over to
+     the lesson (false if there is no game). `onGesture` is called on every press inside the
+     game, so the lesson can open its own audio on the learner's PLAY (same-origin frames). */
+  function opening(opts) {
+    if (!enabled || !document.body) return Promise.resolve(false);
+    if (open) return open.done;
+    opts = opts || {};
+    open = { said: {}, phase: 'OPENING_COVER' };
+    openPhase = 'OPENING_COVER';
+    if (window.SwifteeCameo) window.SwifteeCameo.preload(OPENING_LINES.map(function (l) { return l.text; }));
+    var h = document.createElement('div');
+    h.id = 'runner-opening';
+    h.className = 'runner-host is-on';
+    var f = document.createElement('iframe');
+    f.className = 'runner-frame';
+    f.title = 'Frozen Rush';
+    f.setAttribute('allow', 'autoplay; fullscreen');
+    f.src = gameSrc(['lesson=intro']);
+    var c = document.createElement('div');
+    c.className = 'runner-curtain';
+    c.setAttribute('aria-hidden', 'true');
+    h.appendChild(f);
+    h.appendChild(c);
+    document.body.appendChild(h);
+    document.documentElement.setAttribute('data-runner', 'on');
+    open.host = h; open.frame = f; open.curtain = c;
+    open.done = new Promise(function (resolve) { open.resolve = resolve; });
+    f.addEventListener('load', function () {
+      try { f.focus(); } catch (e) {}
+      var w = null;
+      try { w = f.contentWindow; w.document; } catch (e) { w = null; }   // off the disk the frame is another origin
+      if (w && opts.onGesture) ['pointerdown', 'pointerup', 'keydown'].forEach(function (k) {
+        try { w.addEventListener(k, function () { try { opts.onGesture(); } catch (e) {} }, true); } catch (e) {}
+      });
+    });
+    open.loadCap = setTimeout(function () { if (open && !open.said.ready && !open.said.play) toLesson(); }, OPENING_LOAD_CAP);
+    return open.done;
+  }
+  /* Take the opening's frame off the page (the lesson is the page by now). */
+  function closeOpening() {
+    if (!open) return;
+    var h = open.host;
+    open.phase = openPhase = 'OPENING_DONE';
+    clearTimeout(open.cap); clearTimeout(open.loadCap);
+    if (h && h.parentNode) h.parentNode.removeChild(h);
+    if (!host || !shown) document.documentElement.removeAttribute('data-runner');
+    open = null;
   }
   /* The game's engine, if the frame has booted it. Same origin, so this is a plain read. */
   function game() {
@@ -88,6 +264,7 @@
      finishes. Safe to call more than once: the second call finds the first frame. */
   function preload() {
     if (!enabled || host || !document.body) return host;
+    if (window.SwifteeCameo) window.SwifteeCameo.preload(DITCH_LINES.map(function (l) { return l.text; }));
     host = document.createElement('div');
     host.id = 'runner-stage';
     host.className = 'is-loading';
@@ -208,13 +385,18 @@
     enabled: enabled,
     autostart: autostart,
     preload: preload,
+    opening: opening,
+    closeOpening: closeOpening,
     whenReady: whenReady,
     start: start,
     close: close,
     /* For the tests: is the game on the page, is it on screen, and what state does it report. */
     state: function () {
       var g = game();
-      return { enabled: enabled, loaded: !!host, shown: shown, phase: phase, game: g ? g.state() : null, ready: said.ready, running: said.running };
+      var og = null;
+      try { og = open && open.frame && open.frame.contentWindow && open.frame.contentWindow.iceAgeGame; } catch (e) { og = null; }
+      return { enabled: enabled, loaded: !!host, shown: shown, phase: phase, game: g ? g.state() : null, ready: said.ready, running: said.running,
+               opening: { phase: openPhase, on: !!open, said: open ? Object.keys(open.said) : [], game: og ? og.state() : null } };
     }
   };
 

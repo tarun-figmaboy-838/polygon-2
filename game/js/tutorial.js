@@ -64,10 +64,18 @@ export class Tutorial {
   /**
    * @param {Document} root
    * @param {object} game  the engine handle from createGame()
+   * @param {object} [opts]
+   *   script      'full' (the game's own, the default), 'intro' or 'end' (see steps)
+   *   holdAtEnd   when it finishes, leave the game frozen where it is (the lesson takes over)
+   *   onDone      called once, when it finishes, with this tutorial
+   *   onHost      called when a step is the host's to present: (id, where()); the host
+   *               answers with didAction('host')
    */
-  constructor(root, game) {
+  constructor(root, game, opts) {
     this.root = root;
     this.game = game;
+    this.opts = opts || {};
+    this.script = this.opts.script || 'full';
     this.el = {
       layer: root.getElementById('tutorial'),
       veil: root.getElementById('tut-veil'),
@@ -188,7 +196,7 @@ export class Tutorial {
       const ry = 58;
       return { x: hx, y: hy + ry, rx: 86, ry, aimX: hx, world: true };
     };
-    return [
+    const all = [
       {
         id: 'meet',
         at: g => ['RUN_SEGMENT_1', 'JUMP_CHALLENGE_1'].includes(g.state),
@@ -317,6 +325,30 @@ export class Tutorial {
         advance: 0, pause: false
       }
     ];
+    /* THE LESSON'S TWO SCRIPTS. The polygon lesson carries this game twice (main.js,
+       ?lesson=intro|end), and each time it tells only part of the story. Where Swiftee has
+       something to say, the LESSON says it: she flies in over the frozen game, in her own
+       dialogue box and voice (src/intro/swiftee-cameo.js), so this layer only stops and asks.
+
+         intro   before the lesson: lines 1-5 as above, Momo, his goal, the jump, the broken
+                 path. Then it finishes with the world held still (holdAtEnd), and the lesson
+                 has Swiftee tell the learner why they must go and learn first.
+         end     after the lesson: nothing at all until the ditch; there the game stops for
+                 Swiftee ("Now let's help Momo.", a host step), then 6 on the plank as in the
+                 full script, and the plank asks its own question ("Cut the TRIANGLE.").
+
+       The full script is the game's own and is unchanged. */
+    this._all = all;
+    const by = id => all.find(s => s.id === id);
+    if (this.script === 'intro') {
+      // whatever happened on the way (a jump never made), the opening always reaches the break
+      const reached = by('gap').at;
+      return [by('meet'), by('goal'), by('rock'), by('jump')].map(st => Object.assign({}, st, { overtaken: reached })).concat([by('gap')]);
+    }
+    if (this.script === 'end') {
+      return [{ id: 'help', at: by('gap').at, spot: () => null, text: '', host: true, advance: 'host', pause: true }, by('use')];
+    }
+    return all;
   }
 
   /* ---- where things are ---- */
@@ -567,6 +599,7 @@ export class Tutorial {
 
   next() {
     if (this.game.saySign) this.game.saySign('');      // the plank goes back to its question
+    this._hostAsked = false;
     this.step++;
     this.t = 0;
     this.spoke = false;                                // the new step has not been read aloud yet
@@ -584,10 +617,34 @@ export class Tutorial {
     // the tutorial is over: the game must never be left believing a line is still up
     this._presenting = false;
     if (this.game.setDialogue) this.game.setDialogue(false);
-    this.resume();
+    /* held: the lesson is taking the screen, so the world stays as it is under the curtain */
+    if (this.opts.holdAtEnd) this.game.setPaused(true); else this.resume();
     this.hideFocus();
     if (this.el.layer) this.el.layer.hidden = true;
     this._bubbleKey = null;
+    const done = this.opts.onDone;
+    this.opts.onDone = null;
+    if (done) { try { done(this); } catch (e) { console.error('the tutorial\'s hand-over failed', e); } }
+  }
+
+  /** Where Momo's head and the far lip of the hole are on the stage now (after the zoom), and
+      where the stage sits in the window, as fractions of it: for the lesson, which flies Swiftee
+      in over the game (src/intro/swiftee-cameo.js). */
+  where() {
+    const g = this.game.debug();
+    if (!this._all) void this.steps;
+    const meet = (this._all || []).find(s => s.id === 'meet');
+    let head = null, lip = null;
+    try { const m = meet && meet.spot(g); if (m) head = this.toView({ x: m.x, y: m.y - m.ry, world: true }, g); } catch (e) { /* not up */ }
+    const gp = (g.gapsThisPhase || [])[0];
+    if (gp) lip = this.toView({ x: gp.x1 - g.worldX, y: 845, world: true }, g);
+    const el = this.root && this.root.getElementById ? this.root.getElementById('stage') : null;
+    const r = el ? el.getBoundingClientRect() : null;
+    const vw = window.innerWidth || 1, vh = window.innerHeight || 1;
+    return {
+      head: head && { x: head.x, y: head.y }, lip: lip && { x: lip.x, y: lip.y }, zoom: g.zoom || 1,
+      stage: r && r.width ? { x: r.left / vw, y: r.top / vh, w: r.width / vw, h: r.height / vh } : { x: 0, y: 0, w: 1, h: 1 }
+    };
   }
 
   pause(asking) {
@@ -678,6 +735,8 @@ export class Tutorial {
 
     const s = this.steps[this.step];
     if (!s) { this.finish(); return; }
+    /* A STEP OVERTAKEN by the moment of a later one is over (the lesson's opening only). */
+    if (s.overtaken && s.overtaken(g)) { this.next(); return; }
 
     /* NOT READY YET is a normal state, not an error. A step waits for its own moment —
        a rock coming into range, the blocks arriving — and while it waits the game runs
@@ -696,6 +755,24 @@ export class Tutorial {
       if (this.t > 0 && typeof s.advance === 'number') { this.next(); return; }
       if (s.advance === 'cut' && (g.attempts || 0) > 0) { this.next(); return; }
       this.resume(); this.show(null); return;
+    }
+    /* A HOST STEP is the lesson's: the game stops, the layer shows nothing, and the host is
+       asked once (onHost) and answers with didAction('host'). A host that never answers cannot
+       hold the game: the step lets go by itself after `wait` seconds. */
+    if (s.host) {
+      this.t += dt;
+      this.pause(false);
+      this.hideFocus();
+      this.show(null);
+      if (this.game.setDialogue) this.game.setDialogue(true);
+      if (!this._hostAsked) {
+        this._hostAsked = true;
+        const ask = this.opts.onHost;
+        if (!ask) { this.next(); return; }
+        try { ask(s.id, this.where()); } catch (e) { this.next(); return; }
+      }
+      if (this.t > (s.wait || 16)) this.next();
+      return;
     }
     /* A SIGN STEP HAS NO TARGET. Its words are on the plank, so it points at nothing — and the
        missing box used to skip it silently, which left the tutorial stuck on the line before it

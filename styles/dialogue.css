@@ -133,3 +133,14 @@
     transition: none !important;
   }
 }
+
+/* Fredoka, the dialogue kit's lettering: the recap's bubble, the story's and the Help Momo
+   scene's. Here, not in styles/fonts.css, because the game loads that file too and keeps
+   to its own Baloo 2. A variable file, 300-700, so the 600 the bubbles use is real. */
+@font-face {
+  font-family: 'Fredoka';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('../assets/fonts/fredoka-latin.woff2') format('woff2');
+}
