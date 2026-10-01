@@ -30,7 +30,7 @@ The displayed screen number is the position in `steps()`, starting at 1. Interna
 | Swiftee's animation sheets | `tools/build-swiftee.cjs` (writes `assets/swiftee/` and `src/lesson/swiftee-sheets.js`) |
 | The Help Momo scene between the story and the lesson (the Broken Path): timing, lines, layout, states | `src/bridge/bridge-story.js`, `styles/bridge-story.css` |
 | When it plays: after the story, before the lesson; and at the end | `src/intro/opening.js` `autostart`, `BridgeStory.afterStory`, `BridgeStory.ending` |
-| The lesson's ending: its two lines, then the game's cover | `index.html`: `lessonComplete`, `queuePart2`, `startPart2` |
+| The lesson's music (Frozen Rush's bed): its level, the dip under a voice, the fade into the game | `src/lesson/lesson-music.js`; started in `boot()`, ducked by `musicDucks()`, stopped in `startPart2` (`index.html`) |
 | The recap, screen 41 before the quizzes (presented the Part 1 Summary Kit's way): what it says, its look, its states and timing | `index.html`: `recapConcepts`, `startRecap`; `src/lesson/recap.js` (states at the top), `styles/recap.css`, `assets/ui/panel.webp` |
 | The end: the last line, then the game by itself | `index.html`: `finishLesson`, `startPart2`; `src/runner/runner-stage.js`; `game/js/main.js` (`?cover=0`, `window.iceAgeBegin`) |
 | The hand-off to the runner game: when it loads, the curtain, its URL flags | `src/runner/runner-stage.js`, `styles/runner-stage.css` |

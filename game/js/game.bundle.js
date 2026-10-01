@@ -12693,7 +12693,13 @@ let hostReady = false, hostAsked = false, begun = false;
    straight off the disk, every file is its own origin, so the page can neither call
    iceAgeBegin nor read iceAgeReady. postMessage works either way. */
 const tellHost = word => { try { if (window.parent && window.parent !== window) window.parent.postMessage({ iceAge: word }, '*'); } catch (e) {} };
-const beginRun = () => { if (begun) return; begun = true; game.begin(); startTutorial(); tellHost('running'); };
+const beginRun = () => {
+  if (begun) return;
+  begun = true;
+  // the sound comes on with the run: the music bed and every cue, as after PLAY
+  if (options.sound) { game.setOptions({ sound: true }); game.sfx('resume'); }
+  game.begin(); startTutorial(); tellHost('running');
+};
 if (hosted) {
   window.iceAgeBegin = () => { hostAsked = true; if (hostReady) beginRun(); return begun; };
   Object.defineProperty(window, 'iceAgeReady', { get: () => hostReady });
@@ -12882,7 +12888,9 @@ function startTutorial() {
   canvas.addEventListener('pointerleave', () => { if (stage) stage.classList.remove('on-rope'); });
 }
 
-game.setOptions(options);
+/* Hosted, the game waits out of sight, sometimes for minutes (the lesson loads it during its
+   recap), so it waits SILENT: no music bed and no sound until its run begins (beginRun). */
+game.setOptions(hosted ? Object.assign({}, options, { sound: false }) : options);
 
 /* THE COVER SHOWS AT ONCE, with PLAY held until the art has loaded. The cover needs only
    its own picture and the PLAY art, which the stylesheet fetches on its own, so there is no
@@ -12903,6 +12911,7 @@ if (!flag('skip', false) && !hosted) {
 // decode the recordings now, not on the first tap: a cue that is still loading when it is
 // first needed falls back to a different sound, which is what made the fit sound vary
 game.warmAudio();
+if (hosted) game.setOptions({ sound: false });   // and the bed it has just started, paused
 
 /* JUICE on the controls only. The world is canvas and has its own squash, dust and
    hit-stop; juice.js is for the DOM: the JUMP button hops when pressed, a stamp pops as

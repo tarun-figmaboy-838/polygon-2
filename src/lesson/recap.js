@@ -99,7 +99,8 @@
 
   /** Play the recap into `opts.host()`. Resolves true when Next is pressed, false when stopped.
       opts: { host, concepts: [{ id, text, line } | { id, label, text, album, visual }],
-      inkOf(word, text) -> colour | null, sfx(name), onState(state, id) } */
+      audio() -> the lesson's AudioContext, inkOf(word, text) -> colour | null, sfx(name),
+      onState(state, id) } */
   function play(opts) {
     stop();
     opts = opts || {};
@@ -109,6 +110,7 @@
     };
     run.finished = new Promise(function (resolve) { run.resolve = resolve; });
     build(run);
+    prefetch(run);
     setState(run, 'RECAP_ENTER');
     sequence(run);
     return run.finished;
@@ -121,6 +123,7 @@
     run.timers.forEach(clearTimeout);
     cancelAnimationFrame(run.raf);
     if (run.audio) { try { run.audio.pause(); run.audio.removeAttribute('src'); run.audio.load(); } catch (e) {} }
+    if (run.voice) { try { run.voice.stop(); } catch (e) {} run.voice = null; }
     if (run.root && run.root.parentNode) run.root.parentNode.removeChild(run.root);
     run.resolve(false);
   }
@@ -378,7 +381,41 @@
   function hush(run) {
     run.say.el.classList.remove('show');
     if (run.audio) { try { run.audio.pause(); } catch (e) {} run.audio = null; }
+    if (run.voice) { try { run.voice.onended = null; run.voice.stop(); } catch (e) {} run.voice = null; }
   }
+  /* THE VOICE GOES THROUGH THE LESSON'S AudioContext (opts.audio), which its first tap unlocks
+     for good. A new media element for each line could be held back by the browser until the
+     next tap (Safari does, and Chrome can), and the words, which keep the voice's time, waited
+     with it: the bubble stood empty and the recap stood still. Each line is fetched once, when
+     the recap opens, and decoded with that context. */
+  function recordingOf(text) {
+    try { return window.PolygonRecordedVoice && window.PolygonRecordedVoice.find(text); } catch (e) { return null; }
+  }
+  function srcOf(rec) { return window.polygonAudioSrc ? window.polygonAudioSrc(rec.src) : rec.src; }
+  function prefetch(run) {
+    run.bytes = {};
+    run.opts.concepts.forEach(function (c) {
+      var rec = recordingOf(c.text);
+      if (!rec || run.bytes[rec.src]) return;
+      try { run.bytes[rec.src] = fetch(srcOf(rec)).then(function (r) { return r.ok ? r.arrayBuffer() : null; }).catch(function () { return null; }); } catch (e) {}
+    });
+  }
+  function bufferOf(run, rec, ctx) {
+    run.buffers = run.buffers || {};
+    if (run.buffers[rec.src]) return run.buffers[rec.src];
+    var bytes = run.bytes && run.bytes[rec.src];
+    if (!bytes) { try { bytes = run.bytes[rec.src] = fetch(srcOf(rec)).then(function (r) { return r.ok ? r.arrayBuffer() : null; }); } catch (e) { return Promise.resolve(null); } }
+    run.buffers[rec.src] = bytes.then(function (ab) {
+      if (!ab) return null;
+      return new Promise(function (resolve) {
+        // decodeAudioData takes its buffer, so it gets a copy; old Safari has only the callback form
+        try { var p = ctx.decodeAudioData(ab.slice(0), resolve, function () { resolve(null); }); if (p && p.catch) p.catch(function () { resolve(null); }); }
+        catch (e) { resolve(null); }
+      });
+    }).catch(function () { return null; });
+    return run.buffers[rec.src];
+  }
+  var START_WAIT = 1200;   // ms a line may take to start sounding before its words go on without it
   /* the line in the bubble, every word in its place (so the bubble has its size) but unseen until it is said;
      the lesson's key words in the kit's orange */
   function layout(run, text, where) {
@@ -430,9 +467,11 @@
     var at = rec && rec.words && rec.words.length === n ? rec.words.map(function (w) { return w.start * 1000; }) : spans.map(function (_, i) { return 160 + i * FALLBACK_WORD_MS; });
     var total = (rec && rec.duration ? rec.duration * 1000 : at[n - 1] + 700);
     return new Promise(function (resolve) {
-      var done = false, i = 0;
+      var done = false, i = 0, started = false;
       var finish = function () { if (done) return; done = true; while (i < n) { spans[i].classList.add('in'); cue(run, spans[i].textContent); i++; } resolve(alive(run, g)); };
       var start = function (clock) {
+        if (started || done) return;
+        started = true;
         var tick = function () {
           if (!alive(run, g) || done) return;
           var now = clock();
@@ -444,15 +483,26 @@
       };
       var silent = function () { var s0 = performance.now(); start(function () { return performance.now() - s0; }); };
       if (!rec) { silent(); return; }
-      var a = run.audio = new Audio(window.polygonAudioSrc ? window.polygonAudioSrc(rec.src) : rec.src);
-      a.preload = 'auto';
-      var started = false, begin = function (clock) { if (started) return; started = true; start(clock); };
-      a.addEventListener('ended', function () { if (run.audio === a) finish(); });
-      a.addEventListener('error', function () { begin(function () { return performance.now() - s1; }); });
-      var s1 = performance.now();
-      var p = a.play();
-      if (p && p.then) p.then(function () { begin(function () { return a.currentTime * 1000; }); }, function () { s1 = performance.now(); begin(function () { return performance.now() - s1; }); });
-      else begin(function () { return a.currentTime * 1000; });
+      // never longer than START_WAIT on a line that will not sound: its words go on by themselves
+      later(run, START_WAIT, function () { if (!started) silent(); });
+      var ctx = null;
+      try { ctx = run.opts.audio ? run.opts.audio() : null; } catch (e) { ctx = null; }
+      if (!ctx) { silent(); return; }
+      if (ctx.state === 'suspended') { try { ctx.resume(); } catch (e) {} }
+      bufferOf(run, rec, ctx).then(function (buf) {
+        if (!alive(run, g) || done || started) return;
+        if (!buf || ctx.state !== 'running') { silent(); return; }
+        try {
+          var node = ctx.createBufferSource(), gain = ctx.createGain();
+          node.buffer = buf; gain.gain.value = 1;
+          node.connect(gain); gain.connect(ctx.destination);
+          var t0 = ctx.currentTime + 0.03;
+          node.start(t0);
+          run.voice = node;
+          node.onended = function () { if (run.voice === node) { run.voice = null; finish(); } };
+          start(function () { return Math.max(0, (ctx.currentTime - t0) * 1000); });
+        } catch (e) { silent(); }
+      });
     }).then(function (live) { return live ? hold(run, SUM.readMs) : false; });
   }
 

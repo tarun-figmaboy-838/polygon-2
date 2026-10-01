@@ -25,6 +25,7 @@
 <script src="src/lesson/recordings.js"></script>
 <script src="src/lesson/recorded-player.js"></script>
 <script src="src/lesson/recap.js"></script>
+<script src="src/lesson/lesson-music.js"></script>
 <!-- Swiftee's sheet table, generated from the character pack's manifest by
      tools/build-swiftee.cjs. It loads here, not from the helmet below, because the
      lesson script reads it while it is being evaluated. -->
@@ -1048,7 +1049,12 @@ class Component extends DCLogic {
       const begin = () => {
         if (this._gone || (window.RunnerStage && window.RunnerStage.autostart)) return;
         const gen = this.gen || 0;
-        this.guide.whenReady().then(() => { if (!this._gone && (this.gen || 0) === gen) this.runStep(0, true); });
+        this.guide.whenReady().then(() => {
+          if (this._gone || (this.gen || 0) !== gen) return;
+          this.runStep(0, true);
+          // the Frozen Rush game's own music, under the whole learning section (src/lesson/lesson-music.js)
+          if (window.LessonMusic) window.LessonMusic.start({ audio: () => this.ac(), speaking: () => this.musicDucks(), muted: () => !!this.state.muted });
+        });
       };
       const intro = window.Opening && window.Opening.gate;
       this.setState({ ready: true, k: 0, userPts: null }, () => {
@@ -1087,6 +1093,7 @@ class Component extends DCLogic {
     this._fitTimer = setInterval(() => this.fit(), 120);
   }
   componentWillUnmount() {
+    if (window.LessonMusic) window.LessonMusic.stop(0);
     this._gone = true;
     this.cancelMorph();
     this.guide.unmount();
@@ -5359,6 +5366,8 @@ class Component extends DCLogic {
     P.play({
       host: () => this.recapRef.current,
       concepts: this.recapConcepts(),
+      // her voice through the lesson's own AudioContext, which the first tap has unlocked
+      audio: () => this.ac(),
       // the lesson's own rule for which words of a line are its key words, and their inks
       inkOf: (w, text) => { const k = conceptKey(w); return k && this.learningKeywords(text).includes(k) ? highlightInk(k) : null; },
       sfx: kind => this.sfx(kind)
@@ -5654,9 +5663,18 @@ class Component extends DCLogic {
   /* The hand-over: the runner game (src/runner/runner-stage.js) takes the screen and starts its
      run, once. The lesson's own voice stops and its controls lock; it stays mounted underneath,
      hidden by the stage. */
+  /* The music ducks while Swiftee speaks: a lesson line, a recap line, or her line back to
+     Momo in the Help Momo scene at the end. */
+  musicDucks() {
+    if (this.state.speaking) return true;
+    try { if (window.PolygonRecap && window.PolygonRecap.state().speaking) return true; } catch (e) {}
+    return document.documentElement.getAttribute('data-bridge') === 'on';
+  }
   startPart2 = () => {
     if (this._toPart2) return Promise.resolve(false);
     this._toPart2 = true;
+    // the lesson's music goes as the game's own copy of it takes over
+    if (window.LessonMusic) window.LessonMusic.stop(1200);
     this.clearNudge();
     if (this._stopRecordedVoice) this._stopRecordedVoice();
     try { window.speechSynthesis.cancel(); } catch (e) {}
