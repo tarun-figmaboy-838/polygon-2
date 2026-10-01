@@ -197,7 +197,7 @@ a:hover { color: var(--ice-pale); }
      art, its place and its clearance of the ropes, and the sentence stays on one line. */
   max-width: 46%;
 }
-.instruction.banner .instruction-text { font-size: calc(165 * var(--k) * 0.78); }
+.instruction.banner .instruction-text { font-size: calc(200 * var(--k) * 0.72); }
 /* AND IT IS LIT while it speaks (asked for): a soft icy glow around the plank, breathing, so the
    eye goes to the words being read out. It is the panel that glows, not the words. */
 .instruction.banner .instruction-pill {
@@ -224,7 +224,10 @@ a:hover { color: var(--ice-pale); }
   from { opacity: 0; transform: translateY(0.34em) scale(0.9); }
   to   { opacity: 1; transform: none; }
 }
-.instruction-text .key { color: #1E56C4; font-weight: 900; letter-spacing: 0.01em; -webkit-text-stroke: calc(11 * var(--k)) #FFFFFF; paint-order: stroke fill; }
+.instruction-text .key { color: #1E56C4; font-weight: 800; letter-spacing: 0.01em; -webkit-text-stroke: calc(15 * var(--k)) #FFFFFF; paint-order: stroke fill; }
+/* the full stop after the name is the name's: the same blue, held tight against it (hud.js
+   gives it its own span, with no space before it) */
+.instruction-text .key + .iw { color: #1E56C4; -webkit-text-stroke: calc(15 * var(--k)) #FFFFFF; margin-left: -0.02em; }
 /* IT IS PULLED BACK UP, and the little dip first is what makes it read as a pull rather
    than a slide: a hanging thing gathers before it goes. Shorter than the drop, because by
    then the question is answered and the player wants the run back. It has to finish inside
@@ -373,8 +376,10 @@ a:hover { color: var(--ice-pale); }
      centre at 259 counts the snow-covered rows along the top and floated the sentence 36
      art px above the timber it is printed on. Padding 158 above and 45 below puts the line
      exactly there: 158 + (478 - 158 - 45)/2 = 295.5. */
-  padding: calc(158 * var(--k)) calc(395 * var(--k))
-           calc(45 * var(--k)) calc(395 * var(--k));
+  /* 355 at the sides (the cap's 313 and 42 of clear wood), not 395: the words sit up close to
+     the rope rings, as they do on the Part 1 sign, so the bigger lettering fits the same band */
+  padding: calc(158 * var(--k)) calc(355 * var(--k))
+           calc(45 * var(--k)) calc(355 * var(--k));
 
   /* IT DROPS IN ON ITS ROPES (asked for). The HUD restarts this animation for every new
      sentence and never for a re-assert, so the plank arrives once per question. */
@@ -397,22 +402,27 @@ a:hover { color: var(--ice-pale); }
      1920 stage that 193 was at 4.72 — the words did not change size, the board grew around
      them. Centred on the pale panel at y 295 the line runs 212..378, leaving 54 art px of
      clear timber above the capitals and 54 below. */
-  font-size: calc(165 * var(--k));
+  /* THE WORDS FILL THE WOOD (asked for, to match the Part 1 sign "Draw all the DIAGONALS."):
+     200 art-px, up from 165, centred on the pale panel at y 295, clear of the snow at 213.
+     The ceiling is the band: the longest question ("Cut the QUADRILATERAL.") has to end
+     before the first rope's dashed cut line, which starts at about 724 of the 1920 stage. */
+  font-size: calc(200 * var(--k));
   line-height: 1;
-  font-weight: 900;
+  /* 800, Baloo 2's own heaviest: 900 asked for a weight the face does not have */
+  font-weight: 800;
   /* dark warm brown, which is what reads on pale timber; the old deep blue was chosen
      against a white ice card and goes muddy on wood */
-  color: #5A3617;
+  color: #4E2E12;
   /* A CREAM STROKE around the letters (asked for: "strokes, to make it big and evident"): it
      lifts the words off the wood grain without a black outline. paint-order puts the stroke
-     BEHIND the fill, so the letterforms keep their weight. */
-  -webkit-text-stroke: calc(11 * var(--k)) #FFF6E0;
+     BEHIND the fill, so the letterforms keep their weight. Firmer, as on the Part 1 sign. */
+  -webkit-text-stroke: calc(15 * var(--k)) #FFF6E0;
   paint-order: stroke fill;
-  letter-spacing: -0.005em;
+  letter-spacing: -0.01em;
   text-align: center;
   white-space: nowrap;
-  /* a touch of relief, so the words look burnt into the plank rather than laid on it */
-  text-shadow: 0 calc(3 * var(--k)) 0 rgba(255, 246, 224, 0.55);
+  /* a soft shadow under the letters, so they sit up off the plank as the Part 1 sign's do */
+  text-shadow: 0 calc(6 * var(--k)) calc(7 * var(--k)) rgba(74, 44, 16, 0.34);
 }
 
 /* NO JUMP BUTTON — the stage is the control (see index.html). About ninety lines of
@@ -713,8 +723,9 @@ a:hover { color: var(--ice-pale); }
   .instruction { max-width: 44%; left: 1.2%; }
   /* A phone stage is 1920 units wide too, but its plank is proportionally larger, so the
      banner sentence needs another step down to stay inside the band. Measured: 915 -> 830
-     of 1920, against the leftmost rope at 883. */
-  .instruction.banner .instruction-text { font-size: calc(193 * var(--k) * 0.68); }
+     of 1920, against the leftmost rope at 883; 214, with the larger lettering, keeps the
+     longest one ("Use the right ice piece to fix the path.") clear of the dashed cut line. */
+  .instruction.banner .instruction-text { font-size: calc(214 * var(--k) * 0.68); }
   /* MUCH smaller on a phone, and the two numbers that set it are both measured:
      the hanging chunks start 122px down a 390px stage, so a card parked at 2.5% must
      be under ~112px tall to clear them; and the interface has to stay under 12% of
