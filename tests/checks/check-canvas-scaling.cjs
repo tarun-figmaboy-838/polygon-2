@@ -18,7 +18,7 @@ const server=http.createServer((req,res)=>{
       await page.waitForFunction(()=>window.__poly?.state.ready);
       await page.addStyleTag({content:'*,*::before,*::after{animation:none!important;transition:none!important}'});
       await page.evaluate(()=>{const g=__poly;g._stopRecordedVoice?.();g.timers.forEach(clearTimeout);g.later=()=>0;g.narrate=()=>{};g._guideGreeted=true;});
-      for(const k of [4,13,22,40,42,44]){
+      for(const k of [4,13,22,40,41,43]){
         await page.evaluate(k=>{
           const g=__poly;g.setState({k});g.runStep(k,false);g.prepareNarratorReveal(g.step().narr);
           g.setState({storyContent:true,storyDialogue:true,storyControls:true,drawn:true,guideHidden:false,guideFlying:false,

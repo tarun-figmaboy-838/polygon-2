@@ -31,7 +31,7 @@ The displayed screen number is the position in `steps()`, starting at 1. Interna
 | The Help Momo scene between the story and the lesson (the Broken Path): timing, lines, layout, states | `src/bridge/bridge-story.js`, `styles/bridge-story.css` |
 | When it plays: after the story, before the blizzard | `src/intro/ice-intro.js` `autostart`, `BridgeStory.afterStory` |
 | The lesson's ending: its two lines, then the game's cover | `index.html`: `lessonComplete`, `queuePart2`, `startPart2` |
-| The completion screen's Help Momo / Play again buttons (only with `?bridge=0`) | `index.html`: `viewEnd`, `startRunner` |
+| The summary, the lesson's last screen (after the Part 1 Summary Kit): its ideas, its look, its states and timing | `index.html`: `summaryConcepts`, `startSummary`; `src/lesson/summary.js` (states at the top), `styles/summary.css`, `assets/ui/panel.webp`, `assets/images/summary-ice-vista.webp` |
 | The hand-off to the runner game: when it loads, the curtain, its URL flags | `src/runner/runner-stage.js`, `styles/runner-stage.css` |
 | The gold Play and the pill buttons (Next, Help Momo, Play again) | `styles/buttons-kit.css`, `src/fx/play-fx.js`, `assets/ui/`; in the lesson `pillBtn` / `pillWidth` in `index.html` |
 | Momo's jump in the runner game (the 24-cell sheet) | `game/js/engine.js`: `sheets.jump`, `frames.jump`, the JUMP_START / JUMP_AIR / LAND cases in `PlayerController.draw` |
@@ -45,8 +45,8 @@ Narration text is matched to recordings by wording. When you change a spoken sen
 2. **Help Momo.** `src/intro/ice-intro.js` waits on that gate and calls `BridgeStory.afterStory()`: if the story played, the scene comes up out of the story's dark, speaks its three lines through the lesson's AudioContext (unlocked by the story's Play), and settles its promise when **Next** has been pressed and it has faded back to the dark. `?bridge=1` starts here directly; `?bridge=0` leaves it out.
 3. **The blizzard.** `ice-intro.js` then plays for 5.8 s and releases `IceIntro.gate`.
 4. **The lesson.** `boot()` in `index.html` waits on `IceIntro.gate`, then runs screen 1.
-5. **The ending.** As screen 48 opens, `runStep` asks `src/runner/runner-stage.js` to preload the game (`game/index.html`) in an invisible frame. Screen 48 says its line, then (`lessonComplete`) "You know all about polygons now. You are ready to help Momo.", the lesson locked throughout; `queuePart2` waits 1.4 s and `startPart2` calls `RunnerStage.start()`. With `?bridge=0` screen 48 offers Help Momo and Play again instead.
-6. **The Frozen Pass.** `RunnerStage.start()` hides the lesson and lifts a curtain on the game's cover, where **Play** starts the game. `?game=1` starts here directly; `?game=0` leaves the game and the Help Momo scene out.
+5. **The ending.** The last screen, 47, is the summary (`startSummary`, `src/lesson/summary.js`): it asks `src/runner/runner-stage.js` to preload the game (`game/index.html`) in an invisible frame, plays the lesson's seven ideas one card at a time in the Summary Kit's way, then Swiftee's "You know all about polygons now. You are ready to help Momo.", and shows Next; Next calls `startPart2`. With `?game=0` it ends on Play again.
+6. **The Frozen Pass.** `RunnerStage.start()` (from the summary's Next) hides the lesson and lifts a curtain on the game's cover, where **Play** starts the game. `?game=1` starts here directly; `?game=0` leaves the game and the Help Momo scene out.
 
 Each overlay removes itself completely (DOM, timers, audio) when it finishes. The runner's frame stays up: its own **Play again** restarts the game.
 
@@ -76,13 +76,12 @@ All functions in this table are in `index.html`.
 | 36 | Select quadrilaterals | `S18` | `viewMulti` |
 | 37–40 | Pentagon / Hexagon / Heptagon / Octagon | `S19`–`S22` | `viewName` |
 | 41 | Recall polygon names | `S23` | `viewRecall` |
-| 42 | Summary: what a polygon is | `SUMMARY` | `viewSummary` |
-| 43 | Select polygons | `C1` | `viewMulti` |
-| 44 | Sort polygon / not polygon | `C2` | `viewSort` |
-| 45 | Find the non-polygon | `C3` | `viewTapOne` |
-| 46 | Select pentagons | `C4` | `viewMulti` |
-| 47 | Sort hexagons / heptagons | `C5` | `viewSort` |
-| 48 | Completion: its line, then "You know all about polygons now. You are ready to help Momo.", then the runner game's cover (with `?bridge=0`: Help Momo or Play again) | `END` | `viewEnd`, `lessonComplete`, `queuePart2`, `startPart2`, `startRunner` |
+| 42 | Select polygons | `C1` | `viewMulti` |
+| 43 | Sort polygon / not polygon | `C2` | `viewSort` |
+| 44 | Find the non-polygon | `C3` | `viewTapOne` |
+| 45 | Select pentagons | `C4` | `viewMulti` |
+| 46 | Sort hexagons / heptagons | `C5` | `viewSort` |
+| 47 | The summary: one screen, the lesson's seven ideas one card at a time (closed, polygon, sides, vertex, angle, still 5 sides, 3 to 8 sides), then "You know all about polygons now. You are ready to help Momo." and Next to the runner game's cover (Play again with `?game=0`) | `END` | `startSummary`, `summaryConcepts`, `startPart2`; `src/lesson/summary.js`, `styles/summary.css` |
 
 ## Other documents
 

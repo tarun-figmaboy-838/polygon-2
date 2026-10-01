@@ -57,7 +57,7 @@ const server=http.createServer((req,res)=>{
         result.geometry.forEach((box,i)=>box.forEach((value,j)=>assert(Math.abs(value-reference[k].geometry[i][j])<.2,tag+': anchor '+i+'/'+j+' shifted '+value+' vs '+reference[k].geometry[i][j])));
         assert.deepEqual(result.fonts,reference[k].fonts,tag+': canvas typography never reflows by device');
         assert(result.backdrop==='none'&&!result.overflow,tag+': no stretched backdrop or scrolling');
-        if([4,22,42,44].includes(k)) {await page.waitForTimeout(350);await page.screenshot({path:path.join(out,`screen-${k+1}-${width}x${height}.png`)});}
+        if([4,22,41,43].includes(k)) {await page.waitForTimeout(350);await page.screenshot({path:path.join(out,`screen-${k+1}-${width}x${height}.png`)});}
         checked++;
       }
     }
@@ -90,7 +90,7 @@ const server=http.createServer((req,res)=>{
     await page.mouse.move(handle.x+handle.width/2,handle.y+handle.height/2);await page.mouse.down();
     await page.mouse.move(handle.x+handle.width/2-35,handle.y+handle.height/2+25,{steps:12});await page.mouse.up();
     await page.waitForFunction(()=>__poly.state.dragged);
-    await show(43);
+    await show(42);
     await page.emulateMedia({reducedMotion:'no-preference'});
     const source=page.locator('.story-surface .game-action').filter({has:page.locator('svg')}).first();
     const a=await source.boundingBox(),b=await page.getByRole('button',{name:'Polygon',exact:true}).boundingBox();
@@ -101,7 +101,7 @@ const server=http.createServer((req,res)=>{
     const placed=await page.locator('.story-surface svg').first().evaluate(e=>{const r=e.parentElement.getBoundingClientRect();return{x:r.x,y:r.y,right:r.right,bottom:r.bottom};});
     const zone=await page.getByRole('button',{name:'Polygon',exact:true}).boundingBox();
     assert(placed.x>zone.x&&placed.right<zone.x+zone.width&&placed.y>zone.y&&placed.bottom<zone.y+zone.height,'Drag lands inside its responsive zone');
-    await show(45);
+    await show(44);
     const cards=page.locator('.story-surface .game-action').filter({has:page.locator('svg')});
     await cards.nth(0).click();await cards.nth(1).click();
     assert(await page.evaluate(()=>__poly.state.sel.includes(0)&&__poly.state.sel.includes(1)));

@@ -11,7 +11,7 @@ const rows=JSON.parse(fs.readFileSync('docs/voice/narrator-lines.json','utf8'));
 const missing=rows.filter(r=>!ctx.window.PolygonRecordedVoice.find(r.text)).map(r=>r.id);
 assert.deepEqual(missing,['N016','F003','F023']);
 // Audit the live lesson, not just the historical narration export.
-for(const step of game(0).steps())for(const text of [step.narr,...Object.values(step.fb||{})]) {
+for(const step of game(0).steps())for(const text of [step.narr,step.done,...Object.values(step.fb||{})].filter(Boolean)) {
   const recording=ctx.window.PolygonRecordedVoice.find(text);
   assert(recording,'Every current instruction and feedback line has portable audio: '+text);
   assert(ctx.window.PolygonRecordedVoice.wordStarts(recording,text),'Every live recording has matching word cues: '+text);

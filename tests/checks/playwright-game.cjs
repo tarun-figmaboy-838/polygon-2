@@ -18,10 +18,10 @@ const server=http.createServer((req,res)=>{
   // Accelerate real audio, preserving its clock, word events and end gates.
   await page.addInitScript(()=>{const play=HTMLMediaElement.prototype.play;HTMLMediaElement.prototype.play=function(){this.playbackRate=6;return play.call(this);};});
   await page.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>r.abort());
-  // The walkthrough ends by pressing Play again, which the completion screen offers
-  // when the story into Part 2 is left out (tests/bridge.test.cjs covers that story).
+  // The walkthrough ends by pressing Play again, which the summary offers where there is
+  // no game (?game=0); its Next into the game is tests/runner.test.cjs.
   // ?dev=1: it jumps between screens with the screen navigator, a review control.
-  await page.goto('http://127.0.0.1:9351/?preview=1&bridge=0&dev=1');
+  await page.goto('http://127.0.0.1:9351/?preview=1&bridge=0&dev=1&game=0');
   await page.waitForFunction(()=>window.__poly?.state.ready);
   await page.mouse.click(700,200);
   // Exercise the explicit recovery path where the host has no speech engine.
@@ -101,30 +101,29 @@ const server=http.createServer((req,res)=>{
     await page.getByRole('button',{name:'Increase number of sides',exact:true}).click();
     await page.waitForFunction(n=>__poly.state.n===n&&!__poly.state.morph,n);
   }
-  await page.locator('.story-surface').getByRole('button',{name:'Next',exact:true}).click();
-  // Screen 42 (the recall summary) moves on by itself once its narration ends;
-  // if it is still waiting for Next, press it.
-  await page.waitForFunction(()=>(__poly.state.k===41&&!__poly.locked()&&__poly.state.storyControls)||__poly.state.k>=42,null,{timeout:90000});
-  if(await page.evaluate(()=>__poly.state.k===41)){const next=page.locator('.story-surface').getByRole('button',{name:'Next',exact:true});if(await next.count())await next.click();}
-  await ready(42);
+  // Reaching the octagon finishes the recall: the lesson moves on by itself.
+  await ready(41);
   for(const i of [0,2])await page.locator('.story-surface > .game-action').nth(i).click();
-  await ready(43);
+  await ready(42);
   for(const [i,zone]of [0,1,0,1].entries()){
     const card=page.locator('.story-surface > .game-action[role="button"]').filter({has:page.locator('svg')}).first();
     if(i===0)await card.dragTo(page.getByRole('button',{name:'Polygon',exact:true}));
     else{await card.click();await page.getByRole('button',{name:zone?'Not a polygon':'Polygon',exact:true}).click();}
     await page.waitForFunction(n=>Object.keys(__poly.state.sortAt).length===n,i+1);
   }
-  await ready(44);
-  await page.locator('.story-surface > .game-action').nth(3).click();await ready(45);
+  await ready(43);
+  await page.locator('.story-surface > .game-action').nth(3).click();await ready(44);
   for(const i of [0,1])await page.locator('.story-surface > .game-action').nth(i).click();
-  await ready(46);
+  await ready(45);
   for(const [i,zone]of [0,1,0,1].entries()){
     await page.locator('.story-surface > .game-action[role="button"]').filter({has:page.locator('svg')}).first().click();
     await page.getByRole('button',{name:zone?'Heptagon':'Hexagon',exact:true}).click();
     await page.waitForFunction(n=>Object.keys(__poly.state.sortAt).length===n,i+1);
   }
-  await ready(47);
+  // the last screen, the one summary (tests/summary.test.cjs plays it in full): straight to its end
+  await page.waitForFunction(()=>__poly.state.k===46&&window.PolygonSummary.state().active,null,{timeout:60000});
+  await page.waitForTimeout(1200);
+  await page.evaluate(()=>window.PolygonSummary.skipToEnd());
   await page.screenshot({path:path.join(out,'completed-playthrough.png')});
   await page.getByRole('button',{name:'Play again',exact:true}).click();
   await page.waitForFunction(()=>__poly.state.k===0);
@@ -140,7 +139,7 @@ const server=http.createServer((req,res)=>{
   await page.emulateMedia({reducedMotion:'reduce'});
   assert(await page.locator('.scene-snow').evaluate(e=>getComputedStyle(e).display==='none'),'Reduced motion stops snow');
   assert(!errors.length,errors.join('\n'));
-  fs.writeFileSync(path.join(out,tailOnly?'final-challenges.json':'playthrough.json'),JSON.stringify({screens:tailOnly?8:48,completed:true,restarted:true,externalNetworkBlocked:true,keyboard:true,dragDrop:true,errors},null,2));
-  console.log(tailOnly?'PASS final challenges and restart':'PASS Playwright complete 48-screen playthrough, wrong-answer recovery, keyboard, drag/drop, counting, deformation, sorting and restart');
+  fs.writeFileSync(path.join(out,tailOnly?'final-challenges.json':'playthrough.json'),JSON.stringify({screens:tailOnly?7:47,completed:true,restarted:true,externalNetworkBlocked:true,keyboard:true,dragDrop:true,errors},null,2));
+  console.log(tailOnly?'PASS final challenges and restart':'PASS Playwright complete 47-screen playthrough, wrong-answer recovery, keyboard, drag/drop, counting, deformation, sorting and restart');
  }catch(e){if(page){console.log('FAILED STATE',await page.evaluate(()=>({k:__poly.state.k,voiceError:__poly.state.voiceError,locked:__poly.locked(),ok:__poly.state.ok,ocReveal:__poly.state.ocReveal,controls:__poly.state.storyControls,text:document.body.innerText})));await page.screenshot({path:path.join(out,'failure.png')});}throw e;}finally{await browser.close();server.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;server.close();});

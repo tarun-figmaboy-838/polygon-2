@@ -16,7 +16,7 @@ const server=http.createServer((req,res)=>{
  await page.evaluate(()=>{const g=__poly;g._stopRecordedVoice?.();g.timers.forEach(clearTimeout);g._guideGreeted=true;g.later=()=>0;g.narrate=()=>{};});
  const total=await page.evaluate(()=>__poly.steps().length);
  for(let k=0;k<total;k++){
-  await page.evaluate(k=>{const g=__poly;g.setState({k});g.runStep(k,false);g.prepareNarratorReveal(g.step().narr);g._voiceLocked=false;g.setState({storyContent:true,storyDialogue:g.step().sc!=='SUMMARY',storyControls:true,interactive:true,speaking:false,magicReveal:false,boundaryTravel:false,polygonTravel:false,drawn:true,guideFlying:false,wordReveal:'complete',ocWords:{open:true,closed:true}});},k);
+  await page.evaluate(k=>{const g=__poly;g.setState({k});g.runStep(k,false);g.prepareNarratorReveal(g.step().narr);g._voiceLocked=false;g.setState({storyContent:true,storyDialogue:g.step().sc!=='END',storyControls:true,interactive:true,speaking:false,magicReveal:false,boundaryTravel:false,polygonTravel:false,drawn:true,guideFlying:false,wordReveal:'complete',ocWords:{open:true,closed:true}});},k);
   await page.waitForTimeout(1050);
   const result=await page.evaluate(()=>{
    const visible=e=>{const r=e.getBoundingClientRect(),s=getComputedStyle(e);return r.width>0&&r.height>0&&s.visibility!=='hidden'&&s.display!=='none'&&+s.opacity>0;};

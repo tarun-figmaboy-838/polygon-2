@@ -10,6 +10,7 @@
     "test:runner": "node tests/runner.test.cjs",
     "test:bridge": "node tests/bridge.test.cjs",
     "test:swiftee": "node tests/swiftee.test.cjs",
+    "test:summary": "node tests/summary.test.cjs",
     "test:checks": "node tests/checks/run-all.cjs",
     "build:swiftee": "node tools/build-swiftee.cjs",
     "build:story-voice": "python3 tools/story/build-story-voice.py",

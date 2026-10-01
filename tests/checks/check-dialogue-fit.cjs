@@ -95,7 +95,7 @@ const judge=(where,m)=>{
     const steps=await page.evaluate(()=>__poly.steps().map(s=>({sc:s.sc,label:s.label,fb:Object.values(s.fb||{}).filter(t=>typeof t==='string')})));
     const worst={unstable:0,empty:0,flash:0};
     for(let k=0;k<steps.length;k++){
-      if(steps[k].sc==='SUMMARY') continue;   // the recap has no bubble
+      if(steps[k].sc==='END') continue;   // the summary draws its own bubble (tests/summary.test.cjs)
       const n=k+1, where='Screen '+n+' ('+steps[k].label+')';
       await page.evaluate(k=>{const g=__poly;g.setState({k},()=>g.runStep(k,false));},k);
       /* Her real voice: the bubble every 40 ms until she has finished and the screen is hers to use. */

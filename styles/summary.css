@@ -1,0 +1,65 @@
+/* ============================================================================
+   THE SUMMARY — the lesson's last screen (src/lesson/summary.js), in the Part 1
+   Summary Kit's look (its .sk-stage, .sk-presenter, .sk-bubble and .sk-next). It is
+   drawn inside the lesson's own 1980 x 1114 stage, so every size here is a stage px:
+   the kit's own sizes, which are for its 1000-wide board, are doubled (x 1.98) and
+   the lesson's scaling does the rest.
+   ========================================================================= */
+@font-face {
+  font-family: 'Fredoka';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('../assets/fonts/fredoka-latin.woff2') format('woff2');
+}
+.lsum {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: auto;
+  background: #cfeeff url("../assets/images/summary-ice-vista.webp") center / cover no-repeat;   /* the kit's ice vista */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+/* the kit's board, 1000 x 562, over the whole stage (the same 16:9) */
+.lsum .lsum-board { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; overflow: visible; }
+.lsum .summary-card.tappable { cursor: pointer; }
+
+/* SWIFTEE, behind the card: the board's card hides her body as she rises */
+.lsum .lsum-presenter {
+  position: absolute; z-index: 1; pointer-events: none; transform-origin: 50% 100%;
+  transition: transform 320ms cubic-bezier(.22, 1, .36, 1), opacity 200ms ease;
+}
+
+/* HER WORDS, in the kit's bubble, over her head; every word faint until it is said */
+.lsum .lsum-bubble {
+  position: absolute; z-index: 4; left: 50%; pointer-events: none;
+  transform: translateX(-50%) translateY(12px) scale(.96);
+  max-width: 62%; width: max-content; box-sizing: border-box;
+  padding: .45em .8em; border: 8px solid #169F99; border-radius: 44px;
+  background: #FFFBEA; color: #174D59; font: 700 42px/1.2 "Fredoka", "Nunito", system-ui, sans-serif;
+  text-align: center; text-wrap: balance;
+  opacity: 0; transition: opacity 200ms ease, transform 220ms cubic-bezier(.22, 1, .36, 1);
+}
+.lsum .lsum-bubble.show { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+.lsum .lsum-bubble::after {            /* the tail, pointing down to her */
+  content: ''; position: absolute; left: 50%; bottom: -28px; width: 40px; height: 40px; margin-left: -20px;
+  background: #FFFBEA; border: 8px solid #169F99; border-top: 0; border-left: 0; transform: rotate(45deg);
+  border-bottom-right-radius: 8px;
+}
+.lsum .lsum-bubble .w { opacity: .18; transition: opacity 120ms linear; }
+.lsum .lsum-bubble .w.in { opacity: 1; }
+.lsum .lsum-bubble .w.key { color: #f07b12; }
+
+/* NEXT, once the last line has been read: the kit's pill, at the lesson's size */
+.lsum .lsum-next {
+  position: absolute; z-index: 5; right: 59px; bottom: 45px;
+  opacity: 0; translate: 0 10px; transition: opacity 240ms ease, translate 240ms cubic-bezier(.22, 1, .36, 1);
+}
+.lsum .lsum-next[hidden] { display: none !important; }
+.lsum .lsum-next.is-in { opacity: 1; translate: 0 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .lsum .lsum-presenter, .lsum .lsum-bubble, .lsum .lsum-next, .lsum .lsum-bubble .w { transition: none; }
+}

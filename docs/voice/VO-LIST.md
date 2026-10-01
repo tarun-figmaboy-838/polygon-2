@@ -9,11 +9,11 @@ Every line the learner hears, taken from the code as it ships today (2026-09-30)
 | 1 Momo + Polo story | Narrator | 6 | placeholder (macOS voice) | 6 |
 | 1 Momo + Polo story | Momo | 3 | placeholder (macOS voice) | 3 |
 | 1 Momo + Polo story | Polo | 7 | placeholder (macOS voice) | 7 |
-| 2 Lesson | Swiftee | 79 | 65 studio, 13 synthetic stand-ins, 1 with none | 14 (plus the 65 studio ones only if you want a new voice) |
+| 2 Lesson | Swiftee | 77 | 64 studio, 12 synthetic stand-ins, 1 with none | 13 (plus the 64 studio ones only if you want a new voice) |
 | 3 Help Momo (the Broken Path) | Swiftee | 3 | two borrowed from the game, in the game's voice; one placeholder (macOS voice) | 3 |
 | 4 Frozen Rush game | Game voice | 14 | the owner's recording | 0 (optional) |
 
-**Must record:** 16 story takes, 14 lesson lines and 3 Help Momo lines, 33 files in all. Everything else already has a real recording and is listed so a new voice can cover the whole experience if you want one.
+**Must record:** 16 story takes, 13 lesson lines and 3 Help Momo lines, 32 files in all. The summary at the end of the lesson says seven lines the lesson already has (Closed, Polygon, Sides, Vertex, Angle, 5 sides, 3 to 8 sides) and then L79. Everything else already has a real recording and is listed so a new voice can cover the whole experience if you want one.
 
 ## How to deliver
 
@@ -119,7 +119,6 @@ Sixteen takes over nine scenes, one take per line part: the story shows one part
 | L55 | A polygon with 7 sides is called a heptagon. | Screen 39 (21 · Heptagon): instruction | Clear and inviting: a question to the child, or a thing to look at. Stress: polygon, sides, heptagon. | `39_A_polygon_with_seven_sides_is_called_a_heptagon.wav` | Studio recording |
 | L56 | A polygon with 8 sides is called an octagon. | Screen 40 (22 · Octagon): instruction | Clear and inviting: a question to the child, or a thing to look at. Stress: polygon, sides, octagon. | `40_A_polygon_with_eight_sides_is_called_an_octagon.wav` | Studio recording |
 | L57 | Let's recall the different types of polygons we learnt about. | Screen 41 (23 · Recall): instruction | Clear and inviting: a question to the child, or a thing to look at. Stress: polygons. | `41_Lets_recall_the_different_types_of_polygons_we_learnt_about.wav` | Studio recording |
-| L58 | A polygon is a closed figure made only of straight sides. | Screen 42 (Polygon summary): instruction | Clear and inviting: a question to the child, or a thing to look at. Stress: polygon, closed, straight, sides. | `86_A_polygon_is_a_closed_figure.wav` | **Record** — Stand-in: Windows Zira synthetic voice |
 | L59 | Which of these are polygons? | Screen 43 (CFU 1): instruction | Clear and inviting: a question to the child, or a thing to look at. Stress: polygons. | `77_Select_polygons.wav` | **Record** — Stand-in: Windows Zira synthetic voice |
 | L60 | Yes! Closed, with only straight sides. | Screen 43 (CFU 1): right answer | Delighted, warm praise. A real smile, not a cheer. Stress: straight, sides. | `52_Yes_Closed_with_only_straight_sides.wav` | Studio recording |
 | L61 | Not quite! A polygon is closed with only straight sides. | Screen 43 (CFU 1): first wrong try | Gentle and encouraging. Never disappointed; a small nudge. Stress: polygon, closed, straight, sides. | `87_Not_quite_A_polygon_is_closed.wav` | **Record** — Stand-in: Windows Zira synthetic voice |
@@ -139,8 +138,7 @@ Sixteen takes over nine scenes, one take per line part: the story shows one part
 | L75 | Well done! Hexagons have 6 sides and heptagons have 7 sides. | Screen 47 (CFU 5): right answer | Delighted, warm praise. A real smile, not a cheer. Stress: sides, heptagons. | `63_Well_done_Hexagons_have_six_sides_and_heptagons_have_seven_sid.wav` | Studio recording |
 | L76 | Count the sides of the ones you placed wrong. | Screen 47 (CFU 5): first wrong try | Gentle and encouraging. Never disappointed; a small nudge. Stress: sides. | `64_Count_the_sides_of_the_ones_you_placed_wrong.wav` | Studio recording |
 | L77 | 6 sides make a hexagon, 7 make a heptagon. | Screen 47 (CFU 5): second wrong try | Patient and kind; gives the answer away a little more. Stress: sides, hexagon, heptagon. | `65_Six_sides_make_a_hexagon_seven_make_a_heptagon.wav` | Studio recording |
-| L78 | You did it! Now you know what makes a figure a polygon. | Screen 48 (Finished): instruction | Clear and inviting: a question to the child, or a thing to look at. Stress: polygon. | `47_You_did_it_Now_you_know_what_makes_a_figure_a_polygon.wav` | Studio recording |
-| L79 | You know all about polygons now. You are ready to help Momo. | Screen 48 (Finished): after L78, the last line of the lesson; then the game's cover | Proud and warm, then a turn back to the story: Momo needs you. Stress: polygons, help Momo. | `90_You_know_all_about_polygons_now_You_are_ready_to_help_Momo.wav` | Stand-in: macOS voice (Tara), `tools/voice/build-swiftee-lines.py` |
+| L79 | You know all about polygons now. You are ready to help Momo. | Screen 47, the summary: its last line, after the seven ideas; then Next and the game's cover | Proud and warm, then a turn back to the story: Momo needs you. Stress: polygons, help Momo. | `90_You_know_all_about_polygons_now_You_are_ready_to_help_Momo.wav` | Stand-in: macOS voice (Tara), `tools/voice/build-swiftee-lines.py` |
 
 ## 3. Help Momo, the Broken Path (Swiftee)
 
@@ -184,7 +182,10 @@ Recorded by the owner as one take. Listed so a new voice can match the rest; rec
 
 ## Recordings that are no longer used
 
-These 10 files are in `assets/audio/lesson/` but no screen says them any more (the lesson was rewritten). They do not need new takes.
+These 12 files are in `assets/audio/lesson/` but no screen says them any more (the lesson was rewritten). They do not need new takes.
+
+- "A polygon is a closed figure made only of straight sides." (`86_A_polygon_is_a_closed_figure.wav`): the old recap screen's line; the summary says each idea in the lesson's own words instead
+- "You did it! Now you know what makes a figure a polygon." (`47_You_did_it_Now_you_know_what_makes_a_figure_a_polygon.mp3`): the completion screen's line, until the summary took its place
 
 - "Tap the figure that is both closed and made of straight lines." (`16_Tap_the_figure_that_is_both_closed_and_made_of_straight_lines.mp3`)
 - "How many sides does this polygon have?" (`24_How_many_sides_does_this_polygon_have.mp3`)

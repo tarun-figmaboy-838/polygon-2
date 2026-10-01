@@ -45,22 +45,22 @@ const server=http.createServer((req,res)=>{
    [23,"__poly.state.cnt=[5,0];__poly.checkCount()","__poly.state.cnt=[3,0];__poly.checkCount()"],
    [30,"__poly.state.cnt=[5,5];__poly.checkCount()","__poly.state.cnt=[3,5];__poly.checkCount()"],
    [35,"__poly.tapCard(0)()","__poly.tapCard(1)()"],
-   [42,"__poly.tapCard(0)()","__poly.tapCard(1)()"],
-   [44,"__poly.tapCard(3)()","__poly.tapCard(0)()"],
-   [45,"__poly.tapCard(0)()","__poly.tapCard(2)()"],
-   [43,"__poly.state.pickedFig=0;__poly.dropInto(0)()","__poly.state.pickedFig=0;__poly.dropInto(1)()"],
-   [46,"__poly.state.pickedFig=0;__poly.dropInto(0)()","__poly.state.pickedFig=0;__poly.dropInto(1)()"]
+   [41,"__poly.tapCard(0)()","__poly.tapCard(1)()"],
+   [43,"__poly.tapCard(3)()","__poly.tapCard(0)()"],
+   [44,"__poly.tapCard(0)()","__poly.tapCard(2)()"],
+   [42,"__poly.state.pickedFig=0;__poly.dropInto(0)()","__poly.state.pickedFig=0;__poly.dropInto(1)()"],
+   [45,"__poly.state.pickedFig=0;__poly.dropInto(0)()","__poly.state.pickedFig=0;__poly.dropInto(1)()"]
   ];
   for(const[k,right,wrong]of cases){
    await show(k);console.log('Checking screen',k+1);expect(await act(wrong),false);
-   if(k===44)await page.screenshot({path:path.join(out,'incorrect.png')});
+   if(k===43)await page.screenshot({path:path.join(out,'incorrect.png')});
    await show(k);expect(await act(right),true);
-   if(k===44)await page.screenshot({path:path.join(out,'correct.png')});
+   if(k===43)await page.screenshot({path:path.join(out,'correct.png')});
   }
   await show(22);
   assert.deepEqual((await act("__poly.state.chip='Vertex';__poly.hitTarget('side')()")).sound,['no'],'Incorrect label gives only trial-and-error SFX');
   assert.equal(await page.evaluate(()=>__poly.state.placed.side),undefined);
-  await show(45);
+  await show(44);
   const cards=page.locator('.story-surface .game-action').filter({has:page.locator('svg')});
   const face=()=>cards.first().evaluate(e=>({background:getComputedStyle(e).background,border:getComputedStyle(e).borderColor,shape:e.querySelector('svg').innerHTML}));
   /* Right and wrong are meant to be unmistakable from across a room: the card
@@ -78,9 +78,9 @@ const server=http.createServer((req,res)=>{
   assert(chan(await glow(2)).some(c=>c[0]>170&&c[0]-c[1]>80&&c[0]-c[2]>80),'A wrong card is ringed in red');
   await page.waitForTimeout(1100);assert.equal(await page.locator('.swiftee-wrap').getAttribute('data-answer'),null,'Reaction cleans up');
   await show(18);expect(await act('__poly.tapCard(1)()'),true);assert.deepEqual((await act('__poly.tapCard(1)()')).sound,[],'Accepted answer cannot replay reward');
-  await page.emulateMedia({reducedMotion:'reduce'});await show(45);expect(await act('__poly.tapCard(0)()'),true);
+  await page.emulateMedia({reducedMotion:'reduce'});await show(44);expect(await act('__poly.tapCard(0)()'),true);
   assert(await page.evaluate(()=>__poly.guide.sprite.seg.still));
-  await page.setViewportSize({width:390,height:844});await show(45);expect(await act('__poly.tapCard(2)()'),false);
+  await page.setViewportSize({width:390,height:844});await show(44);expect(await act('__poly.tapCard(2)()'),false);
   const guide=await page.locator('.swiftee-wrap').boundingBox();assert(guide.x>=0&&guide.x+guide.width<=390&&guide.y>=0&&guide.y+guide.height<=844);
   await page.screenshot({path:path.join(out,'portrait-incorrect.png')});assert.deepEqual(errors,[]);
   console.log(`PASS: icon-free, immediate single-SFX feedback across ${cases.length} screens plus label retry, preserved artwork, glow, cleanup, repeat taps, reduced motion and portrait.`);

@@ -3,10 +3,10 @@
      - ?game=1 opens straight on the game: its cover and PLAY are up, its engine reports
        TITLE, the lesson underneath is hidden, the story and the blizzard never ran, no
        request fails and nothing throws in either document
-     - with the story into Part 2 left out (?bridge=0), the completion screen offers Help
-       Momo beside Play again, the game is already loading behind it, and pressing Help Momo
-       brings the game up at its cover (the story itself: tests/bridge.test.cjs)
-     - ?game=0 leaves the game out: Play again alone, and nothing loaded
+     - the lesson's last screen, its summary, ends on Next; the game is already loading
+       behind it, and Next brings the game up at its cover (?bridge=0 changes nothing here:
+       it only leaves the Help Momo scene out, tests/bridge.test.cjs)
+     - ?game=0 leaves the game out: the summary ends on Play again, and nothing loaded
      - Momo's jump is the Momo jump kit's (mammoth-jump-v2): the push-off cell, the flight
        cells in order with the arc, the three landing cells, and the run picked up on cell 24,
        at the base size and on a hi-DPI screen (the hd/ sheet)
@@ -51,17 +51,17 @@ const waitOn = (page, ms = 8000) => page.waitForFunction(() => {
     document.documentElement.getAttribute('data-runner') === 'on';
 }, null, { timeout: ms }).then(() => true, () => false);
 
-/** Jump the lesson to its completion screen and let its last line finish. */
+/** Jump the lesson to its last screen, the summary, and take it to its end (Next). */
 async function toEnd(page) {
   await page.waitForFunction(() => window.__poly && window.__poly.state.ready, null, { timeout: 30000 });
   await page.evaluate(() => {
     const g = window.__poly, k = g.steps().length - 1;
     g.setState({ k }, () => g.runStep(k, false));
   });
-  await page.waitForFunction(() => {
-    const g = window.__poly;
-    return g.state.k === g.steps().length - 1 && g.state.storyControls && !g.locked();
-  }, null, { timeout: 60000 });
+  await page.waitForFunction(() => window.PolygonSummary && window.PolygonSummary.state().active, null, { timeout: 30000 });
+  await page.waitForTimeout(600);
+  await page.evaluate(() => window.PolygonSummary.skipToEnd());
+  await page.waitForFunction(() => window.PolygonSummary.state().state === 'READY', null, { timeout: 10000 });
 }
 
 (async () => {
@@ -91,17 +91,17 @@ async function toEnd(page) {
   /* 2. the hand-off from the completion screen, without the story between */
   const b = await open(browser, srv, '?preview=1&bridge=0');
   await toEnd(b.page);
-  const help = b.page.getByRole('button', { name: 'Help Momo', exact: true });
-  const again = b.page.getByRole('button', { name: 'Play again', exact: true });
-  check('completion screen: Help Momo and Play again are both offered', await help.count() === 1 && await again.count() === 1);
-  check('completion screen: the game is already loading underneath', await b.page.evaluate(() => {
+  const help = b.page.getByRole('button', { name: 'Next', exact: true });
+  check("the summary ends on Next (and nothing else)", await help.count() === 1 &&
+    await b.page.getByRole('button', { name: 'Play again', exact: true }).count() === 0 && await b.page.getByRole('button', { name: 'Help Momo', exact: true }).count() === 0);
+  check('the summary: the game is already loading underneath', await b.page.evaluate(() => {
     const s = window.RunnerStage.state();
     return s.loaded && !s.shown && document.getElementById('runner-stage').classList.contains('is-loading');
   }));
   await help.click();
   const handed = await waitForGame(b.page).then(() => true, () => false);
   const s2 = await stage(b.page);
-  check('Help Momo brings the game up at its cover', handed && s2 && s2.game === 'TITLE', JSON.stringify(s2));
+  check("the summary's Next brings the game up at its cover", handed && s2 && s2.game === 'TITLE', JSON.stringify(s2));
   check('hand-off: the curtain has lifted and the stage covers the lesson', await waitOn(b.page));
   check('hand-off: no script errors', !b.errors.length, b.errors.join(' | '));
   await b.page.close();
@@ -109,9 +109,11 @@ async function toEnd(page) {
   /* 3. without the game */
   const c = await open(browser, srv, '?preview=1&game=0');
   await toEnd(c.page);
-  check('?game=0: Play again alone on the completion screen',
-    await c.page.getByRole('button', { name: 'Help Momo', exact: true }).count() === 0 &&
+  check('?game=0: the summary ends on Play again alone',
+    await c.page.getByRole('button', { name: 'Next', exact: true }).count() === 0 &&
     await c.page.getByRole('button', { name: 'Play again', exact: true }).count() === 1);
+  await c.page.getByRole('button', { name: 'Play again', exact: true }).click();
+  check('?game=0: Play again starts the lesson over', await c.page.waitForFunction(() => window.__poly.state.k === 0 && !window.PolygonSummary.state().active, null, { timeout: 10000 }).then(() => true, () => false));
   check('?game=0: nothing was loaded', await c.page.evaluate(() => !document.getElementById('runner-stage')));
   check('?game=0: no script errors', !c.errors.length, c.errors.join(' | '));
   await c.page.close();

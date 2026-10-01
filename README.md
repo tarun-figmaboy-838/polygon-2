@@ -1,6 +1,6 @@
 # Polygon Adventure
 
-A playful polygon lesson for young learners. It opens with **Momo and Polo**, a nine-panel animated comic story, then **Help Momo**: Momo runs to a broken path, Swiftee flies in, tells him what is wrong and that the polygons come first. Then a short blizzard, and the lesson where Swiftee the bird teaches open and closed figures, straight and curved boundaries, sides, vertices and angles, and polygon names from triangle to octagon. When the lesson is done, Swiftee tells the learner they are ready to help Momo, and the runner game begins, in which Momo crosses the broken ice by cutting down the right polygon, seven crossings, to reach his friend.
+A playful polygon lesson for young learners. It opens with **Momo and Polo**, a nine-panel animated comic story, then **Help Momo**: Momo runs to a broken path, Swiftee flies in, tells him what is wrong and that the polygons come first. Then a short blizzard, and the lesson where Swiftee the bird teaches open and closed figures, straight and curved boundaries, sides, vertices and angles, and polygon names from triangle to octagon. It ends on one summary screen that recaps each idea in turn; then Swiftee tells the learner they are ready to help Momo, and the runner game begins, in which Momo crosses the broken ice by cutting down the right polygon, seven crossings, to reach his friend.
 
 **Play it:** https://tarun-figmaboy-838.github.io/polygon-2/
 
@@ -56,7 +56,7 @@ docs/                 folder guide and screen map, design notes, voice scripts
 source-art/           Swiftee's character pack, used by tools/build-swiftee.cjs
 ```
 
-[docs/STRUCTURE.md](docs/STRUCTURE.md) lists which file to edit for what and maps all 48 screens.
+[docs/STRUCTURE.md](docs/STRUCTURE.md) lists which file to edit for what and maps all 47 screens.
 
 ## Media formats
 
@@ -97,7 +97,9 @@ The story ends on Polo's "Momo, keep going!" and fades to dark, and this scene c
 
 Nothing takes a tap or a key during the scene except Next, and Next does not exist until the lines have been said. The scene is drawn from the game's art (`game/assets`) with the game's own numbers, so its ground is the ground the game opens on, and its crevasse and water are drawn as the game draws them (a port of the game's `GroundManager`). Swiftee is the lesson's sprite and speaks in her own Part 1 dialogue box. The sounds are the game's own: its recorded snow footsteps, its skid, the cartoon pips as Momo shivers at the edge, a lighter take of its whoosh as Swiftee swoops in, and its tap on Next. Without sound the words keep the same timing. With reduced motion every beat is shown as a held picture. The scene is `src/bridge/bridge-story.js` and `styles/bridge-story.css`, and its states are listed at the top of the script.
 
-At the end of the lesson, the completion screen says its line, then Swiftee says "You know all about polygons now. You are ready to help Momo.", and when that has been read the game's cover comes up: the Frozen Rush banner with its **Play** button, and Play starts the game. The Help Momo scene is not shown a second time.
+## The summary (the lesson's last screen)
+
+One screen, after the Part 1 Summary Kit (its ice-vista background, its card, its speech bubble, its name plates, its album and its timing): the lesson's seven ideas, one card at a time, in the order they were taught. A card comes into the middle and its figure arrives; Swiftee rises from behind the card and says the idea in the lesson's own recorded words, and each key word shows the part of the figure it names as it is said (the lit sides on "segments", the corner on "point", the angle on "angle", the count on "5"); then the card shrinks into an album at the side with its name. The ideas: Closed, Polygon, Sides, Vertex, Angle, 5 sides (a corner is dragged and the sides are still five), 3 to 8 sides (the shape steps from a triangle to an octagon, each named). Then the albums gather in, Swiftee comes up in the middle and says "You know all about polygons now. You are ready to help Momo.", and **Next** appears. It brings up the game's cover: the Frozen Rush banner with its **Play** button, and Play starts the game. A tap on a collected card says its idea again. The Help Momo scene is not shown a second time. The engine is `src/lesson/summary.js` (its states are listed at the top), the look `styles/summary.css`.
 
 ## The Frozen Pass (the runner game)
 
@@ -128,8 +130,9 @@ npm test                               # lesson smoke + story on 6 screens + use
 npm run test:runner                    # just the hand-off: ?game=1, the Help Momo button, ?game=0 (~2 min)
 npm run test:bridge                    # Help Momo and the lesson's ending: order, locking, voice, Next, the cover, Play (~5 min)
 npm run test:swiftee                   # Swiftee loading: sheet table, cold / slow / warm loads, state races (~2 min)
+npm run test:summary                   # the summary: states in order, voice, word cues, layout, phones, Next (~4 min)
 BASE=https://tarun-figmaboy-838.github.io/polygon-2/ npm run test:swiftee   # the same against a deployed site
-npm run test:checks                    # 32 focused lesson checks incl. the full 48-screen playthrough (~20 min)
+npm run test:checks                    # 32 focused lesson checks incl. the full 47-screen playthrough (~20 min)
 ENGINE=webkit npm test                 # the same in Safari's engine
 ```
 

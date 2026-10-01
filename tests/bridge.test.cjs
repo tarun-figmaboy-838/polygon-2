@@ -12,10 +12,8 @@
      - Next takes one press, and the lesson begins at screen 1
      - after the story: the story's hand-over brings the scene up, and its Next goes on
        through the blizzard into the lesson; ?bridge=0 leaves the scene out
-     - the lesson's ending: its completion line, then "You know all about polygons now.
-       You are ready to help Momo." word by word, nothing to press, and only then the Part
-       2 cover; Play starts the game once and its voice says each line once; the scene is
-       not shown again
+     - the lesson's ending: its one summary, whose Next brings up the Part 2 cover; Play
+       starts the game once and its voice says each line once; the scene is not shown again
      - without sound, with reduced motion, on an upright and a sideways phone, and in a
        hidden tab, it still gets to Next
      - the voice windows it takes from the game still match the game's own table, and its
@@ -247,36 +245,20 @@ const SCENARIOS = {
     await b.context.close();
   },
 
-  /* The lesson's ending, with no hands on it: two lines, then the Part 2 cover. */
+  /* The lesson's ending: its one summary (tests/summary.test.cjs plays it in full), whose Next
+     brings up the Part 2 cover. */
   async lesson(browser, srv) {
     const { page, context, errors } = await open(browser, srv, '?preview=1');
     await page.waitForFunction(() => window.__poly && window.__poly.state.ready, null, { timeout: 30000 });
     await page.evaluate(() => { const g = window.__poly, k = g.steps().length - 1; g.setState({ k }, () => g.runStep(k, false)); });
-    const READY = 'You know all about polygons now. You are ready to help Momo.';
-    const first = await page.waitForFunction(() => { const g = window.__poly; return g.state.k === g.steps().length - 1 && g.state.narrShow === g.step().narr && !g._voiceLocked; }, null, { timeout: 60000 }).then(() => true, () => false);
-    check('the completion screen says its line first', first);
-    check('completion screen: nothing to press (Part 2 follows by itself)',
-      await page.getByRole('button', { name: 'Help Momo', exact: true }).count() === 0 &&
-      await page.getByRole('button', { name: 'Play again', exact: true }).count() === 0);
-    const reveal = [];
-    const ready = await page.waitForFunction(r => window.__poly.state.narrShow === r, READY, { timeout: 15000 }).then(() => true, () => false);
-    check('then, after a pause, "' + READY + '"', ready);
-    for (let i = 0; i < 40; i++) {
-      const s = await page.evaluate(() => ({ words: window.__poly.state.revealedWords, reveal: window.__poly.state.wordReveal, locked: window.__poly.locked(),
-        cover: !!(window.RunnerStage.state && window.RunnerStage.state().shown) }));
-      reveal.push(s);
-      if (s.reveal === 'complete' || s.cover) break;
-      await page.waitForTimeout(120);
-    }
-    const counts = reveal.filter(r => r.reveal === 'recorded').map(r => r.words);
-    check('it comes word by word with the voice', counts.length > 3 && counts[0] < 12 && counts.every((n, i) => !i || n >= counts[i - 1]), counts.join(','));
-    check('the lesson stays locked while it is said', reveal.filter(r => r.reveal === 'recorded').every(r => r.locked));
-    check('the Part 2 cover does not come up while it is said', reveal.every(r => !r.cover));
-    await page.waitForTimeout(200);
-    await page.screenshot({ path: path.join(OUT, ENGINE + '-7-ready-to-help-momo.png') });
-    const lineDone = Date.now();
-    const cover = await page.waitForFunction(() => window.RunnerStage.state && window.RunnerStage.state().shown, null, { timeout: 15000 }).then(() => Date.now() - lineDone, () => -1);
-    check('after a reading pause, the Part 2 cover comes up by itself', cover >= 600 && cover < 6000, cover + 'ms');
+    const up = await page.waitForFunction(() => window.PolygonSummary && window.PolygonSummary.state().active, null, { timeout: 20000 }).then(() => true, () => false);
+    check('the last screen is the summary', up);
+    await page.waitForTimeout(1500);
+    check('the Part 2 cover does not come up while the summary plays', await page.evaluate(() => !(window.RunnerStage.state && window.RunnerStage.state().shown)));
+    await page.evaluate(() => window.PolygonSummary.skipToEnd());
+    await page.locator('.lsum .lsum-next').click();
+    const cover = await page.waitForFunction(() => window.RunnerStage.state && window.RunnerStage.state().shown, null, { timeout: 15000 }).then(() => true, () => false);
+    check("the summary's Next brings up the Part 2 cover", cover);
     check('the Help Momo scene is not shown again', await page.evaluate(() => !window.BridgeStory.state().active && !window.BridgeStory.state().history.length));
     const frame = await (async () => { for (let i = 0; i < 100; i++) { const f = gameFrame(page); if (f) return f; await page.waitForTimeout(200); } return null; })();
     const loaded = frame && await frame.waitForFunction(() => window.iceAgeGame && window.iceAgeGame.state() === 'TITLE', null, { timeout: 120000 }).then(() => true, () => false);

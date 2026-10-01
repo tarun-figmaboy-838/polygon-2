@@ -1,11 +1,11 @@
 # Lesson checks
 
-Focused checks for the 48-screen polygon lesson, kept from the original project. Every one of them passes on the current game.
+Focused checks for the 47-screen polygon lesson, kept from the original project. Every one of them passes on the current game.
 
 ```bash
 npm run test:checks                               # all of them, one after another (~20 min)
 ONLY=check-sfx.cjs npm run test:checks            # just one
-node tests/checks/playwright-game.cjs             # the full 48-screen playthrough on its own
+node tests/checks/playwright-game.cjs             # the full 47-screen playthrough on its own
 ```
 
 Run them from the project folder. Browser checks ask for Google Chrome; `run-all.cjs` lets Playwright's bundled Chromium stand in when Chrome isn't installed. Screenshots and reports go to `tests/checks/output/`, which git ignores.
@@ -17,7 +17,7 @@ Two kinds of check live here:
 
 | Check | Covers |
 |---|---|
-| `playwright-game.cjs` | The complete 48-screen playthrough: real audio, keyboard, wrong answers, drag and drop, counting, dragging a vertex, sorting, and restart |
+| `playwright-game.cjs` | The complete 47-screen playthrough: real audio, keyboard, wrong answers, drag and drop, counting, dragging a vertex, sorting, and restart |
 | `check-all-screen-polish.cjs` | Layout and visuals across the screens |
 | `check-answer-feedback.cjs` | Right and wrong answer feedback, glows, Swiftee's reactions, one sound per answer |
 | `check-audio-recovery.cjs`, `check-voice-gate.cjs`, `check-recorded-voice.cjs`, `check-word-animation.cjs`, `check-word-browser.cjs`, `check-choice-voice-cues.cjs` | Narration: recordings, word timing, gating, recovery |
