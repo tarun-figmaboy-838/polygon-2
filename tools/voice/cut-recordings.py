@@ -168,32 +168,59 @@ def quietest(samples, around, reach=0.09):
 def join(cue, j):
     """A join's clip and word starts. A part is {from: line id, words: [first, end)}: the words of
     that recorded line, from its start or the quiet before its first word to the quiet after its
-    last (or its own end)."""
+    last (or its own end). A part may also give
+      at     [from, to] seconds in its recording, cut exactly there (measured, not guessed)
+      as     the words it stands for on screen, when they are not its own ("You are" -> "your")
+      tempo  a speed for it, pitch kept (ffmpeg atempo), so "You are" becomes one quick "your"
+      gap    the silence before it, seconds (else the join's own gap)
+    The clip carries a lead and a tail of silence as the lesson's takes do (`pad`: false for the
+    game's take, whose windows are cut tight)."""
     lines = {l['id']: l for l in cue['lines']}
     decoded, clip, words, parts = {}, array.array('h'), [], []
-    gap = int(j.get('gap', 0.06) * RATE)
     for k, part in enumerate(j['parts']):
         line = lines[part['from']]
         name = line['file']
         if name not in decoded:
             path = os.path.join(ROOT, cue['sources'][name]['src'])
             i_lufs, peak = loudness(path)
-            decoded[name] = (decode(path), min(TARGET['lesson'] - i_lufs, PEAK_CEIL - peak))
+            target = TARGET.get(j.get('use'), None)
+            decoded[name] = (decode(path), 0.0 if target is None else min(target - i_lufs, PEAK_CEIL - peak))
         samples, gain = decoded[name]
         toks, times = line['text'].split(), line['words']
         i, e = part['words']
-        lo = times[i] - 0.06 if i == 0 else quietest(samples, (times[i - 1] + times[i]) / 2 if times[i] - times[i - 1] < 0.2 else times[i] - 0.04)
-        hi = line['end'] + 0.18 if e >= len(toks) else quietest(samples, times[e] - 0.03)
+        if part.get('at'):
+            lo, hi = part['at']
+        else:
+            lo = times[i] - 0.06 if i == 0 else quietest(samples, (times[i - 1] + times[i]) / 2 if times[i] - times[i - 1] < 0.2 else times[i] - 0.04)
+            hi = line['end'] + 0.18 if e >= len(toks) else quietest(samples, times[e] - 0.03)
+        piece = cut(samples, lo, hi, gain)
+        tempo = part.get('tempo', 1.0)
+        if tempo != 1.0:
+            with tempfile.TemporaryDirectory() as tmp:
+                a, b = os.path.join(tmp, 'a.wav'), os.path.join(tmp, 'b.wav')
+                write_wav(a, piece)
+                run([FFMPEG, '-y', '-v', 'error', '-i', a, '-af', 'atempo=%.3f' % tempo, '-ar', str(RATE), '-ac', '1', b])
+                with wave.open(b, 'rb') as w:
+                    piece = array.array('h', w.readframes(w.getnframes()))
+                    if sys.byteorder != 'little':
+                        piece.byteswap()
         if k:
-            clip.extend([0] * gap)
+            clip.extend([0] * int(part.get('gap', j.get('gap', 0.06)) * RATE))
         at = len(clip) / RATE
-        clip.extend(cut(samples, lo, hi, gain))
-        for w, t in zip(toks[i:e], times[i:e]):
-            words.append((w, round(at + max(0.0, t - lo), 3)))
-        parts.append({'from': part['from'], 'text': toks[i:e]})
+        clip.extend(piece)
+        shown = part.get('as')
+        own = list(zip(toks[i:e], times[i:e]))
+        if shown:
+            starts = [t for _, t in own][:len(shown)] + [own[-1][1]] * max(0, len(shown) - len(own))
+            own = list(zip(shown, starts))
+        for w, t in own:
+            words.append((w, round(at + max(0.0, t - lo) / tempo, 3)))
+        parts.append({'from': part['from'], 'text': [w for w, _ in own]})
+    j['_parts'] = parts
+    if j.get('pad', True) is False:
+        return clip, words
     lead = array.array('h', [0] * int(0.2 * RATE))
     words = [(w, round(t + 0.2, 3)) for w, t in words]
-    j['_parts'] = parts
     return lead + clip + array.array('h', [0] * int(0.2 * RATE)), words
 
 
@@ -290,7 +317,7 @@ def main():
 
         # the joins: lines made of recorded words
         for j in cue.get('joins', []):
-            if only is not None and j['id'] not in only:
+            if j.get('use') == 'game' or (only is not None and j['id'] not in only):
                 continue
             target = 'assets/audio/lesson/' + j['file'] + '.mp3'
             clip, words = join(cue, j)
@@ -328,7 +355,7 @@ def main():
         f.write(head + json.dumps(catalogue, indent=2, ensure_ascii=False) + ';\n')
     print('lesson + bridge: %d files' % len(made))
 
-    if game_windows:
+    if game_windows or (only is None and any(j.get('use') == 'game' for j in cue.get('joins', []))):
         game_take(cue, game_windows)
 
 
@@ -337,16 +364,36 @@ def game_take(cue, windows):
     name = next(l['file'] for l in cue['lines'] if l['use'] == 'game')
     src = os.path.join(ROOT, cue['sources'][name]['src'])
     base = os.path.join(ROOT, 'game', 'assets', 'audio', 'vo-lines')
-    shutil.copyfile(src, base + '.mp3')
-    run([FFMPEG, '-y', '-v', 'error', '-i', src, '-c:a', 'libopus', '-b:a', '48k', '-application', 'voip', base + '.ogg'])
+    joins = [j for j in cue.get('joins', []) if j.get('use') == 'game']
+    if not joins:
+        shutil.copyfile(src, base + '.mp3')
+        run([FFMPEG, '-y', '-v', 'error', '-i', src, '-c:a', 'libopus', '-b:a', '48k', '-application', 'voip', base + '.ogg'])
+        total = len(decode(src)) / RATE
+    else:
+        # the delivered take as it came, then each join after it with a breath between, so every
+        # window already in CFG.vo.lines stays exactly where it was
+        joined = decode(src)
+        for j in joins:
+            clip, words = join(cue, dict(j, pad=False))
+            joined.extend([0] * int(0.8 * RATE))
+            at = len(joined) / RATE
+            joined.extend(clip)
+            windows[j['id']] = (round(at, 2), round(len(clip) / RATE, 2), [round(t, 2) for _, t in words], j['text'], 'join')
+        total = len(joined) / RATE
+        with tempfile.TemporaryDirectory() as tmp:
+            wav = os.path.join(tmp, 'take.wav')
+            write_wav(wav, joined)
+            run([FFMPEG, '-y', '-v', 'error', '-i', wav, '-c:a', 'libmp3lame', '-b:a', '160k',
+                 '-fflags', '+bitexact', '-flags:a', '+bitexact', base + '.mp3'])
+            run([FFMPEG, '-y', '-v', 'error', '-i', wav, '-c:a', 'libopus', '-b:a', '48k', '-application', 'voip',
+                 '-fflags', '+bitexact', '-flags:a', '+bitexact', base + '.ogg'])
 
     def fmt(key, w):
-        lo, length, words, text = w
+        lo, length, words, text = w[:4]
         pad = ' ' * max(1, 20 - len(key) - 4)
         return "      '%s':%s[%.2f, %.2f, [%s]],   // \"%s\"" % (key, pad, lo, length, ', '.join('%.2f' % t for t in words), text)
-    order = [l['id'] for l in cue['lines'] if l['use'] == 'game']
+    order = [l['id'] for l in cue['lines'] if l['use'] == 'game'] + [j['id'] for j in joins]
     block = '\n'.join(fmt(k, windows[k]) for k in order)
-    total = len(decode(src)) / RATE
     hashes = {rel: hashlib.md5(open(os.path.join(ROOT, 'game', rel), 'rb').read()).hexdigest()[:8]
               for rel in ('assets/audio/vo-lines.mp3', 'assets/audio/vo-lines.ogg')}
     for js in ('game/js/engine.js', 'game/js/game.bundle.js', 'game/js/asset-versions.js'):

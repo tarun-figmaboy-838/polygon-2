@@ -44,8 +44,8 @@ const ASSET_V = {
   "assets/audio/universfield-ground-impact-352053.ogg": "f6742c2a",
   "assets/audio/universfield-sad-trumpet-278822.mp3": "318bbc84",
   "assets/audio/universfield-sad-trumpet-278822.ogg": "202ea116",
-  "assets/audio/vo-lines.mp3": "e97e9a31",
-  "assets/audio/vo-lines.ogg": "1dcdd5cd",
+  "assets/audio/vo-lines.mp3": "fb39ef86",
+  "assets/audio/vo-lines.ogg": "a80595e4",
   "assets/char/bear.webp": "ac7771ee",
   "assets/char/duo-celebrate.webp": "7845cb0a",
   "assets/char/hd/bear.webp": "d257b5b8",
@@ -2212,7 +2212,7 @@ const CFG = {
      camera move and a snap. It runs alongside the pair's own 900ms glide to centre stage
      so the two settle together. */
   ending: { zoomK: 1.42, zoomMs: 1700 },
-  /* THE VOICE-OVER. The owner recorded every line the learner is shown as ONE take (30 s), in
+  /* THE VOICE-OVER. The owner recorded every line the learner is shown as ONE take (33 s), in
      the order of docs/VO-SCRIPT.md. One file is one download and one decode, so instead of
      sixteen files this names a WINDOW per line: [start, length] in seconds, measured off the
      recording's own pauses (the gaps between lines run 0.30-0.55 s; the two-sentence lines
@@ -2241,6 +2241,7 @@ const CFG = {
       'sign-heptagon':   [24.36, 1.32, [0.06, 0.35, 0.48]],   // "Cut the heptagon."
       'sign-pentagons':  [25.89, 1.88, [0.06, 0.41, 0.75, 1.05]],   // "Cut all the pentagons."
       'sign-hexagons':   [27.97, 1.96, [0.06, 0.46, 0.79, 1.01]],   // "Cut all the hexagons."
+      'tut-6b-piece':    [30.84, 2.54, [0.06, 0.41, 0.75, 1.05, 1.26, 1.54, 1.80, 2.08]],   // "Use the right piece to fix the path."
       /* THE ENDING SPEAKS NO MORE. 'win-title' ("You did it!") and 'win-sub' ("Momo crossed
          the Frozen Pass!") lived here and were cut with the banner that showed them: the
          ending is the dance now, the camera pushes in on it, and a voice over the top was
@@ -11347,8 +11348,10 @@ const clampN = (v, lo, hi) => v < lo ? lo : v > hi ? hi : v;
 /* WHICH RECORDED LINE BELONGS TO WHICH STEP (docs/VO-SCRIPT.md, CFG.vo.lines). */
 const VO = {
   meet: 'tut-1-meet', goal: 'tut-2-goal', rock: 'tut-3-watch', jump: 'tut-4-jump',
-  gap: 'tut-5-broken', use: 'tut-6-use', fit: 'tut-7-fit'
+  gap: 'tut-5-broken', use: 'tut-6-use', fit: 'tut-7-fit',
   // 'cut' is the hand alone and says nothing: the plank's question is spoken by the engine
+  // the lesson's return (the 'end' script): line 6 without "ice", joined from the same take
+  'use-piece': 'tut-6b-piece'
 };
 
 class Tutorial {
@@ -11626,7 +11629,8 @@ class Tutorial {
                  has Swiftee tell the learner why they must go and learn first.
          end     after the lesson: nothing at all until the ditch; there the game stops for
                  Swiftee ("Now let's help Momo.", a host step), then 6 on the plank as in the
-                 full script, and the plank asks its own question ("Cut the TRIANGLE.").
+                 full script, and the plank asks its own question ("Cut the TRIANGLE."); after the
+                 right cut, 7 as in the full script ("Perfect fit! Keep going!").
 
        The full script is the game's own and is unchanged. */
     this._all = all;
@@ -11637,7 +11641,8 @@ class Tutorial {
       return [by('meet'), by('goal'), by('rock'), by('jump')].map(st => Object.assign({}, st, { overtaken: reached })).concat([by('gap')]);
     }
     if (this.script === 'end') {
-      return [{ id: 'help', at: by('gap').at, spot: () => null, text: '', host: true, advance: 'host', pause: true }, by('use')];
+      return [{ id: 'help', at: by('gap').at, spot: () => null, text: '', host: true, advance: 'host', pause: true },
+              Object.assign({}, by('use'), { id: 'use-piece', text: 'Use the right piece to fix the path.' }), by('fit')];
     }
     return all;
   }

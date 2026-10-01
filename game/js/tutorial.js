@@ -56,8 +56,10 @@ import { fitBubble, BUBBLE } from './bubble.js';
 /* WHICH RECORDED LINE BELONGS TO WHICH STEP (docs/VO-SCRIPT.md, CFG.vo.lines). */
 const VO = {
   meet: 'tut-1-meet', goal: 'tut-2-goal', rock: 'tut-3-watch', jump: 'tut-4-jump',
-  gap: 'tut-5-broken', use: 'tut-6-use', fit: 'tut-7-fit'
+  gap: 'tut-5-broken', use: 'tut-6-use', fit: 'tut-7-fit',
   // 'cut' is the hand alone and says nothing: the plank's question is spoken by the engine
+  // the lesson's return (the 'end' script): line 6 without "ice", joined from the same take
+  'use-piece': 'tut-6b-piece'
 };
 
 export class Tutorial {
@@ -335,7 +337,8 @@ export class Tutorial {
                  has Swiftee tell the learner why they must go and learn first.
          end     after the lesson: nothing at all until the ditch; there the game stops for
                  Swiftee ("Now let's help Momo.", a host step), then 6 on the plank as in the
-                 full script, and the plank asks its own question ("Cut the TRIANGLE.").
+                 full script, and the plank asks its own question ("Cut the TRIANGLE."); after the
+                 right cut, 7 as in the full script ("Perfect fit! Keep going!").
 
        The full script is the game's own and is unchanged. */
     this._all = all;
@@ -346,7 +349,8 @@ export class Tutorial {
       return [by('meet'), by('goal'), by('rock'), by('jump')].map(st => Object.assign({}, st, { overtaken: reached })).concat([by('gap')]);
     }
     if (this.script === 'end') {
-      return [{ id: 'help', at: by('gap').at, spot: () => null, text: '', host: true, advance: 'host', pause: true }, by('use')];
+      return [{ id: 'help', at: by('gap').at, spot: () => null, text: '', host: true, advance: 'host', pause: true },
+              Object.assign({}, by('use'), { id: 'use-piece', text: 'Use the right piece to fix the path.' }), by('fit')];
     }
     return all;
   }

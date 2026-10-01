@@ -903,7 +903,7 @@ export const CFG = {
      camera move and a snap. It runs alongside the pair's own 900ms glide to centre stage
      so the two settle together. */
   ending: { zoomK: 1.42, zoomMs: 1700 },
-  /* THE VOICE-OVER. The owner recorded every line the learner is shown as ONE take (30 s), in
+  /* THE VOICE-OVER. The owner recorded every line the learner is shown as ONE take (33 s), in
      the order of docs/VO-SCRIPT.md. One file is one download and one decode, so instead of
      sixteen files this names a WINDOW per line: [start, length] in seconds, measured off the
      recording's own pauses (the gaps between lines run 0.30-0.55 s; the two-sentence lines
@@ -932,6 +932,7 @@ export const CFG = {
       'sign-heptagon':   [24.36, 1.32, [0.06, 0.35, 0.48]],   // "Cut the heptagon."
       'sign-pentagons':  [25.89, 1.88, [0.06, 0.41, 0.75, 1.05]],   // "Cut all the pentagons."
       'sign-hexagons':   [27.97, 1.96, [0.06, 0.46, 0.79, 1.01]],   // "Cut all the hexagons."
+      'tut-6b-piece':    [30.84, 2.54, [0.06, 0.41, 0.75, 1.05, 1.26, 1.54, 1.80, 2.08]],   // "Use the right piece to fix the path."
       /* THE ENDING SPEAKS NO MORE. 'win-title' ("You did it!") and 'win-sub' ("Momo crossed
          the Frozen Pass!") lived here and were cut with the banner that showed them: the
          ending is the dance now, the camera pushes in on it, and a voice over the top was

@@ -71,12 +71,13 @@
   /* Swiftee's lines over the frozen game (src/intro/swiftee-cameo.js): before the lesson, why
      the learner must learn first; after it, at the ditch. A visit that has not finished by
      SWIFTEE_CAP lets the game go on regardless. */
-  /* Every word she says over the game is her own recording (src/lesson/recordings.js): at the
-     broken path her Broken Path take; at the ditch "Now let's help Momo.", joined from her own
-     words (docs/voice/cue-map.json, the join J1). A line marked `whenRecorded` is said only once
-     it has a take: "Momo needs your help." waits for its recording, and then comes first. ("Help
-     Momo cross the Frozen Pass!" is the game narrator's, at the start of the run, not hers.) */
-  var OPENING_LINES = [{ text: 'Momo needs your help.', whenRecorded: true }, { text: 'But for that first you need to learn about polygons.' }];
+  /* Every word she says over the game is her own voice (src/lesson/recordings.js), joined from
+     her recorded words where nobody recorded the line whole (docs/voice/cue-map.json, joins J1-J3):
+     at the broken path "Momo needs your help." and "But to help Momo, you need to learn about
+     polygons."; at the ditch "Now let's help Momo." A line marked `whenRecorded` is said only
+     if it has a take. ("Help Momo cross the Frozen Pass!" is the game narrator's, at the start of
+     the run, not hers.) */
+  var OPENING_LINES = [{ text: 'Momo needs your help.', whenRecorded: true }, { text: 'But to help Momo, you need to learn about polygons.' }];
   var DITCH_LINES = [{ text: "Now let's help Momo." }];
   function sayable(lines) {
     var V = window.PolygonRecordedVoice;
