@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Game Lesson Kit</title>
+<meta name="description" content="The screens before and after the learning section, in order: the game's opening, Swiftee at the broken path, the snow into the lesson, and the game's return.">
+<style>
+  :root {
+    --bg: #f4f8fc; --card: #ffffff; --ink: #14263d; --soft: #52657d; --line: #d9e4f0;
+    --accent: #1a73c9; --swiftee: #148a77; --narrator: #a3561a; --chip: #eef4fb;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0d1726; --card: #15233a; --ink: #e8f0fa; --soft: #9fb2c9; --line: #26395a;
+      --accent: #6db3ff; --swiftee: #54d1b8; --narrator: #f0a35e; --chip: #1c2e4a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0d1726; --card: #15233a; --ink: #e8f0fa; --soft: #9fb2c9; --line: #26395a;
+    --accent: #6db3ff; --swiftee: #54d1b8; --narrator: #f0a35e; --chip: #1c2e4a;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 1240px; margin: 0 auto; padding: 32px 16px 64px; }
+  h1 { font-size: 30px; line-height: 1.2; margin: 0 0 8px; }
+  h2 { font-size: 22px; margin: 40px 0 6px; }
+  p.lead { color: var(--soft); max-width: 760px; margin: 0 0 8px; }
+  p.note { color: var(--soft); margin: 0 0 16px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; }
+  .card img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; background: #0a2450; }
+  .body { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 6px; }
+  .step { font-weight: 700; font-size: 14px; color: var(--accent); }
+  .what { font-weight: 600; }
+  .say { margin: 0; padding: 8px 10px; border-radius: 10px; background: var(--chip); font-size: 15px; }
+  .say b { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; display: block; }
+  .say.swiftee b { color: var(--swiftee); }
+  .say.narrator b { color: var(--narrator); }
+  .time { color: var(--soft); font-size: 14px; }
+  .flow { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 18px; padding: 0; list-style: none; }
+  .flow li { background: var(--chip); border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; font-size: 13px; }
+  footer { margin-top: 40px; color: var(--soft); font-size: 14px; }
+  code { font-family: ui-monospace, Menlo, monospace; font-size: .92em; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Game ↔ Lesson Kit</h1>
+  <p class="lead">The screens before and after the learning section, in order, as they run in Polygon Adventure. The game opens the experience and holds still at its first problem; Swiftee flies in and sends the learner to the lesson; snow carries the game away onto it. After the lesson the game comes back by itself, and Swiftee meets Momo at the same kind of problem.</p>
+  <p class="note">How to build it into another game, the files, the messages and the timings: <code>README.md</code> in this folder.</p>
+
+  <h2>Before the lesson</h2>
+  <ul class="flow"><li>Cover + Play</li><li>Avalanche</li><li>Tutorial (narrator)</li><li>The break: the game holds still</li><li>Swiftee flies in, looks, speaks</li><li>Snow</li><li>Lesson screen 1</li></ul>
+  <div class="grid" id="before"></div>
+
+  <h2>After the lesson</h2>
+  <ul class="flow"><li>Recap (the game loads)</li><li>Last line</li><li>The game starts by itself</li><li>Avalanche + run, no tutorial</li><li>The ditch: Swiftee</li><li>Plank + question</li><li>Praise</li></ul>
+  <div class="grid" id="after"></div>
+
+  <footer>Screenshots taken from the running project at 1280 × 720 on 1 October 2026 (<code>screens/</code>). Every voice is a recording; lines nobody recorded whole are joined from recorded words (README, section 6).</footer>
+</main>
+<script>
+  const BEFORE = [
+    ['a01-cover', '1', "The game's cover", '', '', 'Play is held until the art has loaded; the learner presses it'],
+    ['a02-avalanche', '2', "The game's opening avalanche, Momo starts to run", '', '', 'by itself'],
+    ['a03-meet', '3', 'Momo lit, the world frozen', 'narrator', 'This is Momo. He needs to find his friend.', '1 s after the line'],
+    ['a04-goal', '4', 'Momo lit', 'narrator', 'Help Momo cross the Frozen Pass!', '1 s after the line'],
+    ['a05-rock', '5', 'The rock lit', 'narrator', 'Watch out!', '1 s after the line'],
+    ['a06-jump', '6', 'The ask, in the middle of the stage', 'narrator', 'Tap to jump over obstacles.', 'waits for the jump (a missed jump: Momo bumps the rock and runs on)'],
+    ['a07-broken', '7', 'Momo stops at the edge, the hole lit', 'narrator', 'Oh no! The path is broken.', '1 s after the line, then the game holds still'],
+    ['a08-swiftee-flies-in', '8', 'Swiftee flies in, with the game’s whoosh', '', '', '1.4 s, landing on the far edge facing Momo'],
+    ['a09-swiftee-looks', '9', 'Swiftee looks at the broken path', '', '', '0.4 s + 1.3 s'],
+    ['a10-momo-needs-your-help', '10', 'Swiftee, in her dialogue box', 'swiftee', 'Momo needs your help.', '1 s after the line'],
+    ['a11-learn-polygons', '11', 'Swiftee', 'swiftee', 'But to help Momo, you need to learn about polygons.', '1 s after the line'],
+    ['a12-snow', '12', 'Snow blows across; Swiftee flies off; the game’s music fades', '', '', '0.42 s'],
+    ['a13-snow-onto-lesson', '13', 'The game fades away onto the lesson, under the snow', '', '', '1.3 s; the lesson’s Swiftee is already flying in'],
+    ['a14-lesson-screen-1', '14', 'Lesson screen 1', 'swiftee', 'Look! A point.', 'the lesson runs, with its own music']
+  ];
+  const AFTER = [
+    ['b01-recap', '1', 'The recap; the game starts loading, invisibly', '', '', 'the recap’s Next, then the quizzes'],
+    ['b02-ready-to-help-momo', '2', 'The last screen', 'swiftee', 'Now you know everything about polygons. You are ready to help Momo.', '1.3 s after the line, once the game’s art is in'],
+    ['b03-avalanche', '3', 'The game starts by itself: no cover, no Play', '', '', 'the curtain: 0.34 s in, 0.58 s off'],
+    ['b04-run', '4', 'The run; the rock is jumped with no tutorial', '', '', 'by itself'],
+    ['b05-swiftee-flies-in', '5', 'At the ditch the game holds still; Swiftee flies in', '', '', '1.4 s, then a 1.7 s look'],
+    ['b06-now-lets-help-momo', '6', 'Swiftee', 'swiftee', "Now let's help Momo.", '1 s after the line, then she flies off (0.95 s)'],
+    ['b07-use-the-right-piece', '7', 'The plank', 'narrator', 'Use the right piece to fix the path.', 'by itself'],
+    ['b08-cut-the-triangle', '8', 'The plank asks', 'narrator', 'Cut the TRIANGLE.', 'the learner cuts a rope'],
+    ['b09-perfect-fit', '9', 'The right cut', 'narrator', 'Perfect fit! Keep going!', 'the game plays on: seven crossings to the friend']
+  ];
+  function fill(id, rows) {
+    const box = document.getElementById(id);
+    for (const [img, n, what, who, line, time] of rows) {
+      const card = document.createElement('article');
+      card.className = 'card';
+      card.innerHTML = '<img loading="lazy" alt="">' +
+        '<div class="body"><div class="step"></div><div class="what"></div>' +
+        (line ? '<p class="say ' + who + '"><b></b><span></span></p>' : '') + '<div class="time"></div></div>';
+      card.querySelector('img').src = 'screens/' + img + '.webp';
+      card.querySelector('img').alt = what;
+      card.querySelector('.step').textContent = 'Step ' + n;
+      card.querySelector('.what').textContent = what;
+      if (line) { card.querySelector('.say b').textContent = who === 'swiftee' ? 'Swiftee' : 'Narrator'; card.querySelector('.say span').textContent = '“' + line + '”'; }
+      card.querySelector('.time').textContent = time;
+      box.appendChild(card);
+    }
+  }
+  fill('before', BEFORE);
+  fill('after', AFTER);
+</script>
+</body>
+</html>

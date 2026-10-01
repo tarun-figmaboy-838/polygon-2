@@ -88,6 +88,7 @@ All functions in this table are in `index.html`.
 
 - [design/](design/): the lesson scene notes, the button design, and the original bubble reference supplied for the story (`story-dialogue-box.png`).
 - [design/story-music/](design/story-music/): the story's background music as a kit for another story: the two music files, a drop-in player (`story-music.js`: five moods, crossfades, loops, the dip under a voice) and a demo page.
+- [design/game-lesson-kit/](design/game-lesson-kit/): **the screens before and after the learning section, as a kit for another game**: the sequence screen by screen with every line and timing (a storyboard page with screenshots, `index.html`), the messages between the game and the page, the files to copy, the game-side hooks, the timings and safety nets, and a checklist (`README.md`).
 - [design/story-frame/](design/story-frame/): the story’s paper page and ink-framed panel as two drop-in files (`story-frame.css`, `story-frame.js`) for another story, with a demo page.
 - [voice/](voice/): **[VO-LIST.md](voice/VO-LIST.md) is the current voice-over list** (every line of the story, the lesson, the Broken Path and the game, by character, with delivery notes, file names and what still needs recording; the same rows in `vo-list-all.csv`). The older narration exports, the recordings manifest and transcript, and the notes on word timing are kept beside it.
 - [game/](game/): the runner game's own contract, animation and voice notes, as they came with it.
