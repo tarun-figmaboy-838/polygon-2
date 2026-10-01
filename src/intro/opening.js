@@ -4,7 +4,7 @@
    The experience opens on Frozen Rush itself (src/runner/runner-stage.js, opening()): its
    banner and PLAY, its opening avalanche, and its tutorial as far as the broken path —
    "This is Momo. He needs to find his friend." ... "Oh no! The path is broken." — where it
-   says "Momo needs your help. But for that first you need to learn about polygons." The game
+   says "Help Momo cross the Frozen Pass! But for that first you need to learn about polygons." The game
    then holds its world still and hands over IN THE SNOW: a flurry blows across, the lesson
    starts underneath, and the game fades away under the snow onto it (runner-stage.js,
    toLesson). Nothing blank and nothing to press between them. The lesson waits on

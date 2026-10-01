@@ -334,7 +334,7 @@ export class Tutorial {
                  path. Then it finishes with the world held still (holdAtEnd), and the lesson
                  has Swiftee tell the learner why they must go and learn first.
          end     after the lesson: nothing at all until the ditch; there the game stops for
-                 Swiftee ("Now let's help Momo.", a host step), then 6 on the plank as in the
+                 Swiftee ("Help Momo cross the Frozen Pass!", a host step), then 6 on the plank as in the
                  full script, and the plank asks its own question ("Cut the TRIANGLE.").
 
        The full script is the game's own and is unchanged. */

@@ -71,8 +71,10 @@
   /* Swiftee's lines over the frozen game (src/intro/swiftee-cameo.js): before the lesson, why
      the learner must learn first; after it, at the ditch. A visit that has not finished by
      SWIFTEE_CAP lets the game go on regardless. */
-  var OPENING_LINES = [{ text: 'Momo needs your help.' }, { text: 'But for that first you need to learn about polygons.' }];
-  var DITCH_LINES = [{ text: "Now let's help Momo." }];
+  /* Her own recorded takes, both from the Broken Path (src/lesson/recordings.js): every word she
+     says over the game is heard in her voice. */
+  var OPENING_LINES = [{ text: 'Help Momo cross the Frozen Pass!' }, { text: 'But for that first you need to learn about polygons.' }];
+  var DITCH_LINES = [{ text: 'Help Momo cross the Frozen Pass!' }];
   var SWIFTEE_CAP = 20000;
   function lessonAudio() {
     try { return window.__poly && window.__poly.ac ? window.__poly.ac() : null; } catch (e) { return null; }

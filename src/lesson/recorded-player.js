@@ -9,6 +9,57 @@
     catch (error) { return false; }
   })();
   window.polygonAudioSrc = src => ogg ? String(src).replace(/\.mp3$/i, '.ogg') : src;
+  /* THE VOICE THROUGH THE LESSON'S AUDIO CONTEXT, where it is open. A media element may only
+     start with sound after a tap on this page, and in Safari a tap inside the game's frame (its
+     PLAY, which opens the experience) does not count, so the lesson's first line sat waiting for
+     a tap of its own. The context is opened by that very tap (src/intro/opening.js forwards it to
+     the lesson), so a line played through it is heard. This stands in for the element with the
+     parts of it play() below uses: currentTime, duration, paused, play(), pause(), load(),
+     removeAttribute() and the handlers. With no running context, or off the disk, the element
+     is used as before. */
+  const bytes = {};
+  const fetchBytes = url => {
+    if (!bytes[url]) {
+      bytes[url] = fetch(url).then(r => r.ok ? r.arrayBuffer() : Promise.reject(new Error(r.status + ' ' + url)));
+      bytes[url].catch(() => { delete bytes[url]; });
+    }
+    return bytes[url];
+  };
+  function contextVoice(ctx, url) {
+    let node = null, t0 = 0, at = 0, timer = 0, dead = false;
+    const v = { duration: NaN, paused: true, preload: 'auto', onplaying: null, onpause: null, onwaiting: null,
+      onstalled: null, onended: null, onerror: null, ontimeupdate: null, onseeked: null };
+    Object.defineProperty(v, 'currentTime', { get: () => (node && !v.paused ? Math.max(0, ctx.currentTime - t0) : at), set: () => {} });
+    const halt = () => { clearInterval(timer); if (node) { node.onended = null; try { node.stop(); } catch (e) {} } };
+    v.play = () => fetchBytes(url).then(buf => ctx.decodeAudioData(buf.slice(0))).then(b => {
+      if (dead) return;
+      if (ctx.state !== 'running') throw new Error('the context is not running');
+      v.duration = b.duration;
+      node = ctx.createBufferSource();
+      node.buffer = b;
+      node.connect(ctx.destination);
+      t0 = ctx.currentTime + 0.02;
+      node.start(t0);
+      v.paused = false;
+      node.onended = () => { if (dead || v.paused) return; at = b.duration; v.paused = true; clearInterval(timer); if (v.onended) v.onended(); };
+      timer = setInterval(() => { if (!v.paused && v.ontimeupdate) v.ontimeupdate(); }, 100);
+      setTimeout(() => { if (!dead && !v.paused && v.onplaying) v.onplaying(); }, 25);
+    });
+    v.pause = () => {
+      if (!node || v.paused) return;
+      at = v.currentTime; v.paused = true; halt();
+      if (v.onpause) v.onpause();
+    };
+    v.removeAttribute = () => { dead = true; v.paused = true; halt(); };
+    v.load = () => {};
+    return v;
+  }
+  const voiceFor = (game, url) => {
+    let ctx = null;
+    try { ctx = game && game._ac && game._ac.state === 'running' ? game._ac : null; } catch (e) { ctx = null; }
+    if (ctx && location.protocol !== 'file:' && typeof fetch === 'function') return contextVoice(ctx, url);
+    return new Audio(url);
+  };
   const numbers = ['zero','one','two','three','four','five','six','seven','eight','nine'];
   const normalize = text => text.toLowerCase().replace(/[0-9]/g, n => numbers[+n])
     .replace(/[’']/g, '').replace(/[^a-z]+/g, ' ').trim();
@@ -35,7 +86,7 @@
     },
     play(game, text, entry, current, done, fail) {
       if (game._stopRecordedVoice) game._stopRecordedVoice();
-      const audio = new Audio(window.polygonAudioSrc(entry.src));
+      const audio = voiceFor(game, window.polygonAudioSrc(entry.src));
       audio.preload = 'auto';
       const pages = game.instructionPages(text);
       const counts = pages.map(page => (page.match(/\S+/g) || []).length);
