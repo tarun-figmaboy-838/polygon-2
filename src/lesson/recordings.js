@@ -3665,5 +3665,29 @@ window.POLYGON_RECORDINGS = [
       }
     ],
     "source": "Swiftee's recorded take: swiftee-lesson-4.mp3, 10.89-16.12 s; word starts measured from the recording"
+  },
+  {
+    "text": "Now let's help Momo.",
+    "src": "assets/audio/lesson/90_Now_lets_help_Momo.mp3",
+    "duration": 2.166,
+    "words": [
+      {
+        "word": "Now",
+        "start": 0.26
+      },
+      {
+        "word": "let's",
+        "start": 0.47
+      },
+      {
+        "word": "help",
+        "start": 0.93
+      },
+      {
+        "word": "Momo.",
+        "start": 1.23
+      }
+    ],
+    "source": "Swiftee's recorded words, joined: \"Now let's\" (L39) + \"help Momo.\" (L80)"
   }
 ];

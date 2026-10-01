@@ -11625,7 +11625,7 @@ class Tutorial {
                  path. Then it finishes with the world held still (holdAtEnd), and the lesson
                  has Swiftee tell the learner why they must go and learn first.
          end     after the lesson: nothing at all until the ditch; there the game stops for
-                 Swiftee ("Help Momo cross the Frozen Pass!", a host step), then 6 on the plank as in the
+                 Swiftee ("Now let's help Momo.", a host step), then 6 on the plank as in the
                  full script, and the plank asks its own question ("Cut the TRIANGLE.").
 
        The full script is the game's own and is unchanged. */
@@ -11916,6 +11916,19 @@ class Tutorial {
     const done = this.opts.onDone;
     this.opts.onDone = null;
     if (done) { try { done(this); } catch (e) { console.error('the tutorial\'s hand-over failed', e); } }
+  }
+
+  /** For review only (the lesson's ?dev=1): go straight to a later step, by its id. */
+  skipTo(id) {
+    const i = this.steps.findIndex(s => s.id === id);
+    if (this.done || i < 0 || i <= this.step) return;
+    if (this.game.saySign) this.game.saySign('');
+    this.resume();
+    this.hideFocus();
+    this.step = i;
+    this.t = 0;
+    this.spoke = false;
+    this.voDur = 0; this.voWords = null; this.voId = null;
   }
 
   /** Where Momo's head and the far lip of the hole are on the stage now (after the zoom), and
@@ -12806,6 +12819,20 @@ if (lessonPart) {
     const d = e.data;
     if (!d || e.source !== window.parent) return;
     if (d.iceAge === 'said' && tut) tut.didAction('host');
+    /* REVIEW ONLY (the lesson's ?dev=1 screen menu): straight to the broken path. PLAY if the
+       cover is still up, the tutorial on to its line at the break, and the run fast-forwarded
+       to it, then back to its own speed. */
+    if (d.iceAge === 'dev-break') {
+      if (front && front.state !== 'READY' && front.state !== 'EXITING') { try { front.start(); } catch (err) {} }
+      game.setOptions({ fast: 8 });
+      let tries = 0;
+      const back = setInterval(() => {
+        if (tut && tut.skipTo) tut.skipTo('gap');
+        let s = '';
+        try { s = game.debug().state; } catch (err) {}
+        if (['PHASE_INTRO', 'PHASE_ACTIVE', 'COMPLETE'].includes(s) || ++tries > 600) { game.setOptions({ fast: options.fast }); clearInterval(back); }
+      }, 100);
+    }
     if (d.iceAge === 'quiet') { game.fadeMusic(900); setTimeout(() => game.suspendAudio(), 1000); }
   });
 }

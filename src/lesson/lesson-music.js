@@ -1,11 +1,13 @@
 /* ============================================================================
-   THE LESSON'S MUSIC — the Frozen Rush game's own bed, under the learning section.
+   THE LESSON'S MUSIC — its own, under the learning section only.
 
-   The same track the game plays (game/assets/audio/bgm-ice-hunt), at the game's own
-   level and with the game's own manners (CFG.music in game/js/engine.js): it fades in,
-   it ducks under a voice so Swiftee is always clear, and it fades out as the game takes
-   the screen, where the game's own copy of it carries on. So the lesson and the game
-   sound like one thing.
+   A loop from the original score composed for this project (assets/audio/music/lesson-music,
+   cut by tools/build-lesson-music.cjs from the story score's warm and playful sections): a
+   curious music box over a soft pad. The Frozen Rush game keeps its own music and is not
+   touched; this one is heard only in the lesson. It plays with the game bed's manners
+   (CFG.music in game/js/engine.js), at its loudness: it fades in, it ducks under a voice so
+   Swiftee is always clear, and it fades out as the game takes the screen, where the game's
+   own music begins.
 
    IT NEVER HOLDS ANYTHING UP. The track streams (a media element, not a decoded buffer);
    a browser that will not start it yet gets asked again on the next tap; a track that
@@ -18,8 +20,8 @@
 (function () {
   'use strict';
 
-  var SRC = 'game/assets/audio/bgm-ice-hunt';
-  var LEVEL = 0.17 * 0.7;     // CFG.music.gain under the game's 0.7 master
+  var SRC = 'assets/audio/music/lesson-music';
+  var LEVEL = 0.17 * 0.7;     // the game bed's level (CFG.music.gain under its 0.7 master); the file is at its loudness
   var DUCK = 0.35;            // CFG.music.duck: the bed while a voice speaks
   var FADE_IN = 2.2;          // CFG.music.fadeMs, seconds
   var DUCK_IN = 0.25, DUCK_OUT = 0.6;
@@ -28,7 +30,8 @@
 
   function source() {
     var ogg = false;
-    try { ogg = document.createElement('audio').canPlayType('audio/ogg; codecs="vorbis"') !== '' || document.createElement('audio').canPlayType('audio/ogg; codecs="opus"') === 'probably'; } catch (e) {}
+    // Ogg Opus only where it is fully played, as the lesson's voices choose (recorded-player.js)
+    try { ogg = document.createElement('audio').canPlayType('audio/ogg; codecs="opus"') === 'probably'; } catch (e) {}
     return SRC + (ogg ? '.ogg' : '.mp3');
   }
   function want() {

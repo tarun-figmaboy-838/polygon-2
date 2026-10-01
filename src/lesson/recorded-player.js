@@ -26,11 +26,15 @@
     return bytes[url];
   };
   function contextVoice(ctx, url) {
-    let node = null, t0 = 0, at = 0, timer = 0, dead = false;
+    let node = null, t0 = 0, w0 = 0, at = 0, timer = 0, guard = 0, dead = false;
     const v = { duration: NaN, paused: true, preload: 'auto', onplaying: null, onpause: null, onwaiting: null,
       onstalled: null, onended: null, onerror: null, ontimeupdate: null, onseeked: null };
-    Object.defineProperty(v, 'currentTime', { get: () => (node && !v.paused ? Math.max(0, ctx.currentTime - t0) : at), set: () => {} });
-    const halt = () => { clearInterval(timer); if (node) { node.onended = null; try { node.stop(); } catch (e) {} } };
+    /* the context's clock, with the wall clock a quarter second behind it: a context clock that
+       stops (Safari can stop one) must not leave the words and the screen waiting on it */
+    Object.defineProperty(v, 'currentTime', { get: () => (node && !v.paused
+      ? Math.min(v.duration || Infinity, Math.max(0, ctx.currentTime - t0, (performance.now() - w0) / 1000 - 0.25)) : at), set: () => {} });
+    const halt = () => { clearInterval(timer); clearTimeout(guard); if (node) { node.onended = null; try { node.stop(); } catch (e) {} } };
+    const ended = () => { if (dead || v.paused) return; at = v.duration; v.paused = true; halt(); if (v.onended) v.onended(); };
     v.play = () => fetchBytes(url).then(buf => ctx.decodeAudioData(buf.slice(0))).then(b => {
       if (dead) return;
       if (ctx.state !== 'running') throw new Error('the context is not running');
@@ -39,9 +43,12 @@
       node.buffer = b;
       node.connect(ctx.destination);
       t0 = ctx.currentTime + 0.02;
+      w0 = performance.now() + 20;
       node.start(t0);
       v.paused = false;
-      node.onended = () => { if (dead || v.paused) return; at = b.duration; v.paused = true; clearInterval(timer); if (v.onended) v.onended(); };
+      node.onended = ended;
+      // and it ends on time whatever the context's clock does
+      guard = setTimeout(ended, (b.duration + 0.6) * 1000);
       timer = setInterval(() => { if (!v.paused && v.ontimeupdate) v.ontimeupdate(); }, 100);
       setTimeout(() => { if (!dead && !v.paused && v.onplaying) v.onplaying(); }, 25);
     });

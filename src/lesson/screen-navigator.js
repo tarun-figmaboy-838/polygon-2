@@ -1,6 +1,9 @@
 /* Screen navigation for review: the "Screens" jump menu and the Back / Next buttons
    at the top of the lesson, and the same "Scenes" menu over the story before it
-   (src/story/story-intro.js). Learners never see them. They are on the page only with
+   (src/story/story-intro.js). The lesson's list runs the whole experience, start to end:
+   the game's opening (its cover and tutorial, then Swiftee at the broken path), every
+   lesson screen, then the game after the lesson (its run, then Swiftee at the ditch); and
+   while a game is on screen the buttons sit above it. Learners never see them. They are on the page only with
    ?dev=1 in the address (?dev-1 is taken as the same thing); without it mount() puts
    nothing on the page and returns a no-op, and panel() returns null. */
 (function () {
@@ -30,8 +33,9 @@
 
   /* One navigator: a menu that lists the items and jumps to one, and Back / Next.
      `nav` says what it navigates:
-       items()   [{ label, detail }]           current()  the index on screen
+       items()   [{ label, detail, num? }]     current()  the index on screen
        go(i)     show item i                   ready()    whether it can navigate yet
+       tag(i)    optional, the menu button's words for item i (default: word · i+1)
        word, title, name, list, steps, close,  its words
        search, searchLabel
      Returns { host, sync, dispose }: put host on the page, call sync() when the item
@@ -59,10 +63,11 @@
       const query = search.value.trim().toLowerCase();
       list.replaceChildren();
       nav.items().forEach((item, index) => {
-        if (query && !`${index + 1} ${item.label} ${item.detail}`.toLowerCase().includes(query)) return;
+        const no = item.num || index + 1;
+        if (query && !`${no} ${item.label} ${item.detail}`.toLowerCase().includes(query)) return;
         const button = document.createElement('button');
         button.className = 'ice-button';
-        button.textContent = `${index + 1}. ${item.label}`;
+        button.textContent = `${no}. ${item.label}`;
         button.setAttribute('aria-current', String(index === nav.current()));
         const description = document.createElement('small');
         description.textContent = item.detail;
@@ -80,7 +85,7 @@
       $('next').disabled = !ready || k >= n - 1;
       if (k === last) return;
       last = k;
-      toggle.textContent = `${nav.word} · ${k + 1}`;
+      toggle.textContent = nav.tag ? nav.tag(k) : `${nav.word} · ${k + 1}`;
       if (!sheet.hidden) render();
     }
     toggle.onclick = () => {
@@ -101,14 +106,89 @@
     mount(game) {
       if (!dev) return () => {};
       let disposed = false;
+      /* The stretches either side of the lesson's own screens. */
+      const START = [
+        { num: 'S1', label: 'Start · Frozen Rush', detail: "The game's banner and Play, the avalanche, and the tutorial to the broken path." },
+        { num: 'S2', label: 'Start · Swiftee at the broken path', detail: 'But for that first you need to learn about polygons.' }
+      ];
+      const END = [
+        { num: 'E1', label: 'End · Frozen Rush', detail: 'After the lesson: the avalanche and the run, by itself.' },
+        { num: 'E2', label: "End · Swiftee at the ditch", detail: "Now let's help Momo." }
+      ];
       const nav = panel({
         word: 'Screens', title: 'Jump to a screen', name: 'Lesson screen navigator', list: 'Lesson screens',
         steps: 'Screen navigation', close: 'Close screen navigator', search: 'Search name or step number', searchLabel: 'Search screens',
-        items: () => game.steps().map(step => ({ label: step.label, detail: step.narr })),
-        current: () => game.state.k,
+        items: () => START.concat(game.steps().map((step, i) => ({ num: String(i + 1), label: step.label, detail: step.narr })), END),
+        current: () => {
+          const R = window.RunnerStage, S = window.SwifteeCameo;
+          const st = R && R.state ? R.state() : null;
+          if (st && st.opening && st.opening.on) return /SWIFTEE|TO_LESSON/.test(st.opening.phase) ? 1 : 0;
+          if (!game.state.ready) return 0;
+          const last = START.length + game.steps().length + END.length - 1;
+          if (st && st.shown) return S && S.state().on ? last : last - 1;
+          return game.state.k + START.length;
+        },
         ready: () => !!game.state.ready,
-        go: navigate
+        // the lesson's own screens keep their own numbers; the game's stretches are Start and End
+        tag: k => {
+          if (!game.state.ready) return 'Screens';     // the lesson has no steps before boot()
+          const steps = game.steps().length;
+          if (k < START.length) return 'Start · ' + (k + 1);
+          if (k < START.length + steps) return 'Screens · ' + (k - START.length + 1);
+          return 'End · ' + (k - START.length - steps + 1);
+        },
+        go: jump
       });
+      const R = () => window.RunnerStage;
+      function restart(extra) {
+        const q = new URLSearchParams(window.location.search);
+        ['preview', 'intro', 'devat', 'game', 'story', 'bridge'].forEach(k => q.delete(k));
+        q.set('dev', '1'); q.set('intro', '1');
+        Object.keys(extra || {}).forEach(k => q.set(k, extra[k]));
+        window.location.search = q.toString();
+      }
+      /* Back to the lesson from a game: the game taken down, the lesson's music back on. */
+      function lessonBack() {
+        const st = R() && R().state ? R().state() : null;
+        if (st && st.shown) {
+          R().close();
+          if (window.SwifteeCameo) window.SwifteeCameo.close();
+          game._toPart2 = false;
+          if (window.LessonMusic) window.LessonMusic.start({ audio: () => game.ac(), speaking: () => game.musicDucks(), muted: () => !!game.state.muted });
+        }
+      }
+      function jump(index) {
+        if (disposed || !game.state.ready) return;
+        const st = R() && R().state ? R().state() : null;
+        const steps = game.steps().length, inOpening = !!(st && st.opening && st.opening.on);
+        if (index === 0) { restart(); return; }
+        if (index === 1) {
+          if (inOpening && st.opening.phase !== 'OPENING_SWIFTEE') R().devBreak(); else if (!inOpening) restart({ devat: 'break' });
+          return;
+        }
+        if (index < START.length + steps) {
+          const k = index - START.length;
+          if (inOpening) { R().devEndOpening(); (window.Opening ? window.Opening.gate : Promise.resolve()).then(() => setTimeout(() => navigate(k), 60)); return; }
+          lessonBack();
+          navigate(k);
+          return;
+        }
+        // the game after the lesson
+        if (inOpening) R().devEndOpening();
+        const shown = !!(st && st.shown);
+        if (!shown) {
+          R().preload();
+          game.setState({ k: steps - 1 }, () => { game._voiceLocked = false; game.startPart2(); });
+        }
+        if (index === START.length + steps + END.length - 1) {
+          const at = Date.now();
+          (function ask() {
+            const s2 = R().state();
+            if (s2.running) { R().devBreak(); return; }
+            if (Date.now() - at < 60000) setTimeout(ask, 300);
+          })();
+        }
+      }
       function navigate(index) {
         if (disposed || !game.state.ready || index < 0 || index >= game.steps().length) return;
         const step = game.steps()[index];
@@ -125,8 +205,12 @@
         if (disposed) return;
         // The lesson renderer can replace this container between screens.
         // Reattach the existing controls so their styling and handlers persist.
-        const container = game.navigationRef.current;
+        // while a game has the screen (the opening, or after the lesson) the buttons go over it
+        const st = window.RunnerStage && window.RunnerStage.state ? window.RunnerStage.state() : null;
+        const over = !!(st && ((st.opening && st.opening.on) || st.shown));
+        const container = over ? document.body : game.navigationRef.current;
         if (container && nav.host.parentElement !== container) container.append(nav.host);
+        nav.host.style.cssText = over ? 'position:fixed;inset:0;z-index:10095' : '';
         nav.sync();
       }
       // The first render may not have created the navigation container yet.

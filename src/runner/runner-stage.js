@@ -71,10 +71,17 @@
   /* Swiftee's lines over the frozen game (src/intro/swiftee-cameo.js): before the lesson, why
      the learner must learn first; after it, at the ditch. A visit that has not finished by
      SWIFTEE_CAP lets the game go on regardless. */
-  /* Her own recorded takes, both from the Broken Path (src/lesson/recordings.js): every word she
-     says over the game is heard in her voice. */
-  var OPENING_LINES = [{ text: 'Help Momo cross the Frozen Pass!' }, { text: 'But for that first you need to learn about polygons.' }];
-  var DITCH_LINES = [{ text: 'Help Momo cross the Frozen Pass!' }];
+  /* Every word she says over the game is her own recording (src/lesson/recordings.js): at the
+     broken path her Broken Path take; at the ditch "Now let's help Momo.", joined from her own
+     words (docs/voice/cue-map.json, the join J1). A line marked `whenRecorded` is said only once
+     it has a take: "Momo needs your help." waits for its recording, and then comes first. ("Help
+     Momo cross the Frozen Pass!" is the game narrator's, at the start of the run, not hers.) */
+  var OPENING_LINES = [{ text: 'Momo needs your help.', whenRecorded: true }, { text: 'But for that first you need to learn about polygons.' }];
+  var DITCH_LINES = [{ text: "Now let's help Momo." }];
+  function sayable(lines) {
+    var V = window.PolygonRecordedVoice;
+    return lines.filter(function (l) { return !l.whenRecorded || !!(V && V.find && V.find(l.text)); });
+  }
   var SWIFTEE_CAP = 20000;
   function lessonAudio() {
     try { return window.__poly && window.__poly.ac ? window.__poly.ac() : null; } catch (e) { return null; }
@@ -83,7 +90,7 @@
   function swiftee(f, where, lines, leave) {
     var S = window.SwifteeCameo;
     if (!S) return Promise.resolve(false);
-    var visit = S.visit({ frame: f, where: where, lines: lines, audio: lessonAudio, leave: leave }).catch(function () { return false; });
+    var visit = S.visit({ frame: f, where: where, lines: sayable(lines), audio: lessonAudio, leave: leave }).catch(function () { return false; });
     return Promise.race([visit, new Promise(function (r) { setTimeout(function () { r(false); }, SWIFTEE_CAP); })]);
   }
   /* The longest the curtain waits for the game's art before starting the run anyway. */
@@ -137,7 +144,11 @@
     if (!open) return;
     open.said[word] = true;
     if (word === 'play' && open.phase === 'OPENING_COVER') { open.phase = openPhase = 'OPENING_TUTORIAL'; arm(OPENING_PLAY_CAP); }
-    if (word === 'ready') clearTimeout(open.loadCap);
+    if (word === 'ready') {
+      clearTimeout(open.loadCap);
+      // review (?dev=1&devat=break): straight on to the broken path once the art is in
+      if (q && q.get('dev') === '1' && q.get('devat') === 'break') devBreak();
+    }
     if (word === 'lesson' && open.phase !== 'OPENING_SWIFTEE') {
       /* the game is frozen at the broken path: Swiftee flies in and tells the learner why they
          must learn first, and stays for the snow */
@@ -217,7 +228,7 @@
     opts = opts || {};
     open = { said: {}, phase: 'OPENING_COVER' };
     openPhase = 'OPENING_COVER';
-    if (window.SwifteeCameo) window.SwifteeCameo.preload(OPENING_LINES.map(function (l) { return l.text; }));
+    if (window.SwifteeCameo) window.SwifteeCameo.preload(sayable(OPENING_LINES).map(function (l) { return l.text; }));
     var h = document.createElement('div');
     h.id = 'runner-opening';
     h.className = 'runner-host is-on';
@@ -246,6 +257,28 @@
     open.loadCap = setTimeout(function () { if (open && !open.said.ready && !open.said.play) toLesson(); }, OPENING_LOAD_CAP);
     return open.done;
   }
+  /* REVIEW ONLY (?dev=1, the screen menu in src/lesson/screen-navigator.js). devBreak() takes the
+     game on screen straight to its broken path (game/js/main.js, 'dev-break'): before the lesson,
+     to Swiftee's line there; after it, to Swiftee at the ditch. devEndOpening() ends the opening
+     at once, with no Swiftee and no snow, so the lesson can be jumped to. */
+  function devBreak() {
+    var f = open ? open.frame : (shown ? frame : null), w = null;
+    try { w = f && f.contentWindow; } catch (e) { w = null; }
+    if (w) try { w.postMessage({ iceAge: 'dev-break' }, '*'); } catch (e) {}
+    return !!w;
+  }
+  function devEndOpening() {
+    if (!open) return Promise.resolve(false);
+    var mine = open;
+    if (window.SwifteeCameo) window.SwifteeCameo.close();
+    open.phase = openPhase = 'OPENING_TO_LESSON';
+    clearTimeout(open.cap); clearTimeout(open.loadCap);
+    document.documentElement.removeAttribute('data-runner');
+    mine.resolve(true);
+    closeOpening();
+    return Promise.resolve(true);
+  }
+
   /* Take the opening's frame off the page (the lesson is the page by now). */
   function closeOpening() {
     if (!open) return;
@@ -389,6 +422,8 @@
     preload: preload,
     opening: opening,
     closeOpening: closeOpening,
+    devBreak: devBreak,
+    devEndOpening: devEndOpening,
     whenReady: whenReady,
     start: start,
     close: close,

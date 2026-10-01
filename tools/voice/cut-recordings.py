@@ -22,6 +22,11 @@ recordings and nothing else:
 Lines marked unused or skip in the map are not cut (the map still lists them, so it
 accounts for every second of every recording).
 
+  joins    a line nobody recorded whole, made of words that were recorded (the map's
+           "joins"): each part is a run of words from one recorded line, cut at the quietest
+           moment next to its first and last word, levelled as its own recording is, and the
+           parts are joined with a breath between; the result is a lesson line like any other.
+
 Each line is cut a little wider than its speech (PAD), never past halfway into the
 pause either side, faded at the cut, and levelled with one gain per recording, so a
 voice keeps its own dynamics from line to line. Word starts are measured from the
@@ -29,9 +34,9 @@ cut, so the words on screen land on the words being said.
 
 Usage (from the project folder, after `npm install`):
     npm run build:recorded-voice                 everything
-    npm run build:recorded-voice -- --only L79   just these lesson or bridge lines (ids from the
-                                                 cue map, comma-separated); the story's parts and
-                                                 the game's windows are always built together
+    npm run build:recorded-voice -- --only L79   just these lesson, bridge or join lines (ids from
+                                                 the cue map, comma-separated); the story's parts
+                                                 and the game's windows are always built together
 """
 import array
 import hashlib
@@ -148,6 +153,50 @@ def starts(line, lo):
     return out
 
 
+def quietest(samples, around, reach=0.09):
+    """The quietest 10 ms within `reach` seconds of `around`: where a cut between two words
+    takes nothing of either."""
+    win, best, at = int(0.010 * RATE), None, around
+    a, b = int((around - reach) * RATE), int((around + reach) * RATE)
+    for i in range(max(0, a), max(0, min(len(samples) - win, b)), int(0.0025 * RATE)):
+        e = sum(abs(x) for x in samples[i:i + win:4])
+        if best is None or e < best:
+            best, at = e, (i + win / 2) / RATE
+    return at
+
+
+def join(cue, j):
+    """A join's clip and word starts. A part is {from: line id, words: [first, end)}: the words of
+    that recorded line, from its start or the quiet before its first word to the quiet after its
+    last (or its own end)."""
+    lines = {l['id']: l for l in cue['lines']}
+    decoded, clip, words, parts = {}, array.array('h'), [], []
+    gap = int(j.get('gap', 0.06) * RATE)
+    for k, part in enumerate(j['parts']):
+        line = lines[part['from']]
+        name = line['file']
+        if name not in decoded:
+            path = os.path.join(ROOT, cue['sources'][name]['src'])
+            i_lufs, peak = loudness(path)
+            decoded[name] = (decode(path), min(TARGET['lesson'] - i_lufs, PEAK_CEIL - peak))
+        samples, gain = decoded[name]
+        toks, times = line['text'].split(), line['words']
+        i, e = part['words']
+        lo = times[i] - 0.06 if i == 0 else quietest(samples, (times[i - 1] + times[i]) / 2 if times[i] - times[i - 1] < 0.2 else times[i] - 0.04)
+        hi = line['end'] + 0.18 if e >= len(toks) else quietest(samples, times[e] - 0.03)
+        if k:
+            clip.extend([0] * gap)
+        at = len(clip) / RATE
+        clip.extend(cut(samples, lo, hi, gain))
+        for w, t in zip(toks[i:e], times[i:e]):
+            words.append((w, round(at + max(0.0, t - lo), 3)))
+        parts.append({'from': part['from'], 'text': toks[i:e]})
+    lead = array.array('h', [0] * int(0.2 * RATE))
+    words = [(w, round(t + 0.2, 3)) for w, t in words]
+    j['_parts'] = parts
+    return lead + clip + array.array('h', [0] * int(0.2 * RATE)), words
+
+
 def read_catalogue(path):
     src = open(path, encoding='utf-8').read()
     m = re.search(r'window\.POLYGON_RECORDINGS\s*=\s*(\[.*\]);?\s*$', src, re.S)
@@ -163,6 +212,7 @@ def main():
     if '--only' in sys.argv[1:]:
         only = set(sys.argv[sys.argv.index('--only') + 1].split(','))
         known = {l['id']: l['use'] for l in lines}
+        known.update({j['id']: 'join' for j in cue.get('joins', [])})
         for i in only:
             if i not in known:
                 raise SystemExit('no line %s in the cue map' % i)
@@ -237,6 +287,26 @@ def main():
                 write_wav(wav, clip)
                 encode(wav, os.path.join(ROOT, target[:-4]))
                 made.append(target[:-4])
+
+        # the joins: lines made of recorded words
+        for j in cue.get('joins', []):
+            if only is not None and j['id'] not in only:
+                continue
+            target = 'assets/audio/lesson/' + j['file'] + '.mp3'
+            clip, words = join(cue, j)
+            rows = [r for r in catalogue if normalize(r['text']) == normalize(j['text'])]
+            row = rows[0] if rows else {'text': j['text'], 'src': target}
+            if not rows:
+                catalogue.append(row)
+            row.update({'src': target, 'duration': round(len(clip) / RATE, 3),
+                        'words': [{'word': w, 'start': t} for w, t in words],
+                        'source': "Swiftee's recorded words, joined: " + ' + '.join(
+                            '"%s" (%s)' % (' '.join(p['text']), p['from']) for p in j['_parts'])})
+            wav = os.path.join(tmp, 'join.wav')
+            write_wav(wav, clip)
+            encode(wav, os.path.join(ROOT, target[:-4]))
+            made.append(target[:-4])
+            print('join %s: %s, %.2fs' % (j['id'], j['text'], len(clip) / RATE))
 
         # the story: one file, parts in story order
         if story_parts:

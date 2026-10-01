@@ -1160,5 +1160,25 @@
    "end": 29.81,
    "words": [28.03, 28.43, 28.76, 28.98]
   }
+ ],
+ "joins": [
+  {
+   "id": "J1",
+   "use": "lesson",
+   "file": "90_Now_lets_help_Momo",
+   "text": "Now let's help Momo.",
+   "parts": [
+    {
+     "from": "L39",
+     "words": [0, 2]
+    },
+    {
+     "from": "L80",
+     "words": [10, 12]
+    }
+   ],
+   "gap": 0.05,
+   "note": "Swiftee at the ditch after the lesson (src/runner/runner-stage.js, DITCH_LINES): \"Now let's\" from L39 and \"help Momo.\" from L80, her own takes, until it is recorded whole"
+  }
  ]
 }

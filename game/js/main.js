@@ -98,6 +98,20 @@ if (lessonPart) {
     const d = e.data;
     if (!d || e.source !== window.parent) return;
     if (d.iceAge === 'said' && tut) tut.didAction('host');
+    /* REVIEW ONLY (the lesson's ?dev=1 screen menu): straight to the broken path. PLAY if the
+       cover is still up, the tutorial on to its line at the break, and the run fast-forwarded
+       to it, then back to its own speed. */
+    if (d.iceAge === 'dev-break') {
+      if (front && front.state !== 'READY' && front.state !== 'EXITING') { try { front.start(); } catch (err) {} }
+      game.setOptions({ fast: 8 });
+      let tries = 0;
+      const back = setInterval(() => {
+        if (tut && tut.skipTo) tut.skipTo('gap');
+        let s = '';
+        try { s = game.debug().state; } catch (err) {}
+        if (['PHASE_INTRO', 'PHASE_ACTIVE', 'COMPLETE'].includes(s) || ++tries > 600) { game.setOptions({ fast: options.fast }); clearInterval(back); }
+      }, 100);
+    }
     if (d.iceAge === 'quiet') { game.fadeMusic(900); setTimeout(() => game.suspendAudio(), 1000); }
   });
 }

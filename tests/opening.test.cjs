@@ -6,13 +6,13 @@
      - PLAY: the avalanche, the run and the tutorial as far as the broken path, its lines in
        order; nothing past it (no plank, no cut, no "Perfect fit!")
      - Swiftee flies in over the frozen game, lands on the path across the ditch facing Momo,
-       looks at it, and says, in her own recorded voice, "Help Momo cross the Frozen Pass!" and
-       "But for that first you need to learn about polygons."
+       looks at it, and says, in her own recorded voice, "But for that first you need to learn
+       about polygons." ("Momo needs your help." first, once it is recorded)
      - the hand-over in the snow: the flurry, the game fading away onto the lesson, the frame
        taken off the page, and the lesson on screen 1 with its voice and its music, no tap,
        nothing blank and nothing to press in between
      - the return, after the lesson: the avalanche and the run with no tutorial; at the ditch
-       the game stops for Swiftee ("Help Momo cross the Frozen Pass!"), then the plank's recorded "Use the
+       the game stops for Swiftee ("Now let's help Momo.", joined from her own takes), then the plank's recorded "Use the
        right ice piece to fix the path." and its own question, "Cut the TRIANGLE."
      - ?story=1 still opens on the drafted story, with no game in front of it
 
@@ -47,7 +47,8 @@ const noSkips = f => f.evaluate(() => !document.getElementById('tut-skip') && !d
 
 const OPENING = ['This is Momo.', 'He needs to find his friend.', 'Help Momo cross the Frozen Pass!', 'Watch out!',
   'Tap to jump over obstacles.', 'Oh no!', 'The path is broken.'];
-const SWIFTEE_OPENING = ['Help Momo cross the Frozen Pass!', 'But for that first you need to learn about polygons.'];
+// "Momo needs your help." comes first once it is recorded (runner-stage.js, whenRecorded)
+const SWIFTEE_OPENING = ['But for that first you need to learn about polygons.'];
 
 (async () => {
   const srv = await serve(ROOT);
@@ -94,7 +95,7 @@ const SWIFTEE_OPENING = ['Help Momo cross the Frozen Pass!', 'But for that first
     perch.at && perch.at.x > 720 && perch.at.y > 560 && perch.at.y < 810, JSON.stringify(perch));
   await a.page.waitForFunction(() => RunnerStage.state().opening.phase === 'OPENING_TO_LESSON', null, { timeout: 30000 }).catch(() => {});
   const said = (await cameo(a.page)).history.filter(h => h.event === 'say');
-  check('she says "Help Momo cross the Frozen Pass!" and then "But for that first...", both in her recorded voice',
+  check('she says, in her recorded voice, "But for that first you need to learn about polygons."',
     JSON.stringify(said.map(h => h.text)) === JSON.stringify(SWIFTEE_OPENING) && said.every(h => h.voice === true), JSON.stringify(said));
 
   /* 4. the hand-over, in the snow */
@@ -110,8 +111,9 @@ const SWIFTEE_OPENING = ['Help Momo cross the Frozen Pass!', 'But for that first
   const heard = await a.page.evaluate(() => ({ ac: window.__poly._ac && window.__poly._ac.state, voiceError: window.__poly.state.voiceError,
     music: window.LessonMusic.state() }));
   check('the lesson is heard with no tap of its own: its voice and its music', heard.ac === 'running' && !heard.voiceError && heard.music.playing, JSON.stringify(heard));
+  check('the lesson plays its own music, not the game\'s', /assets\/audio\/music\/lesson-music\.(ogg|mp3)$/.test(heard.music.src || ''), heard.music.src);
   /* and the order, start to lesson: the game's lines, then Swiftee's, then screen 1's */
-  check('in order: the tutorial, then Swiftee, then the snow, then the lesson\'s first line', seen.length === OPENING.length && said.length === 2 && lesson);
+  check('in order: the tutorial, then Swiftee, then the snow, then the lesson\'s first line', seen.length === OPENING.length && said.length === SWIFTEE_OPENING.length && lesson);
   check('opening: every request succeeds', !a.missing().length, a.missing().join(', '));
   check('opening: no script errors', !a.errors.length, a.errors.join(' | '));
   await a.page.close();
@@ -128,7 +130,7 @@ const SWIFTEE_OPENING = ['Help Momo cross the Frozen Pass!', 'But for that first
   const back = [];
   let activeAt = 0, swifteeAt = -1, plankAt = -1;
   const t1 = Date.now();
-  while (Date.now() - t1 < 150000) {
+  while (g && Date.now() - t1 < 150000) {
     const r = await showing(g);
     const c = await cameo(b.page);
     if (c.say && swifteeAt < 0) swifteeAt = back.length;
@@ -141,10 +143,10 @@ const SWIFTEE_OPENING = ['Help Momo cross the Frozen Pass!', 'But for that first
     await g.evaluate(() => window.iceAgeGame.jump && window.iceAgeGame.jump()).catch(() => {});
     await b.page.waitForTimeout(150);
   }
-  check('the return: nothing until the ditch; there Swiftee says "Help Momo cross the Frozen Pass!", then the plank its line',
-    JSON.stringify(back) === JSON.stringify(['swiftee: Help Momo cross the Frozen Pass!', 'Use the right ice piece to fix the path.']) &&
+  check('the return: nothing until the ditch; there Swiftee says "Now let\'s help Momo.", then the plank its line',
+    JSON.stringify(back) === JSON.stringify(["swiftee: Now let's help Momo.", 'Use the right ice piece to fix the path.']) &&
     (await cameo(b.page)).history.filter(h => h.event === 'say').every(h => h.voice === true), back.join(' > '));
-  const question = await g.evaluate(() => (document.querySelector('#instruction') || {}).textContent || '').catch(() => '');
+  const question = !g ? '' : await g.evaluate(() => (document.querySelector('#instruction') || {}).textContent || '').catch(() => '');
   check('the return: then the plank asks its own question', /Cut the TRIANGLE/i.test(question), question);
   check('the return: Swiftee has flown off', !(await cameo(b.page)).on);
   check('the return: no script errors', !b.errors.length, b.errors.join(' | '));

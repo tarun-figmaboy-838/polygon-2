@@ -28,6 +28,7 @@
   var HEAD = 0.1;                         // the top of her head in her cell
   var FLY_IN = 1400, FLY_OUT = 950, SETTLE = 300, WATCH = 1300, BETWEEN = 260;
   var WORD = 0.32, START_WAIT = 1200;     // seconds a word with no take; the longest a take may take to start
+  var HOLD = 1000;                        // once a line is complete, a second to see it before anything moves on
   var SAY = { font: 44, maxW: 640, tailX: 34, tip: { x: 12, y: 54 }, hang: 10 };
   var WHOOSH = 'game/assets/audio/dragon-studio-heavy-whoosh-06-414584';
   var CLIPS = ['flying', 'talk_start', 'talking', 'talk_stop', 'blinking', 'curious_start', 'curious'];
@@ -206,13 +207,14 @@
       C.live.textContent = line.text;
       C.say.classList.remove('out'); void C.say.offsetWidth; C.say.classList.add('show');
       pose('talking');
-      var starts = null, dur = 0, clock = null, started = false, finished = false;
+      var starts = null, dur = 0, clock = null, started = false, finished = false, wall0 = 0;
       var silent = function () {
         if (started || finished) return;
         started = true;
         starts = words.map(function (w, i) { return 0.12 + i * WORD; });
         dur = starts[starts.length - 1] + 0.5;
         var t0 = performance.now();
+        wall0 = t0;
         clock = function () { return (performance.now() - t0) / 1000; };
         history.push({ event: 'say', text: line.text, voice: false });
       };
@@ -227,6 +229,7 @@
             mine.voice = { stop: function () { try { a.pause(); } catch (e) {} } };
             starts = k.starts || words.map(function (w, i) { return i * (k.dur || 2) / words.length; });
             dur = a.duration && isFinite(a.duration) ? a.duration : (k.dur || 2);
+            wall0 = performance.now();
             clock = function () { return a.currentTime; };
             history.push({ event: 'say', text: line.text, voice: true });
           });
@@ -244,6 +247,7 @@
           mine.voice = src;
           starts = k.starts || words.map(function (w, i) { return i * b.duration / words.length; });
           dur = b.duration;
+          wall0 = performance.now();
           clock = function () { return ctx.currentTime - t0; };
           history.push({ event: 'say', text: line.text, voice: true });
         }).catch(function () {});
@@ -251,14 +255,19 @@
       (function look() {
         if (C !== mine) { resolve(); return; }
         if (clock) {
-          var t = clock();
+          /* THE VOICE'S CLOCK, WITH THE WALL CLOCK BEHIND IT. The words follow the take; but a
+             clock that stops (Safari can stop a context's clock under it) must not hold the
+             line up, so the wall clock, a quarter second behind, carries the words on, and the
+             line is over by the take's length plus a little whatever the audio says. */
+          var wall = (performance.now() - wall0) / 1000;
+          var t = Math.max(clock(), wall - 0.25);
           C.spans.forEach(function (sp, i) { if (t + 0.04 >= starts[i]) sp.classList.add('in'); });
-          if (!finished && t >= dur) {
+          if (!finished && (t >= dur || wall >= dur + 0.6)) {
             finished = true;
             C.spans.forEach(function (sp) { sp.classList.add('in'); });
             pose('blinking');
-            var read = clamp(500 + line.text.length * 22, 900, 1800);
-            setTimeout(function () { resolve(); }, read);
+            history.push({ event: 'said', text: line.text });
+            setTimeout(function () { resolve(); }, HOLD);
             return;
           }
         }

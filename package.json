@@ -18,6 +18,7 @@
     "build:recorded-voice": "python3 tools/voice/cut-recordings.py",
     "build:swiftee-lines": "python3 tools/voice/build-swiftee-lines.py",
     "build:story-music": "node tools/story/build-story-music.cjs",
+    "build:lesson-music": "node tools/build-lesson-music.cjs",
     "optimize:media": "node tools/optimize-media.cjs"
   },
   "devDependencies": {
