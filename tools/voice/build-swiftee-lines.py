@@ -36,22 +36,10 @@ OUT_DIR = os.path.join(ROOT, 'assets', 'audio', 'lesson')
 RECORDINGS = os.path.join(ROOT, 'src', 'lesson', 'recordings.js')
 SWIFTEE = {'voice': 'Tara', 'cents': 150, 'rate': 0.74}   # about 140 words a minute, a touch brighter
 
-LINES = [
-    # the Help Momo scene, after the story: why the lesson comes first
-    {'file': '89_But_for_that_first_you_need_to_learn_about_polygons',
-     'text': 'But for that first you need to learn about polygons.'},
-    # the recap before the quizzes (screen 41): its opening line, and the turn to the names
-    {'file': '91_Lets_recall_what_we_learnt_today',
-     'text': "Let's recall what we learnt today."},
-    {'file': '92_Polygons_have_different_names_based_on_their_number_of_sides',
-     'text': 'Polygons have different names based on their number of sides.'},
-    # the last screen, after the quizzes: the line back to Momo, then the game starts
-    {'file': '93_Now_you_know_everything_about_polygons_You_are_ready_to_help_Momo',
-     'text': 'Now you know everything about polygons. You are ready to help Momo.'},
-    # (L79, "You know all about polygons now. You are ready to help Momo.", is recorded now:
-    #  assets/audio/source/swiftee-lesson-3.mp3, built by tools/voice/cut-recordings.py.
-    #  It is not rendered here, so this cannot overwrite it.)
-]
+# Every line these stood in for is recorded now (assets/audio/source/swiftee-lesson-3.mp3 and
+# -4.mp3, built by tools/voice/cut-recordings.py): B3, L57a, L57b, L79 and L80. Nothing is rendered
+# here, so this cannot overwrite a recording. A new line with no take yet goes in this list.
+LINES = []
 
 
 def main():
@@ -61,6 +49,8 @@ def main():
     rows = []
     with tempfile.TemporaryDirectory() as tmp:
         timepitch = SV.compile_timepitch(tmp)
+        if not LINES:
+            print('every line is recorded: nothing to stand in for')
         wanted = [a for a in sys.argv[1:] if not a.startswith('-')]
         for line in LINES:
             if wanted and not any(line['file'].startswith(w) for w in wanted):

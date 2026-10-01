@@ -1576,7 +1576,14 @@
     phase('ENDING_ENTER');
     return Promise.all([waitMs(T.dusk), withTimeout(loading || preload(), T.loadCap)])
       .then(guard(gen, function (r) {
-        if (!r[1]) { S.history.push({ event: 'fallback', reason: 'art', at: Math.round(S.clock) }); if (S.resolveSaid) S.resolveSaid(false); return new Promise(noop); }
+        if (!r[1]) {
+          // no art: the scene goes, and the lesson says the line itself (finishLesson)
+          S.history.push({ event: 'fallback', reason: 'art', at: Math.round(S.clock) });
+          var said = S.resolveSaid; S.resolveSaid = null;
+          destroy();
+          if (said) said(false);
+          return new Promise(noop);
+        }
         openAtBreak();
         return waitMs(T.endingIn);
       }))
@@ -1861,7 +1868,7 @@
     last = { gen: S.gen, mode: S.mode, phase: S.phase, history: S.history, sounds: S.sounds, handedOff: S.handedOff, listeners: 0 };
     var resolve = S.resolveDone, said = S.resolveSaid;
     S = null;
-    if (said) said(true);
+    if (said) said(false);
     if (resolve) resolve(true);
   }
 

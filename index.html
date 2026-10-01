@@ -5346,6 +5346,9 @@ class Component extends DCLogic {
   /* The lesson underneath is locked while the recap plays; its Next goes on into the quizzes. */
   startRecap() {
     const P = window.PolygonRecap, gen = this.gen;
+    /* the game is about 20 MB of art: it starts loading now, out of sight, so it is ready by
+       the time the quizzes are done (src/runner/runner-stage.js) */
+    if (window.RunnerStage && window.RunnerStage.enabled) window.RunnerStage.preload();
     this.clearNudge();
     this._voiceLocked = true;
     this.setState({ storyDialogue: false, storyControls: false, interactive: false, speaking: false });
@@ -5614,14 +5617,25 @@ class Component extends DCLogic {
          comes up over it. Nothing of the lesson's own shows meanwhile. */
       this._voiceLocked = true;
       this.setState({ endPhase: 'MOMO_READY_MESSAGE', storyDialogue: false, speaking: false });
-      B.ending({ text: s.narr }).then(() => {
+      B.ending({ text: s.narr }).then(said => {
         if (gen !== this.gen || this.step().sc !== 'END') { B.close(); return; }
-        this._voiceLocked = false;
-        this.setState({ endPhase: 'TRANSITION_TO_GAME' });
-        this.startPart2().then(() => B.close(), () => B.close());
+        if (!said) { this._voiceLocked = false; this.sayLastLine(gen, game); return; }   // the scene could not come up
+        // and, if the game's art is still arriving, the scene stays up with them until it is in
+        (window.RunnerStage.whenReady ? window.RunnerStage.whenReady(90000) : Promise.resolve(true)).then(() => {
+          if (gen !== this.gen || this.step().sc !== 'END') { B.close(); return; }
+          this._voiceLocked = false;
+          this.setState({ endPhase: 'TRANSITION_TO_GAME' });
+          this.startPart2().then(() => B.close(), () => B.close());
+        });
       });
       return;
     }
+    this.sayLastLine(gen, game);
+  }
+  /* The last line in the lesson's own bubble: without the Help Momo scene (?bridge=0), or when
+     it could not come up. */
+  sayLastLine(gen, game) {
+    const s = this.step();
     this.setState({ endPhase: 'MOMO_READY_MESSAGE' });
     this.narrate(s.narr, { then: () => {
       if (gen !== this.gen || this.step().sc !== 'END') return;
@@ -5629,8 +5643,13 @@ class Component extends DCLogic {
       this.setState({ interactive: false });
       this.later(() => {
         if (gen !== this.gen || this.step().sc !== 'END') return;
-        if (game) { this.setState({ endPhase: 'TRANSITION_TO_GAME' }); this.startPart2(); }
-        else this.setState({ endReady: true, interactive: true });
+        if (!game) { this.setState({ endReady: true, interactive: true }); return; }
+        const R = window.RunnerStage;
+        (R.whenReady ? R.whenReady(90000) : Promise.resolve(true)).then(() => {
+          if (gen !== this.gen || this.step().sc !== 'END') return;
+          this.setState({ endPhase: 'TRANSITION_TO_GAME' });
+          this.startPart2();
+        });
       }, END_READ);
     } });
   }

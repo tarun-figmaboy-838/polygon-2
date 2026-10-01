@@ -25,6 +25,10 @@
    "src": "assets/audio/source/swiftee-lesson-3.mp3",
    "voice": "Swiftee"
   },
+  "swiftee-lesson-4": {
+   "src": "assets/audio/source/swiftee-lesson-4.mp3",
+   "voice": "Swiftee"
+  },
   "frozen-rush-voice": {
    "src": "assets/audio/source/frozen-rush-voice.mp3",
    "voice": "Game voice"
@@ -987,11 +991,48 @@
   {
    "id": "L79",
    "file": "swiftee-lesson-3",
-   "use": "lesson",
+   "use": "unused",
    "text": "You know all about polygons now. You are ready to help Momo.",
    "start": 0.03,
    "end": 4.746,
-   "words": [0.03, 0.24, 0.48, 0.9, 1.26, 1.86, 2.695, 2.96, 3.22, 3.46, 3.792, 4.24]
+   "words": [0.03, 0.24, 0.48, 0.9, 1.26, 1.86, 2.695, 2.96, 3.22, 3.46, 3.792, 4.24],
+   "note": "no longer said: the end says L80 instead; its catalogue row is kept in this voice"
+  },
+  {
+   "id": "B3",
+   "file": "swiftee-lesson-4",
+   "use": "lesson",
+   "text": "But for that first you need to learn about polygons.",
+   "start": 0.04,
+   "end": 3.48,
+   "words": [0.04, 0.24, 0.42, 1.043, 1.38, 1.64, 1.82, 2.04, 2.24, 2.76]
+  },
+  {
+   "id": "L57a",
+   "file": "swiftee-lesson-4",
+   "use": "lesson",
+   "text": "Let's recall what we learnt today.",
+   "start": 4.3,
+   "end": 6.28,
+   "words": [4.3, 4.62, 4.96, 5.24, 5.44, 5.72]
+  },
+  {
+   "id": "L57b",
+   "file": "swiftee-lesson-4",
+   "use": "lesson",
+   "text": "Polygons have different names based on their number of sides.",
+   "start": 6.84,
+   "end": 10.63,
+   "words": [6.84, 7.4, 7.72, 8.16, 8.58, 9.04, 9.32, 9.5, 9.76, 10.06]
+  },
+  {
+   "id": "L80",
+   "file": "swiftee-lesson-4",
+   "use": "lesson",
+   "text": "Now you know everything about polygons. You are ready to help Momo.",
+   "start": 11.14,
+   "end": 16.04,
+   "words": [11.14, 11.42, 11.66, 12.083, 12.44, 12.94, 14.202, 14.36, 14.6, 14.82, 15.16, 15.46]
   },
   {
    "id": "tut-1-meet",

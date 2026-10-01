@@ -18,8 +18,9 @@
    controller can still read the game's state (window.iceAgeGame) for the
    checks without touching a line of the game.
 
-   WHEN. The lesson calls preload() as its last screen opens, so the game lays
-   out and decodes its art while Swiftee's last line is said; then, by itself,
+   WHEN. The lesson calls preload() as the recap begins (screen 41), so the game
+   loads its art (about 20 MB) while the recap and the quizzes play; at the end,
+   once Swiftee's last line has been said and the game is ready, by itself,
    start(): the lesson dims to the game's night blue, the run begins under the
    curtain and the curtain lifts on it. There is no cover and no PLAY: the game
    is loaded with ?cover=0, which makes it wait for the page to start its run
@@ -172,6 +173,23 @@
     });
   }
 
+  /* For the page: resolves true once the game says its art is in, false after `ms` if it has
+     not. The lesson keeps its last scene up until then, rather than a blank curtain. */
+  function whenReady(ms) {
+    if (!enabled) return Promise.resolve(false);
+    preload();
+    var t0 = Date.now();
+    return new Promise(function (resolve) {
+      (function poll() {
+        var ok = said.ready;
+        try { ok = ok || !!(frame && frame.contentWindow && frame.contentWindow.iceAgeReady); } catch (e) {}
+        if (ok) { resolve(true); return; }
+        if (!frame || Date.now() - t0 > (ms || READY_CAP)) { resolve(false); return; }
+        setTimeout(poll, 150);
+      })();
+    });
+  }
+
   /* Take the game down and give the lesson back. Nothing in the game calls this — its
      own Play again restarts the game — it is here for the checks and for a host that
      wants the lesson back. */
@@ -190,6 +208,7 @@
     enabled: enabled,
     autostart: autostart,
     preload: preload,
+    whenReady: whenReady,
     start: start,
     close: close,
     /* For the tests: is the game on the page, is it on screen, and what state does it report. */
