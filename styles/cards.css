@@ -17,6 +17,9 @@
   bottom:-17.3554%;
   left:-2.6316%;
   background:url('../assets/images/instruction-board.webp') center / 100% 100% no-repeat;
+  /* the AVIF where the browser takes it; one that cannot read this line keeps the line above
+     (index.html preloads whichever of the two this picks) */
+  background:image-set(url('../assets/images/instruction-board.avif') type('image/avif'), url('../assets/images/instruction-board.webp') type('image/webp')) center / 100% 100% no-repeat;
   pointer-events:none;
 }
 /* One circular curve clips all four corners, independent of the stretched PNG.

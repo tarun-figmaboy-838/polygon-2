@@ -71,6 +71,14 @@
 .kit-btn--nav     { --pill: url("../assets/ui/btn-uiNav.webp");     --cap: 83; --shade: rgba(12, 70, 140, .55); --drop: rgba(10, 60, 120, .35); }
 .kit-btn--success { --pill: url("../assets/ui/btn-uiSuccess.webp"); --cap: 83; --shade: rgba(20, 90, 30, .5);   --drop: rgba(20, 90, 30, .35); }
 .kit-btn--danger  { --pill: url("../assets/ui/btn-uiDanger.webp");  --cap: 83; --shade: rgba(130, 20, 20, .5);  --drop: rgba(130, 20, 20, .35); }
+/* the same pills as AVIF where the browser takes it. A custom property cannot fall back by
+   cascade (a value a browser cannot use there is simply invalid), so it is asked first. */
+@supports (background-image: image-set(url("a.avif") type("image/avif"))) {
+  .kit-btn--primary { --pill: image-set(url("../assets/ui/btn-uiPrimary.avif") type("image/avif"), url("../assets/ui/btn-uiPrimary.webp") type("image/webp")); }
+  .kit-btn--nav     { --pill: image-set(url("../assets/ui/btn-uiNav.avif") type("image/avif"), url("../assets/ui/btn-uiNav.webp") type("image/webp")); }
+  .kit-btn--success { --pill: image-set(url("../assets/ui/btn-uiSuccess.avif") type("image/avif"), url("../assets/ui/btn-uiSuccess.webp") type("image/webp")); }
+  .kit-btn--danger  { --pill: image-set(url("../assets/ui/btn-uiDanger.avif") type("image/avif"), url("../assets/ui/btn-uiDanger.webp") type("image/webp")); }
+}
 .kit-btn.small { height: 50px; line-height: 50px; border-width: 0 28px; }
 .kit-btn.small::before { left: -29px; right: -29px; border-width: 0 28px; }
 @media (max-width: 760px) {

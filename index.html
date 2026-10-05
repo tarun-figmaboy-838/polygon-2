@@ -6,7 +6,40 @@
 <title>Polygon Adventure</title>
 <meta name="description" content="Explore shapes, sides, vertices, and angles with Swiftee in a playful polygon adventure.">
 <link rel="preload" href="assets/fonts/baloo-2-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="assets/images/instruction-board.webp" as="image">
+<!-- AVIF where the browser takes it, WebP everywhere else (README: Media formats). A picture a
+     stylesheet names picks for itself with image-set(), and the instruction board is preloaded
+     in the format its rule there will pick, so no browser fetches it twice. A picture the script
+     draws asks polygonAvif(): yes once a one-pixel AVIF, with alpha as nearly every picture here
+     has, has decoded and read back right; the first answer it gives is kept for the page, so
+     nothing is ever fetched in both formats. -->
+<script>
+(function () {
+  var ok = false, asked = false, settled = false;
+  function settle(v) { if (!settled) { settled = true; if (!asked) ok = v; } }
+  try {
+    var i = new Image();
+    i.onload = function () {
+      try {
+        var c = document.createElement('canvas'); c.width = c.height = 1;
+        var x = c.getContext('2d'); x.drawImage(i, 0, 0);
+        var a = x.getImageData(0, 0, 1, 1).data[3];
+        settle(a > 96 && a < 160);
+      } catch (e) { settle(false); }
+    };
+    i.onerror = function () { settle(false); };
+    i.src = 'data:image/avif;base64,AAAAHGZ0eXBhdmlmAAAAAG1pZjFhdmlmbWlhZgAAAXBtZXRhAAAAAAAAACFoZGxyAAAAAAAAAABwaWN0AAAAAAAAAAAAAAAAAAAAAA5waXRtAAAAAAABAAAANGlsb2MAAAAAREAAAgABAAAAAAGUAAEAAAAAAAAAFwACAAAAAAGrAAEAAAAAAAAAEAAAADhpaW5mAAAAAAACAAAAFWluZmUCAAAAAAEAAGF2MDEAAAAAFWluZmUCAAAAAAIAAGF2MDEAAAAAr2lwcnAAAACKaXBjbwAAAAxhdjFDgSACAAAAABRpc3BlAAAAAAAAAAEAAAABAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQAcAAAAAA5waXhpAAAAAAEIAAAAOGF1eEMAAAAAdXJuOm1wZWc6bXBlZ0I6Y2ljcDpzeXN0ZW1zOmF1eGlsaWFyeTphbHBoYQAAAAAdaXBtYQAAAAAAAAACAAEDgQIDAAIEhAIFhgAAABppcmVmAAAAAAAAAA5hdXhsAAIAAQABAAAAL21kYXQSAAoHOAAGEBDQaTIKGAAAAEAAsBKamBIACgQYAAYVMgYYAAABQA8=';
+    setTimeout(function () { settle(false); }, 800);
+  } catch (e) { settle(false); }
+  window.polygonAvif = function () { asked = true; return ok; };
+  var sets = false;
+  try { sets = CSS.supports('background-image', 'image-set(url("a.avif") type("image/avif"))'); } catch (e) {}
+  var l = document.createElement('link');
+  l.rel = 'preload'; l.as = 'image';
+  if (sets) { l.href = 'assets/images/instruction-board.avif'; l.type = 'image/avif'; }
+  else l.href = 'assets/images/instruction-board.webp';
+  document.head.appendChild(l);
+})();
+</script>
 <link rel="stylesheet" href="styles/fonts.css">
 <link rel="preload" href="assets/fonts/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="styles/buttons.css">
@@ -91,13 +124,6 @@
     100% { opacity:0; transform:translate(var(--mx),var(--my)) scale(.25) rotate(100deg); }
   }
   @media (prefers-reduced-motion:reduce) { .magic-spark { display:none; } }
-  @keyframes confettiFall {
-    0% { transform:translate3d(0,0,0) rotate(0deg) rotateY(0deg); opacity:1; }
-    10% { opacity:1; }
-    75% { opacity:1; }
-    100% { transform:translate3d(var(--drift),calc(var(--canvas-height) + 100px),0) rotate(var(--spin)) rotateY(540deg); opacity:0; }
-  }
-  @media (prefers-reduced-motion:reduce) { .celebration-piece { animation:none !important; display:none; } }
   /* The shape settling once it has been drawn. This animates stroke, and it
      runs with fill-mode both, so its last frame is what the finished figure
      keeps -- which means these values, not the path's stroke attribute, decide
@@ -183,7 +209,6 @@
   @keyframes wrongTapA { 0%,100% { transform: translateX(0); } 20% { transform: translateX(-6px); } 45% { transform: translateX(5px); } 70% { transform: translateX(-3px); } }
   @keyframes wrongTapB { 0%,100% { transform: translateX(0); } 20% { transform: translateX(-6px); } 45% { transform: translateX(5px); } 70% { transform: translateX(-3px); } }
   @keyframes pop { 0% { transform: scale(1); } 45% { transform: scale(1.04); } 100% { transform: scale(1); } }
-  @keyframes halo { 0% { transform: scale(0.7); opacity: 0.55; } 100% { transform: scale(2.1); opacity: 0; } }
   /* --- screen 1: the point arrives, then keeps a slow breath so it holds the
          eye on a large white board. Appear and breathe are on two nested
          elements because both drive transform. --- */
@@ -434,9 +459,6 @@
     <div class="canvas-navigation" ref="{{ navigationRef }}" style="position:absolute;inset:0;pointer-events:none;z-index:10000"></div>
 
 
-<div aria-hidden="true" style="position:absolute;inset:0;z-index:95;pointer-events:none;overflow:hidden">
-  <sc-for list="{{ confettiFx }}" as="f" hint-placeholder-count="0"><div class="{{ f.className }}" style="{{ f.style }}"></div></sc-for>
-</div>
   </div>
  </div>
 </div>
@@ -666,6 +688,10 @@ const GUIDE_BOX = {
    surface is at 866 of the stage, so her feet go there (the sprite's baseline is 0.877 of the
    cell), and she is drawn larger, as the game's characters are. */
 const END_WORLD = 'assets/images/end-world.webp';
+const LESSON_BG = 'assets/images/lesson-background.webp';
+/* Each of the two has an AVIF twin, used where the page found the browser decodes AVIF
+   (polygonAvif, in the head); the WebP everywhere else. */
+const pic = src => (window.polygonAvif && window.polygonAvif()) ? src.replace(/\.webp$/, '.avif') : src;
 const END_GUIDE = { x: 110, y: Math.round(866 - 420 * SWIFTEE_BASELINE), w: 420, h: 420 };
 const BLANK_IMG = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
 
@@ -1368,7 +1394,6 @@ class Component extends DCLogic {
     else if (kind === 'pick') this.tone(440, 0.06, 'sine', 0.04);
     else if (kind === 'swap') this.tone(380, 0.14, 'sine', 0.03);
     else if (kind === 'pop') { this.tone(280, 0.10, 'sine', 0.055); this.tone(520, 0.13, 'triangle', 0.04, 0.05); this.tone(790, 0.18, 'sine', 0.032, 0.12); }
-    else if (kind === 'hover') this.tone(1180, 0.035, 'sine', 0.018);
     else if (kind === 'party') { [523, 659, 784, 1046, 1318].forEach((f, i) => this.tone(f, 0.24, 'sine', 0.045, i * 0.085)); }
   }
 
@@ -1846,11 +1871,11 @@ class Component extends DCLogic {
            take describes the interaction and belongs to the screen after it. */
         show: 'Drag any vertex', speakWords: 3, fig: 'pentagon', q: 'deform' },
       { sc: 'S14', ph: 'wow', label: '14 · Changed', narr: 'Whoa! It looks quite different now.', fig: 'pentagon', auto: true },
-      { sc: 'S15', ph: 'a', label: '15 · Before and after', narr: 'Its appearance has completely changed.', ba: true, auto: true },
-      { sc: 'S15', ph: 'b', label: '15 · Not everything', narr: 'But not everything has changed.', ba: true, auto: true },
-      { sc: 'S16', ph: 'ask', label: '16 · Count again', narr: "Let's count the sides again.", ba: true, q: 'count2', fb: { one: 'Count each side carefully and try again.' } },
-      { sc: 'S16', ph: 'both', label: '16 · Still five', narr: 'Both polygons still have 5 sides.', ba: true, auto: true },
-      { sc: 'S16', ph: 'name', label: '16 · Naming', narr: 'So the number of sides gives us a good way to name polygons.', ba: true, auto: true },
+      { sc: 'S15', ph: 'a', label: '15 · Before and after', narr: 'Its appearance has completely changed.', auto: true },
+      { sc: 'S15', ph: 'b', label: '15 · Not everything', narr: 'But not everything has changed.', auto: true },
+      { sc: 'S16', ph: 'ask', label: '16 · Count again', narr: "Let's count the sides again.", q: 'count2', fb: { one: 'Count each side carefully and try again.' } },
+      { sc: 'S16', ph: 'both', label: '16 · Still five', narr: 'Both polygons still have 5 sides.', auto: true },
+      { sc: 'S16', ph: 'name', label: '16 · Naming', narr: 'So the number of sides gives us a good way to name polygons.', auto: true },
       { sc: 'S17', ph: 'tri', label: '17 · Triangle', narr: 'A polygon with 3 sides is called a triangle.', fig: 'triangle', count: 3, reveal: 'Triangle', auto: true },
       { sc: 'S17', ph: 'quad', label: '17 · Quadrilateral', narr: 'A polygon with 4 sides is called a quadrilateral.', fig: 'quad', count: 4, reveal: 'Quadrilateral', morphFrom: 'triangle', auto: true },
       { sc: 'S18', label: '18 · Quadrilaterals', narr: 'Select all the quadrilaterals.', set: 'q36', q: 'multi', correct: [0, 2, 3],
@@ -3230,10 +3255,8 @@ class Component extends DCLogic {
         position: 'absolute', left: '50%', translate: '-50% 0', bottom: '-46px',
         font: '900 26px Nunito, sans-serif', color: '#2c6ba8', letterSpacing: '0.04em'
       } : { display: 'none' },
-      /* The label sits below the figure it names, clear of the outline. A
-         dashed rim means the boundary has a gap; an unbroken rim means it
-         does not, so the frame repeats the lesson the word is teaching. */
-      /* The label under a figure is the same blue pill the lesson uses for its
+      /* The label sits below the figure it names, clear of the outline.
+         The label under a figure is the same blue pill the lesson uses for its
          answer buttons, so it wears the button's own class rather than a
          second look built to imitate it -- face, rim, gloss and lettering all
          come from one place and cannot drift apart. Only position, size and
@@ -3252,7 +3275,6 @@ class Component extends DCLogic {
          card already turns green, lifts and keeps its glow, which says the
          same thing in the card's own language instead of pasting an icon on
          top of the figure the learner is meant to be looking at. */
-      mark: '', markStyle: { display: 'none' },
       down: o.down || (clickable ? this.pressOn(hk) : null), click: o.click, nudge: o.nudge ? '1' : ''
     };
   }
@@ -3410,7 +3432,7 @@ class Component extends DCLogic {
        on rather than competing with its own reflection. */
     const backdropStyle = {
       position:'absolute', inset:0, zIndex:0, pointerEvents:'none',
-      background:'#103574 url(' + (this.endWorld() ? END_WORLD : 'assets/images/lesson-background.webp') + ') center / cover no-repeat',
+      background:'#103574 url(' + pic(this.endWorld() ? END_WORLD : LESSON_BG) + ') center / cover no-repeat',
       filter:'blur(44px) brightness(.52) saturate(.92)',
       transform:'scale(1.12)', transformOrigin:'center center'
     };
@@ -3445,16 +3467,16 @@ class Component extends DCLogic {
          second one, which read as the scene jumping rather than as the lesson
          moving on -- and the blurred backdrop behind the frame is drawn from
          the first painting, so the two no longer matched while it was up. */
-      backgroundSrc: 'assets/images/lesson-background.webp',
+      backgroundSrc: pic(LESSON_BG),
       // fetched from the recap on, so it is in by the last screen and costs nothing before
-      endWorldSrc: this.P && st.ready && this.state.k >= this.steps().findIndex(x => x.recap) ? END_WORLD : BLANK_IMG,
+      endWorldSrc: this.P && st.ready && this.state.k >= this.steps().findIndex(x => x.recap) ? pic(END_WORLD) : BLANK_IMG,
       endWorldStyle: this.endWorldStyle(),
       lessonScene: this.learningReferenceScene() ? 'parts-reference' : this.polygonIntroScene() ? 'polygon-intro' : this.topLessonScene() ? 'boundary' : 'standard',
       safeStyle: this.safeStyle(),
       showGuide: GUIDE_VISIBLE, guideViewport: this.guideViewportStyle(), guideStyle: this.guideStyle(),
       guideRef: this.guideRef, guideHidden: st.guideHidden, guideCell: (window.SWIFTEE && window.SWIFTEE.cell) || 256,
       guideCanvasStyle: { position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'block', pointerEvents: 'none' },
-      fx: this.fxStyles(false), confettiFx: this.fxStyles(true),
+      fx: this.fxStyles(),
       stageDown: this.stageDown, hovOut: this.hovOff,
       hovOpen: this.hovOn('oc:open'), hovClosed: this.hovOn('oc:closed'), hovCheck: this.hovOn('ui:check'),
       ghostRef: this.ghostRef, zoneARef: this.zoneARef, zoneBRef: this.zoneBRef, stageRef: this.stageRef,
@@ -3696,8 +3718,8 @@ class Component extends DCLogic {
   }
 
   /* ---------- particle rendering ---------- */
-  fxStyles(confettiOnly = false) {
-    return (this.state.fx || []).filter(f => (f.kind === 'conf') === confettiOnly).map((f) => {
+  fxStyles() {
+    return (this.state.fx || []).map((f) => {
       if (f.kind === 'magic') return { t:'', className:'magic-spark', style:{
         position:'absolute',left:f.x+'px',top:f.y+'px',width:f.s+'px',height:f.s+'px',
         background:'linear-gradient(135deg,#fff7c1,#ffbc42)',
@@ -3706,16 +3728,6 @@ class Component extends DCLogic {
         animation:'magicSpark 900ms ease-out '+f.delay+'ms both'
       }};
 
-      if (f.kind === 'conf') {
-        return { t: '', className: 'celebration-piece', style: {
-          position:'absolute', left:(f.x / STAGE.w * 100)+'%', top:'-50px', width:f.w+'px', height:f.h+'px',
-          background:'linear-gradient(135deg, #ffffff 0%, '+f.c+' 35%, '+f.c+' 100%)',
-          borderRadius:f.w > 16 ? '50%' : '2px', pointerEvents:'none', zIndex:27,
-          '--drift':f.dx+'px', '--spin':f.rot+'deg',
-          animation:'confettiFall '+f.ms+'ms cubic-bezier(.25,.3,.55,1) both',
-          boxShadow:'0 2px 3px rgba(20,60,90,.12)'
-        } };
-      }
       return { t: '', style: {
         position: 'absolute', left: f.x + 'px', top: f.y + 'px', width: f.s + 'px', height: f.s + 'px',
         borderRadius: '50%', background: f.c, pointerEvents: 'none', zIndex: f.z || 29,
@@ -4490,9 +4502,6 @@ class Component extends DCLogic {
       if (ph === 'closed' && closedIdx.indexOf(i) >= 0) pulse = true;
       if (!tappable && st.hlKind === 'straight' && straightIdx.indexOf(i) >= 0) pulse = true;
       if (!tappable && st.hlKind === 'curved' && curvedIdx.indexOf(i) >= 0) pulse = true;
-      if (!this.boundaryScene() && (st.hlKind === 'segsOf' + i || st.hlKind === 'curveOf' + i)) {
-        hl = F.pts ? this.segHl(name, F.pts.map((p, j) => j), null, ICE, 22) : [{ d: F.traceD || [d, F.extra || ''].join(' '), color: ICE, w: 22, style: {} }];
-      }
       /* Voice cues identify the matching figures inside their stationary cards. */
       const boundary = this.boundaryScene();
       // Classification uses its own active-card state after the question ends.
@@ -4534,38 +4543,26 @@ class Component extends DCLogic {
         if (st.ok === i || (s.q === 'straight' && st.sel.includes(i))) state = 'ok'; else if (st.wrong === i) state = 'bad';
       }
       /* The only labelled figures are the two naming screens, and the label
-         sits under the figure it names. Its own border carries the idea: a
-         dashed rim for Open, because that boundary has a gap in it, and an
-         unbroken rim for Closed. The word and the frame say the same thing. */
-      let chip = '', chipBg, chipBorder, chipColor, chipShadow, chipDashed = false;
+         sits under the figure it names, in the answer buttons' blue pill
+         (buildCard). */
+      let chip = '';
       if (ph === 'open' || ph === 'closed') {
         const isOpen = openIdx.indexOf(i) >= 0;
-        if (ph === 'open' && !isOpen) chip = '';
-        else {
-          chip = isOpen ? 'Open' : 'Closed';
-          chipDashed = isOpen;
-          chipBg     = isOpen ? 'linear-gradient(#fff7ec,#ffe7c9)' : 'linear-gradient(#eefbf3,#d5f2e1)';
-          chipBorder = isOpen ? '#eda75a' : '#57bb87';
-          chipColor  = conceptTheme(isOpen ? 'open' : 'closed').ink;
-          chipShadow = isOpen ? '#f4cb9d' : '#a8dcc0';
-        }
+        if (ph === 'closed' || isOpen) chip = isOpen ? 'Open' : 'Closed';
       }
-      const stackedChip = false;
       const card = this.buildCard({
         key: name + i, x: x0 + i * (w + gap), y: y, w: w, h: h, vb: F.vb, d: d, extra: F.extra || '',
-        stackedChip: stackedChip, stillCard: boundary && ph === 'sc',
-        tint: stackedChip && state === 'bad' ? { borderColor: '#dca99f', background: '#fffaf9', boxShadow: '0 6px 0 rgba(146,196,228,.25)' } : undefined,
+        stillCard: boundary && ph === 'sc',
         stroke: figStroke, sw: 18, fill: figFill, state: state, hl: hl,
         traceD: F.traceD || d,
         traceStyle: boundary ? { opacity: 0 } : (litBounds ? this.boundaryLitStyle() : (trace ? this.traceStyleFor(true, 1400) : { opacity: 0 })),
         figAnim: figureCue, figGlow: figureCue && ph !== 'done' ? this.tint(figStroke, .8) : null,
         anim: figureCue ? 'none' : (focused && !this.reducedMotion() ? 'boundaryCardPulse '+(st.boundaryPulseMs || 600)+'ms ease-in-out '+(st.boundaryPulseStart == null ? 'both' : '-'+(st.boundaryPulseElapsed || 0)+'ms both paused') : (st.wrong === i ? 'wig 420ms ease-in-out both' : (pulse && !boundary ? 'pop 900ms ease-in-out infinite' : 'none'))),
-        chip: chip, chipBg: chipBg, chipBorder: chipBorder, chipColor: chipColor,
+        chip: chip,
         click: tappable ? this.tapCard(i) : null,
         nudge: tappable && !st.checked && st.ok === null && i === (Array.isArray(s.correct) ? s.correct.find(index => !st.sel.includes(index)) : s.correct),
         opacity: tappable && s.q !== 'straight' && st.ok !== null && st.ok !== i ? 0 : 1
       });
-      if (stackedChip) Object.assign(card.chipStyle,{whiteSpace:'nowrap',lineHeight:'1.2',padding:'7px 18px'});
       if (ph === 'classify') card.pathStyle = Object.assign({},card.pathStyle,{
         transition:this.reducedMotion() ? 'none' : 'stroke 360ms ease, fill 360ms ease'
       });
@@ -5292,7 +5289,6 @@ class Component extends DCLogic {
            colour and by position, and only one of them has a stepper under it,
            so the captions labelled what the layout had already said. */
         badge: '', chip: '',
-        chipBg: which ? '#fff0dc' : '#e8f4ff', chipBorder: which ? '#f6ba72' : '#9fd8f4', chipColor: which ? '#965113' : '#2c6ba8',
         snap: reference,
         anim: !reference && st.phase === 'a' ? 'pop 1200ms ease-in-out 2' : 'none'
       });
@@ -5490,8 +5486,6 @@ class Component extends DCLogic {
       }
       if (discovery) {
         card.wrap.borderRadius = '28px';
-        // Keep selected checks inside the card, clear of adjacent figures.
-        Object.assign(card.markStyle, {right:'12px',top:'12px',width:'42px',height:'42px',fontSize:'26px'});
       }
       return card;
     });

@@ -46,7 +46,7 @@ src/
 styles/               all CSS (lesson, story, Help Momo, recap, buttons, fonts, the game's stage)
 assets/
   story/              the nine story scenes (WebP)
-  images/             lesson backgrounds and artwork (WebP)
+  images/             lesson backgrounds and artwork (WebP, and an AVIF twin where one is smaller)
   swiftee/            Swiftee's animation sheets (WebP)
   audio/lesson/       narration: Ogg Opus, plus MP3 for browsers without Ogg
   audio/sfx/          answer and drawing sounds (Ogg + MP3)
@@ -70,15 +70,20 @@ source-art/           Swiftee's character pack, used by tools/build-swiftee.cjs
 
 ## Media formats
 
-- **Images are WebP.**
-- **Audio is Ogg Opus, with an MP3 copy** of every file. Browsers that play Ogg Opus get the smaller Ogg file; older Safari gets the MP3 automatically.
+- **Images are WebP, with an AVIF twin where one is the same picture for clearly fewer bytes.** A browser that decodes AVIF gets the AVIF; every other browser gets the WebP, and no browser fetches a picture in both formats. A twin is only made when it is at least 20% smaller and still matches the WebP pixel for pixel to a strict bar, both on average and in its worst spot (`tools/optimize-media.cjs`: `fidelity`), so it is the same picture. That is 24 of them: the lesson's board, background, end world, recap card and pill buttons, and the game's path, rocks, platform ends, four obstacles, the morning sky, the Play button, the plank and the tutorial's hand. Swiftee's sheets, Momo's sheets, the ice blocks, the story, the other skies and the game's cover stay WebP only: as AVIF they are larger, or not enough smaller to be the same picture.
+  - **How a picture picks.** A stylesheet names both with `image-set()`, after a plain WebP `url()` for browsers without it (under `@supports` where it sets a custom property, as the pill buttons do). A picture the code draws asks first: the game through `assetUrl()` (its table, `game/js/asset-versions.js`, says which pictures have a twin), the lesson through `polygonAvif()`, set up at the top of `index.html`. Both decode a one-pixel AVIF with alpha and keep the first answer they give for the page (the game waits for it before its first picture; the lesson answers no if it is not in yet, which only a very slow browser would see). In the game and the Help Momo scene, an AVIF that will not load is asked for again as its WebP. The instruction board's preload is made in the same format its rule picks.
+- **Audio is Ogg Opus, with an MP3 copy** of every file. Browsers that play Ogg Opus get the smaller Ogg file; older Safari gets the MP3 automatically. The game's sounds are Opus too (96 kbps stereo; 64 kbps for the UI tap and the footsteps), so the lesson and the game ask the browser the same question.
+- **There is no video**, and no GIF: Swiftee's and Momo's animations are sprite sheets drawn frame by frame by the code, in step with her voice and the game, which an animated image could not be.
+- **Icons are SVG** where they are drawn as icons (the game's control glyphs). The painted art (buttons, planks, the tutorial's glossy hand) stays raster, since tracing it to vectors would change how it looks.
 
-To add or replace media, drop in the PNG, JPG, MP3 or WAV and convert it:
+To add or replace media, drop in the PNG, JPG, MP3 or WAV and convert it. A picture gets its WebP and, if it clears the bar, its AVIF; a WebP given on its own gets just the AVIF. A new AVIF is used once the code asks for it (above): in `game/` run `node tools/build-game-bundle.cjs` so the game's table lists it.
 
 ```bash
 npm install
 npm run optimize:media -- assets/images/new-picture.png
+npm run optimize:media -- assets/images/new-picture.png --lossless   # a WebP with the source's exact pixels
 npm run optimize:media -- assets/audio/lesson --speech   # narration: mono, speech-tuned
+npm run optimize:media -- game/assets/audio/new-sound.mp3 --bitrate=96k
 ```
 
 ## Buttons
@@ -140,7 +145,7 @@ It plays in an `<iframe>`, not inside the lesson's document. The game's styleshe
 | The recap before the quizzes: what it says, its look | `index.html`: `recapConcepts`, `startRecap`; `src/lesson/recap.js`, `styles/recap.css` |
 | The end of the lesson: the last line, then the game by itself | `index.html`: `finishLesson`, `startPart2`; `src/runner/runner-stage.js` |
 
-Three files under `game/js/` are generated and should not be edited by hand: `game.bundle.js` (the modules concatenated for opening `game/index.html` straight off the disk; this project always serves the game over HTTP, so it is not used here, but rebuild it with `node tools/build-bundle.mjs` in the running-mammoth repository whenever a module changes so the two can never disagree), `option-shapes.js` and `asset-versions.js`. The game's own Playwright suite lives in that repository and runs against exactly these files.
+Three files under `game/js/` are generated and should not be edited by hand: `game.bundle.js` (the modules concatenated for opening `game/index.html` straight off the disk; this project always serves the game over HTTP, so it is not used here, but rebuild it whenever a module changes so the two can never disagree: `npm run build:game-bundle` here makes it, and `asset-versions.js` with it, exactly as `tools/build-bundle.mjs` in the running-mammoth repository does), `option-shapes.js` and `asset-versions.js`. The game's own Playwright suite lives in that repository and runs against exactly these files.
 
 ## Languages
 
@@ -218,6 +223,8 @@ npm run test:swiftee                   # Swiftee loading: sheet table, cold / sl
 npm run test:recap                     # the recap: states in order, voice, word cues, layout, phones, Next into the quizzes (~5 min)
 BASE=https://tarun-figmaboy-838.github.io/polygon-2/ npm run test:swiftee   # the same against a deployed site
 npm run test:checks                    # 33 focused lesson checks incl. the full 47-screen playthrough (~20 min)
+npm run test:media                     # the formats: AVIF and WebP, Opus and MP3, one format per picture, and the game's
+                                       # generated files; then the same pages with no AVIF and with no Ogg (~2 min)
 ENGINE=webkit npm test                 # the same in Safari's engine
 ```
 

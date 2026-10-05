@@ -144,7 +144,8 @@ assert(76 * fits(1366, 768) >= 44, 'Counter controls clear the 44px tap floor at
   vmRec.createContext(rc);
   vmRec.runInContext(fs.readFileSync('src/lesson/recordings.js', 'utf8'), rc);
   vmRec.runInContext(fs.readFileSync('src/lesson/recorded-player.js', 'utf8'), rc);
-  const find = rc.window.PolygonRecordedVoice.find, gaps = [];
+  // called on its object, as the page calls it: find() reads the page's language through `this`
+  const V = rc.window.PolygonRecordedVoice, find = t => V.find(t), gaps = [];
   g.steps().forEach((step, i) => {
     [['narration', step.narr]].concat(Object.entries(step.fb || {}))
       .forEach(([kind, text]) => { if (text && !find(text)) gaps.push('step ' + (i + 1) + ' ' + kind + ': ' + JSON.stringify(text)); });

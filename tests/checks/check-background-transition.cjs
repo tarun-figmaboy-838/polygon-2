@@ -28,6 +28,8 @@ const server = http.createServer((req,res) => {
 
     },{k,pauseBackground});
     const source = ()=>page.locator('.lesson-background').getAttribute('src');
+    // the one painting: its AVIF where the browser decodes AVIF, its WebP elsewhere
+    const BG=/^assets\/images\/lesson-background\.(avif|webp)$/;
     await boot(page);
     // Both horizontal edges must follow the same interpolation, entering and leaving.
     const boardBox=()=>page.locator('.story-board').evaluate(e=>{const r=e.getBoundingClientRect();return {left:r.left,right:r.right,width:r.width};});
@@ -47,7 +49,7 @@ const server = http.createServer((req,res) => {
       await page.locator('.story-board').evaluate(async e=>{e.getAnimations().forEach(a=>a.finish());await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));});
     }
     await show(12);await page.waitForTimeout(1300);
-    assert.equal(await source(),'assets/images/lesson-background.webp');
+    assert.match(await source(),BG);
     const before=await page.locator('.story-board').boundingBox();
     await show(13);
     await page.waitForTimeout(900);
@@ -57,7 +59,7 @@ const server = http.createServer((req,res) => {
        from the first painting, so the two did not even match while it was up.
        The board still travels between its layouts -- that is the part that is
        meant to move -- but the picture behind it does not change. */
-    assert.equal(await source(),'assets/images/lesson-background.webp','The background is the same picture on every screen');
+    assert.match(await source(),BG,'The background is the same picture on every screen');
     assert.deepEqual(await page.locator('.story-board').boundingBox(),before,'Board stays steady');
     /* Only the figure being asked about offers answers, so the row is two
        buttons rather than eight competing for the same tap. */
@@ -67,10 +69,10 @@ const server = http.createServer((req,res) => {
     await page.getByRole('button',{name:'Figure 1: Straight',exact:true}).click();
     await page.waitForFunction(()=>__poly.state.dd[0]==='Straight');
     await show(14);
-    await show(13);await page.waitForTimeout(1300);assert.equal(await source(),'assets/images/lesson-background.webp','Rapid reentry settles on the same picture');
-    await show(14);await page.waitForTimeout(1300);assert.equal(await source(),'assets/images/lesson-background.webp');
+    await show(13);await page.waitForTimeout(1300);assert.match(await source(),BG,'Rapid reentry settles on the same picture');
+    await show(14);await page.waitForTimeout(1300);assert.match(await source(),BG);
     await page.emulateMedia({reducedMotion:'reduce'});
-    await show(13);await page.waitForTimeout(50);assert.equal(await source(),'assets/images/lesson-background.webp');
+    await show(13);await page.waitForTimeout(50);assert.match(await source(),BG);
     assert.equal(await page.locator('.lesson-background').evaluate(e=>getComputedStyle(e).transitionDuration),'0s');
     for (const viewport of [{width:1024,height:768},{width:390,height:844}]) {
       await page.setViewportSize(viewport);
@@ -84,7 +86,7 @@ const server = http.createServer((req,res) => {
     await broken.route('**/backgound*',route=>route.abort());
     await boot(broken);
     await broken.evaluate(()=>__poly.setState({k:13}));await broken.waitForTimeout(100);
-    assert(await broken.locator('.lesson-background').evaluate(e=>e.getAttribute('src')==='assets/images/lesson-background.webp'&&e.naturalWidth>0),'Failed image keeps original');
+    assert(await broken.locator('.lesson-background').evaluate(e=>/^assets\/images\/lesson-background\.(avif|webp)$/.test(e.getAttribute('src'))&&e.naturalWidth>0),'Failed image keeps original');
     assert.deepEqual(errors,[]);
     console.log(JSON.stringify({singleBackground:true,stableBoard:true,answerClickable:true,reentry:true,reducedMotion:true,responsive:true,loadFailureFallback:true,errors}));
   } finally {await browser.close();server.close();}

@@ -1,8 +1,6 @@
 /* HUD controller — owns every DOM element outside the canvas and mirrors the
    engine's HUD state onto it. The engine never touches the DOM itself. */
 
-import { fitBubble } from './bubble.js';
-
 /* THE PAGE'S LANGUAGE (?lan=, ../src/i18n/i18n.js, which index.html loads): what the HUD shows
    is put into it. The engine's sentences stay English: its voice and its tests read them. */
 const hudI18n = () => { const I = window.PolygonI18n; return I && I.on ? I : null; };
@@ -347,7 +345,6 @@ export class Hud {
 
   destroy() {
     clearTimeout(this._leaveT);
-    clearTimeout(this._flashT);
     window.removeEventListener('resize', this._onResize);
     window.removeEventListener('orientationchange', this._onResize);
   }

@@ -24,7 +24,7 @@
                                milliseconds, so ?speed cannot shorten a playthrough.
 */
 
-import { createGame, assetUrl } from './engine.js';
+import { createGame } from './engine.js';
 import { Hud } from './hud.js';
 import { Frontend } from './frontend.js';
 import { Tutorial } from './tutorial.js';
@@ -122,7 +122,6 @@ if (hosted) {
 }
 
 let tut = null;
-let lastComplete = false;
 
 /* THE TUTORIAL RUNS EVERY TIME, and the remembering is gone on purpose.
  *
@@ -212,13 +211,10 @@ const game = createGame(canvas, {
        The WIN panel does still want a picture of the character, and it is filled once
        on the transition rather than every HUD tick — onHud fires on every state change
        and re-setting the same background image on each of them is work for nothing. */
-    if (front && !!state.complete !== lastComplete) {
-      lastComplete = !!state.complete;
-      /* Nothing to fill: the win panel has no hero picture any more. The character on
-         the CANVAS behind it is celebrating next to the friend who was waiting, which
-         is the picture that matters, and a still copy of him on the panel competed
-         with it — as well as covering the pair of them. */
-    }
+    /* Nothing to fill: the win panel has no hero picture any more. The character on
+       the CANVAS behind it is celebrating next to the friend who was waiting, which
+       is the picture that matters, and a still copy of him on the panel competed
+       with it — as well as covering the pair of them. */
   }
 });
 

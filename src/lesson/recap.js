@@ -59,6 +59,9 @@
     enterMs: 420, collectMs: 580, readMs: 700, lookMs: 1200
   };
   var FRAME = { src: 'assets/ui/panel.webp', w: 1024, h: 984 };
+  /* the slab's AVIF where the page found the browser decodes AVIF (polygonAvif, in the head of
+     index.html), its WebP elsewhere */
+  function frameSrc() { return window.polygonAvif && window.polygonAvif() ? FRAME.src.replace(/\.webp$/, '.avif') : FRAME.src; }
   var HI = { fill: '#34b4a4', edge: '#0b4f9e', line: '#eafcff', lit: '#4be0ff' };
   var SHAPE = { fill: '#5f97f0', edge: '#2f5fc4', edgeW: 3.5 };
   var WARM = 'rgba(255, 150, 40, 0.85)';
@@ -271,8 +274,9 @@
     var g = mk('g', { class: 'recap-card', 'data-concept': c.id }, run.layer);
     g._rect = { x: x, y: y, w: w, h: h }; g._c = c;
     var pp = mk('g', {}, g); g._pop = pp;
-    var img = mk('image', { x: x, y: y, width: w, height: h, preserveAspectRatio: 'none', href: FRAME.src }, pp);
-    img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', FRAME.src);
+    var src = frameSrc();
+    var img = mk('image', { x: x, y: y, width: w, height: h, preserveAspectRatio: 'none', href: src }, pp);
+    img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', src);
     var vis = mk('g', {}, pp); g._vis = vis;
     var v = regular(V.n || 5, s.r, s.cx, s.cy); g._verts = v;
     g._outline = mk('path', { d: pathOf(v), fill: 'url(#' + candy(run, SHAPE.fill) + ')', stroke: SHAPE.edge, 'stroke-width': SHAPE.edgeW, 'stroke-linejoin': 'round', opacity: 0 }, vis);

@@ -125,8 +125,7 @@
                         middle: an earlier version used a hard stop at 47%, which on
                         a wide pill reads as a seam across the button rather than as
                         gloss, and the seam sat right behind the label. */
-.btn-chunky,
-.btn-primary {
+.btn-chunky {
   --cap: clamp(3px, 0.31vw, 6px);
   --r: 999px;
   /* BEGIN — green. Brighter and more saturated than before: this is the button the
@@ -167,20 +166,6 @@
     0 0 clamp(14px, 1.5vw, 28px) var(--halo, transparent);
   transition: box-shadow 160ms ease;
 }
-/* SECOND GO — Try Again is a retry, not a beginning */
-.btn-retry {
-  /* Violet. Blue-on-blue read poorly against an ice world, and it was too close
-     to the sky to find at a glance. Violet is the one warm-cool hue no other role
-     uses here: green begins a run, amber is the in-world verb, ice is the aside.
-     A retry needs to be unmistakable and calm, not alarming. */
-  --gloss:   .92;
-  --top:     #F0E4FF;
-  --body-a:  #B583FF;
-  --body-b:  #8434FF;
-  --edge:    #5C10CC;
-  --ink:     #400E96;
-  --halo:    rgba(146, 74, 255, 0.55);
-}
 
 .btn-chunky-face {
   position: relative;
@@ -218,8 +203,7 @@
 }
 .btn-chunky:hover .btn-chunky-face { filter: brightness(1.1) saturate(1.06); }
 /* the halo swelling is most of what makes the set feel alive under a pointer */
-.btn-chunky:hover,
-.btn-primary:hover {
+.btn-chunky:hover {
   box-shadow:
     inset 0 clamp(1px, 0.1vw, 2px) 0 rgba(255, 255, 255, 1),
     inset 0 clamp(-3px, -0.31vw, -2px) 0 rgba(74, 86, 96, 0.5),
@@ -242,8 +226,7 @@
     inset 0 0 clamp(14px, 1.5vw, 28px) rgba(0, 0, 0, 0.3);
 }
 .btn-chunky:active, .btn-chunky.pressed { animation: none; }
-.btn-chunky:focus-visible,
-.btn-primary:focus-visible {
+.btn-chunky:focus-visible {
   outline: clamp(3px, 0.31vw, 5px) solid #FFD34A;
   outline-offset: clamp(3px, 0.31vw, 6px);
 }
@@ -251,43 +234,8 @@
    CSS-built PLAY pill. The picture buttons are their own family (.btn-art, below) and
    .btn-start has had no element in the markup for a long time. */
 
-/* Replay wears the same rim and gloss — it is the same act */
-.btn-primary { padding: clamp(3px, 0.31vw, 6px); }
-.btn-primary-face {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: clamp(8px, 0.85vw, 16px) clamp(22px, 2.1vw, 40px);
-  border-radius: var(--r);
-  background:
-    radial-gradient(122% var(--gloss-h, 88%) at 50% -10%,
-      rgba(255, 255, 255, var(--gloss, .88)) 0%,
-      rgba(255, 255, 255, calc(var(--gloss, .88) * 0.42)) 38%,
-      rgba(255, 255, 255, 0) 74%),
-    linear-gradient(180deg, var(--top) 0%, var(--body-a) 42%, var(--body-b) 80%, var(--edge) 100%);
-  box-shadow:
-    inset 0 clamp(2px, 0.21vw, 3px) 0 rgba(255, 255, 255, 0.9),
-    inset 0 clamp(-7px, -0.7vw, -4px) 0 rgba(0, 0, 0, 0.24);
-  color: #FFFFFF;
-  font-weight: 800;
-  font-size: clamp(15px, 1.45vw, 28px);
-  letter-spacing: .02em;
-  -webkit-text-stroke: clamp(1.5px, 0.16vw, 3px) var(--ink);
-  paint-order: stroke fill;
-  transition: filter 110ms ease, box-shadow 110ms ease, background 110ms ease;
-}
-.btn-primary:hover .btn-primary-face { filter: brightness(1.07); }
-.btn-primary:active .btn-primary-face,
-.btn-primary.pressed .btn-primary-face {
-  --gloss: .34;
-  --gloss-h: 56%;
-  filter: brightness(.82);
-  box-shadow:
-    inset 0 clamp(1px, 0.1vw, 2px) 0 rgba(255, 255, 255, 0.45),
-    inset 0 clamp(-7px, -0.7vw, -4px) 0 rgba(0, 0, 0, 0.24),
-    inset 0 0 clamp(12px, 1.25vw, 22px) rgba(0, 0, 0, 0.3);
-}
+/* .btn-primary and .btn-primary-face went with the last button that wore them; the
+   rim-and-gloss family is .btn-chunky (Replay, below). */
 /* position lives with the rest of the .btn-play rules at the end of this file */
 
 /* ---------- character select: REMOVED ----------
@@ -295,9 +243,8 @@
    that asks a question with one answer is a tap the player has to make before the game
    will start. Its stylesheet stayed behind: 339 lines of .select, .sel-aurora,
    .sel-snow, .card-pick, .card-burst, .select-title and .btn-start rules for elements
-   that have not been in index.html for a long time. Deleted here.
-
-   The one survivor is .card-hero just below, which the Ouch panel still uses. */
+   that have not been in index.html for a long time. Deleted here, and so is .card-hero,
+   the Ouch panel's character picture, which went with the panel. */
 
 /* The scissors cursor’s stylesheet was here — .cursor, .cur-half, .cur-blade,
    .cur-loop, .cur-arm, .cur-rivet and .stage.cursor-on. The pointer is now an
@@ -399,12 +346,6 @@
      Static, the browser filters it once and composites the result. The lifted button
      keeps its breath - it is a small element. */
 }
-@keyframes tutFocusBreathe {
-  0%, 100% { filter: drop-shadow(0 0 clamp(5px, 0.5vw, 10px) rgba(255, 201, 77, 0.95))
-                     drop-shadow(0 0 clamp(14px, 1.5vw, 28px) rgba(255, 186, 56, 0.55)); }
-  50%      { filter: drop-shadow(0 0 clamp(7px, 0.7vw, 14px) rgba(255, 210, 100, 1))
-                     drop-shadow(0 0 clamp(20px, 2.1vw, 40px) rgba(255, 186, 56, 0.75)); }
-}
 .tut-focus[hidden] { display: none; }
 
 /* NO .tut-lift. It raised a DOM control above the blur sheet and glowed it, for the one
@@ -429,7 +370,8 @@
      being on the dashes. Translating by the tip's own place in the box lands the tip on
      the point the engine gives, at any size. One image change is one edit here. */
   translate: calc(-1 * var(--tip-x)) calc(-1 * var(--tip-y));
-  background: url("../assets/ui/icons/touch.png?v=d05ff66d") center / contain no-repeat;
+  background: url("../assets/ui/icons/touch.webp?v=e270fe6c") center / contain no-repeat;
+  background: image-set(url("../assets/ui/icons/touch.avif?v=fdbf9e89") type("image/avif"), url("../assets/ui/icons/touch.webp?v=e270fe6c") type("image/webp")) center / contain no-repeat;
   filter: drop-shadow(0 clamp(3px, calc(0.31 * var(--u)), 12px) clamp(6px, calc(0.63 * var(--u)), 24px) rgba(4, 20, 44, 0.6));
   pointer-events: none;
 }
@@ -790,30 +732,6 @@
 .btn-replay:hover .btn-chunky-face { filter: brightness(1.07); }
 .btn-replay:active .btn-chunky-face { filter: brightness(.88); }
 
-/* ---------- the Ouch panel's character hero ---------- */
-.card-hero {
-  /* BIGGER. It is the only picture on the panel and it was thumbnail-sized, which is
-     most of why the card read as a form with an icon on it. */
-  width: clamp(150px, 16vw, 300px);
-  height: clamp(126px, 13.4vw, 254px);
-  margin-bottom: clamp(-6px, -0.6vw, -2px);
-  background-repeat: no-repeat;
-  background-position-x: 0%;
-  filter: drop-shadow(0 clamp(6px, 0.63vw, 13px) clamp(8px, 0.85vw, 17px) rgba(8,40,72,.45));
-  /* drops in first, then keeps the idle wobble — two animations, not one */
-  animation: heroDrop 520ms cubic-bezier(.2, 1.7, .4, 1) both,
-             heroWobble 900ms ease-in-out 520ms infinite;
-}
-@keyframes heroDrop {
-  from { opacity: 0; translate: 0 -38px; scale: .7; }
-  to   { opacity: 1; translate: 0 0;     scale: 1; }
-}
-@keyframes heroWobble {
-  0%, 100% { transform: rotate(-2.5deg); }
-  50%      { transform: rotate(2.5deg); }
-}
-@media (prefers-reduced-motion: reduce) { .card-hero { animation: none; } }
-
 /* the panels themselves read as game furniture, not a web modal */
 .card {
   border-width: clamp(4px, 0.42vw, 8px) !important;
@@ -977,6 +895,7 @@
   inset: 0;
   z-index: 0;                      /* under the tap ring and the sparks, which are the pseudos */
   background: url("../assets/ui/btn-play.webp?v=e75de185") center / contain no-repeat;
+  background: image-set(url("../assets/ui/btn-play.avif?v=b7f24d8f") type("image/avif"), url("../assets/ui/btn-play.webp?v=e75de185") type("image/webp")) center / contain no-repeat;
   pointer-events: none;
   will-change: transform, filter;
   animation: playPulse 2s cubic-bezier(.45, 0, .55, 1) 520ms infinite;
@@ -1110,146 +1029,8 @@
   .btn-play:active, .btn-play.pressed { scale: 1; }
 }
 
-/* ---------- TRY AGAIN ----------
-   The supplied art, and a member of the .btn-art family like PLAY and JUMP.
-
-   ONE TAKE ONLY. There is no pressed version of this one, so the press cannot be an
-   image swap — it is a darkening plus a squash instead, which is the same call the round
-   jump button makes and for the same reason. The family's rule is precisely "the press
-   is in the art WHERE THERE IS pressed art"; where there is not, CSS does it. */
-.btn-retry {
-  /* the common box the art was trimmed to */
-  aspect-ratio: 1947 / 635;
-  width: clamp(180px, 19vw, 340px);
-  background-image: url("../assets/ui/btn-tryagain.webp?v=f17bd92f");
-  filter: drop-shadow(0 clamp(4px, 0.42vw, 8px) clamp(8px, 0.85vw, 16px) rgba(6, 40, 78, 0.45));
-  /* it is the only thing to do on this card, so it asks */
-  animation: playBob 2.2s cubic-bezier(.45, 0, .55, 1) infinite;
-}
-.btn-retry:hover {
-  filter: drop-shadow(0 clamp(4px, 0.42vw, 8px) clamp(8px, 0.85vw, 16px) rgba(6, 40, 78, 0.45))
-          drop-shadow(0 0 clamp(12px, 1.3vw, 26px) rgba(64, 190, 255, 0.95));
-}
-.btn-retry:active,
-.btn-retry.pressed {
-  animation: none;
-  scale: 1.03 0.93;
-  filter: brightness(.86) saturate(1.1)
-          drop-shadow(0 clamp(1px, 0.1vw, 2px) clamp(3px, 0.31vw, 6px) rgba(6, 40, 78, 0.5));
-}
-/* NO RING AT ALL ON THIS ONE — see the note on .btn-play:focus-visible.
-
-   The first attempt at this gave the pill a border-radius so the outline would follow
-   it, and that is what put a gold hoop around TRY AGAIN. It was the most visible
-   instance of the problem because the HUD focuses this button the moment the card
-   opens — so it was not a keyboard affordance anybody had asked for, it was a gold
-   ring drawn around the button for every player, mouse and touch included.
-
-   Both halves are fixed. Here, the indicator is the same alpha-following halo the
-   other picture buttons use; in hud.js, the auto-focus now only happens when the
-   player is actually using a keyboard, so a touch player never sees an indicator. */
-.btn-retry { border-radius: 999px; }
-.btn-retry:focus-visible {
-  outline: none;
-  filter: drop-shadow(0 clamp(4px, 0.42vw, 8px) clamp(8px, 0.85vw, 16px) rgba(6, 40, 78, 0.45))
-          drop-shadow(0 0 clamp(4px, 0.42vw, 8px) rgba(255, 255, 255, 0.95))
-          drop-shadow(0 0 clamp(14px, 1.5vw, 30px) rgba(255, 196, 74, 0.9));
-}
-
-/* ---------- the cartoon card ----------
-   `card-fun` is the Ouch panel's own treatment. The overlays all shared one flat pale
-   ice slab, which is a fine web modal and the wrong object for this game: the rest of
-   the screen is a warm, round, hand-painted world and the panel that interrupts it read
-   as a dialog box.
-
-   So: a warmer ground, a much rounder corner, a thick white keyline over the navy one
-   the family already carries, and a bounce on the way in. It is the one moment the
-   player has failed at something, so it is deliberately friendly rather than severe —
-   no red, no alarm, and the character sits right at the top of it. */
-/* THE CARD IS A TOY, NOT A DIALOG.
- *
- * The previous treatment was already warmer than the ice panels it replaced, and it
- * still read as a web modal: a near-white rounded square, everything centred, a small
- * character, and nothing behind any of it. Cream instead of grey is not a game.
- *
- * What makes a panel in a children's game feel like a game is not colour, it is
- * DEPTH and TILT — a thick outline so it reads as a physical object, a shadow it
- * plainly sits above, a couple of degrees off-square so it looks placed rather than
- * laid out, and something happening behind the character so the middle of the card
- * is not empty. All of that is drawn with the panel's own pseudo-elements, so it adds
- * no markup and no new interface: still one heading and one button. */
-.card-fun {
-  position: relative;
-  overflow: hidden;                        /* the rays and specks stay inside the panel */
-  border-radius: clamp(30px, 3.2vw, 62px) !important;
-  /* warm honey at the top into pale sky, and a fat white rim inside the navy edge */
-  background:
-    radial-gradient(120% 78% at 50% 4%, rgba(255, 246, 214, 0.98), rgba(255, 246, 214, 0) 64%),
-    linear-gradient(180deg, #FFFCEF 0%, #EAF7FF 56%, #BFE4FA 100%) !important;
-  border: clamp(4px, 0.42vw, 8px) solid #17547F !important;
-  box-shadow:
-    inset 0 0 0 clamp(4px, 0.42vw, 9px) rgba(255, 255, 255, 0.95),
-    inset 0 clamp(-14px, -1.2vw, -8px) clamp(18px, 1.9vw, 34px) rgba(96, 176, 214, 0.35),
-    0 clamp(10px, 1vw, 20px) 0 #0E3E60,     /* the slab it sits on */
-    0 clamp(18px, 1.9vw, 36px) clamp(26px, 2.7vw, 52px) rgba(6, 32, 60, 0.45) !important;
-  padding: clamp(20px, 2.2vw, 42px) clamp(30px, 3.2vw, 62px) clamp(24px, 2.5vw, 48px) !important;
-  /* placed, not laid out */
-  rotate: -1.6deg;
-  animation: cardPop 460ms cubic-bezier(.2, 1.6, .38, 1) both;
-}
-/* THE BURST BEHIND THE CHARACTER. Rays from a repeating conic gradient, turning very
-   slowly — the one thing that stops the middle of the card being a blank field. Warm,
-   low contrast, and behind everything: it must never compete with the button. */
-.card-fun::before {
-  content: "";
-  position: absolute;
-  left: 50%; top: clamp(38px, 4vw, 78px);
-  width: clamp(260px, 27vw, 520px); aspect-ratio: 1;
-  translate: -50% -50%;
-  background: repeating-conic-gradient(from 0deg,
-    rgba(255, 201, 92, 0.30) 0deg 9deg, rgba(255, 201, 92, 0) 9deg 24deg);
-  -webkit-mask-image: radial-gradient(closest-side, #000 38%, transparent 78%);
-  mask-image: radial-gradient(closest-side, #000 38%, transparent 78%);
-  animation: cardRays 26s linear infinite;
-  pointer-events: none;
-  z-index: 0;
-}
-/* A FEW SPECKS OF SNOW still settling, drawn as three radial dots. Cheap, and it makes
-   the panel feel like part of the same weather as the stage behind it. */
-.card-fun::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(circle, rgba(255,255,255,.95) 42%, transparent 44%),
-    radial-gradient(circle, rgba(255,255,255,.75) 42%, transparent 44%),
-    radial-gradient(circle, rgba(255,255,255,.6) 42%, transparent 44%);
-  background-size: 9px 9px, 6px 6px, 12px 12px;
-  background-position: 12% 22%, 82% 34%, 68% 12%;
-  background-repeat: no-repeat;
-  pointer-events: none;
-  z-index: 0;
-}
-/* everything real sits above the decoration */
-.card-fun > * { position: relative; z-index: 1; }
-@keyframes cardRays { to { rotate: 360deg; } }
-/* THE HEADING IS THE LOGO OF THIS PANEL. Same cartoon lettering as the button — white
-   with a navy stroke — but bigger, tilted the other way to the card so the two do not
-   look skewed together, and sat on a hard drop rather than a soft blur, which is what
-   makes painted lettering read as painted. */
-.card-fun h1 {
-  font-size: clamp(40px, calc(4.6 * var(--u)), 176px) !important;
-  line-height: 0.92;
-  margin: clamp(2px, calc(0.3 * var(--u)), 12px) 0 clamp(10px, calc(1.1 * var(--u)), 40px) !important;
-  color: #FFFFFF !important;
-  -webkit-text-stroke: clamp(4px, calc(0.42 * var(--u)), 16px) #14496F;
-  paint-order: stroke fill;
-  text-shadow:
-    0 clamp(4px, calc(0.42 * var(--u)), 16px) 0 #14496F,
-    0 clamp(9px, calc(0.95 * var(--u)), 36px) clamp(10px, calc(1 * var(--u)), 40px) rgba(20, 73, 111, 0.35);
-  letter-spacing: .015em;
-  rotate: 1.2deg;
-}
+/* TRY AGAIN and the cartoon card (.btn-retry, .card-fun) went with the Ouch panel: a
+   crash recovers by itself now, so neither has an element any more. */
 @keyframes cardPop {
   from { opacity: 0; scale: .72; }
   to   { opacity: 1; scale: 1; }
@@ -1257,10 +1038,4 @@
 @media (prefers-reduced-motion: reduce) {
   /* The button keeps its resting state and its glow, and stops pulsing. */
   .btn-play { animation: none; }
-  .card-fun { animation: none; rotate: none; }
-  .card-fun::before { animation: none; }
-  .card-fun h1 { rotate: none; }
-  .card-hero { animation: none; opacity: 1; translate: none; scale: 1; }
-  .btn-retry { animation: none; }
-  .btn-retry:active, .btn-retry.pressed { scale: 1; }
 }

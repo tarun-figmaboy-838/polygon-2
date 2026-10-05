@@ -502,20 +502,28 @@
     return versionsP;
   }
   function gameUrl(V, src) { return GAME + src + (V[src] ? '?v=' + V[src] : ''); }
-  /* The game's own choice of sound file: Ogg Vorbis where the browser plays it, MP3
+  /* The game's own choice of picture: its AVIF twin where the game has one and the page found
+     the browser decodes AVIF (polygonAvif, in the head of index.html), the WebP elsewhere. */
+  function gameImgUrl(V, src) {
+    var avif = src.replace(/\.webp$/, '.avif');
+    if (avif !== src && V[avif] && window.polygonAvif && window.polygonAvif()) src = avif;
+    return gameUrl(V, src);
+  }
+  /* The game's own choice of sound file: Ogg Opus where the browser plays it, MP3
      elsewhere. The word times were measured on the same take, so either serves. */
   function gameAudioUrl(V, src) {
     var ogg = false;
-    try { ogg = location.protocol !== 'file:' && !!new Audio().canPlayType('audio/ogg; codecs="vorbis"'); } catch (e) {}
+    try { ogg = location.protocol !== 'file:' && !!new Audio().canPlayType('audio/ogg; codecs="opus"'); } catch (e) {}
     if (ogg) { var o = src.replace(/\.mp3$/, '.ogg'); if (V[o]) src = o; }
     return gameUrl(V, src);
   }
-  function loadImg(url) {
+  /* `plain`: the WebP to ask for instead if an AVIF will not load */
+  function loadImg(url, plain) {
     return new Promise(function (resolve) {
       var i = new Image();
       i.decoding = 'async';
       i.onload = function () { if (i.decode) i.decode().then(function () { resolve(i); }, function () { resolve(i); }); else resolve(i); };
-      i.onerror = function () { resolve(null); };
+      i.onerror = function () { if (plain && plain !== url) { url = plain; i.src = plain; } else resolve(null); };
       i.src = url;
     });
   }
@@ -576,14 +584,15 @@
     var hd = pickHd();
     loading = versions().then(function (V) {
       var jobs = [];
-      var add = function (key, url) { jobs.push(loadImg(url).then(function (im) { art[key] = im; })); };
-      add('sky', gameUrl(V, 'assets/sky/01-dawn.webp'));   // the game opens at dawn
-      add('path', gameUrl(V, 'assets/env/path.webp'));
-      add('capL', gameUrl(V, 'assets/env/cap-l.webp'));
-      add('capR', gameUrl(V, 'assets/env/cap-r.webp'));
-      add('rock', gameUrl(V, 'assets/env/rock-band.webp'));
+      var add = function (key, url, plain) { jobs.push(loadImg(url, plain).then(function (im) { art[key] = im; })); };
+      var addGame = function (key, src) { add(key, gameImgUrl(V, src), gameUrl(V, src)); };
+      addGame('sky', 'assets/sky/01-dawn.webp');   // the game opens at dawn
+      addGame('path', 'assets/env/path.webp');
+      addGame('capL', 'assets/env/cap-l.webp');
+      addGame('capR', 'assets/env/cap-r.webp');
+      addGame('rock', 'assets/env/rock-band.webp');
       ['run', 'skid', 'tremble'].forEach(function (k) {
-        add(k, gameUrl(V, 'assets/char/' + (hd ? 'hd/' : '') + 'mammoth-' + k + '.webp'));
+        addGame(k, 'assets/char/' + (hd ? 'hd/' : '') + 'mammoth-' + k + '.webp');
       });
       if (SW && SW.clips) BIRD_CLIPS.forEach(function (c) { if (SW.clips[c]) add('bird:' + c, SW.clips[c].image); });
       if (document.fonts && document.fonts.load) jobs.push(document.fonts.load('600 46px Fredoka').catch(noop));

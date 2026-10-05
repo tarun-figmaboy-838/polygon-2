@@ -24,26 +24,26 @@
  * node tools/build-bundle.mjs whenever anything under game/assets changes; tests/bundle.spec
  * fails if this is out of date. */
 const ASSET_V = {
-  "assets/art/Bubble.svg": "5f1ee1ef",
+  "assets/art/Bubble.svg": "523bce06",
   "assets/art/cover.webp": "e0c7a5db",
-  "assets/audio/bgm-ice-hunt.mp3": "045fc178",
-  "assets/audio/bgm-ice-hunt.ogg": "a503f547",
+  "assets/audio/bgm-ice-hunt.mp3": "f9be535d",
+  "assets/audio/bgm-ice-hunt.ogg": "73a948c6",
   "assets/audio/dragon-studio-cartoon-blinking-372481.mp3": "e1ba0c6b",
-  "assets/audio/dragon-studio-cartoon-blinking-372481.ogg": "f5305723",
+  "assets/audio/dragon-studio-cartoon-blinking-372481.ogg": "5657e93e",
   "assets/audio/dragon-studio-heavy-boulder-thud-515257.mp3": "97c6bfa5",
-  "assets/audio/dragon-studio-heavy-boulder-thud-515257.ogg": "92e259de",
+  "assets/audio/dragon-studio-heavy-boulder-thud-515257.ogg": "b6de4e4a",
   "assets/audio/dragon-studio-heavy-whoosh-06-414584.mp3": "4a0fe81c",
-  "assets/audio/dragon-studio-heavy-whoosh-06-414584.ogg": "f76b1b63",
+  "assets/audio/dragon-studio-heavy-whoosh-06-414584.ogg": "9222f698",
   "assets/audio/floraphonic-punchy-taps-ui-5-183901.mp3": "8716a561",
-  "assets/audio/floraphonic-punchy-taps-ui-5-183901.ogg": "9f749d00",
+  "assets/audio/floraphonic-punchy-taps-ui-5-183901.ogg": "6d09eec1",
   "assets/audio/freesound_community-foot_steps_snow_heavy-38297.mp3": "63e91113",
-  "assets/audio/freesound_community-foot_steps_snow_heavy-38297.ogg": "9774d22d",
+  "assets/audio/freesound_community-foot_steps_snow_heavy-38297.ogg": "84930612",
   "assets/audio/themediaguy-earthquake-rumble-amp-cracking-379298.mp3": "cdff169c",
-  "assets/audio/themediaguy-earthquake-rumble-amp-cracking-379298.ogg": "10c76821",
+  "assets/audio/themediaguy-earthquake-rumble-amp-cracking-379298.ogg": "710b80aa",
   "assets/audio/universfield-ground-impact-352053.mp3": "ab5b58dc",
-  "assets/audio/universfield-ground-impact-352053.ogg": "f6742c2a",
+  "assets/audio/universfield-ground-impact-352053.ogg": "2f6ab5e2",
   "assets/audio/universfield-sad-trumpet-278822.mp3": "318bbc84",
-  "assets/audio/universfield-sad-trumpet-278822.ogg": "202ea116",
+  "assets/audio/universfield-sad-trumpet-278822.ogg": "31998195",
   "assets/audio/vo-lines-hi.mp3": "895e5125",
   "assets/audio/vo-lines-hi.ogg": "ebbb6834",
   "assets/audio/vo-lines.mp3": "fb39ef86",
@@ -54,30 +54,38 @@ const ASSET_V = {
   "assets/char/hd/mammoth-hurt.webp": "c32cf9bc",
   "assets/char/hd/mammoth-idle.webp": "db0e5422",
   "assets/char/hd/mammoth-jump-v2.webp": "84955cd0",
-  "assets/char/hd/mammoth-jump.webp": "9b67b6a2",
   "assets/char/hd/mammoth-run.webp": "97f41757",
   "assets/char/hd/mammoth-skid.webp": "820a18a1",
   "assets/char/hd/mammoth-tremble.webp": "889e9461",
   "assets/char/mammoth-hurt.webp": "8a886c8e",
   "assets/char/mammoth-idle.webp": "f1bbf762",
   "assets/char/mammoth-jump-v2.webp": "be4c78d2",
-  "assets/char/mammoth-jump.webp": "6b17e847",
   "assets/char/mammoth-run.webp": "d3ab6c72",
   "assets/char/mammoth-skid.webp": "ee6c20a7",
   "assets/char/mammoth-tremble.webp": "2f1852f5",
+  "assets/env/cap-l.avif": "577cd952",
   "assets/env/cap-l.webp": "500443c3",
+  "assets/env/cap-r.avif": "a48fb33d",
   "assets/env/cap-r.webp": "2f0a5554",
   "assets/env/obs-bone-arch.webp": "6b0db5b5",
+  "assets/env/obs-bone-cage.avif": "595d930a",
   "assets/env/obs-bone-cage.webp": "598447f6",
   "assets/env/obs-bone-ribs.webp": "88035a30",
   "assets/env/obs-bone-tusk.webp": "80d42364",
+  "assets/env/obs-log-arch.avif": "4edb937c",
   "assets/env/obs-log-arch.webp": "55947ce2",
   "assets/env/obs-log-crossed.webp": "a2dea86c",
+  "assets/env/obs-log-fallen.avif": "21f2fb50",
   "assets/env/obs-log-fallen.webp": "ed041733",
+  "assets/env/obs-log-stump.avif": "144e0bf6",
   "assets/env/obs-log-stump.webp": "d22d850c",
+  "assets/env/path.avif": "768048d7",
   "assets/env/path.webp": "f2a7ea81",
+  "assets/env/rock-band.avif": "912c607b",
   "assets/env/rock-band.webp": "6f4973a9",
+  "assets/env/rock-tall.avif": "d6eb3466",
   "assets/env/rock-tall.webp": "760283f8",
+  "assets/env/rock-wide.avif": "6747615e",
   "assets/env/rock-wide.webp": "6247692d",
   "assets/env/rope-tied.webp": "f9b3e721",
   "assets/option-shape/concaveHeptagon.webp": "d943871c",
@@ -96,25 +104,28 @@ const ASSET_V = {
   "assets/option-shape/regularTriangle.webp": "b16acb47",
   "assets/sky/01-dawn.webp": "7dbf9fd1",
   "assets/sky/02-early-morning.webp": "08988173",
+  "assets/sky/03-morning.avif": "2afa1426",
   "assets/sky/03-morning.webp": "aae081ec",
   "assets/sky/04-midday.webp": "ba4bfa3b",
   "assets/sky/05-afternoon.webp": "dd9df718",
   "assets/sky/06-sunset.webp": "6f2a5b77",
   "assets/sky/07-dusk.webp": "d511553c",
   "assets/sky/08-night.webp": "fdbec669",
-  "assets/ui/btn-normal.webp": "ad490138",
+  "assets/ui/btn-play.avif": "b7f24d8f",
   "assets/ui/btn-play.webp": "e75de185",
-  "assets/ui/btn-pressed.webp": "4636e1dd",
-  "assets/ui/btn-tryagain.webp": "f17bd92f",
-  "assets/ui/icons/hint.svg": "2eb235fd",
-  "assets/ui/icons/pause.svg": "7d4d26a9",
-  "assets/ui/icons/play.svg": "058a4e07",
-  "assets/ui/icons/restart.svg": "34740a8f",
-  "assets/ui/icons/sound-off.svg": "4c1711d1",
-  "assets/ui/icons/sound-on.svg": "53f86786",
-  "assets/ui/icons/touch.png": "d05ff66d",
+  "assets/ui/icons/hint.svg": "9ceb8f16",
+  "assets/ui/icons/pause.svg": "660fcd36",
+  "assets/ui/icons/play.svg": "573fd2b0",
+  "assets/ui/icons/restart.svg": "0133f671",
+  "assets/ui/icons/sound-off.svg": "9d167e38",
+  "assets/ui/icons/sound-on.svg": "a375910d",
+  "assets/ui/icons/touch.avif": "fdbf9e89",
+  "assets/ui/icons/touch.webp": "e270fe6c",
+  "assets/ui/plank-l.avif": "ba4723f3",
   "assets/ui/plank-l.webp": "1b2cb44b",
+  "assets/ui/plank-m.avif": "550f96b8",
   "assets/ui/plank-m.webp": "3b1338a9",
+  "assets/ui/plank-r.avif": "7eb1c2bd",
   "assets/ui/plank-r.webp": "553400cc"
 };
 
@@ -1312,11 +1323,10 @@ function createAvalanche(env) {
 
 /* ==================== engine.js ==================== */
 const verifiedPoints = pointsOf;
-const verifiedSides = sidesOf;
 /* Ice Age Mammoth Runner — gameplay engine (canvas, no external deps).
    Modules: Config, AudioManager, ParticleManager, BackgroundTimeManager,
    GroundManager, WorldScroller, PlayerController, ObstacleController,
-   DitchController, LevelOnePuzzle, LevelTwoCutPuzzle, PolygonCutManager,
+   DitchController, LevelOnePuzzle, LevelTwoCutPuzzle,
    FeedbackFX, HintManager, GameFlowController. */
 
 /* The specialised geometries the curriculum needs - heptagons, octagons,
@@ -1335,10 +1345,11 @@ const verifiedSides = sidesOf;
    makes a changed file a new fetch and an unchanged one a cache hit. Generated at build
    time (tools/build-bundle.mjs -> js/asset-versions.js). Paths in CFG stay bare. */
 /* AND EVERY MP3 LEAVES AS AN OGG, WHERE THE BROWSER TAKES ONE.
-   The audio ships as both (tools/make-ogg.mjs): ogg vorbis is what the game is asked to use
-   and it is 28% smaller across the set, but Safari only learned to play it in 17.4, so an
-   iPad on iOS 16 would have gone silent. The choice is made ONCE, here, rather than at each
-   of the fifty call sites, and only the chosen file is ever fetched.
+   The audio ships as both: Ogg Opus is what the game is asked to use (every .ogg here is
+   Opus, the voice and the sound effects alike, so one question covers them all) and it is
+   under half the size of the MP3s across the set, but Safari only learned to play Ogg in
+   17.4, so an iPad on iOS 16 would have gone silent. The choice is made ONCE, here, rather
+   than at each of the fifty call sites, and only the chosen file is ever fetched.
 
    canPlayType returns 'probably' | 'maybe' | '' — '' is the only answer that means no, and
    'maybe' is what several browsers say about a codec they do play, so anything non-empty is
@@ -1355,16 +1366,56 @@ function playsOgg() {
          silent. The mp3 loads there and is already the format the rest of the file-scheme
          handling assumes, so the negotiation simply does not apply. */
       if (typeof location !== 'undefined' && location.protocol === 'file:') oggOk = false;
-      else oggOk = !!new Audio().canPlayType('audio/ogg; codecs="vorbis"');
+      else oggOk = !!new Audio().canPlayType('audio/ogg; codecs="opus"');
     } catch (e) { oggOk = false; }
   }
   return oggOk;
 }
 
-function assetUrl(src) {
+/* AND A WEBP LEAVES AS AN AVIF, WHERE THE BROWSER DECODES ONE AND THE BUILD MADE ONE.
+   An AVIF twin is only made where it is the same picture for clearly fewer bytes (the path,
+   the rocks, the platform ends, a few obstacles, one sky, the plank and PLAY); the character
+   sheets and the ice blocks are already tight as WebP and stay WebP only, so ASSET_V,
+   generated from what is on disk, is what says which pictures have one. Whether the browser decodes AVIF can only be
+   asked by decoding one, which is not instant, so the answer is settled before the first
+   picture is asked for (preload() waits for avifReady) and is then fixed for the page: an
+   answer that changed half way would fetch some pictures twice. The probe carries an alpha
+   channel and is read back, because nearly every picture here is a cut-out. A browser that
+   has not answered within a moment gets the WebP, and so does one that fails on an AVIF it
+   was sent (loadImg). */
+const AVIF_PROBE = 'data:image/avif;base64,AAAAHGZ0eXBhdmlmAAAAAG1pZjFhdmlmbWlhZgAAAXBtZXRhAAAAAAAAACFoZGxyAAAAAAAAAABwaWN0AAAAAAAAAAAAAAAAAAAAAA5waXRtAAAAAAABAAAANGlsb2MAAAAAREAAAgABAAAAAAGUAAEAAAAAAAAAFwACAAAAAAGrAAEAAAAAAAAAEAAAADhpaW5mAAAAAAACAAAAFWluZmUCAAAAAAEAAGF2MDEAAAAAFWluZmUCAAAAAAIAAGF2MDEAAAAAr2lwcnAAAACKaXBjbwAAAAxhdjFDgSACAAAAABRpc3BlAAAAAAAAAAEAAAABAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQAcAAAAAA5waXhpAAAAAAEIAAAAOGF1eEMAAAAAdXJuOm1wZWc6bXBlZ0I6Y2ljcDpzeXN0ZW1zOmF1eGlsaWFyeTphbHBoYQAAAAAdaXBtYQAAAAAAAAACAAEDgQIDAAIEhAIFhgAAABppcmVmAAAAAAAAAA5hdXhsAAIAAQABAAAAL21kYXQSAAoHOAAGEBDQaTIKGAAAAEAAsBKamBIACgQYAAYVMgYYAAABQA8=';
+let avifOk = false, avifAsked = false;
+const avifReady = new Promise(done => {
+  let settled = false;
+  const settle = ok => { if (settled) return; settled = true; if (!avifAsked) avifOk = ok; done(avifOk); };
+  try {
+    if (typeof Image === 'undefined' || typeof document === 'undefined') return settle(false);
+    const i = new Image();
+    i.onload = () => {
+      try {
+        const c = document.createElement('canvas'); c.width = c.height = 1;
+        const x = c.getContext('2d'); x.drawImage(i, 0, 0);
+        const a = x.getImageData(0, 0, 1, 1).data[3];
+        settle(a > 96 && a < 160);
+      } catch (e) { settle(false); }
+    };
+    i.onerror = () => settle(false);
+    i.src = AVIF_PROBE;
+    setTimeout(() => settle(false), 800);
+  } catch (e) { settle(false); }
+});
+
+/* `plain` asks for the WebP even where there is an AVIF: the second try of a picture whose
+   AVIF did not load. */
+function assetUrl(src, plain) {
   if (src.endsWith('.mp3') && playsOgg()) {
     const ogg = src.slice(0, -4) + '.ogg';
     if (ASSET_V[ogg]) src = ogg;
+  }
+  if (src.endsWith('.webp') && !plain) {
+    avifAsked = true;
+    const avif = src.slice(0, -5) + '.avif';
+    if (avifOk && ASSET_V[avif]) src = avif;
   }
   const v = ASSET_V[src];
   return v ? src + '?v=' + v : src;
@@ -2475,10 +2526,6 @@ function iceHash(x, salt) {
   return v - Math.floor(v);
 }
 
-function centroid(pts) {
-  let x = 0, y = 0; for (const p of pts) { x += p.x; y += p.y; }
-  return { x: x / pts.length, y: y / pts.length };
-}
 /* ---------------- PolygonFactory ----------------
    Polygon identity comes from geometry — the number of straight sides and corners —
    never from colour, size or rotation. Every shape is built as an ordered vertex
@@ -2486,8 +2533,6 @@ function centroid(pts) {
    jitter. Jitter is capped low enough that a convex ring stays convex, so the
    factory can never emit a self-intersecting or malformed polygon. */
 const PolygonFactory = {
-  sides: { triangle: 3, square: 4, rectangle: 4, quadrilateral: 4, trapezoid: 4, pentagon: 5, hexagon: 6 },
-
   /** The ring for a name, or null if it is not one of ours.
 
       THE ARTWORK'S OWN OUTLINE COMES FIRST. The options are painted ice blocks now,
@@ -2506,19 +2551,6 @@ const PolygonFactory = {
 
   /** The delivered block for a name: its texture and the box the ring fills. */
   art(kind) { return optionShapes[kind] || null; },
-
-  /** Whether a name resolves to a real polygon at all — used to fail loudly on a
-      typo in the curriculum rather than silently drawing the fallback pentagon. */
-  knows(kind) { return !!this.verified(kind) || this.sides[kind] !== undefined; },
-
-  /** Vertex count that defines this polygon. Taken from the artwork's own traced ring
-      where there is artwork, because that is what is on screen to be counted; the
-      build refuses to generate a ring whose count disagrees with polygons.js. */
-  sidesOf(kind) {
-    const art = optionShapes[kind];
-    if (art) return art.sides;
-    return verifiedSides(kind) || this.sides[kind] || 0;
-  },
 
   /** Regular-ish ring for an n-gon, flat side up, inscribed in w x h. */
   ring(n, w, h, flatTop) {
@@ -2643,45 +2675,9 @@ const PolygonFactory = {
     const cy = polyBounds(out).y0 + polyBounds(out).h / 2;
     if (edgeY > cy) { rot += Math.PI; out = turn(rot); }
     return { rot, scale: best > 0 ? span / best : 1, pts: this.center(out) };
-  },
-
-  /** The edge a seated shape is resting its top on: the one whose midpoint is
-      highest. For anything that has been through seat() this is the flat top, and its
-      length is what has to span the crevasse. */
-  topEdge(pts) {
-    let bi = 0, best = Infinity;
-    for (let i = 0; i < pts.length; i++) {
-      const a = pts[i], b = pts[(i + 1) % pts.length];
-      const my = (a.y + b.y) / 2;
-      if (my < best) { best = my; bi = i; }
-    }
-    const a = pts[bi], b = pts[(bi + 1) % pts.length];
-    return { i: bi, len: Math.hypot(b.x - a.x, b.y - a.y) };
-  },
-
-  /** Width of a built ring, used to size a ditch to the shape that repairs it. */
-  widthOf(pts) { return polyBounds(pts).w; }
+  }
 };
 
-function shapePoly(kind, w, h) {
-  const hw = w / 2, hh = h / 2;
-  switch (kind) {
-    // Shoulders sit high so the two lower edges meet at ~107 degrees — close to a
-    // regular pentagon's 108. With the old shoulders at +hh*0.25 the apex was 146
-    // degrees, near enough to flat that the shape read as a quadrilateral.
-    case 'pentagon': return [{ x: -hw, y: -hh }, { x: hw, y: -hh }, { x: hw, y: -hh * 0.2 }, { x: 0, y: hh }, { x: -hw, y: -hh * 0.2 }];
-    case 'trapezoid': return [{ x: -hw * 0.58, y: -hh }, { x: hw * 0.58, y: -hh }, { x: hw, y: hh }, { x: -hw, y: hh }];
-    case 'hexagon': return [{ x: -hw * 0.55, y: -hh }, { x: hw * 0.55, y: -hh }, { x: hw, y: 0 }, { x: hw * 0.55, y: hh }, { x: -hw * 0.55, y: hh }, { x: -hw, y: 0 }];
-    case 'triangle': return [{ x: 0, y: -hh }, { x: hw, y: hh }, { x: -hw, y: hh }];
-    case 'square': return [{ x: -hh, y: -hh }, { x: hh, y: -hh }, { x: hh, y: hh }, { x: -hh, y: hh }];
-    default: return [{ x: -hw, y: -hh }, { x: hw, y: -hh }, { x: hw, y: hh }, { x: -hw, y: hh }];
-  }
-}
-function regularHexagon(R) {
-  const pts = [];
-  for (let i = 0; i < 6; i++) { const a = (i * 60) * Math.PI / 180; pts.push({ x: R * Math.cos(a), y: R * Math.sin(a) }); }
-  return pts;
-}
 function traceRing(ctx, pts, ox = 0, oy = 0) {
   ctx.beginPath();
   pts.forEach((p, i) => i ? ctx.lineTo(p.x + ox, p.y + oy) : ctx.moveTo(p.x + ox, p.y + oy));
@@ -2742,52 +2738,6 @@ function measureContent(img) {
   }
   if (x1 < 0) return null;
   return { x0, x1, y0, y1, w: x1 - x0 + 1, h: y1 - y0 + 1, bottom: (y1 + 1) / c.height };
-}
-
-/* ---------------- ice material painter ---------------- */
-// A solid, high-contrast variant for the pieces the learner actually picks up. The
-// default pale ice all but disappeared against a bright cyan sky.
-const ICE_PIECE = { top: '#FFFFFF', mid: '#BFE7FA', bot: '#5FBEE6', edge: '#2A6E9E', lw: 5, lift: true };
-function paintIce(ctx, pts, opt = {}) {
-  const b = polyBounds(pts);
-  const g = ctx.createLinearGradient(0, b.y0, 0, b.y1);
-  g.addColorStop(0, opt.top || C.paleIce);
-  g.addColorStop(0.55, opt.mid || C.lightIce);
-  g.addColorStop(1, opt.bot || C.cyanIce);
-  ctx.save();
-  const lift = opt.lift ? 1.7 : 1;
-  ctx.shadowColor = `rgba(9,42,80,${0.35 * lift})`;
-  ctx.shadowBlur = 18 * lift; ctx.shadowOffsetY = 8 * lift;
-  traceRing(ctx, pts); ctx.fillStyle = g; ctx.fill();
-  ctx.restore();
-  // internal facet
-  ctx.save();
-  traceRing(ctx, pts); ctx.clip();
-  ctx.beginPath();
-  ctx.moveTo(b.x0 + b.w * 0.18, b.y0 - 10);
-  ctx.lineTo(b.x0 + b.w * 0.52, b.y1 + 10);
-  ctx.lineTo(b.x0 + b.w * 0.30, b.y1 + 10);
-  ctx.lineTo(b.x0 - 10, b.y0 + b.h * 0.42);
-  ctx.closePath();
-  ctx.fillStyle = 'rgba(255,255,255,0.34)'; ctx.fill();
-  ctx.beginPath();
-  ctx.moveTo(b.x1 - b.w * 0.10, b.y0 - 10);
-  ctx.lineTo(b.x1 + 10, b.y0 + b.h * 0.30);
-  ctx.lineTo(b.x1 + 10, b.y1 + 10);
-  ctx.lineTo(b.x1 - b.w * 0.34, b.y1 + 10);
-  ctx.closePath();
-  ctx.fillStyle = 'rgba(45,130,181,0.16)'; ctx.fill();
-  ctx.restore();
-  ctx.lineJoin = 'round'; ctx.lineCap = 'round';
-  traceRing(ctx, pts);
-  ctx.strokeStyle = opt.edge || C.edge; ctx.lineWidth = opt.lw || 4; ctx.stroke();
-  // frost highlight along top edge
-  ctx.save();
-  traceRing(ctx, pts); ctx.clip();
-  ctx.beginPath();
-  ctx.moveTo(b.x0, b.y0 + 6); ctx.lineTo(b.x1, b.y0 + 6);
-  ctx.strokeStyle = 'rgba(255,255,255,0.65)'; ctx.lineWidth = 5; ctx.stroke();
-  ctx.restore();
 }
 
 /* ---------------- AudioManager ----------------
@@ -6536,26 +6486,6 @@ class ObstacleController {
   }
 }
 
-/* ---------------- PolygonCutManager ---------------- */
-const PolygonCutManager = {
-  isDiagonal(n, i, j) {
-    if (i === j) return false;
-    const d = Math.abs(i - j);
-    return d !== 1 && d !== n - 1;
-  },
-  split(pts, i, j) {
-    const n = pts.length;
-    const a = [], b = [];
-    for (let k = i; ; k = (k + 1) % n) { a.push({ ...pts[k] }); if (k === j) break; }
-    for (let k = j; ; k = (k + 1) % n) { b.push({ ...pts[k] }); if (k === i) break; }
-    return [a, b];
-  },
-  toPiece(pts) {
-    const c = centroid(pts);
-    return { local: pts.map(p => ({ x: p.x - c.x, y: p.y - c.y })), x: c.x, y: c.y, rot: 0, scale: 1 };
-  }
-};
-
 /* ================= main game ================= */
 function createGame(canvas, hooks = {}) {
   const ctx = canvas.getContext('2d');
@@ -6810,13 +6740,6 @@ function createGame(canvas, hooks = {}) {
   function currentCharacter() {
     return CFG.characters.find(c => c.id === characterId) || CFG.characters[0];
   }
-  /** Swap the explorer. Kept out of the run states so it can only happen up front. */
-  function setCharacter(id) {
-    if (!CFG.characters.some(c => c.id === id)) return false;
-    characterId = id;
-    if (mammoth) { mammoth.setCharacter(currentCharacter(), images); mammoth.reset(); }
-    return true;
-  }
 
   /* ---- asset loading ---- */
   function loadImg(src) {
@@ -6828,11 +6751,13 @@ function createGame(canvas, hooks = {}) {
          phone). decode() does it here, off the main thread where the browser can. A browser
          that refuses still gets the image. */
       i.onload = () => { if (i.decode) i.decode().then(() => res(i), () => res(i)); else res(i); };
-      i.onerror = () => res(null);
+      // an AVIF that will not load is asked for once more as its WebP
+      i.onerror = () => { if (/\.avif(\?|$)/.test(i.src)) i.src = assetUrl(src, true); else res(null); };
       i.src = assetUrl(src);
     });
   }
   async function preload() {
+    await avifReady;
     const jobs = CFG.phases.map(p => loadImg(p.src).then(i => { images[p.key] = i; }));
     jobs.push(loadImg('assets/env/path.webp').then(i => { images.path = i; }));
     jobs.push(loadImg('assets/env/rock-wide.webp').then(i => { images.rockWide = i; }));
@@ -7147,17 +7072,6 @@ function createGame(canvas, hooks = {}) {
      two crevasses gives slot counts of 2 and 1. A correct chunk takes whichever free
      slot is nearest the cut, so the learner is never asked to guess an allocation,
      and a crevasse is mended only once every slot in it is plugged. */
-
-  /** Share `total` slots over `n` crevasses as evenly as possible, fullest first. */
-  function slotShare(total, n) {
-    const out = [];
-    let left = total;
-    for (let i = 0; i < n; i++) {
-      const k = Math.max(1, Math.ceil(left / (n - i)));
-      out.push(k); left -= k;
-    }
-    return out;
-  }
 
   /* THE ONE WIDTH EVERY OPTION IN A PHASE IS DRAWN AT.
    *
@@ -7795,7 +7709,6 @@ function createGame(canvas, hooks = {}) {
          (drawCrossingDeck), with the plugs hanging under it as visible keystones. The
          crossing still reads as mended; the answer stays countable. */
       const sb = polyBounds(sh.pts);
-      const slotSpan = (slot.x1 - slot.x0);
       /* IT LANDS AT THE SIZE IT WAS CUT. Exactly 1:1, no scaling at all.
 
          This has been through three versions and the first two were both wrong in ways
@@ -10916,7 +10829,6 @@ function fitBubble(svg, box, tail) {
 /* HUD controller — owns every DOM element outside the canvas and mirrors the
    engine's HUD state onto it. The engine never touches the DOM itself. */
 
-
 /* THE PAGE'S LANGUAGE (?lan=, ../src/i18n/i18n.js, which index.html loads): what the HUD shows
    is put into it. The engine's sentences stay English: its voice and its tests read them. */
 const hudI18n = () => { const I = window.PolygonI18n; return I && I.on ? I : null; };
@@ -11261,7 +11173,6 @@ class Hud {
 
   destroy() {
     clearTimeout(this._leaveT);
-    clearTimeout(this._flashT);
     window.removeEventListener('resize', this._onResize);
     window.removeEventListener('orientationchange', this._onResize);
   }
@@ -11803,27 +11714,6 @@ class Tutorial {
     return { x: anchor, y: ropeY, rx: 120, ry: 34,
              aimX: anchor, belowY: bottom,
              handX: ropeX, handY: ropeY, world: true };
-  }
-
-  /** A box around every hanging block, in stage coordinates. */
-  rowBox(g) {
-    const hang = ((g.l1 && g.l1.shapes) || []).filter(s => s.state === 'hang');
-    if (!hang.length) return null;
-    let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
-    for (const s of hang) {
-      x0 = Math.min(x0, s.x - s.w / 2); x1 = Math.max(x1, s.x + s.w / 2);
-      y0 = Math.min(y0, s.y - s.h / 2); y1 = Math.max(y1, s.y + s.h / 2);
-    }
-    if (y1 < 40) return null;                       // still off the top of the screen
-    /* AN OVAL AROUND THE ROW, not a circle enclosing it. The row is much wider than it
-       is tall, so one radius big enough to cover its width is enormous vertically —
-       1228px across for a 970px row, which is most of the screen. Separate axes hug it. */
-    return {
-      x: (x0 + x1) / 2, y: (y0 + y1) / 2,
-      rx: (x1 - x0) / 2 + 60,
-      ry: (y1 - y0) / 2 + 50,
-      world: true
-    };
   }
 
   /* NO domSpot, AND NO LIFTED DOM TARGET. This measured an element's rect and returned
@@ -12962,7 +12852,6 @@ if (hosted) {
 }
 
 let tut = null;
-let lastComplete = false;
 
 /* THE TUTORIAL RUNS EVERY TIME, and the remembering is gone on purpose.
  *
@@ -13052,13 +12941,10 @@ const game = createGame(canvas, {
        The WIN panel does still want a picture of the character, and it is filled once
        on the transition rather than every HUD tick — onHud fires on every state change
        and re-setting the same background image on each of them is work for nothing. */
-    if (front && !!state.complete !== lastComplete) {
-      lastComplete = !!state.complete;
-      /* Nothing to fill: the win panel has no hero picture any more. The character on
-         the CANVAS behind it is celebrating next to the friend who was waiting, which
-         is the picture that matters, and a still copy of him on the panel competed
-         with it — as well as covering the pair of them. */
-    }
+    /* Nothing to fill: the win panel has no hero picture any more. The character on
+       the CANVAS behind it is celebrating next to the friend who was waiting, which
+       is the picture that matters, and a still copy of him on the panel competed
+       with it — as well as covering the pair of them. */
   }
 });
 

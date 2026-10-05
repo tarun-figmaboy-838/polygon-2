@@ -427,27 +427,6 @@ export class Tutorial {
              handX: ropeX, handY: ropeY, world: true };
   }
 
-  /** A box around every hanging block, in stage coordinates. */
-  rowBox(g) {
-    const hang = ((g.l1 && g.l1.shapes) || []).filter(s => s.state === 'hang');
-    if (!hang.length) return null;
-    let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
-    for (const s of hang) {
-      x0 = Math.min(x0, s.x - s.w / 2); x1 = Math.max(x1, s.x + s.w / 2);
-      y0 = Math.min(y0, s.y - s.h / 2); y1 = Math.max(y1, s.y + s.h / 2);
-    }
-    if (y1 < 40) return null;                       // still off the top of the screen
-    /* AN OVAL AROUND THE ROW, not a circle enclosing it. The row is much wider than it
-       is tall, so one radius big enough to cover its width is enormous vertically —
-       1228px across for a 970px row, which is most of the screen. Separate axes hug it. */
-    return {
-      x: (x0 + x1) / 2, y: (y0 + y1) / 2,
-      rx: (x1 - x0) / 2 + 60,
-      ry: (y1 - y0) / 2 + 50,
-      world: true
-    };
-  }
-
   /* NO domSpot, AND NO LIFTED DOM TARGET. This measured an element's rect and returned
      it as a stage-space spot, so a step could point at a control; the JUMP button was the
      only caller, and with the button gone every subject the tutorial has is drawn on the

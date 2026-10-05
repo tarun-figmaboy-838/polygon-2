@@ -71,13 +71,16 @@ game/
     ├── env/rock-wide.webp, rock-tall.webp jumpable obstacles
     ├── env/rope.webp                      the rope the chunks hang on
     ├── char/mammoth-run.webp              36-frame run cycle (420×320 cells)
-    ├── char/mammoth-jump.webp             10-frame jump arc (420×320 cells)
+    ├── char/mammoth-jump-v2.webp          24-frame jump (420×320 cells)
     ├── char/mammoth-skid.webp             36-frame skid to a halt (420×320 cells)
     ├── option-shape/*.webp                one painted ice block per named shape
     ├── ui/plank-l/m/r.webp                the hanging instruction plank, in three
     │                                      slices so it grows with its sentence
     ├── ui/btn-play*.webp                   the picture buttons
-    └── audio/*.mp3                        one music bed, six recorded cues
+    └── audio/*.ogg, *.mp3                 the music bed, the recorded cues and the voice:
+                                           Ogg Opus, with an MP3 copy for older Safari
+    (a picture may have an .avif twin beside its .webp, used where the browser
+     decodes AVIF: see assetUrl in js/engine.js)
 ```
 
 Everything under `assets` whose extension is `.png` or `.gif` is a BUILD INPUT, not

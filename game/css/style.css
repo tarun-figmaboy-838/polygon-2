@@ -367,6 +367,11 @@ a:hover { color: var(--ice-pale); }
        seam ("the blue cut line"). Twelve pixels under each opaque cap leaves no column for a
        resampler to expose. */
     url("../assets/ui/plank-m.webp?v=3b1338a9") center center / calc(100% - 626 * var(--k) + 24px) 100% no-repeat;
+  /* the same three as AVIF where the browser takes it; one that cannot read this keeps the above */
+  background:
+    image-set(url("../assets/ui/plank-l.avif?v=ba4723f3") type("image/avif"), url("../assets/ui/plank-l.webp?v=1b2cb44b") type("image/webp")) left center / auto 100% no-repeat,
+    image-set(url("../assets/ui/plank-r.avif?v=7eb1c2bd") type("image/avif"), url("../assets/ui/plank-r.webp?v=553400cc") type("image/webp")) right center / auto 100% no-repeat,
+    image-set(url("../assets/ui/plank-m.avif?v=550f96b8") type("image/avif"), url("../assets/ui/plank-m.webp?v=3b1338a9") type("image/webp")) center center / calc(100% - 626 * var(--k) + 24px) 100% no-repeat;
 
   /* CENTRED ON THE WOOD, both ways, and the padding is where that is done.
 
@@ -483,18 +488,6 @@ a:hover { color: var(--ice-pale); }
   color: var(--deep-1);
 }
 
-.card-icon {
-  width: clamp(38px, calc(3.6 * var(--u)), 136px);
-  height: clamp(38px, calc(3.6 * var(--u)), 136px);
-  filter: drop-shadow(0 4px 10px rgba(6, 26, 56, 0.28));
-  animation: oopsPop 420ms cubic-bezier(.34, 1.56, .64, 1) both;
-}
-
-@keyframes oopsPop {
-  from { opacity: 0; transform: scale(.55) rotate(-16deg); }
-  to { opacity: 1; transform: scale(1) rotate(0); }
-}
-
 .rotate {
   flex-direction: column;
   gap: 24px;
@@ -527,7 +520,6 @@ a:hover { color: var(--ice-pale); }
   .instruction.leaving { animation: none; opacity: 0; }
   .instruction.banner .instruction-pill { animation: none; }
   .instruction-text .iw { animation: none; }
-  .card-icon { animation: none; opacity: 1; transform: none; }
 }
 
 /* ---------- the idle hand ----------
@@ -559,7 +551,8 @@ a:hover { color: var(--ice-pale); }
      being on the dashes. Translating by the tip's own place in the box lands the tip on
      the point the engine gives, at any size. One image change is one edit here. */
   transform: translate(calc(-1 * var(--tip-x)), calc(-1 * var(--tip-y)));
-  background: url("../assets/ui/icons/touch.png?v=d05ff66d") center / contain no-repeat;
+  background: url("../assets/ui/icons/touch.webp?v=e270fe6c") center / contain no-repeat;
+  background: image-set(url("../assets/ui/icons/touch.avif?v=fdbf9e89") type("image/avif"), url("../assets/ui/icons/touch.webp?v=e270fe6c") type("image/webp")) center / contain no-repeat;
   pointer-events: none;
   z-index: 5;
   filter: drop-shadow(0 clamp(2px, calc(0.21 * var(--u)), 8px) clamp(4px, calc(0.42 * var(--u)), 16px) rgba(6, 26, 56, 0.45));
@@ -703,12 +696,12 @@ a:hover { color: var(--ice-pale); }
    `/css/assets/ui/...` and every glyph 404'd. Declaring them in this file makes the
    relative path correct, and a data attribute picks between them — which also means
    the icon set is enumerable in one place. */
-.icon-btn[data-icon="hint"]      .icon-btn-glyph { -webkit-mask-image: url("../assets/ui/icons/hint.svg?v=2eb235fd");      mask-image: url("../assets/ui/icons/hint.svg?v=2eb235fd"); }
-.icon-btn[data-icon="sound-on"]  .icon-btn-glyph { -webkit-mask-image: url("../assets/ui/icons/sound-on.svg?v=53f86786");  mask-image: url("../assets/ui/icons/sound-on.svg?v=53f86786"); }
-.icon-btn[data-icon="sound-off"] .icon-btn-glyph { -webkit-mask-image: url("../assets/ui/icons/sound-off.svg?v=4c1711d1"); mask-image: url("../assets/ui/icons/sound-off.svg?v=4c1711d1"); }
-.icon-btn[data-icon="pause"]     .icon-btn-glyph { -webkit-mask-image: url("../assets/ui/icons/pause.svg?v=7d4d26a9");     mask-image: url("../assets/ui/icons/pause.svg?v=7d4d26a9"); }
-.icon-btn[data-icon="play"]      .icon-btn-glyph { -webkit-mask-image: url("../assets/ui/icons/play.svg?v=058a4e07");      mask-image: url("../assets/ui/icons/play.svg?v=058a4e07"); }
-.icon-btn[data-icon="restart"]   .icon-btn-glyph { -webkit-mask-image: url("../assets/ui/icons/restart.svg?v=34740a8f");   mask-image: url("../assets/ui/icons/restart.svg?v=34740a8f"); }
+.icon-btn[data-icon="hint"]      .icon-btn-glyph { -webkit-mask-image: url("../assets/ui/icons/hint.svg?v=9ceb8f16");      mask-image: url("../assets/ui/icons/hint.svg?v=9ceb8f16"); }
+.icon-btn[data-icon="sound-on"]  .icon-btn-glyph { -webkit-mask-image: url("../assets/ui/icons/sound-on.svg?v=a375910d");  mask-image: url("../assets/ui/icons/sound-on.svg?v=a375910d"); }
+.icon-btn[data-icon="sound-off"] .icon-btn-glyph { -webkit-mask-image: url("../assets/ui/icons/sound-off.svg?v=9d167e38"); mask-image: url("../assets/ui/icons/sound-off.svg?v=9d167e38"); }
+.icon-btn[data-icon="pause"]     .icon-btn-glyph { -webkit-mask-image: url("../assets/ui/icons/pause.svg?v=660fcd36");     mask-image: url("../assets/ui/icons/pause.svg?v=660fcd36"); }
+.icon-btn[data-icon="play"]      .icon-btn-glyph { -webkit-mask-image: url("../assets/ui/icons/play.svg?v=573fd2b0");      mask-image: url("../assets/ui/icons/play.svg?v=573fd2b0"); }
+.icon-btn[data-icon="restart"]   .icon-btn-glyph { -webkit-mask-image: url("../assets/ui/icons/restart.svg?v=0133f671");   mask-image: url("../assets/ui/icons/restart.svg?v=0133f671"); }
 
 /* The verdict mark (a tick or a cross over the crossing) is gone: a right answer
    throws confetti from the engine and a wrong one gets no mark. See cutShape(). */
