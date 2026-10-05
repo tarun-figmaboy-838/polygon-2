@@ -100,7 +100,13 @@
       if (game._stopRecordedVoice) game._stopRecordedVoice();
       const audio = voiceFor(game, window.polygonAudioSrc(entry.src));
       audio.preload = 'auto';
-      const pages = game.instructionPages(text);
+      /* IN ANOTHER LANGUAGE (?lan=, src/i18n/i18n.js) the recording is still the English one, and
+         its words still cue the screen; what is shown is the line's translation, the whole of it
+         on the board (narrShow), its words coming in as the same share of it as the voice has
+         said of the English. */
+      const I18N = window.PolygonI18n;
+      const local = !!(I18N && I18N.on);
+      const pages = local ? [text] : game.instructionPages(text);
       const counts = pages.map(page => (page.match(/\S+/g) || []).length);
       const total = counts.reduce((a, b) => a + b, 0);
       const wordStarts = this.wordStarts(entry, text);
@@ -157,12 +163,18 @@
         // Scrub the paused CSS pulse from the media clock, including rate changes and pauses.
         if (game.boundaryScene && game.boundaryScene() && game.syncBoundaryPulse)
           game.syncBoundaryPulse(audio.currentTime * 1000);
-        let page = 0, offset = 0;
-        while (page < pages.length - 1 && position >= offset + counts[page]) offset += counts[page++];
-        const count = wordStarts ? Math.max(0, Math.min(counts[page], spokenCount - offset)) : Math.min(counts[page], Math.floor(position - offset) + 1);
-        if (game.step().sc === 'S8' && !game.state.reveal) {
-          const visibleWords = (pages[page].match(/\S+/g) || []).slice(0, count);
-          if (visibleWords.some(word => normalize(word) === 'polygon')) game.keyword('polygon');
+        let page = 0, offset = 0, count;
+        if (local) {
+          const shownWords = ((game.state.narrShow || I18N.t(text)).match(/\S+/g) || []).length;
+          count = audibleCount > 0 ? Math.min(shownWords, Math.ceil(audibleCount / Math.max(1, total) * shownWords)) : 0;
+          if (game.step().sc === 'S8' && !game.state.reveal && words.slice(0, audibleCount).some(word => normalize(word) === 'polygon')) game.keyword('polygon');
+        } else {
+          while (page < pages.length - 1 && position >= offset + counts[page]) offset += counts[page++];
+          count = wordStarts ? Math.max(0, Math.min(counts[page], spokenCount - offset)) : Math.min(counts[page], Math.floor(position - offset) + 1);
+          if (game.step().sc === 'S8' && !game.state.reveal) {
+            const visibleWords = (pages[page].match(/\S+/g) || []).slice(0, count);
+            if (visibleWords.some(word => normalize(word) === 'polygon')) game.keyword('polygon');
+          }
         }
         if (page !== pageIndex) {
           pageIndex = page; revealed = count;

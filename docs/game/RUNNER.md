@@ -295,6 +295,11 @@ success beats (they are the feedback — a splash cut short teaches nothing).
 `?speed=300–900`, `?fast=1–8` (steps the simulation N times per rendered frame — same
 physics, less wall clock; the only way to reach phase 6 quickly).
 
+**Language:** `?lan=hi` (and `mr`, `te`, `gu`, `od`; the lesson passes on its own) shows the
+tutorial's sentences, the plank and the controls in that language (`../src/i18n/i18n.js`, the
+words in `../src/i18n/locales.json`). Only what is shown changes: the engine's sentences, the
+voice and every timing stay English, so the hooks, the messages and the tests are the same.
+
 **Hosted:** `?cover=0` has no cover and no PLAY: the game loads, says it is ready
 (`window.iceAgeReady`) and waits for the page carrying it to start the run with
 `window.iceAgeBegin()`, once; a second call does nothing. The opening avalanche and the

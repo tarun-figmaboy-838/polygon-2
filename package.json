@@ -12,6 +12,7 @@
     "test:swiftee": "node tests/swiftee.test.cjs",
     "test:recap": "node tests/recap.test.cjs",
     "test:opening": "node tests/opening.test.cjs",
+    "test:i18n": "node tests/i18n.test.cjs",
     "test:checks": "node tests/checks/run-all.cjs",
     "build:swiftee": "node tools/build-swiftee.cjs",
     "build:story-voice": "python3 tools/story/build-story-voice.py",
@@ -20,7 +21,8 @@
     "build:story-music": "node tools/story/build-story-music.cjs",
     "build:lesson-music": "node tools/build-lesson-music.cjs",
     "build:end-world": "node tools/build-end-world.cjs",
-    "optimize:media": "node tools/optimize-media.cjs"
+    "optimize:media": "node tools/optimize-media.cjs",
+    "build:i18n-review": "node tools/i18n/build-review.cjs"
   },
   "devDependencies": {
     "ffmpeg-static": "^5.2.0",

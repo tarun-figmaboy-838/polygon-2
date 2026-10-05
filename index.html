@@ -17,6 +17,10 @@
   html, body { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#103574; -webkit-text-size-adjust:100%; text-size-adjust:100%; }
   .game-viewport { position:fixed; inset:0; width:100%; height:100%; height:100dvh; overflow:hidden; background:#103574; }
 </style>
+<!-- The page's language, from ?lan= (en hi mr te gu od): its words come from
+     src/i18n/locales.json and its own font is fetched with them. English needs nothing
+     from it. See src/i18n/i18n.js. -->
+<script src="src/i18n/i18n.js"></script>
 <script src="src/lesson/responsive-layout.js"></script>
 <!-- Required lesson data and voice cues must be ready before the app mounts,
      including on a cold cache or a slow production connection. -->
@@ -266,7 +270,7 @@
     <sc-if value="{{ showGuide }}" hint-placeholder-val="{{ false }}">
       <div style="{{ guideViewport }}">
         <div class="swiftee-wrap" data-hidden="{{ guideHidden }}" style="{{ guideStyle }}">
-          <canvas ref="{{ guideRef }}" width="{{ guideCell }}" height="{{ guideCell }}" role="img" aria-label="Swiftee, your guide" style="{{ guideCanvasStyle }}"></canvas>
+          <canvas ref="{{ guideRef }}" width="{{ guideCell }}" height="{{ guideCell }}" role="img" aria-label="{{ guideLabel }}" style="{{ guideCanvasStyle }}"></canvas>
         </div>
       </div>
     </sc-if>
@@ -349,8 +353,8 @@
 
       <sc-if value="{{ showChoice }}" hint-placeholder-val="{{ false }}">
         <div class="story-controls choice-controls" style="{{ choiceRowStyle }}">
-          <div class="{{ chooseOpenClass }}" role="{{ chooseOpenRole }}" aria-label="Open" aria-disabled="{{ choiceDisabled }}" data-oc-choice="true" data-retired="{{ openRetired }}" aria-hidden="{{ openHidden }}" data-word-cued="{{ openCued }}" data-feedback="{{ openFeedback }}" tabIndex="{{ chooseOpenTab }}" onKeyDown="{{ activateKey }}" data-nudge="{{ nudgeOC }}" onClick="{{ chooseOpen }}" onPointerEnter="{{ hovOpen }}" onPointerLeave="{{ hovOut }}" style="{{ btnOpen }}">{{ openText }}</div>
-          <div class="{{ chooseClosedClass }}" role="{{ chooseClosedRole }}" aria-label="Closed" aria-disabled="{{ choiceDisabled }}" data-oc-choice="true" data-retired="{{ closedRetired }}" aria-hidden="{{ closedHidden }}" data-word-cued="{{ closedCued }}" data-feedback="{{ closedFeedback }}" tabIndex="{{ chooseClosedTab }}" onKeyDown="{{ activateKey }}" data-nudge="{{ nudgeClosed }}" onClick="{{ chooseClosed }}" onPointerEnter="{{ hovClosed }}" onPointerLeave="{{ hovOut }}" style="{{ btnClosed }}">{{ closedText }}</div>
+          <div class="{{ chooseOpenClass }}" role="{{ chooseOpenRole }}" aria-label="{{ openLabel }}" aria-disabled="{{ choiceDisabled }}" data-oc-choice="true" data-retired="{{ openRetired }}" aria-hidden="{{ openHidden }}" data-word-cued="{{ openCued }}" data-feedback="{{ openFeedback }}" tabIndex="{{ chooseOpenTab }}" onKeyDown="{{ activateKey }}" data-nudge="{{ nudgeOC }}" onClick="{{ chooseOpen }}" onPointerEnter="{{ hovOpen }}" onPointerLeave="{{ hovOut }}" style="{{ btnOpen }}">{{ openText }}</div>
+          <div class="{{ chooseClosedClass }}" role="{{ chooseClosedRole }}" aria-label="{{ closedLabel }}" aria-disabled="{{ choiceDisabled }}" data-oc-choice="true" data-retired="{{ closedRetired }}" aria-hidden="{{ closedHidden }}" data-word-cued="{{ closedCued }}" data-feedback="{{ closedFeedback }}" tabIndex="{{ chooseClosedTab }}" onKeyDown="{{ activateKey }}" data-nudge="{{ nudgeClosed }}" onClick="{{ chooseClosed }}" onPointerEnter="{{ hovClosed }}" onPointerLeave="{{ hovOut }}" style="{{ btnClosed }}">{{ closedText }}</div>
         </div>
       </sc-if>
 
@@ -358,7 +362,7 @@
         <span role="status" aria-live="polite" aria-atomic="true" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;">{{ liveMsg }}</span>
         <div class="story-controls" style="{{ chipRowStyle }}">
           <sc-for list="{{ chips }}" as="p" hint-placeholder-count="3">
-            <div class="{{ p.actionClass }}" role="{{ p.actionRole }}" tabIndex="{{ p.actionTab }}" aria-pressed="{{ p.selected }}" aria-disabled="{{ p.disabled }}" data-label-chip="{{ p.text }}" onKeyDown="{{ activateKey }}" data-nudge="{{ p.nudge }}" onPointerDown="{{ p.down }}" onPointerEnter="{{ p.enter }}" onPointerLeave="{{ p.leave }}" onClick="{{ p.click }}" style="{{ p.style }}">{{ p.text }}</div>
+            <div class="{{ p.actionClass }}" role="{{ p.actionRole }}" tabIndex="{{ p.actionTab }}" aria-pressed="{{ p.selected }}" aria-disabled="{{ p.disabled }}" data-label-chip="{{ p.text }}" onKeyDown="{{ activateKey }}" data-nudge="{{ p.nudge }}" onPointerDown="{{ p.down }}" onPointerEnter="{{ p.enter }}" onPointerLeave="{{ p.leave }}" onClick="{{ p.click }}" style="{{ p.style }}">{{ p.shown }}</div>
           </sc-for>
         </div>
       </sc-if>
@@ -368,9 +372,9 @@
           <sc-for list="{{ counters }}" as="n" hint-placeholder-count="1">
             <div role="group" aria-label="{{ n.accessibleLabel }}" style="{{ n.wrap }}">
               <div style="{{ n.captionStyle }}">{{ n.caption }}</div>
-              <div class="{{ n.minusClass }}" aria-disabled="{{ n.minusDisabled }}" aria-label="Decrease number of sides" role="{{ n.minusRole }}" tabIndex="{{ n.minusTab }}" onKeyDown="{{ activateKey }}" data-nudge="{{ n.minusNudge }}" onClick="{{ n.minus }}" onPointerEnter="{{ n.mIn }}" onPointerLeave="{{ n.out }}" style="{{ n.btnM }}"><span aria-hidden="true" style="{{ n.hitStyle }}"></span>–</div>
+              <div class="{{ n.minusClass }}" aria-disabled="{{ n.minusDisabled }}" aria-label="{{ n.minusLabel }}" role="{{ n.minusRole }}" tabIndex="{{ n.minusTab }}" onKeyDown="{{ activateKey }}" data-nudge="{{ n.minusNudge }}" onClick="{{ n.minus }}" onPointerEnter="{{ n.mIn }}" onPointerLeave="{{ n.out }}" style="{{ n.btnM }}"><span aria-hidden="true" style="{{ n.hitStyle }}"></span>–</div>
               <div role="status" aria-live="{{ n.valueLive }}" aria-atomic="true" aria-label="{{ n.valueLabel }}" style="{{ n.box }}">{{ n.value }}</div>
-              <div class="{{ n.plusClass }}" aria-disabled="{{ n.plusDisabled }}" aria-label="Increase number of sides" role="{{ n.plusRole }}" tabIndex="{{ n.plusTab }}" onKeyDown="{{ activateKey }}" data-nudge="{{ n.nudge }}" onClick="{{ n.plus }}" onPointerEnter="{{ n.pIn }}" onPointerLeave="{{ n.out }}" style="{{ n.btnP }}"><span aria-hidden="true" style="{{ n.hitStyle }}"></span>+</div>
+              <div class="{{ n.plusClass }}" aria-disabled="{{ n.plusDisabled }}" aria-label="{{ n.plusLabel }}" role="{{ n.plusRole }}" tabIndex="{{ n.plusTab }}" onKeyDown="{{ activateKey }}" data-nudge="{{ n.nudge }}" onClick="{{ n.plus }}" onPointerEnter="{{ n.pIn }}" onPointerLeave="{{ n.out }}" style="{{ n.btnP }}"><span aria-hidden="true" style="{{ n.hitStyle }}"></span>+</div>
             </div>
           </sc-for>
           <div class="{{ checkClass }}" role="{{ checkRole }}" tabIndex="{{ checkTab }}" onKeyDown="{{ activateKey }}" data-nudge="{{ nudgeCheck }}" data-feedback="{{ checkFeedback }}" onClick="{{ check }}" onPointerEnter="{{ hovCheck }}" onPointerLeave="{{ hovOut }}" aria-disabled="{{ checkDisabled }}" style="{{ checkStyle }}"><span aria-hidden="true" style="{{ checkHitStyle }}"></span>{{ checkLabel }}</div>
@@ -466,11 +470,34 @@ const BUTTON_LABEL = { family: '"Baloo 2", Nunito, sans-serif', weight: 600, siz
    .ice-button sets white-space:nowrap the word ran out over the rim instead of
    wrapping: that is the Straight / Curved overflow on the classify screen.
    Whatever the layout asks for, a button is never narrower than its own word. */
-const buttonMinWidth = (text, padding = 44) =>
-  Math.ceil(String(text == null ? '' : text).length * BUTTON_LABEL.size * 0.56) + padding;
+/* THE PAGE'S LANGUAGE (?lan=, src/i18n/i18n.js). The lesson is written, compared, timed and
+   looked up in English; tr() is how a line looks on screen, and only what is shown goes
+   through it. In English it hands every line back as it was. */
+const I18N = window.PolygonI18n || null;
+const translated = () => !!(I18N && I18N.on);
+const tr = text => (translated() && text != null ? I18N.t(text) : text);
+/* A translated label's width in ems of the button face, measured: its letters are not the
+   width of Latin ones, so the English estimate below would leave it too little room. */
+const labelEm = text => {
+  const shown = String(tr(text == null ? '' : text));
+  const memo = labelEm.memo || (labelEm.memo = new Map());
+  if (memo.has(shown)) return memo.get(shown);
+  let em;
+  try {
+    const c = labelEm.ctx || (labelEm.ctx = document.createElement('canvas').getContext('2d'));
+    c.font = BUTTON_LABEL.weight + ' 100px ' + BUTTON_LABEL.family;
+    em = c.measureText(shown).width / 100 * 1.04;
+  } catch (e) { em = shown.length * 0.56; }
+  // kept once the type is in, so it is measured in the face it is drawn in
+  if (document.fonts && document.fonts.status === 'loaded') memo.set(shown, em);
+  return em;
+};
+const buttonMinWidth = (text, padding = 44) => translated()
+  ? Math.ceil(labelEm(text) * BUTTON_LABEL.size) + padding
+  : Math.ceil(String(text == null ? '' : text).length * BUTTON_LABEL.size * 0.56) + padding;
 const buttonLabelFont = (text, boxWidth, padding = 36) => {
   const budget = Math.max(40, (boxWidth || 0) - padding);
-  const fit = budget / Math.max(1, String(text == null ? '' : text).length * 0.56);
+  const fit = budget / Math.max(1, translated() ? labelEm(text) : String(text == null ? '' : text).length * 0.56);
   const size = boxWidth ? Math.max(24, Math.min(BUTTON_LABEL.size, Math.floor(fit))) : BUTTON_LABEL.size;
   return BUTTON_LABEL.weight + ' ' + size + 'px ' + BUTTON_LABEL.family;
 };
@@ -1072,10 +1099,13 @@ class Component extends DCLogic {
         if (intro && intro.then) intro.then(begin, begin); else begin();
       });
     };
+    /* and, in another language, for its words and its font (src/i18n/i18n.js; at once in English) */
+    const language = window.PolygonI18n ? window.PolygonI18n.ready : null;
     if (document.fonts && document.fonts.load) Promise.all([
       document.fonts.load('800 46px Nunito'), document.fonts.load('900 30px Nunito'),
-      document.fonts.load('800 30px "Baloo 2"')
+      document.fonts.load('800 30px "Baloo 2"'), language
     ]).then(boot, boot);
+    else if (language) language.then(boot, boot);
     else boot();
     window.__poly = this;
     if (window.PolygonScreenNavigator) this._disposeNavigator = window.PolygonScreenNavigator.mount(this);
@@ -1395,6 +1425,20 @@ class Component extends DCLogic {
     };
     const recording = window.PolygonRecordedVoice && window.PolygonRecordedVoice.find(text);
     if (recording) return window.PolygonRecordedVoice.play(this, text, recording, current, cb, fail);
+    /* In another language a line with no recording is not given a synthetic voice, English or
+       any other: its words come in at a reading pace, and the screen goes on once they have
+       been read, as it does after a line that is heard. */
+    if (translated()) {
+      this.storyVoiceStart();
+      this.setState({ voiceError: '', wordReveal: 'playing', wordPaused: false });
+      this.later(() => {
+        if (!current() || finished) return;
+        finished = true; this._voiceRetry = null;
+        this.revealChoiceWords(text);
+        this.setState({ wordReveal: 'complete' }, cb);
+      }, this.readingTime(this.state.narrShow || tr(text)));
+      return;
+    }
     if (!window.speechSynthesis || typeof SpeechSynthesisUtterance === 'undefined') { fail(); return; }
     try {
       const u = new SpeechSynthesisUtterance(text);
@@ -1477,7 +1521,7 @@ class Component extends DCLogic {
     for (let i = 1; i < words.length; i++) {
       const left = words.slice(0, i).join(' '), right = words.slice(i).join(' ');
       // Prefer complete sentences, then clauses, before a balanced word boundary.
-      const boundary = /[.!?]$/.test(left) ? 120 : /[,;:]$/.test(left) ? 75 : /^(?:and|while|but|which|with|is called|made of)\b/i.test(right) ? 55 : 0;
+      const boundary = /[.!?।]$/.test(left) ? 120 : /[,;:]$/.test(left) ? 75 : /^(?:and|while|but|which|with|is called|made of)\b/i.test(right) ? 55 : 0;
       const balance = Math.abs(this.narratorWidth(left) - this.narratorWidth(right)) / 20;
       const candidate = boundary - balance - (i < 2 || words.length - i < 2 ? 80 : 0);
       if (candidate > score) { score = candidate; best = i; }
@@ -1585,7 +1629,7 @@ class Component extends DCLogic {
        what stops them, because every new line clears boundaryFocus first. */
     const holdFocus = text === step.narr && step.sc === 'S6'
       && (step.ph === 'open' || step.ph === 'closed') ? step.ph : null;
-    this.setState((st) => ({ narr: text, narrShow: shown, speaking: true, interactive: false,
+    this.setState((st) => ({ narr: text, narrShow: tr(shown), speaking: true, interactive: false,
       boundaryFocus: holdFocus,
       /* No media scrubbing for a held pulse: it loops for as long as the line
          lasts, so there is no single beat to align to the clock. */
@@ -2770,7 +2814,7 @@ class Component extends DCLogic {
         if (!active) {
           active=true; this.clearNudge(); this.sfx('pick'); this.guide.onInteractionStart();
           this.setState({ chip:name, draggingLabel:name });
-          if (ghost) { ghost.className='label-tile'; ghost.textContent=name; Object.assign(ghost.style,this.labelTileStyle(name),{opacity:'1'}); }
+          if (ghost) { ghost.className='label-tile'; ghost.textContent=tr(name); Object.assign(ghost.style,this.labelTileStyle(name),{opacity:'1'}); }
         }
         if (frame === null) frame=requestAnimationFrame(paint);
       };
@@ -3369,6 +3413,7 @@ class Component extends DCLogic {
     };
     const shellOnly = {
       voiceError: st.voiceError, retryVoice: this.retryVoice, continueWithoutVoice: this.continueWithoutVoice,
+      guideLabel: tr('Swiftee, your guide'), openLabel: tr('Open'), closedLabel: tr('Closed'),
 
       effectsEnabled: !this.locked(), activateKey: this.activateKey,
       storyControls: !!st.storyControls,
@@ -3478,7 +3523,28 @@ class Component extends DCLogic {
     this.fitActivityPanel(V, s);
     this.decorate(V);
     this.prepareControlBindings(V);
+    this.localize(V);
     return V;
+  }
+
+  /* THE SHOWN WORDS IN THE PAGE'S LANGUAGE (?lan=, src/i18n/i18n.js). Every screen above is
+     built in English, which the screens compare with, time by and look up; this puts what is
+     SHOWN into the language, last, so nothing that decides anything reads a translation. A
+     label chip keeps its English as its name (data-label-chip) and shows p.shown. */
+  localize(V) {
+    for (const p of V.chips || []) p.shown = p.text;
+    for (const n of V.counters || []) { n.minusLabel = 'Decrease number of sides'; n.plusLabel = 'Increase number of sides'; }
+    if (!translated()) return;
+    for (const k of ['checkLabel', 'openText', 'closedText', 'zoneAName', 'zoneBName', 'liveMsg']) if (V[k]) V[k] = tr(V[k]);
+    for (const c of V.cards || []) { c.chip = tr(c.chip); c.accessibleLabel = tr(c.accessibleLabel); if (c.badge) c.badge = I18N.letter(c.badge); }
+    for (const t of V.targets || []) { t.text = tr(t.text); t.label = tr(t.label); }
+    for (const o of V.callouts || []) o.text = tr(o.text);
+    for (const d of V.drops || []) { d.label = tr(d.label); for (const m of d.menu || []) m.text = tr(m.text); }
+    for (const p of V.chips || []) p.shown = tr(p.text);
+    for (const n of V.counters || []) {
+      n.caption = tr(n.caption); n.accessibleLabel = tr(n.accessibleLabel); n.valueLabel = tr(n.valueLabel);
+      n.minusLabel = tr(n.minusLabel); n.plusLabel = tr(n.plusLabel);
+    }
   }
 
   /* The template accepts property paths, not JavaScript ternaries or &&. */
@@ -3662,10 +3728,11 @@ class Component extends DCLogic {
   // Shared by every instruction, correction, success message and replay.
   prepareNarratorReveal(text, durationMs) {
     const known = durationMs || (this._voiceDurations && this._voiceDurations[text]);
-    const count = (text.match(/\S+/g) || []).length;
+    const shown = tr(text);
+    const count = (shown.match(/\S+/g) || []).length;
     const interval = Number.isFinite(known) && known > 0 && count > 1
-      ? Math.max(0, (known - 220) / (count - 1)) : this.readingTime(text) / Math.max(1, count);
-    this.setState(st => ({ narrPage: text, narrTick: st.narrTick + 1,
+      ? Math.max(0, (known - 220) / (count - 1)) : this.readingTime(shown) / Math.max(1, count);
+    this.setState(st => ({ narrPage: shown, narrTick: st.narrTick + 1,
       wordReveal: 'waiting', revealedWords:0, wordPaused:false, wordInterval: interval }));
     // Only playback completion or the explicit audio-error fallback reveals the
     // whole line. A wall-clock timeout must never outrun speech or a paused MP3.
@@ -3696,15 +3763,17 @@ class Component extends DCLogic {
     const text = this.state.narrShow || (this.state.narrPage === undefined ? this.state.narr || '' : this.state.narrPage);
     const tokens = text.split(/(\s+)/).filter(Boolean);
     const concepts = this.learningKeywords(text);
+    // a translated line carries its own key words (<strong> in src/i18n/locales.json)
+    const marks = translated() ? I18N.marks(text) : null;
     let word = 0;
     return tokens.map((token, index) => {
       const key = this.state.narrTick + '-' + index;
       if (!/\S/.test(token)) return { key, text: token, style: { whiteSpace: 'pre' } };
       const shape = /\b(?:triangles?|quadrilaterals?|pentagons?|hexagons?|heptagons?|octagons?|polygons?)\b/gi;
-      const concept = conceptKey(token);
-      const highlighted = concepts.includes(concept);
-      shape.lastIndex = 0;
       const position = word++;
+      const concept = marks ? marks[position] || '' : conceptKey(token);
+      const highlighted = marks ? !!marks[position] : concepts.includes(concept);
+      shape.lastIndex = 0;
       const recorded = this.state.wordReveal === 'recorded';
       const visible = recorded && position < this.state.revealedWords;
       const active = highlighted && recorded && position === this.state.revealedWords - 1;
@@ -3950,7 +4019,9 @@ class Component extends DCLogic {
     const inset = NARR_TYPE.inset * 2;
     const available = Math.max(1, lane.w - inset);
     const concepts = this.learningKeywords(content);
-    const face = (() => { try { return document.fonts.check('800 46px Nunito') && document.fonts.check('900 46px Nunito') ? 'nunito' : 'fallback'; } catch (e) { return '-'; } })();
+    const face = (() => { try { return translated()
+      ? (document.fonts.check('800 46px Nunito', content) && document.fonts.check('900 46px Nunito', content) ? 'nunito' : 'fallback')
+      : (document.fonts.check('800 46px Nunito') && document.fonts.check('900 46px Nunito') ? 'nunito' : 'fallback'); } catch (e) { return '-'; } })();
     const key = [content, available, concepts.join(','), document.fonts?.status, face].join('|');
     this._dialogueWidths = this._dialogueWidths || new Map();
     let fit = this._dialogueWidths.get(key);
@@ -3982,12 +4053,14 @@ class Component extends DCLogic {
         probe.className = 'narrator-text';           // every rule the real text gets, this gets
         probe.setAttribute('aria-hidden', 'true');
         Object.assign(probe.style, this.narrStyle(), {position:'absolute',left:'-10000px',top:'0',visibility:'hidden',pointerEvents:'none',maxWidth:'none'});
+        const marks = translated() ? I18N.marks(content) : null;
+        let position = 0;
         for (const token of content.split(/(\s+)/).filter(Boolean)) {
           const span = document.createElement('span');
           span.textContent = token.replace(/\b(?:triangles?|quadrilaterals?|pentagons?|hexagons?|heptagons?|octagons?|polygons?)\b/gi, shapeCase);
           if (/\S/.test(token)) {
             span.style.display = 'inline-block';
-            span.style.fontWeight = concepts.includes(conceptKey(token)) ? '900' : '800';
+            span.style.fontWeight = (marks ? !!marks[position++] : concepts.includes(conceptKey(token))) ? '900' : '800';
             span.style.fontSize = Math.min(NARR_TYPE.size, Math.floor(NARR_TYPE.size * (available - NARR_TYPE.pad) / this.narratorWidth(token))) + 'px';
           } else span.style.whiteSpace = 'pre';
           probe.appendChild(span);

@@ -3,6 +3,11 @@
 
 import { fitBubble } from './bubble.js';
 
+/* THE PAGE'S LANGUAGE (?lan=, ../src/i18n/i18n.js, which index.html loads): what the HUD shows
+   is put into it. The engine's sentences stay English: its voice and its tests read them. */
+const hudI18n = () => { const I = window.PolygonI18n; return I && I.on ? I : null; };
+const hudT = text => { const I = hudI18n(); return I && text != null ? I.t(text) : text; };
+
 export class Hud {
   /** A stage point where the zoomed canvas actually draws it. */
   static toView(view, p) {
@@ -42,6 +47,9 @@ export class Hud {
     };
     this.paused = false;
     this.lastMessage = null;
+    // the language's words can arrive after a line went up: the next update shows it in them
+    const lang = window.PolygonI18n;
+    if (lang && lang.ready) lang.ready.then(() => { if (lang.on) this.lastMessage = null; });
     this._onResize = () => this.checkOrientation();
   }
 
@@ -54,7 +62,7 @@ export class Hud {
   /** Pause and Resume are one control, so it swaps glyph rather than moving. */
   pauseLabel(isPaused) {
     this.setGlyph(this.el.pause, isPaused ? 'play' : 'pause');
-    if (this.el.pause) this.el.pause.setAttribute('aria-label', isPaused ? 'Resume' : 'Pause');
+    if (this.el.pause) this.el.pause.setAttribute('aria-label', hudT(isPaused ? 'Resume' : 'Pause'));
   }
 
   /** Sound state on both copies of the control, HUD and pause panel. */
@@ -63,7 +71,7 @@ export class Hud {
       if (!b) continue;
       this.setGlyph(b, on ? 'sound-on' : 'sound-off');
       b.setAttribute('aria-pressed', String(on));
-      b.setAttribute('aria-label', on ? 'Sound on' : 'Sound off');
+      b.setAttribute('aria-label', hudT(on ? 'Sound on' : 'Sound off'));
     }
   }
 
@@ -125,6 +133,8 @@ export class Hud {
   setInstruction(message) {
     const el = this.el.text;
     if (!el) return;
+    const lang = hudI18n();
+    if (lang && message) { this.setInstructionIn(lang, message); return; }
     const m = this._plain ? null : /^(.*?\bthe\s+)([a-z]+?)(s?)([.!]?)$/i.exec((message || '').trim());
     el.textContent = '';
     let n = 0;
@@ -147,6 +157,34 @@ export class Hud {
     for (const w of m[1].trim().split(/\s+/)) word(w, 'iw', true);
     word((m[2] + m[3]).toUpperCase(), 'iw key', true);
     word(m[4], 'iw', false);                                  // the sentence keeps its full stop
+  }
+
+  /** THE SAME SENTENCE IN THE PAGE'S LANGUAGE (?lan=). Its words, each easing in as above; the
+      word its translation marks (the polygon's name) keeps the `key` class, as the English noun
+      does, with what follows it inside the same word (its full stop) tight against it and in its
+      blue. A whole word that follows the name ("त्रिभुज काटें।": the verb comes after it) is
+      `iw-word`, which keeps it out of that blue (css/style.css). A banner stays plain, as it
+      does in English. */
+  setInstructionIn(lang, message) {
+    const el = this.el.text;
+    const words = lang.parts(lang.t(String(message).trim())) || [];
+    el.textContent = '';
+    let n = 0;
+    const step = this._voDur > 0 ? Math.min(0.55, Math.max(0.07, (this._voDur * 0.82) / Math.max(1, words.length - 1))) : 0.07;
+    const put = (text, cls, space) => {
+      if (!text) return;
+      if (space && el.childNodes.length) el.appendChild(document.createTextNode(' '));
+      const s = document.createElement('span');
+      s.className = cls;
+      s.style.setProperty('--i', n++);
+      s.style.setProperty('--wd', step.toFixed(3) + 's');
+      s.textContent = text;
+      el.appendChild(s);
+    };
+    for (const w of words) {
+      if (this._plain || !w.pieces.some(p => p.key)) { put(w.text, 'iw iw-word', true); continue; }
+      w.pieces.forEach((p, i) => put(p.text, p.key ? 'iw key' : 'iw', i === 0));
+    }
   }
 
   /** @param {{onPause:Function,onReplay:Function,onStamp?:Function}} handlers */

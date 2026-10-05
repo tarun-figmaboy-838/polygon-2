@@ -1,3 +1,8 @@
+Applies to baloo-2-latin.woff2 and to the files for the Indian scripts, all one project:
+baloo-2-devanagari.woff2 (Baloo 2), baloo-tammudu-2-telugu.woff2 (Baloo Tammudu 2),
+baloo-bhai-2-gujarati.woff2 (Baloo Bhai 2) and baloo-bhaina-2-odia.woff2 (Baloo Bhaina 2),
+each the Google Fonts subset for its script.
+
 Copyright 2019 The Baloo 2 Project Authors (https://github.com/EkType/Baloo2)
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.

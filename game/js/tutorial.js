@@ -49,6 +49,9 @@
    the stage element on the way out, so one set of numbers is correct at every size. */
 const W = 1920, H = 1080;
 const clampN = (v, lo, hi) => v < lo ? lo : v > hi ? hi : v;
+/* THE PAGE'S LANGUAGE (?lan=, ../src/i18n/i18n.js, which index.html loads): what the tutorial
+   shows is put into it; its script, its voice and its timings stay English. */
+const tutI18n = () => { const I = window.PolygonI18n; return I && I.on ? I : null; };
 
 
 import { fitBubble, BUBBLE } from './bubble.js';
@@ -843,7 +846,10 @@ export class Tutorial {
        written question and not someone speaking. */
     const beat = this.beatAt(line, this.t);
     this._beat = beat;
-    const text = beat.text;
+    /* IN THE PAGE'S LANGUAGE (?lan=): the same sentence of the line's translation. Everything
+       that times the line (the beats, the voice, readTime) keeps to the English. */
+    const lang = tutI18n();
+    const text = lang ? lang.sentence(line, this.beats(line).indexOf(beat)) : beat.text;
     this._beatDur = beat.dur;
 
     /* THE GAME IS TOLD A LINE IS PRESENTING, and it is the engine that acts on it: while
@@ -1005,7 +1011,8 @@ export class Tutorial {
     const beat = this._beat;
     const all = this.voWords;
     let at = null;
-    if (all && beat && beat.i0 != null && all.length >= beat.i0 + words) {
+    // (a translated sentence has its own words: the English take's word times are not theirs)
+    if (!tutI18n() && all && beat && beat.i0 != null && all.length >= beat.i0 + words) {
       /* ANCHORED TO WHERE THE VOICE ACTUALLY IS, not to where this sentence was due.
          The offsets are measured from the start of the LINE, so a sentence's own delays
          are its words minus its first word. That is right only if the sentence is written
@@ -1047,8 +1054,16 @@ export class Tutorial {
     /* Decided BEFORE anything is written, because the fallback has to know whether a real
        key word turns up later in the sentence — marking as it went would accent the name
        and then find the verb two words further on. */
-    let pow = list.findIndex(loudAt);
-    if (pow < 0) pow = list.findIndex(w => NAME.test(w));
+    let pow;
+    const lang = tutI18n();
+    if (lang) {
+      // in another language: the word its translation marks, or else the boy's name
+      pow = (lang.marks(text) || []).findIndex(Boolean);
+      if (pow < 0 && lang.momo) pow = list.findIndex(w => w.indexOf(lang.momo) === 0);
+    } else {
+      pow = list.findIndex(loudAt);
+      if (pow < 0) pow = list.findIndex(w => NAME.test(w));
+    }
     let i = 0, n = 0;
     el.textContent = '';
     for (const p of parts) {

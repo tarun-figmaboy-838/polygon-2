@@ -94,6 +94,10 @@
   function centroid(v) { var x = 0, y = 0; v.forEach(function (p) { x += p.x; y += p.y; }); return { x: x / v.length, y: y / v.length }; }
   function pathOf(v) { return v.map(function (p, i) { return (i ? 'L' : 'M') + p.x.toFixed(1) + ' ' + p.y.toFixed(1); }).join(' ') + ' Z'; }
   function word(w) { return String(w).toLowerCase().replace(/[^a-z0-9]/g, ''); }
+  /* THE PAGE'S LANGUAGE (?lan=, src/i18n/i18n.js): what is shown is put into it; the lines, the
+     cues and the recordings stay English */
+  function local() { var I = window.PolygonI18n; return I && I.on ? I : null; }
+  function tr(text) { var I = local(); return I && text != null ? I.t(text) : text; }
 
   var S = null;   // the run on screen
 
@@ -148,7 +152,7 @@
   function build(run) {
     var root = el('div', 'lsum');
     root.setAttribute('role', 'region');
-    root.setAttribute('aria-label', "Let's recall what we learnt today");
+    root.setAttribute('aria-label', tr("Let's recall what we learnt today"));
     var svg = mk('svg', { class: 'lsum-board', viewBox: '0 0 ' + W + ' ' + H, preserveAspectRatio: 'xMidYMid meet', 'aria-hidden': 'true' }, root);
     run.defs = mk('defs', {}, svg);
     run.layer = mk('g', {}, svg);
@@ -164,7 +168,7 @@
     /* Next: the Part 1 buttons kit's blue pill at the lesson's size */
     var next = el('button', 'kit-btn kit-btn--lesson lsum-next kit-btn--nav kit-btn--next', root);
     next.type = 'button';
-    next.textContent = 'Next';
+    next.textContent = tr('Next');
     next.hidden = true;
     next.addEventListener('click', function () {
       if (S !== run || run.state !== 'READY' || run.busy) return;
@@ -200,6 +204,7 @@
   function nameTag(parent, x, y, text, o) {
     var g = mk('g', { class: 'badge' }, parent);
     var H0 = (o && o.h) || 50, fs = (o && o.size) || 26;
+    text = tr(text);
     var t = mk('text', { x: x, y: y + fs * 0.35, 'text-anchor': 'middle', 'font-size': fs, 'font-weight': 900,
       'font-family': 'Nunito, system-ui, sans-serif', fill: '#0b3f7a', text: text }, g);
     var w = 0; try { w = t.getComputedTextLength(); } catch (e) {}
@@ -414,7 +419,9 @@
   /* the line in the bubble, every word in its place (so the bubble has its size) but unseen until it is said;
      the lesson's key words in the kit's orange */
   function layout(run, text, where) {
-    var b = run.say, words = text.split(/\s+/).filter(Boolean);
+    // in another language: its words, and its own key words (the translation marks them)
+    var I = local(), shown = I ? I.t(text) : text, marks = I ? I.marks(shown) : null;
+    var b = run.say, words = shown.split(/\s+/).filter(Boolean);
     b.text.textContent = '';
     b.el.style.width = '';
     b.el.style.maxWidth = (SPOT[where].maxW * 100) + '%';
@@ -422,7 +429,7 @@
       if (i) b.text.appendChild(document.createTextNode(' '));
       var sp = el('span', 'w', b.text);
       sp.textContent = w;
-      if (run.opts.inkOf && run.opts.inkOf(w, text)) sp.classList.add('key');
+      if (marks ? marks[i] : run.opts.inkOf && run.opts.inkOf(w, text)) sp.classList.add('key');
       return sp;
     });
     return b.spans;
@@ -458,19 +465,26 @@
     if (run.say.el.offsetHeight > (SPOT[where].top - 8) * K - 12 && SPOT[where].maxW < 0.62) run.say.el.style.maxWidth = '62%';
     hug(run);
     run.say.el.classList.add('show');
-    var n = spans.length;
-    var at = rec && rec.words && rec.words.length === n ? rec.words.map(function (w) { return w.start * 1000; }) : spans.map(function (_, i) { return 160 + i * FALLBACK_WORD_MS; });
+    /* the words said are the English ones, and the cues follow them; in another language the
+       shown words come in as the same share of the line as has been said */
+    var said = local() ? text.split(/\s+/).filter(Boolean) : spans.map(function (sp) { return sp.textContent; });
+    var n = said.length, m = spans.length, shownUpTo = 0;
+    var reach = function (k) {
+      var upTo = m === n ? k : Math.min(m, Math.ceil(k / Math.max(1, n) * m));
+      while (shownUpTo < upTo) spans[shownUpTo++].classList.add('in');
+    };
+    var at = rec && rec.words && rec.words.length === n ? rec.words.map(function (w) { return w.start * 1000; }) : said.map(function (_, i) { return 160 + i * FALLBACK_WORD_MS; });
     var total = (rec && rec.duration ? rec.duration * 1000 : at[n - 1] + 700);
     return new Promise(function (resolve) {
       var done = false, i = 0, started = false;
-      var finish = function () { if (done) return; done = true; while (i < n) { spans[i].classList.add('in'); cue(run, spans[i].textContent); i++; } resolve(alive(run, g)); };
+      var finish = function () { if (done) return; done = true; while (i < n) { reach(i + 1); cue(run, said[i]); i++; } reach(n); resolve(alive(run, g)); };
       var start = function (clock) {
         if (started || done) return;
         started = true;
         var tick = function () {
           if (!alive(run, g) || done) return;
           var now = clock();
-          while (i < n && now >= at[i] - 40) { spans[i].classList.add('in'); cue(run, spans[i].textContent); i++; }
+          while (i < n && now >= at[i] - 40) { reach(i + 1); cue(run, said[i]); i++; }
           if (now >= total) { finish(); return; }
           requestAnimationFrame(tick);
         };

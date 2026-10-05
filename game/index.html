@@ -15,6 +15,10 @@
 <link rel="stylesheet" href="../styles/fonts.css" />
 <link rel="stylesheet" href="css/style.css" />
 <link rel="stylesheet" href="css/screens.css" />
+<!-- THE PAGE'S LANGUAGE, ?lan= (the lesson passes it on): the tutorial, the plank and the
+     controls are shown in it, with that language's font (../src/i18n/i18n.js). The game's own
+     English is untouched; with no ?lan= this does nothing. -->
+<script src="../src/i18n/i18n.js"></script>
 <!-- THE PRESSED BUTTON ART, FETCHED UP FRONT.
 
      For both picture buttons the press IS a different image, and a background-image
@@ -260,6 +264,10 @@
        key. It has no imports and loads the same way on file:// and http://, so it
        sits outside the module/bundle switch below. The engine reaches it through
        AudioManager.kit() and keeps its own palette as the fallback. -->
+  <!-- the page's fixed words (Skip, Paused, Resume, Play again, the labels) in its language -->
+  <script>
+    if (window.PolygonI18n) window.PolygonI18n.ready.then(function () { window.PolygonI18n.translateDom(document.body); });
+  </script>
   <script src="js/sfx.js"></script>
   <!-- game feel for the DOM controls (supplied juice.js): additive Web Animations, so it
        never fights the CSS or the canvas. Sound and its own particles are off — the

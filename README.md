@@ -29,6 +29,7 @@ npx serve .
 | `?bridge=0` | With `?story=1`, leave that scene out: the lesson follows the story |
 | `?dev=1` | Review mode: the screen navigator (the jump menu, Back and Next), over everything, start to end: **Start** 1 the game's cover and tutorial, 2 Swiftee at the broken path (the game is fast-forwarded to it); **Screens** 1-47 the lesson; **End** 1 the game after the lesson, 2 Swiftee at the ditch. The story's Scenes menu with `?story=1` |
 | `?dev=1&devat=break` | Review: open the game's opening straight at the broken path (Start 2) |
+| `?lan=hi` | The whole experience in another language: `hi` Hindi, `mr` Marathi, `te` Telugu, `gu` Gujarati, `od` Odia (`en` English is the default; `?lang=` works too). See [Languages](#languages) |
 
 ## Folders
 
@@ -139,6 +140,28 @@ It plays in an `<iframe>`, not inside the lesson's document. The game's styleshe
 
 Three files under `game/js/` are generated and should not be edited by hand: `game.bundle.js` (the modules concatenated for opening `game/index.html` straight off the disk; this project always serves the game over HTTP, so it is not used here, but rebuild it with `node tools/build-bundle.mjs` in the running-mammoth repository whenever a module changes so the two can never disagree), `option-shapes.js` and `asset-versions.js`. The game's own Playwright suite lives in that repository and runs against exactly these files.
 
+## Languages
+
+Add `?lan=` to the address to play in another language, for example
+https://tarun-figmaboy-838.github.io/polygon-2/?lan=hi
+
+| `?lan=` | Language |
+|---|---|
+| `en` (or nothing) | English |
+| `hi` | Hindi |
+| `mr` | Marathi |
+| `te` | Telugu |
+| `gu` | Gujarati |
+| `od` | Odia |
+
+Everything the learner reads is in that language: Swiftee's lines in the lesson, the buttons, labels and name pills, the feedback, the recap, her lines over the game, the game's tutorial, its plank and its controls, the page title and the screen-reader messages. The key words are coloured as in English, orange for open, gap and curved and purple for the rest. The words come from [src/i18n/locales.json](src/i18n/locales.json), one block per language. [docs/i18n/translations-review.html](docs/i18n/translations-review.html) shows them side by side.
+
+- **The voice stays the English recording.** There are no recordings in the other languages and no synthetic voice, so Swiftee and the game voice speak English while the words appear in the chosen language, in step with the voice. Every cue the voice drives (the Open and Closed buttons, the outlines and counts) works as in English.
+- **Each language has its own font.** Nunito, Baloo 2 and Fredoka have no Indian scripts, so the matching Baloo is used under the same names: Baloo 2 for Hindi and Marathi, Baloo Tammudu 2 for Telugu, Baloo Bhai 2 for Gujarati and Baloo Bhaina 2 for Odia (`assets/fonts/`, about 100 kB). Only the chosen language's file is fetched, and English loads nothing new.
+- **The code keeps its English.** Every line is still written, compared, timed and looked up in English. Only what is shown is put into the language, by `src/i18n/i18n.js`, which finds each line in the JSON by its English. A line missing from the JSON is shown in English.
+- **To change a translation,** edit its line in `locales.json`. Key words are wrapped in `<strong>…</strong>`, and `{placeholders}` are filled in by the game. Then run `npm run test:i18n`, which checks the file and every screen, and `npm run build:i18n-review` to refresh the review page.
+- The review controls (`?dev=1`) and the drafted story (`?story=1`) stay in English.
+
 ## The voices
 
 Every voice the learner hears is recorded. They were delivered as nine files, most of them several lines to a file, and are kept as delivered in `assets/audio/source/`:
@@ -168,6 +191,8 @@ npm test                               # lesson smoke + story on 6 screens + use
 npm run test:opening                   # the game's cover and tutorial, Swiftee at the broken path, the snow into the lesson,
                                        # and the return: the avalanche, Swiftee at the ditch, the plank (~3 min)
 npm run test:runner                    # just the hand-off: ?game=1, the Help Momo button, ?game=0 (~2 min)
+npm run test:i18n                      # the languages (?lan=): the JSON, every line in five languages, every screen in Hindi,
+                                       # the game's tutorial and plank in Hindi, ?lan=xx left in English (~10 min)
 npm run test:bridge                    # Help Momo and the lesson's ending: order, locking, voice, Next, the game starting by itself (~5 min)
 npm run test:swiftee                   # Swiftee loading: sheet table, cold / slow / warm loads, state races (~2 min)
 npm run test:recap                     # the recap: states in order, voice, word cues, layout, phones, Next into the quizzes (~5 min)

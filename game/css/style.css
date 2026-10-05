@@ -228,6 +228,9 @@ a:hover { color: var(--ice-pale); }
 /* the full stop after the name is the name's: the same blue, held tight against it (hud.js
    gives it its own span, with no space before it) */
 .instruction-text .key + .iw { color: #1E56C4; -webkit-text-stroke: calc(15 * var(--k)) #FFFFFF; margin-left: -0.02em; }
+/* in another language (?lan=) the name can come first and a whole word follow it ("त्रिभुज
+   काटें।"): that word is the sentence's, not the name's (hud.js, setInstructionIn) */
+.instruction-text .key + .iw.iw-word { color: inherit; -webkit-text-stroke: inherit; margin-left: 0; }
 /* IT IS PULLED BACK UP, and the little dip first is what makes it read as a pull rather
    than a slide: a hanging thing gathers before it goes. Shorter than the drop, because by
    then the question is answered and the player wants the run back. It has to finish inside

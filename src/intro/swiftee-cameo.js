@@ -186,11 +186,17 @@
     b.say.style.top = Math.round(top) + 'px';
     b.say.style.transform = 'scale(' + k.toFixed(4) + ')';
   }
+  /* THE PAGE'S LANGUAGE (?lan=, src/i18n/i18n.js): her lines are shown in it, with the words its
+     translation marks and the boy's name set apart, as the English sets apart Momo and polygons.
+     The take, its timings and the history stay English. */
+  function local() { var I = window.PolygonI18n; return I && I.on ? I : null; }
   function layout(text) {
+    var I = local(), shown = I ? I.t(text) : text, marks = I ? I.marks(shown) : null, name = I ? I.momo : '';
     C.text.textContent = '';
-    C.spans = text.split(' ').map(function (w, i) {
+    C.spans = shown.split(' ').map(function (w, i) {
       if (i) C.text.appendChild(document.createTextNode(' '));
-      var sp = el('span', /^(Momo|polygons)\b/.test(w) ? 'w k' : 'w', C.text);
+      var key = I ? !!marks[i] || (!!name && w.indexOf(name) === 0) : /^(Momo|polygons)\b/.test(w);
+      var sp = el('span', key ? 'w k' : 'w', C.text);
       sp.textContent = w;
       return sp;
     });
@@ -204,7 +210,7 @@
       if (!C) { resolve(); return; }
       var mine = C, words = line.text.split(' '), k = take(line.text);
       layout(line.text);
-      C.live.textContent = line.text;
+      C.live.textContent = local() ? local().t(line.text) : line.text;
       C.say.classList.remove('out'); void C.say.offsetWidth; C.say.classList.add('show');
       pose('talking');
       var starts = null, dur = 0, clock = null, started = false, finished = false, wall0 = 0;
@@ -261,7 +267,14 @@
              line is over by the take's length plus a little whatever the audio says. */
           var wall = (performance.now() - wall0) / 1000;
           var t = Math.max(clock(), wall - 0.25);
-          C.spans.forEach(function (sp, i) { if (t + 0.04 >= starts[i]) sp.classList.add('in'); });
+          if (C.spans.length === starts.length) C.spans.forEach(function (sp, i) { if (t + 0.04 >= starts[i]) sp.classList.add('in'); });
+          else {
+            // another language: its words come in as the same share of the line as has been said
+            var said = 0;
+            starts.forEach(function (s0) { if (t + 0.04 >= s0) said++; });
+            var upTo = Math.min(C.spans.length, Math.ceil(said / Math.max(1, starts.length) * C.spans.length));
+            C.spans.forEach(function (sp, i) { if (i < upTo) sp.classList.add('in'); });
+          }
           if (!finished && (t >= dur || wall >= dur + 0.6)) {
             finished = true;
             C.spans.forEach(function (sp) { sp.classList.add('in'); });

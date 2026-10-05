@@ -53,7 +53,8 @@
                for review and for the tests
 
    The game's own playtest flags travel with it: ?sound=0, ?reduced=1, ?fast=N,
-   ?speed=N, ?tutorial=0|1, ?rs=N, ?hd=0|1. Its ?intro and ?skip deliberately do
+   ?speed=N, ?tutorial=0|1, ?rs=N, ?hd=0|1, and so does the language, ?lan= (or
+   ?lang=). Its ?intro and ?skip deliberately do
    NOT pass through: ?intro=0 means "skip the story" on this
    page and "no opening avalanche" on that one.
    ========================================================================= */
@@ -61,7 +62,16 @@
   'use strict';
 
   var GAME_URL = 'game/index.html';
-  var PASS_THROUGH = ['sound', 'reduced', 'fast', 'speed', 'tutorial', 'rs', 'hd'];
+  /* lan / lang: the page's language goes on to the game, so its tutorial, its plank and its
+     controls are in the same language as the lesson (src/i18n/i18n.js) */
+  var PASS_THROUGH = ['sound', 'reduced', 'fast', 'speed', 'tutorial', 'rs', 'hd', 'lan', 'lang'];
+  function tr(text) { var I = window.PolygonI18n; return I && I.on ? I.t(text) : text; }
+  /* a frame made before the language's words are in is named again when they are */
+  function title(frame, text) {
+    frame.title = tr(text);
+    var I = window.PolygonI18n;
+    if (I && I.ready) I.ready.then(function () { frame.title = tr(text); });
+  }
   /* The opening's safety nets: no cover after this long (the game failed to load), or no
      hand-over this long after PLAY (it stopped), and the lesson opens anyway. */
   var OPENING_LOAD_CAP = 45000, OPENING_PLAY_CAP = 180000;
@@ -230,7 +240,7 @@
     h.className = 'runner-host is-on';
     var f = document.createElement('iframe');
     f.className = 'runner-frame';
-    f.title = 'Frozen Rush';
+    title(f, 'Frozen Rush');
     f.setAttribute('allow', 'autoplay; fullscreen');
     f.src = gameSrc(['lesson=intro']);
     var c = document.createElement('div');
@@ -303,7 +313,7 @@
 
     frame = document.createElement('iframe');
     frame.className = 'runner-frame';
-    frame.title = 'Help Momo cross the Frozen Pass';
+    title(frame, 'Help Momo cross the Frozen Pass');
     frame.setAttribute('allow', 'autoplay; fullscreen');
     frame.tabIndex = -1;                 // not reachable by Tab until it is on screen
     frame.src = gameSrc();
