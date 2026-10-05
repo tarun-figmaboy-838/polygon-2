@@ -10,7 +10,7 @@ It's a static site with no build step. Every script, font, image and sound ships
 
 ## Run it locally
 
-Serve the folder over HTTP (opening `index.html` as a file will not work):
+Serve the folder over HTTP, or open `index.html` straight from the disk. Off the disk everything runs, the languages included: a browser refuses a `file://` page's `fetch()`, so the words come as a script there (`src/i18n/locales.js`, written from `locales.json` by `npm run build:locales`), and the Indian-script fonts fall back to the system's, since browsers block local font files the same way. Over HTTP:
 
 ```bash
 npx serve .

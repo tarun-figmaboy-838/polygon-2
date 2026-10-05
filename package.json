@@ -25,6 +25,7 @@
     "build:lesson-music": "node tools/build-lesson-music.cjs",
     "build:end-world": "node tools/build-end-world.cjs",
     "build:game-bundle": "node tools/build-game-bundle.cjs",
+    "build:locales": "node tools/i18n/build-locales.cjs",
     "optimize:media": "node tools/optimize-media.cjs",
     "build:i18n-review": "node tools/i18n/build-review.cjs"
   },

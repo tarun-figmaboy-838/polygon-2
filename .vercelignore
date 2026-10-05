@@ -13,3 +13,5 @@ README.md
 .agents/
 .thumbnail
 assets/audio/source/
+# the words as a script, only for a page opened off the disk (file://); over http the JSON is fetched
+src/i18n/locales.js

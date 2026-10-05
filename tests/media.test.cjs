@@ -88,6 +88,11 @@ async function onDisk() {
   try { execFileSync(process.execPath, [path.join(ROOT, 'tools/build-game-bundle.cjs'), '--check'], { stdio: 'pipe' }); }
   catch (e) { fresh = false; why = String(e.stderr || e.message); }
   check('game/js/asset-versions.js and game.bundle.js are up to date (tools/build-game-bundle.cjs --check)', fresh, why);
+  /* the words as a script, for a page opened off the disk */
+  let freshWords = true, whyWords = '';
+  try { execFileSync(process.execPath, [path.join(ROOT, 'tools/i18n/build-locales.cjs'), '--check'], { stdio: 'pipe' }); }
+  catch (e) { freshWords = false; whyWords = String(e.stderr || e.message); }
+  check('src/i18n/locales.js is up to date with locales.json (tools/i18n/build-locales.cjs --check)', freshWords, whyWords);
   const table = {}; for (const m of V.matchAll(/"([^"]+)": "([0-9a-f]{8})"/g)) table[m[1]] = m[2];
   const wrongV = [];
   for (const f of ['game/css/screens.css', 'game/css/style.css', 'game/index.html']) {

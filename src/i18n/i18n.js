@@ -286,12 +286,29 @@
 
   /* ---------------------------------------------------------------- loading */
   const timeout = ms => new Promise(r => setTimeout(r, ms));
+  /* A page opened straight off the disk (file://) has no origin, and a browser refuses its
+     fetch(): the same words are then loaded as a script, locales.js (written from locales.json
+     by tools/i18n/build-locales.cjs), which sets window.POLYGON_LOCALES. Over http:// the JSON is
+     fetched as before and the script is never asked for; the deployment leaves it out. */
+  function loadWordsAsScript() {
+    if (!document.createElement) return Promise.resolve(false);
+    return new Promise(resolve => {
+      const tag = document.createElement('script');
+      tag.src = new URL('locales.js', BASE).href;
+      tag.onload = () => { const L = window.POLYGON_LOCALES; if (L) loaded = index(L); resolve(L ? loaded : false); };
+      tag.onerror = () => resolve(false);
+      (document.head || document.documentElement).appendChild(tag);
+    });
+  }
   function loadWords() {
-    if (!wanted || typeof fetch !== 'function') return Promise.resolve(false);
+    if (!wanted) return Promise.resolve(false);
+    const warn = e => { try { console.warn('[i18n] the words for "' + asked + '" could not be loaded; the page stays in English.', e); } catch (x) {} return false; };
+    const offDisk = typeof location !== 'undefined' && location.protocol === 'file:';
+    if (offDisk || typeof fetch !== 'function') return loadWordsAsScript().then(ok => ok || warn('no fetch() here'));
     return fetch(new URL('locales.json', BASE).href, { cache: 'no-cache' })
       .then(r => (r.ok ? r.json() : Promise.reject(new Error(r.status))))
       .then(L => { loaded = index(L); return loaded; })
-      .catch(e => { try { console.warn('[i18n] the words for "' + asked + '" could not be loaded; the page stays in English.', e); } catch (x) {} return false; });
+      .catch(e => loadWordsAsScript().then(ok => ok || warn(e)));
   }
   function loadFont() {
     const f = FONTS[asked];
