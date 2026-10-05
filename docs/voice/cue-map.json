@@ -32,6 +32,10 @@
   "frozen-rush-voice": {
    "src": "assets/audio/source/frozen-rush-voice.mp3",
    "voice": "Game voice"
+  },
+  "swiftee-lesson-5": {
+   "src": "assets/audio/source/swiftee-lesson-5.mp3",
+   "voice": "Swiftee"
   }
  },
  "uses": {
@@ -1033,6 +1037,36 @@
    "words": [11.14, 11.42, 11.66, 12.083, 12.44, 12.94, 14.202, 14.36, 14.6, 14.82, 15.16, 15.46]
   },
   {
+   "id": "G1",
+   "file": "swiftee-lesson-5",
+   "use": "lesson",
+   "text": "Momo needs your help.",
+   "start": 0.05,
+   "end": 1.54,
+   "words": [0.05, 0.56, 0.8, 1.14],
+   "note": "Swiftee over the game, at the broken path before the lesson (src/runner/runner-stage.js, OPENING_LINES); word starts: faster-whisper (small.en), and where a word follows a pause, where the voice resumes"
+  },
+  {
+   "id": "G2",
+   "file": "swiftee-lesson-5",
+   "use": "lesson",
+   "text": "But to help Momo, you need to learn about polygons.",
+   "start": 2.27,
+   "end": 5.74,
+   "words": [2.27, 2.5, 2.7, 2.96, 3.76, 3.92, 4.1, 4.3, 4.48, 4.99],
+   "note": "Swiftee over the game, right after G1; word starts: faster-whisper (small.en), and where a word follows a pause, where the voice resumes"
+  },
+  {
+   "id": "G3",
+   "file": "swiftee-lesson-5",
+   "use": "lesson",
+   "text": "Now let's help Momo.",
+   "start": 6.84,
+   "end": 8.57,
+   "words": [6.84, 7.16, 7.72, 8.08],
+   "note": "Swiftee over the game, at the ditch after the lesson (DITCH_LINES); word starts: faster-whisper (small.en), and where a word follows a pause, where the voice resumes"
+  },
+  {
    "id": "tut-1-meet",
    "file": "frozen-rush-voice",
    "use": "game",
@@ -1160,85 +1194,6 @@
   }
  ],
  "joins": [
-  {
-   "id": "J1",
-   "use": "lesson",
-   "file": "90_Now_lets_help_Momo",
-   "text": "Now let's help Momo.",
-   "parts": [
-    {
-     "from": "L39",
-     "words": [0, 2]
-    },
-    {
-     "from": "L80",
-     "words": [10, 12]
-    }
-   ],
-   "gap": 0.05,
-   "note": "Swiftee at the ditch after the lesson (src/runner/runner-stage.js, DITCH_LINES): \"Now let's\" from L39 and \"help Momo.\" from L80, her own takes, until it is recorded whole"
-  },
-  {
-   "id": "J2",
-   "use": "lesson",
-   "file": "91_But_to_help_Momo_you_need_to_learn_about_polygons",
-   "text": "But to help Momo, you need to learn about polygons.",
-   "parts": [
-    {
-     "from": "B3",
-     "words": [0, 1],
-     "at": [0.0, 0.27]
-    },
-    {
-     "from": "L80",
-     "words": [9, 12],
-     "at": [14.8, 16.15],
-     "gap": 0.06
-    },
-    {
-     "from": "B3",
-     "words": [4, 10],
-     "at": [1.45, 3.62],
-     "gap": 0.28
-    }
-   ],
-   "note": "Swiftee at the broken path, before the lesson. Asked for as \"But to help him...\": no recording has \"him\", so Momo is named (\"to help Momo.\" from L80) between B3's \"But\" and \"you need to learn about polygons.\"; all from swiftee-lesson-4, cut in the silences"
-  },
-  {
-   "id": "J3",
-   "use": "lesson",
-   "file": "92_Momo_needs_your_help",
-   "text": "Momo needs your help.",
-   "parts": [
-    {
-     "from": "B2",
-     "words": [1, 2],
-     "at": [43.93, 44.38]
-    },
-    {
-     "from": "dup-meet",
-     "words": [4, 5],
-     "at": [47.915, 48.3],
-     "gap": 0.03
-    },
-    {
-     "from": "L80",
-     "words": [6, 8],
-     "at": [14.17, 14.58],
-     "as": ["your"],
-     "tempo": 1.5,
-     "gap": 0.03
-    },
-    {
-     "from": "L80",
-     "words": [10, 11],
-     "at": [15.02, 15.255],
-     "as": ["help."],
-     "gap": 0.03
-    }
-   ],
-   "note": "Swiftee at the broken path, first. No recording has \"your\": her \"You are\" (L80) quickened to one syllable stands for it (you're / your); \"Momo\" from B2, \"needs\" from her take of the tutorial's first line, \"help\" from L80. Replace with a recording of the whole line when there is one"
-  },
   {
    "id": "tut-6b-piece",
    "use": "game",

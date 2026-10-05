@@ -71,18 +71,13 @@
   /* Swiftee's lines over the frozen game (src/intro/swiftee-cameo.js): before the lesson, why
      the learner must learn first; after it, at the ditch. A visit that has not finished by
      SWIFTEE_CAP lets the game go on regardless. */
-  /* Every word she says over the game is her own voice (src/lesson/recordings.js), joined from
-     her recorded words where nobody recorded the line whole (docs/voice/cue-map.json, joins J1-J3):
-     at the broken path "Momo needs your help." and "But to help Momo, you need to learn about
-     polygons."; at the ditch "Now let's help Momo." A line marked `whenRecorded` is said only
-     if it has a take. ("Help Momo cross the Frozen Pass!" is the game narrator's, at the start of
-     the run, not hers.) */
-  var OPENING_LINES = [{ text: 'Momo needs your help.', whenRecorded: true }, { text: 'But to help Momo, you need to learn about polygons.' }];
+  /* Every line she says over the game is her own recording (swiftee-lesson-5.mp3, lines G1-G3 in
+     docs/voice/cue-map.json; their rows are in src/lesson/recordings.js): at the broken path
+     "Momo needs your help." and "But to help Momo, you need to learn about polygons."; at the
+     ditch "Now let's help Momo." ("Help Momo cross the Frozen Pass!" is the game narrator's, at
+     the start of the run, not hers.) */
+  var OPENING_LINES = [{ text: 'Momo needs your help.' }, { text: 'But to help Momo, you need to learn about polygons.' }];
   var DITCH_LINES = [{ text: "Now let's help Momo." }];
-  function sayable(lines) {
-    var V = window.PolygonRecordedVoice;
-    return lines.filter(function (l) { return !l.whenRecorded || !!(V && V.find && V.find(l.text)); });
-  }
   var SWIFTEE_CAP = 20000;
   function lessonAudio() {
     try { return window.__poly && window.__poly.ac ? window.__poly.ac() : null; } catch (e) { return null; }
@@ -91,7 +86,7 @@
   function swiftee(f, where, lines, leave) {
     var S = window.SwifteeCameo;
     if (!S) return Promise.resolve(false);
-    var visit = S.visit({ frame: f, where: where, lines: sayable(lines), audio: lessonAudio, leave: leave }).catch(function () { return false; });
+    var visit = S.visit({ frame: f, where: where, lines: lines, audio: lessonAudio, leave: leave }).catch(function () { return false; });
     return Promise.race([visit, new Promise(function (r) { setTimeout(function () { r(false); }, SWIFTEE_CAP); })]);
   }
   /* The longest the curtain waits for the game's art before starting the run anyway. */
@@ -229,7 +224,7 @@
     opts = opts || {};
     open = { said: {}, phase: 'OPENING_COVER' };
     openPhase = 'OPENING_COVER';
-    if (window.SwifteeCameo) window.SwifteeCameo.preload(sayable(OPENING_LINES).map(function (l) { return l.text; }));
+    if (window.SwifteeCameo) window.SwifteeCameo.preload(OPENING_LINES.map(function (l) { return l.text; }));
     var h = document.createElement('div');
     h.id = 'runner-opening';
     h.className = 'runner-host is-on';

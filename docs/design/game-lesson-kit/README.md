@@ -218,7 +218,7 @@ If the other game is a single bundle (`game.bundle.js` for `file://`), make ever
 
 ## 6. Voice: lines nobody recorded whole
 
-Every voice is recorded; there are no synthetic voices. A line that was never recorded whole is **joined** from recorded words, in `docs/voice/cue-map.json` under `joins`, and built by `npm run build:recorded-voice`.
+Every voice is recorded; there are no synthetic voices. Swiftee's three lines over the game are their own recording (`assets/audio/source/swiftee-lesson-5.mp3`, lines G1-G3 in the cue map). Until it arrived they were joined from her other recordings, which is the fallback for any line that was never recorded whole: it is **joined** from recorded words, in `docs/voice/cue-map.json` under `joins`, and built by `npm run build:recorded-voice`.
 
 Each part names a recorded line and a run of its words. It can also give:
 - `at`: exact cut times;
@@ -226,13 +226,10 @@ Each part names a recorded line and a run of its words. It can also give:
 - `tempo`: a pitch-kept speed-up;
 - `gap`: the silence before it.
 
-The joins in use:
+The join still in use:
 
 | Join | Line | Made from |
 |---|---|---|
-| J1 | "Now let's help Momo." | "Now let's" (L39) + "help Momo." (L80) |
-| J2 | "But to help Momo, you need to learn about polygons." | "But" (B3) + "to help Momo." (L80) + "you need to learn about polygons." (B3) |
-| J3 | "Momo needs your help." | "Momo" (B2) + "needs" + "You are", quickened into "your" + "help" (L80) |
 | tut-6b-piece | "Use the right piece to fix the path." | the game voice's own line, with "ice" cut out. It is joined onto the game's take after its own lines, so no existing window moves |
 
 A recording of the whole line replaces its join. Record lines in one file and add them to the cue map.

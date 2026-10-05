@@ -6,13 +6,13 @@
      - PLAY: the avalanche, the run and the tutorial as far as the broken path, its lines in
        order; nothing past it (no plank, no cut, no "Perfect fit!")
      - Swiftee flies in over the frozen game, lands on the path across the ditch facing Momo,
-       looks at it, and says, in her own voice (joined from her recorded words), "Momo needs
+       looks at it, and says, in her own recorded voice, "Momo needs
        your help." and "But to help Momo, you need to learn about polygons."
      - the hand-over in the snow: the flurry, the game fading away onto the lesson, the frame
        taken off the page, and the lesson on screen 1 with its voice and its music, no tap,
        nothing blank and nothing to press in between
      - the return, after the lesson: the avalanche and the run with no tutorial; at the ditch
-       the game stops for Swiftee ("Now let's help Momo.", joined from her own takes), then the plank's "Use the
+       the game stops for Swiftee ("Now let's help Momo."), then the plank's "Use the
        right piece to fix the path." (the game voice's own take, "ice" cut out) and its own question, "Cut the TRIANGLE."
      - ?story=1 still opens on the drafted story, with no game in front of it
 

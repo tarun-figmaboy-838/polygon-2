@@ -3669,97 +3669,97 @@ window.POLYGON_RECORDINGS = [
   {
     "text": "Now let's help Momo.",
     "src": "assets/audio/lesson/90_Now_lets_help_Momo.mp3",
-    "duration": 2.166,
+    "duration": 2.097,
     "words": [
       {
         "word": "Now",
-        "start": 0.26
+        "start": 0.25
       },
       {
         "word": "let's",
-        "start": 0.47
+        "start": 0.57
       },
       {
         "word": "help",
-        "start": 0.93
+        "start": 1.13
       },
       {
         "word": "Momo.",
-        "start": 1.23
+        "start": 1.49
       }
     ],
-    "source": "Swiftee's recorded words, joined: \"Now let's\" (L39) + \"help Momo.\" (L80)"
+    "source": "Swiftee's recorded take: swiftee-lesson-5.mp3, 6.59-8.69 s; word starts measured from the recording"
   },
   {
     "text": "But to help Momo, you need to learn about polygons.",
     "src": "assets/audio/lesson/91_But_to_help_Momo_you_need_to_learn_about_polygons.mp3",
-    "duration": 4.53,
+    "duration": 3.97,
     "words": [
       {
         "word": "But",
-        "start": 0.24
+        "start": 0.25
       },
       {
         "word": "to",
-        "start": 0.55
+        "start": 0.48
       },
       {
         "word": "help",
-        "start": 0.89
+        "start": 0.68
       },
       {
-        "word": "Momo.",
-        "start": 1.19
+        "word": "Momo,",
+        "start": 0.94
       },
       {
         "word": "you",
-        "start": 2.16
+        "start": 1.74
       },
       {
         "word": "need",
-        "start": 2.35
+        "start": 1.9
       },
       {
         "word": "to",
-        "start": 2.53
+        "start": 2.08
       },
       {
         "word": "learn",
-        "start": 2.75
+        "start": 2.28
       },
       {
         "word": "about",
-        "start": 2.95
+        "start": 2.46
       },
       {
         "word": "polygons.",
-        "start": 3.47
+        "start": 2.97
       }
     ],
-    "source": "Swiftee's recorded words, joined: \"But\" (B3) + \"to help Momo.\" (L80) + \"you need to learn about polygons.\" (B3)"
+    "source": "Swiftee's recorded take: swiftee-lesson-5.mp3, 2.02-5.99 s; word starts measured from the recording"
   },
   {
     "text": "Momo needs your help.",
     "src": "assets/audio/lesson/92_Momo_needs_your_help.mp3",
-    "duration": 1.841,
+    "duration": 1.79,
     "words": [
       {
         "word": "Momo",
-        "start": 0.23
+        "start": 0.05
       },
       {
         "word": "needs",
-        "start": 0.805
+        "start": 0.56
       },
       {
         "word": "your",
-        "start": 1.116
+        "start": 0.8
       },
       {
         "word": "help.",
-        "start": 1.546
+        "start": 1.14
       }
     ],
-    "source": "Swiftee's recorded words, joined: \"Momo\" (B2) + \"needs\" (dup-meet) + \"your\" (L80) + \"help.\" (L80)"
+    "source": "Swiftee's recorded take: swiftee-lesson-5.mp3, 0.00-1.79 s; word starts measured from the recording"
   }
 ];
