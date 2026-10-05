@@ -53,14 +53,18 @@
   function take(text) {
     var V = window.PolygonRecordedVoice, rec = V && V.find ? V.find(text) : null;
     if (!rec) return null;
-    return { src: window.polygonAudioSrc ? window.polygonAudioSrc(rec.src) : rec.src, starts: V.wordStarts(rec, text), dur: rec.duration };
+    // a take in the page's language (?lan=hi) times the words it shows, which are its own
+    var starts = rec.spoken && V.spokenStarts ? V.spokenStarts(rec, rec.shown) : V.wordStarts(rec, text);
+    return { src: window.polygonAudioSrc ? window.polygonAudioSrc(rec.src) : rec.src, starts: starts, dur: rec.duration };
   }
 
   function preload(texts) {
     CLIPS.forEach(function (n) { var c = clip(n); if (c) { var im = new Image(); im.src = c.image; } });
     if (location.protocol !== 'file:') {
       bytes(oggOr(WHOOSH));
-      (texts || []).forEach(function (t) { var k = take(t); if (k) bytes(k.src); });
+      // her takes once the page's language has settled: in Hindi they are her Hindi ones (take())
+      var I = window.PolygonI18n, takes = function () { (texts || []).forEach(function (t) { var k = take(t); if (k) bytes(k.src); }); };
+      if (I && I.ready && I.code !== 'en') I.ready.then(takes, takes); else takes();
     }
   }
 
@@ -188,7 +192,9 @@
   }
   /* THE PAGE'S LANGUAGE (?lan=, src/i18n/i18n.js): her lines are shown in it, with the words its
      translation marks and the boy's name set apart, as the English sets apart Momo and polygons.
-     The take, its timings and the history stay English. */
+     The history stays English. The take is the language's own where it has one (?lan=hi, see
+     take()), its words coming in as they are said; otherwise the English take, the shown words
+     coming in as the same share of the line as it has said. */
   function local() { var I = window.PolygonI18n; return I && I.on ? I : null; }
   function layout(text) {
     var I = local(), shown = I ? I.t(text) : text, marks = I ? I.marks(shown) : null, name = I ? I.momo : '';

@@ -21,6 +21,7 @@ Two kinds of check live here:
 | `check-all-screen-polish.cjs` | Layout and visuals across the screens |
 | `check-answer-feedback.cjs` | Right and wrong answer feedback, glows, Swiftee's reactions, one sound per answer |
 | `check-audio-recovery.cjs`, `check-voice-gate.cjs`, `check-recorded-voice.cjs`, `check-word-animation.cjs`, `check-word-browser.cjs`, `check-choice-voice-cues.cjs` | Narration: recordings, word timing, gating, recovery |
+| `check-hindi-voice.cjs` | The Hindi voice (`?lan=hi`): every line's Hindi take, its file and length, each word shown as it is said, the cues on the Hindi words, screen 27's cut, the game's Hindi take; English and Marathi keep the English takes |
 | `check-guide-sync.cjs`, `check-idle-feedback.cjs` | Swiftee's expressions and idle behaviour |
 | `check-sfx.cjs`, `check-sfx-channel.cjs` | Sound effects |
 | `check-background-transition.cjs`, `check-canvas-scaling.cjs`, `check-scene-aspect.cjs`, `check-dialogue-frame.cjs`, `check-dialogue-tail.cjs` | Layout at many screen sizes and zoom levels |

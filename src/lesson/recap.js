@@ -94,8 +94,8 @@
   function centroid(v) { var x = 0, y = 0; v.forEach(function (p) { x += p.x; y += p.y; }); return { x: x / v.length, y: y / v.length }; }
   function pathOf(v) { return v.map(function (p, i) { return (i ? 'L' : 'M') + p.x.toFixed(1) + ' ' + p.y.toFixed(1); }).join(' ') + ' Z'; }
   function word(w) { return String(w).toLowerCase().replace(/[^a-z0-9]/g, ''); }
-  /* THE PAGE'S LANGUAGE (?lan=, src/i18n/i18n.js): what is shown is put into it; the lines, the
-     cues and the recordings stay English */
+  /* THE PAGE'S LANGUAGE (?lan=, src/i18n/i18n.js): what is shown is put into it; the lines and the
+     cues stay English, and so do the recordings unless the language has its own (?lan=hi, see say) */
   function local() { var I = window.PolygonI18n; return I && I.on ? I : null; }
   function tr(text) { var I = local(); return I && text != null ? I.t(text) : text; }
 
@@ -474,6 +474,21 @@
       while (shownUpTo < upTo) spans[shownUpTo++].classList.add('in');
     };
     var at = rec && rec.words && rec.words.length === n ? rec.words.map(function (w) { return w.start * 1000; }) : said.map(function (_, i) { return 160 + i * FALLBACK_WORD_MS; });
+    /* ...unless the take is in the language too (?lan=hi, src/lesson/recordings-hi.js): then the
+       shown words come in as it says them, and each English cue as it says the word that carries
+       it ("segments" on रेखाखंड), in its own order */
+    var V = window.PolygonRecordedVoice, showAt = null;
+    var cueAt = rec && rec.spoken && local() && V && V.cueStarts ? V.cueStarts(rec, text) : null;
+    if (cueAt) showAt = V.spokenStarts(rec, spans.map(function (sp) { return sp.textContent; }).join(' '));
+    if (cueAt && showAt) {
+      var order = said.map(function (_, k) { return k; }).sort(function (a, b) { return cueAt[a] - cueAt[b] || a - b; });
+      said = order.map(function (k) { return said[k]; });
+      at = order.map(function (k) { return cueAt[k] * 1000; });
+      reach = function (k, now) {
+        if (now == null) { while (shownUpTo < m) spans[shownUpTo++].classList.add('in'); return; }
+        while (shownUpTo < m && now >= showAt[shownUpTo] * 1000 - 40) spans[shownUpTo++].classList.add('in');
+      };
+    }
     var total = (rec && rec.duration ? rec.duration * 1000 : at[n - 1] + 700);
     return new Promise(function (resolve) {
       var done = false, i = 0, started = false;
@@ -484,7 +499,8 @@
         var tick = function () {
           if (!alive(run, g) || done) return;
           var now = clock();
-          while (i < n && now >= at[i] - 40) { reach(i + 1); cue(run, said[i]); i++; }
+          if (showAt) reach(0, now);
+          while (i < n && now >= at[i] - 40) { if (!showAt) reach(i + 1); cue(run, said[i]); i++; }
           if (now >= total) { finish(); return; }
           requestAnimationFrame(tick);
         };

@@ -1,0 +1,3595 @@
+{
+ "about": "The Hindi voice, measured by tools/voice/measure-hindi-voice.py from the delivered files (assets/audio/source/hi/<n>.wav, numbered as script.csv there). For each line the experience speaks: its number, its key in src/i18n/locales.json, where it is used (lesson: a line of src/lesson/recordings.js, built as assets/audio/lesson/hi/<file>; game: a window of Frozen Rush's take, CFG.vo.lines <id>), its English and its Hindi as shown, where its speech starts and ends in the delivered file (seconds), its runs of speech between pauses (`runs`), and where each shown word starts (seconds in the delivered file). `check` is a blind transcription and how close it is to the script (`match`, 0-1) with the alignment's confidence (`align`). A line may carry `cues`: for each English word, the index of the Hindi word on which its cue fires; without it the build works them out (tools/voice/build-hindi-voice.py: CONCEPTS). Build with npm run build:hindi-voice.",
+ "language": "hi",
+ "source": "assets/audio/source/hi",
+ "lines": [
+  {
+   "n": 47,
+   "key": "swifteeNeedsHelp",
+   "use": "lesson",
+   "file": "92_Momo_needs_your_help",
+   "en": "Momo needs your help.",
+   "hi": "मोमो को आपकी मदद चाहिए।",
+   "speech": [
+    0.3,
+    2.06
+   ],
+   "words": [
+    0.3,
+    0.72,
+    0.92,
+    1.22,
+    1.56
+   ],
+   "runs": [
+    [
+     0.3,
+     2.06
+    ]
+   ],
+   "check": {
+    "heard": "मोमो को अपकी मदद चाहीए",
+    "match": 0.909,
+    "align": 0.697
+   }
+  },
+  {
+   "n": 48,
+   "key": "swifteeLearnFirst",
+   "use": "lesson",
+   "file": "91_But_to_help_Momo_you_need_to_learn_about_polygons",
+   "en": "But to help Momo, you need to learn about polygons.",
+   "hi": "लेकिन मोमो की मदद करने के लिए आपको बहुभुज के बारे में सीखना होगा।",
+   "speech": [
+    0.28,
+    4.85
+   ],
+   "words": [
+    0.28,
+    0.78,
+    1.2,
+    1.36,
+    1.68,
+    2.0,
+    2.18,
+    2.61,
+    3.0,
+    3.64,
+    3.82,
+    4.06,
+    4.22,
+    4.56
+   ],
+   "runs": [
+    [
+     0.28,
+     2.47
+    ],
+    [
+     2.61,
+     2.77
+    ],
+    [
+     2.89,
+     4.85
+    ]
+   ],
+   "check": {
+    "heard": "लेकिन मोमो की मदत करने के लिए आपको बहुबुच के बारे में सीखना होगा.",
+    "match": 0.953,
+    "align": 0.811
+   }
+  },
+  {
+   "n": 49,
+   "key": "swifteeLetsHelp",
+   "use": "lesson",
+   "file": "90_Now_lets_help_Momo",
+   "en": "Now let's help Momo.",
+   "hi": "चलिए, अब मोमो की मदद करते हैं।",
+   "speech": [
+    0.29,
+    2.48
+   ],
+   "words": [
+    0.29,
+    1.02,
+    1.22,
+    1.54,
+    1.7,
+    1.98,
+    2.32
+   ],
+   "runs": [
+    [
+     0.29,
+     0.69
+    ],
+    [
+     1.02,
+     2.48
+    ]
+   ],
+   "check": {
+    "heard": "चलिए अब मोमो की मदद करते हैं",
+    "match": 1.0,
+    "align": 0.744
+   }
+  },
+  {
+   "n": 50,
+   "key": "s01Point",
+   "use": "lesson",
+   "file": "01_Look_A_point",
+   "en": "Look! A point.",
+   "hi": "देखिए! एक बिंदु।",
+   "speech": [
+    0.29,
+    2.12
+   ],
+   "words": [
+    0.29,
+    1.41,
+    1.66
+   ],
+   "runs": [
+    [
+     0.29,
+     1.03
+    ],
+    [
+     1.41,
+     2.12
+    ]
+   ],
+   "check": {
+    "heard": "देखिये एक बिन्दू।",
+    "match": 0.733,
+    "align": 0.731
+   }
+  },
+  {
+   "n": 51,
+   "key": "s02DrewShape",
+   "use": "lesson",
+   "file": "02_Woah_It_drew_a_shape",
+   "en": "Woah! It drew a shape.",
+   "hi": "वाह! इसने एक आकृति बना दी।",
+   "speech": [
+    0.29,
+    3.0
+   ],
+   "words": [
+    0.29,
+    1.25,
+    1.66,
+    1.8,
+    2.4,
+    2.72
+   ],
+   "runs": [
+    [
+     0.29,
+     0.94
+    ],
+    [
+     1.25,
+     3.0
+    ]
+   ],
+   "check": {
+    "heard": "वा! इस्नेक अक्रिती बनादी",
+    "match": 0.723,
+    "align": 0.584
+   }
+  },
+  {
+   "n": 52,
+   "key": "s03LookClosely",
+   "use": "lesson",
+   "file": "03_Lets_look_at_this_shape_closely",
+   "en": "Let's look at this shape closely.",
+   "hi": "आइए, इस आकृति को ध्यान से देखें।",
+   "speech": [
+    0.3,
+    2.78
+   ],
+   "words": [
+    0.3,
+    1.13,
+    1.36,
+    1.78,
+    1.96,
+    2.26,
+    2.44
+   ],
+   "runs": [
+    [
+     0.3,
+     0.72
+    ],
+    [
+     1.13,
+     2.78
+    ]
+   ],
+   "check": {
+    "heard": "आई ए, इस अक्रती को द्यान से देखेगें",
+    "match": 0.781,
+    "align": 0.625
+   }
+  },
+  {
+   "n": 53,
+   "key": "s04NoGaps",
+   "use": "lesson",
+   "file": "04_There_are_no_gaps_in_its_boundary",
+   "en": "There are no gaps in its boundary.",
+   "hi": "इसकी सीमा में कोई खाली जगह नहीं है।",
+   "speech": [
+    0.27,
+    2.66
+   ],
+   "words": [
+    0.27,
+    0.6,
+    1.0,
+    1.28,
+    1.56,
+    1.94,
+    2.22,
+    2.52
+   ],
+   "runs": [
+    [
+     0.27,
+     2.66
+    ]
+   ],
+   "check": {
+    "heard": "इसकी सीमा में कोई खाली जगा नहीं",
+    "match": 0.923,
+    "align": 0.826
+   }
+  },
+  {
+   "n": 54,
+   "key": "s05OpenOrClosed",
+   "use": "lesson",
+   "file": "05_Is_it_open_or_closed",
+   "en": "Is it open or closed?",
+   "hi": "यह खुली है या बंद?",
+   "speech": [
+    0.25,
+    1.98
+   ],
+   "words": [
+    0.25,
+    0.64,
+    1.06,
+    1.36,
+    1.58
+   ],
+   "runs": [
+    [
+     0.25,
+     0.52
+    ],
+    [
+     0.64,
+     1.98
+    ]
+   ],
+   "check": {
+    "heard": "ये खुली है या बन्द",
+    "match": 0.857,
+    "align": 0.706
+   }
+  },
+  {
+   "n": 55,
+   "key": "s06ThisShapeOpenOrClosed",
+   "use": "lesson",
+   "file": "06_Is_this_shape_open_or_closed",
+   "en": "Is this shape open or closed?",
+   "hi": "यह आकृति खुली है या बंद?",
+   "speech": [
+    0.29,
+    2.76
+   ],
+   "words": [
+    0.29,
+    0.58,
+    1.36,
+    1.76,
+    2.16,
+    2.4
+   ],
+   "runs": [
+    [
+     0.29,
+     1.24
+    ],
+    [
+     1.36,
+     2.03
+    ],
+    [
+     2.16,
+     2.76
+    ]
+   ],
+   "check": {
+    "heard": "ये आक्रिती खूली है या बंद",
+    "match": 0.792,
+    "align": 0.684
+   }
+  },
+  {
+   "n": 56,
+   "key": "s07WhatAboutThis",
+   "use": "lesson",
+   "file": "07_What_about_this_one",
+   "en": "What about this one?",
+   "hi": "इसके बारे में क्या?",
+   "speech": [
+    0.35,
+    1.25
+   ],
+   "words": [
+    0.35,
+    0.68,
+    0.94,
+    1.1
+   ],
+   "runs": [
+    [
+     0.35,
+     1.25
+    ]
+   ],
+   "check": {
+    "heard": "इसके बारे में क्या?",
+    "match": 1.0,
+    "align": 0.756
+   }
+  },
+  {
+   "n": 57,
+   "key": "s08AndThis",
+   "use": "lesson",
+   "file": "08_And_this",
+   "en": "And this?",
+   "hi": "और यह?",
+   "speech": [
+    0.28,
+    0.88
+   ],
+   "words": [
+    0.28,
+    0.58
+   ],
+   "runs": [
+    [
+     0.28,
+     0.88
+    ]
+   ],
+   "check": {
+    "heard": "और ये",
+    "match": 0.8,
+    "align": 0.591
+   }
+  },
+  {
+   "n": 58,
+   "key": "s09HowAboutThis",
+   "use": "lesson",
+   "file": "09_How_about_this_one",
+   "en": "How about this one?",
+   "hi": "यह वाली कैसी है?",
+   "speech": [
+    0.27,
+    1.47
+   ],
+   "words": [
+    0.27,
+    0.6,
+    0.9,
+    1.3
+   ],
+   "runs": [
+    [
+     0.27,
+     1.47
+    ]
+   ],
+   "check": {
+    "heard": "ये वाली कैसी है?",
+    "match": 0.933,
+    "align": 0.78
+   }
+  },
+  {
+   "n": 59,
+   "key": "ocFbClosed",
+   "use": "lesson",
+   "file": "48_No_gaps_in_its_boundary_This_shape_is_closed",
+   "en": "No gaps in its boundary. This shape is closed.",
+   "hi": "इसकी सीमा में कोई खाली जगह नहीं। यह आकृति बंद है।",
+   "speech": [
+    0.27,
+    4.57
+   ],
+   "words": [
+    0.27,
+    0.64,
+    1.12,
+    1.49,
+    1.74,
+    2.16,
+    2.46,
+    3.16,
+    3.4,
+    4.09,
+    4.46
+   ],
+   "runs": [
+    [
+     0.27,
+     1.28
+    ],
+    [
+     1.49,
+     2.72
+    ],
+    [
+     3.16,
+     3.88
+    ],
+    [
+     4.09,
+     4.57
+    ]
+   ],
+   "check": {
+    "heard": "इसकी सीमा में कोई खाली जगा नहीं ये आक्रिती बन्द है",
+    "match": 0.866,
+    "align": 0.765
+   }
+  },
+  {
+   "n": 60,
+   "key": "ocFbOpen",
+   "use": "lesson",
+   "file": "49_There_is_a_gap_in_its_boundary_It_is_open",
+   "en": "There is a gap in its boundary. It is open.",
+   "hi": "इसकी सीमा में खाली जगह है। यह खुली है।",
+   "speech": [
+    0.27,
+    3.38
+   ],
+   "words": [
+    0.27,
+    0.64,
+    1.06,
+    1.28,
+    1.7,
+    2.0,
+    2.61,
+    2.8,
+    3.2
+   ],
+   "runs": [
+    [
+     0.27,
+     2.2
+    ],
+    [
+     2.61,
+     3.38
+    ]
+   ],
+   "check": {
+    "heard": "इसकी सीमा में काली जगा है, ये खुली है",
+    "match": 0.917,
+    "align": 0.761
+   }
+  },
+  {
+   "n": 61,
+   "key": "ocYesClosed",
+   "use": "lesson",
+   "file": "66_Yes_It_is_closed",
+   "en": "Yes! It is closed.",
+   "hi": "हाँ! यह बंद है।",
+   "speech": [
+    0.25,
+    1.74
+   ],
+   "words": [
+    0.25,
+    0.93,
+    1.16,
+    1.52
+   ],
+   "runs": [
+    [
+     0.25,
+     0.69
+    ],
+    [
+     0.93,
+     1.74
+    ]
+   ],
+   "check": {
+    "heard": "हा, ये बन्द है.",
+    "match": 0.769,
+    "align": 0.62
+   }
+  },
+  {
+   "n": 62,
+   "key": "ocYesOpen",
+   "use": "lesson",
+   "file": "67_Yes_It_is_open",
+   "en": "Yes! It is open.",
+   "hi": "हाँ! यह खुली है।",
+   "speech": [
+    0.27,
+    1.64
+   ],
+   "words": [
+    0.27,
+    0.86,
+    1.0,
+    1.4
+   ],
+   "runs": [
+    [
+     0.27,
+     0.69
+    ],
+    [
+     0.86,
+     1.64
+    ]
+   ],
+   "check": {
+    "heard": "हा, ये खुली है.",
+    "match": 0.889,
+    "align": 0.627
+   }
+  },
+  {
+   "n": 63,
+   "key": "s10TwoOpen",
+   "use": "lesson",
+   "file": "10_These_two_shapes_are_open",
+   "en": "These two shapes are open...",
+   "hi": "ये दो आकृतियाँ खुली हैं...",
+   "speech": [
+    0.26,
+    2.02
+   ],
+   "words": [
+    0.26,
+    0.56,
+    0.82,
+    1.54,
+    1.82
+   ],
+   "runs": [
+    [
+     0.26,
+     2.02
+    ]
+   ],
+   "check": {
+    "heard": "ये 2 अक्रतिया खूली है",
+    "match": 0.727,
+    "align": 0.667
+   }
+  },
+  {
+   "n": 64,
+   "key": "s11TwoClosed",
+   "use": "lesson",
+   "file": "11_and_these_two_shapes_are_closed",
+   "en": "...and these two shapes are closed.",
+   "hi": "...और ये दो आकृतियाँ बंद हैं।",
+   "speech": [
+    0.27,
+    2.64
+   ],
+   "words": [
+    0.27,
+    0.62,
+    0.86,
+    1.18,
+    2.06,
+    2.46
+   ],
+   "runs": [
+    [
+     0.27,
+     1.9
+    ],
+    [
+     2.06,
+     2.64
+    ]
+   ],
+   "check": {
+    "heard": "और ये दो अक्रितिया बन्द है.",
+    "match": 0.784,
+    "align": 0.729
+   }
+  },
+  {
+   "n": 65,
+   "key": "s12BoundariesDifferent",
+   "use": "lesson",
+   "file": "12_Look_The_boundaries_of_the_shapes_are_different_too",
+   "en": "Look! The boundaries of the shapes are different too.",
+   "hi": "देखिए! आकृतियों की सीमाएँ भी अलग-अलग हैं।",
+   "speech": [
+    0.29,
+    3.32
+   ],
+   "words": [
+    0.29,
+    1.17,
+    1.8,
+    1.96,
+    2.48,
+    2.66,
+    3.2
+   ],
+   "runs": [
+    [
+     0.29,
+     0.74
+    ],
+    [
+     1.17,
+     3.32
+    ]
+   ],
+   "check": {
+    "heard": "देखे, आख्रित्यों की सीमाइ भी अलग-लग है",
+    "match": 0.789,
+    "align": 0.667
+   }
+  },
+  {
+   "n": 66,
+   "key": "s13StraightAndCurved",
+   "use": "lesson",
+   "file": "13_Some_are_straight_and_some_are_curved",
+   "en": "Some are straight and some are curved.",
+   "hi": "कुछ सीधी हैं और कुछ वक्र।",
+   "speech": [
+    0.27,
+    2.48
+   ],
+   "words": [
+    0.27,
+    0.46,
+    0.96,
+    1.54,
+    1.72,
+    1.96
+   ],
+   "runs": [
+    [
+     0.27,
+     1.25
+    ],
+    [
+     1.54,
+     2.48
+    ]
+   ],
+   "check": {
+    "heard": "कुछ सीदी है और कुछ वक्र",
+    "match": 0.936,
+    "align": 0.758
+   }
+  },
+  {
+   "n": 67,
+   "key": "s14WhichStraightCurved",
+   "use": "lesson",
+   "file": "14_Which_boundaries_are_straight_and_which_are_curved",
+   "en": "Which boundaries are straight and which are curved?",
+   "hi": "कौन-सी सीमाएँ सीधी हैं और कौन-सी वक्र?",
+   "speech": [
+    0.28,
+    3.36
+   ],
+   "words": [
+    0.28,
+    0.82,
+    1.38,
+    1.74,
+    2.18,
+    2.48,
+    2.92
+   ],
+   "runs": [
+    [
+     0.28,
+     2.35
+    ],
+    [
+     2.48,
+     3.36
+    ]
+   ],
+   "check": {
+    "heard": "कोंसी सीमाई सीदी हैं और कोंसी वक्र?",
+    "match": 0.789,
+    "align": 0.663
+   }
+  },
+  {
+   "n": 68,
+   "key": "s14AskAgain",
+   "use": "lesson",
+   "file": "88_Is_the_boundary_straight_or_curved",
+   "en": "Is the boundary straight or curved?",
+   "hi": "यह सीमा सीधी है या वक्र?",
+   "speech": [
+    0.27,
+    2.68
+   ],
+   "words": [
+    0.27,
+    0.58,
+    1.04,
+    1.58,
+    2.08,
+    2.3
+   ],
+   "runs": [
+    [
+     0.27,
+     1.8
+    ],
+    [
+     2.08,
+     2.68
+    ]
+   ],
+   "check": {
+    "heard": "ये सीमा सीदी है या वक्र",
+    "match": 0.913,
+    "align": 0.728
+   }
+  },
+  {
+   "n": 69,
+   "key": "s14NotCurved",
+   "use": "lesson",
+   "file": "68_Look_This_boundary_isnt_curved_It_is_made_of_straight_lines",
+   "en": "Look! This boundary isn't curved. It is made of straight lines.",
+   "hi": "देखिए! यह सीमा वक्र नहीं है। यह सीधी रेखाओं से बनी है।",
+   "speech": [
+    0.17,
+    5.02
+   ],
+   "words": [
+    0.17,
+    1.15,
+    1.42,
+    1.98,
+    2.26,
+    2.608,
+    3.17,
+    3.4,
+    3.9,
+    4.42,
+    4.6,
+    4.86
+   ],
+   "runs": [
+    [
+     0.17,
+     0.76
+    ],
+    [
+     1.15,
+     2.77
+    ],
+    [
+     3.17,
+     5.02
+    ]
+   ],
+   "check": {
+    "heard": "देखे, ये सीमा वक्र नहीं है, ये सीदी रेखाओ से बनी है",
+    "match": 0.9,
+    "align": 0.766
+   }
+  },
+  {
+   "n": 70,
+   "key": "s14IsCurved",
+   "use": "lesson",
+   "file": "69_Look_closely_This_boundary_bends_smoothly_It_is_curved",
+   "en": "Look closely. This boundary bends smoothly. It is curved.",
+   "hi": "ध्यान से देखिए। यह सीमा धीरे-धीरे मुड़ती है। यह वक्र है।",
+   "speech": [
+    0.28,
+    5.86
+   ],
+   "words": [
+    0.28,
+    0.74,
+    0.94,
+    1.82,
+    2.06,
+    2.5,
+    3.46,
+    3.84,
+    4.6,
+    5.23,
+    5.68
+   ],
+   "runs": [
+    [
+     0.28,
+     1.35
+    ],
+    [
+     1.82,
+     3.97
+    ],
+    [
+     4.6,
+     5.0
+    ],
+    [
+     5.23,
+     5.86
+    ]
+   ],
+   "check": {
+    "heard": "दिहान से देखहीए ये सीमा दीरे दीरे मुरती है ये वक्र है",
+    "match": 0.811,
+    "align": 0.734
+   }
+  },
+  {
+   "n": 71,
+   "key": "s15GotIt",
+   "use": "lesson",
+   "file": "15_You_got_it_These_boundaries_are_straight_while_these_are_curve",
+   "en": "You got it! These boundaries are straight, while these are curved.",
+   "hi": "बिल्कुल सही! ये सीमाएँ सीधी हैं, जबकि ये वक्र हैं।",
+   "speech": [
+    0.25,
+    4.39
+   ],
+   "words": [
+    0.25,
+    0.76,
+    1.47,
+    1.68,
+    2.2,
+    2.68,
+    3.17,
+    3.58,
+    3.78,
+    4.2
+   ],
+   "runs": [
+    [
+     0.25,
+     1.11
+    ],
+    [
+     1.47,
+     3.02
+    ],
+    [
+     3.17,
+     4.39
+    ]
+   ],
+   "check": {
+    "heard": "बलकुल सही ये सीमाए सीधी है जबकी ये वक रहें",
+    "match": 0.876,
+    "align": 0.753
+   }
+  },
+  {
+   "n": 72,
+   "key": "s16TapClosedStraight",
+   "use": "lesson",
+   "file": "80_Tap_the_closed_figure_made_with_straight_lines",
+   "en": "Tap the closed figure made with straight lines.",
+   "hi": "सीधी रेखाओं से बनी बंद आकृति पर टैप करें।",
+   "speech": [
+    0.27,
+    3.45
+   ],
+   "words": [
+    0.27,
+    0.8,
+    1.36,
+    1.58,
+    1.84,
+    2.24,
+    2.64,
+    2.88,
+    3.18
+   ],
+   "runs": [
+    [
+     0.27,
+     3.05
+    ],
+    [
+     3.18,
+     3.45
+    ]
+   ],
+   "check": {
+    "heard": "सीदी रेक्हाँ से बनी बन्दाख्रिती पर तब करें",
+    "match": 0.659,
+    "align": 0.652
+   }
+  },
+  {
+   "n": 73,
+   "key": "s16Yes",
+   "use": "lesson",
+   "file": "70_Yes_It_is_closed_and_made_of_straight_lines",
+   "en": "Yes! It is closed and made of straight lines.",
+   "hi": "हाँ! यह बंद है और सीधी रेखाओं से बनी है।",
+   "speech": [
+    0.29,
+    3.69
+   ],
+   "words": [
+    0.29,
+    1.01,
+    1.26,
+    1.72,
+    1.86,
+    2.14,
+    2.64,
+    3.12,
+    3.28,
+    3.52
+   ],
+   "runs": [
+    [
+     0.29,
+     0.67
+    ],
+    [
+     1.01,
+     3.69
+    ]
+   ],
+   "check": {
+    "heard": "हा, ये बंद है और सीदी रेखा उसे बनी है",
+    "match": 0.892,
+    "align": 0.731
+   }
+  },
+  {
+   "n": 74,
+   "key": "s16NotQuite",
+   "use": "lesson",
+   "file": "50_Not_quite_Look_for_a_figure_with_no_gaps_and_no_curves",
+   "en": "Not quite. Look for a figure with no gaps and no curves.",
+   "hi": "पूरी तरह से सही नहीं। ऐसी आकृति ढूँढें जिसमें न खाली जगह हो, न मोड़।",
+   "speech": [
+    0.29,
+    5.7
+   ],
+   "words": [
+    0.29,
+    0.6,
+    0.84,
+    1.12,
+    1.4,
+    2.17,
+    2.48,
+    2.96,
+    3.56,
+    3.98,
+    4.06,
+    4.54,
+    4.82,
+    5.21,
+    5.3
+   ],
+   "runs": [
+    [
+     0.29,
+     1.65
+    ],
+    [
+     2.17,
+     3.37
+    ],
+    [
+     3.56,
+     5.03
+    ],
+    [
+     5.21,
+     5.7
+    ]
+   ],
+   "check": {
+    "heard": "पूरी तरहा से सही नहीं आईसी आक्रती दूंदे जिस में ना खाली जगे हो ना मोड",
+    "match": 0.836,
+    "align": 0.683
+   }
+  },
+  {
+   "n": 75,
+   "key": "s17CallPolygon",
+   "use": "lesson",
+   "file": "17_We_call_this_a_polygon",
+   "en": "We call this a polygon.",
+   "hi": "इसे हम बहुभुज कहते हैं।",
+   "speech": [
+    0.31,
+    2.13
+   ],
+   "words": [
+    0.31,
+    0.64,
+    0.92,
+    1.54,
+    1.94
+   ],
+   "runs": [
+    [
+     0.31,
+     2.13
+    ]
+   ],
+   "check": {
+    "heard": "इसे हम बहुभूज कहते है",
+    "match": 0.93,
+    "align": 0.812
+   }
+  },
+  {
+   "n": 76,
+   "key": "s18Definition",
+   "use": "lesson",
+   "file": "18_A_closed_figure_made_of_only_straight_line_segments_is_called",
+   "en": "A closed figure made of only straight line segments is called a polygon.",
+   "hi": "केवल रेखाखंडों से बनी बंद आकृति को बहुभुज कहते हैं।",
+   "speech": [
+    0.27,
+    4.25
+   ],
+   "words": [
+    0.27,
+    0.64,
+    1.46,
+    1.64,
+    1.92,
+    2.28,
+    2.74,
+    3.22,
+    3.74,
+    4.1
+   ],
+   "runs": [
+    [
+     0.27,
+     3.0
+    ],
+    [
+     3.22,
+     4.25
+    ]
+   ],
+   "check": {
+    "heard": "केवल रेखा खंडो से बनी बंद आख्रती को बहुभुज कहते है.",
+    "match": 0.9,
+    "align": 0.754
+   }
+  },
+  {
+   "n": 77,
+   "key": "s19WhichPolygons",
+   "use": "lesson",
+   "file": "19_Which_of_these_figures_are_polygons",
+   "en": "Which of these figures are polygons?",
+   "hi": "इनमें से कौन-सी आकृतियाँ बहुभुज हैं?",
+   "speech": [
+    0.3,
+    2.84
+   ],
+   "words": [
+    0.3,
+    0.7,
+    0.84,
+    1.38,
+    2.12,
+    2.66
+   ],
+   "runs": [
+    [
+     0.3,
+     2.84
+    ]
+   ],
+   "check": {
+    "heard": "इन में से कोंसी आख्रितिया बहुभूज है",
+    "match": 0.771,
+    "align": 0.609
+   }
+  },
+  {
+   "n": 78,
+   "key": "s19GreatJob",
+   "use": "lesson",
+   "file": "81_Great_job_You_identified_all_the_polygons",
+   "en": "Great job! You identified all the polygons.",
+   "hi": "बहुत बढ़िया! आपने सभी बहुभुज पहचान लिए।",
+   "speech": [
+    0.27,
+    3.52
+   ],
+   "words": [
+    0.27,
+    0.74,
+    1.55,
+    1.92,
+    2.3,
+    2.76,
+    3.22
+   ],
+   "runs": [
+    [
+     0.27,
+     1.23
+    ],
+    [
+     1.55,
+     3.52
+    ]
+   ],
+   "check": {
+    "heard": "बहुत बडिया आपने सभी बहुबुज पहचान लिए",
+    "match": 0.932,
+    "align": 0.79
+   }
+  },
+  {
+   "n": 79,
+   "key": "polygonRule",
+   "use": "lesson",
+   "file": "72_A_polygon_is_closed_with_only_straight_sides",
+   "en": "A polygon is closed, with only straight sides.",
+   "hi": "बहुभुज बंद होता है, और उसकी सभी भुजाएँ सीधी होती हैं।",
+   "speech": [
+    0.3,
+    4.6
+   ],
+   "words": [
+    0.3,
+    0.98,
+    1.44,
+    1.74,
+    2.26,
+    2.42,
+    2.66,
+    3.06,
+    3.62,
+    4.1,
+    4.46
+   ],
+   "runs": [
+    [
+     0.3,
+     1.88
+    ],
+    [
+     2.26,
+     4.6
+    ]
+   ],
+   "check": {
+    "heard": "बहुभुज बन्द होता है और उसकी सभी भुजाए सीदी होती है",
+    "match": 0.931,
+    "align": 0.792
+   }
+  },
+  {
+   "n": 80,
+   "key": "fbTheseAreTheOnes",
+   "use": "lesson",
+   "file": "71_That_is_right_These_are_the_ones",
+   "en": "That is right! These are the ones.",
+   "hi": "बिल्कुल सही! यही वाली हैं।",
+   "speech": [
+    0.26,
+    2.16
+   ],
+   "words": [
+    0.26,
+    0.72,
+    1.32,
+    1.66,
+    2.0
+   ],
+   "runs": [
+    [
+     0.26,
+     1.02
+    ],
+    [
+     1.32,
+     2.16
+    ]
+   ],
+   "check": {
+    "heard": "बिल्कुल सही, यही वाली है",
+    "match": 0.979,
+    "align": 0.792
+   }
+  },
+  {
+   "n": 81,
+   "key": "fbNotQuiteTryAgain",
+   "use": "lesson",
+   "file": "75_Not_quite_Try_again",
+   "en": "Not quite. Try again.",
+   "hi": "पूरी तरह से सही नहीं। फिर से प्रयास करें।",
+   "speech": [
+    0.29,
+    2.98
+   ],
+   "words": [
+    0.29,
+    0.58,
+    0.8,
+    1.06,
+    1.32,
+    1.97,
+    2.14,
+    2.32,
+    2.7
+   ],
+   "runs": [
+    [
+     0.29,
+     1.51
+    ],
+    [
+     1.97,
+     2.98
+    ]
+   ],
+   "check": {
+    "heard": "पूरी तरहा से सही नहीं फिर से प्रैयास करें",
+    "match": 0.975,
+    "align": 0.782
+   }
+  },
+  {
+   "n": 83,
+   "key": "s20Sides",
+   "use": "lesson",
+   "file": "20_These_line_segments_are_the_sides_of_the_polygon",
+   "en": "These line segments are the sides of the polygon.",
+   "hi": "ये रेखाखंड बहुभुज की भुजाएँ हैं।",
+   "speech": [
+    0.31,
+    3.15
+   ],
+   "words": [
+    0.31,
+    0.64,
+    1.67,
+    2.32,
+    2.48,
+    3.04
+   ],
+   "runs": [
+    [
+     0.31,
+     1.43
+    ],
+    [
+     1.67,
+     3.15
+    ]
+   ],
+   "check": {
+    "heard": "ये रेखा कंद बहुबुजकी बुजाए है",
+    "match": 0.8,
+    "align": 0.656
+   }
+  },
+  {
+   "n": 84,
+   "key": "s21Vertex",
+   "use": "lesson",
+   "file": "21_The_point_where_two_sides_meet_is_called_a_vertex",
+   "en": "The point where two sides meet is called a vertex.",
+   "hi": "जिस बिंदु पर दो भुजाएँ मिलती हैं, उसे शीर्ष कहते हैं।",
+   "speech": [
+    0.26,
+    4.49
+   ],
+   "words": [
+    0.26,
+    0.64,
+    1.08,
+    1.34,
+    1.6,
+    2.18,
+    2.54,
+    3.12,
+    3.38,
+    3.9,
+    4.32
+   ],
+   "runs": [
+    [
+     0.26,
+     2.74
+    ],
+    [
+     3.12,
+     4.49
+    ]
+   ],
+   "check": {
+    "heard": "जिस बिन्दूपर दोब हुजाय मिलती है, उसे शीर्ष कहते है.",
+    "match": 0.86,
+    "align": 0.783
+   }
+  },
+  {
+   "n": 85,
+   "key": "s22Angle",
+   "use": "lesson",
+   "file": "22_When_two_sides_meet_they_also_form_an_angle",
+   "en": "When two sides meet, they also form an angle.",
+   "hi": "जब दो भुजाएँ मिलती हैं, तो वे एक कोण भी बनाती हैं।",
+   "speech": [
+    0.26,
+    4.21
+   ],
+   "words": [
+    0.26,
+    0.58,
+    0.84,
+    1.4,
+    1.82,
+    2.44,
+    2.56,
+    2.78,
+    3.16,
+    3.42,
+    3.6,
+    4.04
+   ],
+   "runs": [
+    [
+     0.26,
+     2.1
+    ],
+    [
+     2.44,
+     2.96
+    ],
+    [
+     3.16,
+     4.21
+    ]
+   ],
+   "check": {
+    "heard": "जब 2 भूजाए मिलती है, तो वे एक कोंड भी बनाती है",
+    "match": 0.882,
+    "align": 0.759
+   }
+  },
+  {
+   "n": 86,
+   "key": "s23LabelParts",
+   "use": "lesson",
+   "file": "23_Label_the_parts_of_the_polygon",
+   "en": "Label the parts of the polygon.",
+   "hi": "बहुभुज के भागों के नाम लगाएँ।",
+   "speech": [
+    0.27,
+    2.56
+   ],
+   "words": [
+    0.27,
+    0.9,
+    1.16,
+    1.64,
+    1.84,
+    2.14
+   ],
+   "runs": [
+    [
+     0.27,
+     2.56
+    ]
+   ],
+   "check": {
+    "heard": "बहुभुच के बागों की नाम लगाएं",
+    "match": 0.857,
+    "align": 0.712
+   }
+  },
+  {
+   "n": 87,
+   "key": "s23Perfect",
+   "use": "lesson",
+   "file": "73_Perfect_Side_vertex_and_angle_all_labelled",
+   "en": "Perfect! Side, vertex and angle — all labelled.",
+   "hi": "शानदार! भुजा, शीर्ष और कोण — सबके नाम लग गए।",
+   "speech": [
+    0.27,
+    4.61
+   ],
+   "words": [
+    0.27,
+    1.48,
+    2.24,
+    2.82,
+    3.08,
+    3.69,
+    3.69,
+    4.08,
+    4.28,
+    4.46
+   ],
+   "runs": [
+    [
+     0.27,
+     0.96
+    ],
+    [
+     1.48,
+     2.06
+    ],
+    [
+     2.24,
+     3.45
+    ],
+    [
+     3.69,
+     4.61
+    ]
+   ],
+   "check": {
+    "heard": "शान्दार, भूजा, शीर्ष, और कोन, सब के नाम लगगगे.",
+    "match": 0.875,
+    "align": 0.687
+   }
+  },
+  {
+   "n": 88,
+   "key": "s24CountSides",
+   "use": "lesson",
+   "file": "88_Lets_count_the_sides_of_the_polygon",
+   "en": "Let's count the sides of the polygon.",
+   "hi": "आइए, बहुभुज की भुजाएँ गिनें।",
+   "speech": [
+    0.28,
+    2.64
+   ],
+   "words": [
+    0.28,
+    1.04,
+    1.64,
+    1.84,
+    2.38
+   ],
+   "runs": [
+    [
+     0.28,
+     0.73
+    ],
+    [
+     1.04,
+     2.64
+    ]
+   ],
+   "check": {
+    "heard": "आईये बहुबुचकी भूजाएगिने",
+    "match": 0.694,
+    "align": 0.599
+   }
+  },
+  {
+   "n": 89,
+   "key": "countCarefully",
+   "use": "lesson",
+   "file": "51_Count_each_side_carefully_and_try_again",
+   "en": "Count each side carefully and try again.",
+   "hi": "हर भुजा ध्यान से गिनें और फिर से प्रयास करें।",
+   "speech": [
+    0.28,
+    3.48
+   ],
+   "words": [
+    0.28,
+    0.52,
+    0.92,
+    1.4,
+    1.64,
+    2.23,
+    2.4,
+    2.64,
+    2.84,
+    3.2
+   ],
+   "runs": [
+    [
+     0.28,
+     1.9
+    ],
+    [
+     2.23,
+     3.48
+    ]
+   ],
+   "check": {
+    "heard": "रर भूजा द्यान से गिने और फिर से प्रैयास करें",
+    "match": 0.909,
+    "align": 0.776
+   }
+  },
+  {
+   "n": 90,
+   "key": "s25Correct5",
+   "use": "lesson",
+   "file": "82_Correct_This_polygon_has_five_sides",
+   "en": "Correct! This polygon has five sides.",
+   "hi": "सही! इस बहुभुज की 5 भुजाएँ हैं।",
+   "speech": [
+    0.27,
+    3.32
+   ],
+   "words": [
+    0.27,
+    1.21,
+    1.4,
+    1.96,
+    2.4,
+    2.68,
+    3.22
+   ],
+   "runs": [
+    [
+     0.27,
+     0.7
+    ],
+    [
+     1.21,
+     2.17
+    ],
+    [
+     2.4,
+     3.32
+    ]
+   ],
+   "check": {
+    "heard": "सही, इस बहुबुचकी पाज भूजाएहें",
+    "match": 0.737,
+    "align": 0.646
+   }
+  },
+  {
+   "n": 91,
+   "key": "s26ChangeLooks",
+   "use": "lesson",
+   "file": "26_Now_lets_change_how_it_looks",
+   "en": "Now let's change how it looks.",
+   "hi": "अब इसका रूप बदलते हैं।",
+   "speech": [
+    0.29,
+    2.05
+   ],
+   "words": [
+    0.29,
+    0.79,
+    1.12,
+    1.4,
+    1.9
+   ],
+   "runs": [
+    [
+     0.29,
+     0.55
+    ],
+    [
+     0.79,
+     2.05
+    ]
+   ],
+   "check": {
+    "heard": "अब इसकर रूब बड़लते हैं",
+    "match": 0.837,
+    "align": 0.778
+   }
+  },
+  {
+   "n": 92,
+   "key": "s27DragVertex",
+   "use": "lesson",
+   "file": "27_Drag_any_vertex_Stretch_it_squash_it_or_resize_it",
+   "en": "Drag any vertex. Stretch it, squash it, or resize it.",
+   "hi": "कोई भी शीर्ष खींचें। इसे फैलाएँ, दबाएँ या इसका आकार बदलें।",
+   "speech": [
+    0.26,
+    5.55
+   ],
+   "words": [
+    0.26,
+    0.54,
+    0.78,
+    1.22,
+    2.13,
+    2.38,
+    3.32,
+    4.17,
+    4.34,
+    4.7,
+    5.18
+   ],
+   "runs": [
+    [
+     0.26,
+     1.66
+    ],
+    [
+     2.13,
+     3.07
+    ],
+    [
+     3.32,
+     3.91
+    ],
+    [
+     4.17,
+     5.55
+    ]
+   ],
+   "check": {
+    "heard": "कोई भी शीर्ष खीचे, इसे पहलाए, दबाए, या इसका आकार बदले.",
+    "match": 0.914,
+    "align": 0.749
+   }
+  },
+  {
+   "n": 94,
+   "key": "s28Whoa",
+   "use": "lesson",
+   "file": "28_Whoa_It_looks_quite_different_now",
+   "en": "Whoa! It looks quite different now.",
+   "hi": "वाह! अब यह बिल्कुल अलग दिख रहा है।",
+   "speech": [
+    0.26,
+    3.12
+   ],
+   "words": [
+    0.26,
+    1.31,
+    1.48,
+    1.66,
+    2.24,
+    2.48,
+    2.66,
+    2.94
+   ],
+   "runs": [
+    [
+     0.26,
+     0.95
+    ],
+    [
+     1.31,
+     3.12
+    ]
+   ],
+   "check": {
+    "heard": "वाँ! अब ये बिल्कुल अलक दिख रहा है",
+    "match": 0.906,
+    "align": 0.697
+   }
+  },
+  {
+   "n": 95,
+   "key": "s29Appearance",
+   "use": "lesson",
+   "file": "29_Its_appearance_has_completely_changed",
+   "en": "Its appearance has completely changed.",
+   "hi": "इसका रूप पूरी तरह बदल गया है।",
+   "speech": [
+    0.29,
+    2.49
+   ],
+   "words": [
+    0.29,
+    0.68,
+    1.07,
+    1.4,
+    1.72,
+    2.06,
+    2.32
+   ],
+   "runs": [
+    [
+     0.29,
+     0.87
+    ],
+    [
+     1.07,
+     2.49
+    ]
+   ],
+   "check": {
+    "heard": "इसका रूप पूरी तरह बडल गया है",
+    "match": 0.964,
+    "align": 0.778
+   }
+  },
+  {
+   "n": 96,
+   "key": "s30NotEverything",
+   "use": "lesson",
+   "file": "30_But_not_everything_has_changed",
+   "en": "But not everything has changed.",
+   "hi": "लेकिन सब कुछ नहीं बदला है।",
+   "speech": [
+    0.29,
+    1.98
+   ],
+   "words": [
+    0.29,
+    0.64,
+    0.99,
+    1.16,
+    1.44,
+    1.78
+   ],
+   "runs": [
+    [
+     0.29,
+     0.87
+    ],
+    [
+     0.99,
+     1.98
+    ]
+   ],
+   "check": {
+    "heard": "लिकिन सब कुछ नहीं बदला है",
+    "match": 0.96,
+    "align": 0.825
+   }
+  },
+  {
+   "n": 97,
+   "key": "s31CountAgain",
+   "use": "lesson",
+   "file": "31_Lets_count_the_sides_again",
+   "en": "Let's count the sides again.",
+   "hi": "आइए, भुजाएँ फिर से गिनें।",
+   "speech": [
+    0.27,
+    2.49
+   ],
+   "words": [
+    0.27,
+    1.09,
+    1.72,
+    1.96,
+    2.22
+   ],
+   "runs": [
+    [
+     0.27,
+     0.76
+    ],
+    [
+     1.09,
+     2.49
+    ]
+   ],
+   "check": {
+    "heard": "आईये भूजाए फिर से गीने",
+    "match": 0.756,
+    "align": 0.688
+   }
+  },
+  {
+   "n": 98,
+   "key": "s32Still5",
+   "use": "lesson",
+   "file": "32_Both_polygons_still_have_five_sides",
+   "en": "Both polygons still have five sides.",
+   "hi": "दोनों बहुभुजों की अब भी 5 भुजाएँ हैं।",
+   "speech": [
+    0.29,
+    3.06
+   ],
+   "words": [
+    0.29,
+    0.72,
+    1.4,
+    1.6,
+    1.86,
+    2.13,
+    2.46,
+    2.94
+   ],
+   "runs": [
+    [
+     0.29,
+     2.01
+    ],
+    [
+     2.13,
+     3.06
+    ]
+   ],
+   "check": {
+    "heard": "दोनो बहु भूजों की अब भी पाज भूजाई है",
+    "match": 0.806,
+    "align": 0.691
+   }
+  },
+  {
+   "n": 99,
+   "key": "s33NameBySides",
+   "use": "lesson",
+   "file": "33_So_the_number_of_sides_gives_us_a_good_way_to_name_polygons",
+   "en": "So the number of sides gives us a good way to name polygons.",
+   "hi": "इसलिए भुजाओं की संख्या से हम बहुभुजों के नाम आसानी से रख सकते हैं।",
+   "speech": [
+    0.29,
+    5.05
+   ],
+   "words": [
+    0.29,
+    1.11,
+    1.62,
+    1.78,
+    2.22,
+    2.46,
+    2.64,
+    3.26,
+    3.42,
+    3.72,
+    4.28,
+    4.42,
+    4.58,
+    4.82
+   ],
+   "runs": [
+    [
+     0.29,
+     0.84
+    ],
+    [
+     1.11,
+     4.7
+    ],
+    [
+     4.82,
+     5.05
+    ]
+   ],
+   "check": {
+    "heard": "इसलिये बूजाँ की संख्या से हम बहुबूजों के नाम आसानी से रख सकते हैं",
+    "match": 0.892,
+    "align": 0.801
+   }
+  },
+  {
+   "n": 100,
+   "key": "s34Triangle",
+   "use": "lesson",
+   "file": "34_A_polygon_with_three_sides_is_called_a_triangle",
+   "en": "A polygon with three sides is called a triangle.",
+   "hi": "3 भुजाओं वाले बहुभुज को त्रिभुज कहते हैं।",
+   "speech": [
+    0.28,
+    3.48
+   ],
+   "words": [
+    0.28,
+    0.58,
+    1.08,
+    1.46,
+    1.98,
+    2.54,
+    2.9,
+    3.3
+   ],
+   "runs": [
+    [
+     0.28,
+     2.25
+    ],
+    [
+     2.54,
+     3.48
+    ]
+   ],
+   "check": {
+    "heard": "तीन भूजाव वाले बहुबुच को त्रिबुच कहते है",
+    "match": 0.775,
+    "align": 0.743
+   }
+  },
+  {
+   "n": 101,
+   "key": "s35Quadrilateral",
+   "use": "lesson",
+   "file": "35_A_polygon_with_four_sides_is_called_a_quadrilateral",
+   "en": "A polygon with four sides is called a quadrilateral.",
+   "hi": "4 भुजाओं वाले बहुभुज को चतुर्भुज कहते हैं।",
+   "speech": [
+    0.31,
+    3.34
+   ],
+   "words": [
+    0.31,
+    0.66,
+    1.1,
+    1.42,
+    1.92,
+    2.29,
+    2.82,
+    3.2
+   ],
+   "runs": [
+    [
+     0.31,
+     2.15
+    ],
+    [
+     2.29,
+     3.34
+    ]
+   ],
+   "check": {
+    "heard": "चार भूजाु वाले बहुबुच को चतूर भूच कहते हैं",
+    "match": 0.747,
+    "align": 0.758
+   }
+  },
+  {
+   "n": 102,
+   "key": "s36SelectQuadrilaterals",
+   "use": "lesson",
+   "file": "36_Select_all_the_quadrilaterals",
+   "en": "Select all the quadrilaterals.",
+   "hi": "सभी चतुर्भुज चुनें।",
+   "speech": [
+    0.27,
+    1.66
+   ],
+   "words": [
+    0.27,
+    0.68,
+    1.3
+   ],
+   "runs": [
+    [
+     0.27,
+     1.66
+    ]
+   ],
+   "check": {
+    "heard": "सभी चत्रबूट चूने",
+    "match": 0.647,
+    "align": 0.527
+   }
+  },
+  {
+   "n": 103,
+   "key": "s36ThatsRight",
+   "use": "lesson",
+   "file": "83_Thats_right_Quadrilaterals_are_polygons",
+   "en": "That's right! Quadrilaterals are polygons with four sides.",
+   "hi": "बिल्कुल सही! चतुर्भुज 4 भुजाओं वाले बहुभुज होते हैं।",
+   "speech": [
+    0.31,
+    4.41
+   ],
+   "words": [
+    0.31,
+    0.88,
+    1.66,
+    2.57,
+    2.86,
+    3.28,
+    3.52,
+    4.0,
+    4.28
+   ],
+   "runs": [
+    [
+     0.31,
+     1.19
+    ],
+    [
+     1.66,
+     2.31
+    ],
+    [
+     2.57,
+     4.41
+    ]
+   ],
+   "check": {
+    "heard": "बिल्कुल सही, चटूर भूज, चार भूजाव वाले बहुभूज होते हैं",
+    "match": 0.812,
+    "align": 0.761
+   }
+  },
+  {
+   "n": 104,
+   "key": "s36Rule",
+   "use": "lesson",
+   "file": "84_Quadrilaterals_are_polygons_with_four_sides",
+   "en": "Quadrilaterals are polygons with four sides.",
+   "hi": "चतुर्भुज 4 भुजाओं वाले बहुभुज होते हैं।",
+   "speech": [
+    0.27,
+    3.12
+   ],
+   "words": [
+    0.27,
+    1.11,
+    1.42,
+    1.88,
+    2.18,
+    2.66,
+    2.96
+   ],
+   "runs": [
+    [
+     0.27,
+     0.96
+    ],
+    [
+     1.11,
+     3.12
+    ]
+   ],
+   "check": {
+    "heard": "चत्र भूछ चार भूजाव वाले बहुभूज होते हैं",
+    "match": 0.701,
+    "align": 0.76
+   }
+  },
+  {
+   "n": 105,
+   "key": "s36IsThisQuad",
+   "use": "lesson",
+   "file": "85_Is_this_shape_a_quadrilateral",
+   "en": "Is this shape a quadrilateral?",
+   "hi": "क्या यह आकृति चतुर्भुज है?",
+   "speech": [
+    0.26,
+    2.08
+   ],
+   "words": [
+    0.26,
+    0.52,
+    0.68,
+    1.26,
+    1.92
+   ],
+   "runs": [
+    [
+     0.26,
+     2.08
+    ]
+   ],
+   "check": {
+    "heard": "क्या ये आख्रती चदूर्बुच है?",
+    "match": 0.667,
+    "align": 0.611
+   }
+  },
+  {
+   "n": 106,
+   "key": "s37Pentagon",
+   "use": "lesson",
+   "file": "37_A_polygon_with_five_sides_is_called_a_pentagon",
+   "en": "A polygon with five sides is called a pentagon.",
+   "hi": "5 भुजाओं वाले बहुभुज को पंचभुज कहते हैं।",
+   "speech": [
+    0.26,
+    3.5
+   ],
+   "words": [
+    0.26,
+    0.62,
+    1.1,
+    1.46,
+    1.98,
+    2.42,
+    2.98,
+    3.34
+   ],
+   "runs": [
+    [
+     0.26,
+     2.25
+    ],
+    [
+     2.42,
+     3.5
+    ]
+   ],
+   "check": {
+    "heard": "पाच भूजाव वाले बहुभूच को पन्च भूज कहते हैं",
+    "match": 0.765,
+    "align": 0.725
+   }
+  },
+  {
+   "n": 107,
+   "key": "s38Hexagon",
+   "use": "lesson",
+   "file": "38_A_polygon_with_six_sides_is_called_a_hexagon",
+   "en": "A polygon with six sides is called a hexagon.",
+   "hi": "6 भुजाओं वाले बहुभुज को षट्भुज कहते हैं।",
+   "speech": [
+    0.32,
+    3.42
+   ],
+   "words": [
+    0.32,
+    0.54,
+    1.1,
+    1.42,
+    1.94,
+    2.38,
+    2.9,
+    3.26
+   ],
+   "runs": [
+    [
+     0.32,
+     2.18
+    ],
+    [
+     2.38,
+     3.42
+    ]
+   ],
+   "check": {
+    "heard": "6 भूजाँ वाले बहुभुच को शत्भूच कहते है",
+    "match": 0.789,
+    "align": 0.665
+   }
+  },
+  {
+   "n": 108,
+   "key": "s39Heptagon",
+   "use": "lesson",
+   "file": "39_A_polygon_with_seven_sides_is_called_a_heptagon",
+   "en": "A polygon with seven sides is called a heptagon.",
+   "hi": "7 भुजाओं वाले बहुभुज को सप्तभुज कहते हैं।",
+   "speech": [
+    0.25,
+    3.73
+   ],
+   "words": [
+    0.25,
+    0.7,
+    1.2,
+    1.52,
+    2.06,
+    2.55,
+    3.2,
+    3.58
+   ],
+   "runs": [
+    [
+     0.25,
+     2.32
+    ],
+    [
+     2.55,
+     2.78
+    ],
+    [
+     2.91,
+     3.73
+    ]
+   ],
+   "check": {
+    "heard": "सात भूजाँ वाले बहुभुच को सबत भूज कहते है",
+    "match": 0.775,
+    "align": 0.736
+   }
+  },
+  {
+   "n": 109,
+   "key": "s40Octagon",
+   "use": "lesson",
+   "file": "40_A_polygon_with_eight_sides_is_called_an_octagon",
+   "en": "A polygon with eight sides is called an octagon.",
+   "hi": "8 भुजाओं वाले बहुभुज को अष्टभुज कहते हैं।",
+   "speech": [
+    0.27,
+    3.63
+   ],
+   "words": [
+    0.27,
+    0.56,
+    1.1,
+    1.5,
+    2.04,
+    2.59,
+    3.12,
+    3.48
+   ],
+   "runs": [
+    [
+     0.27,
+     2.33
+    ],
+    [
+     2.59,
+     3.63
+    ]
+   ],
+   "check": {
+    "heard": "8 भूजाउवाले बहुभुच को आश्ट भूच कहते हैं",
+    "match": 0.785,
+    "align": 0.702
+   }
+  },
+  {
+   "n": 110,
+   "key": "recapRecall",
+   "use": "lesson",
+   "file": "91_Lets_recall_what_we_learnt_today",
+   "en": "Let's recall what we learnt today.",
+   "hi": "आइए, याद करें कि आज हमने क्या सीखा।",
+   "speech": [
+    0.29,
+    3.34
+   ],
+   "words": [
+    0.29,
+    1.1,
+    1.5,
+    1.82,
+    2.04,
+    2.34,
+    2.64,
+    3.0
+   ],
+   "runs": [
+    [
+     0.29,
+     0.76
+    ],
+    [
+     1.1,
+     3.34
+    ]
+   ],
+   "check": {
+    "heard": "आईये यात करें की आज हमने क्या सीखा?",
+    "match": 0.866,
+    "align": 0.74
+   }
+  },
+  {
+   "n": 111,
+   "key": "recapNames",
+   "use": "lesson",
+   "file": "92_Polygons_have_different_names_based_on_their_number_of_sides",
+   "en": "Polygons have different names based on their number of sides.",
+   "hi": "भुजाओं की संख्या के आधार पर बहुभुजों के अलग-अलग नाम होते हैं।",
+   "speech": [
+    0.28,
+    4.61
+   ],
+   "words": [
+    0.28,
+    0.82,
+    1.0,
+    1.46,
+    1.6,
+    2.0,
+    2.54,
+    3.2,
+    3.42,
+    3.92,
+    4.18,
+    4.46
+   ],
+   "runs": [
+    [
+     0.28,
+     2.26
+    ],
+    [
+     2.54,
+     4.61
+    ]
+   ],
+   "check": {
+    "heard": "बूजाूं की संख्या की आदार पर बहुबूजों की अलग-लग आँँँँँँँँँँँँँ.",
+    "match": 0.645,
+    "align": 0.749
+   }
+  },
+  {
+   "n": 112,
+   "key": "c1WhichPolygons",
+   "use": "lesson",
+   "file": "77_Select_polygons",
+   "en": "Which of these are polygons?",
+   "hi": "इनमें से कौन-से बहुभुज हैं?",
+   "speech": [
+    0.31,
+    2.29
+   ],
+   "words": [
+    0.31,
+    0.7,
+    0.93,
+    1.48,
+    2.06
+   ],
+   "runs": [
+    [
+     0.31,
+     0.8
+    ],
+    [
+     0.93,
+     2.29
+    ]
+   ],
+   "check": {
+    "heard": "इन्मेशी कोंसे बहुभुज है",
+    "match": 0.735,
+    "align": 0.631
+   }
+  },
+  {
+   "n": 113,
+   "key": "c1Yes",
+   "use": "lesson",
+   "file": "52_Yes_Closed_with_only_straight_sides",
+   "en": "Yes! Closed, with only straight sides.",
+   "hi": "हाँ! बंद, और केवल सीधी भुजाएँ।",
+   "speech": [
+    0.27,
+    3.41
+   ],
+   "words": [
+    0.27,
+    1.17,
+    1.91,
+    2.1,
+    2.5,
+    2.94
+   ],
+   "runs": [
+    [
+     0.27,
+     0.71
+    ],
+    [
+     1.17,
+     1.61
+    ],
+    [
+     1.91,
+     3.41
+    ]
+   ],
+   "check": {
+    "heard": "हा, बन्द और केवल सीधी भुजाएं",
+    "match": 0.889,
+    "align": 0.698
+   }
+  },
+  {
+   "n": 114,
+   "key": "c1NotQuite",
+   "use": "lesson",
+   "file": "87_Not_quite_A_polygon_is_closed",
+   "en": "Not quite! A polygon is closed with only straight sides.",
+   "hi": "पूरी तरह से सही नहीं! बहुभुज बंद होता है और उसकी केवल सीधी भुजाएँ होती हैं।",
+   "speech": [
+    0.28,
+    6.24
+   ],
+   "words": [
+    0.28,
+    0.6,
+    0.9,
+    1.14,
+    1.46,
+    2.14,
+    2.7,
+    3.14,
+    3.46,
+    3.96,
+    4.16,
+    4.42,
+    4.82,
+    5.34,
+    5.84,
+    6.1
+   ],
+   "runs": [
+    [
+     0.28,
+     1.69
+    ],
+    [
+     2.14,
+     3.6
+    ],
+    [
+     3.96,
+     6.24
+    ]
+   ],
+   "check": {
+    "heard": "पोरी तरहा से सही नहीं, बहुभुच बन्द होता है, और उसकी केवल सीदी भुजाए होती है.",
+    "match": 0.918,
+    "align": 0.787
+   }
+  },
+  {
+   "n": 115,
+   "key": "c2Classify",
+   "use": "lesson",
+   "file": "43_Classify_the_figures_as_a_polygon_or_not_a_polygon",
+   "en": "Classify the figures as a polygon or not a polygon.",
+   "hi": "आकृतियों को बहुभुज या बहुभुज नहीं में बाँटें।",
+   "speech": [
+    0.29,
+    4.05
+   ],
+   "words": [
+    0.29,
+    0.98,
+    1.24,
+    2.07,
+    2.34,
+    2.98,
+    3.54,
+    3.66
+   ],
+   "runs": [
+    [
+     0.29,
+     1.85
+    ],
+    [
+     2.07,
+     4.05
+    ]
+   ],
+   "check": {
+    "heard": "अक्रित्यों को बहुबुच या बहुबुच नहीं में बाटें",
+    "match": 0.809,
+    "align": 0.791
+   }
+  },
+  {
+   "n": 117,
+   "key": "c2GreatJob",
+   "use": "lesson",
+   "file": "55_Great_job_You_sorted_the_figures_correctly",
+   "en": "Great job! You sorted the figures correctly.",
+   "hi": "बहुत बढ़िया! आपने आकृतियों को सही-सही बाँटा।",
+   "speech": [
+    0.27,
+    3.56
+   ],
+   "words": [
+    0.27,
+    0.68,
+    1.45,
+    1.8,
+    2.38,
+    2.56,
+    3.16
+   ],
+   "runs": [
+    [
+     0.27,
+     1.1
+    ],
+    [
+     1.45,
+     3.56
+    ]
+   ],
+   "check": {
+    "heard": "बहुत बड्या आपने आक्रित्यों को सही सही बाटा",
+    "match": 0.857,
+    "align": 0.73
+   }
+  },
+  {
+   "n": 118,
+   "key": "c2WrongGroup",
+   "use": "lesson",
+   "file": "56_Wrong_group_Check_for_gaps_or_curved_sides",
+   "en": "Wrong group. Check for gaps or curved sides.",
+   "hi": "गलत समूह। खाली जगह या वक्र भुजाएँ देखें।",
+   "speech": [
+    0.27,
+    3.97
+   ],
+   "words": [
+    0.27,
+    0.72,
+    1.69,
+    2.14,
+    2.48,
+    2.74,
+    3.1,
+    3.6
+   ],
+   "runs": [
+    [
+     0.27,
+     1.13
+    ],
+    [
+     1.69,
+     3.97
+    ]
+   ],
+   "check": {
+    "heard": "गलत समो, खाली जगा या वक्र भुजाए देखी",
+    "match": 0.877,
+    "align": 0.706
+   }
+  },
+  {
+   "n": 119,
+   "key": "c2Rule",
+   "use": "lesson",
+   "file": "57_Polygons_are_closed_with_only_straight_sides_Try_again",
+   "en": "Polygons are closed, with only straight sides. Try again.",
+   "hi": "बहुभुज बंद होते हैं, और उनकी केवल सीधी भुजाएँ होती हैं। फिर से प्रयास करें।",
+   "speech": [
+    0.3,
+    6.04
+   ],
+   "words": [
+    0.3,
+    1.06,
+    1.52,
+    1.84,
+    2.38,
+    2.54,
+    2.84,
+    3.22,
+    3.7,
+    4.2,
+    4.46,
+    5.06,
+    5.22,
+    5.42,
+    5.8
+   ],
+   "runs": [
+    [
+     0.3,
+     1.99
+    ],
+    [
+     2.38,
+     4.6
+    ],
+    [
+     5.06,
+     6.04
+    ]
+   ],
+   "check": {
+    "heard": "बहुभोज बन्द होते हैं, और उनकी केवल सीदी भुजाए होती हैं, फिर से प्रैयास करें।",
+    "match": 0.938,
+    "align": 0.793
+   }
+  },
+  {
+   "n": 120,
+   "key": "c3WhichNot",
+   "use": "lesson",
+   "file": "78_Not_a_polygon",
+   "en": "Which figure is NOT a polygon?",
+   "hi": "कौन-सी आकृति बहुभुज नहीं है?",
+   "speech": [
+    0.24,
+    2.21
+   ],
+   "words": [
+    0.24,
+    0.68,
+    1.18,
+    1.76,
+    2.08
+   ],
+   "runs": [
+    [
+     0.24,
+     2.21
+    ]
+   ],
+   "check": {
+    "heard": "कोंसी अक्रती बहुभुज नहीं है",
+    "match": 0.778,
+    "align": 0.661
+   }
+  },
+  {
+   "n": 121,
+   "key": "c3Found",
+   "use": "lesson",
+   "file": "58_You_found_it_That_is_not_a_polygon",
+   "en": "You found it! That is not a polygon.",
+   "hi": "आपने ढूँढ लिया! वह बहुभुज नहीं है।",
+   "speech": [
+    0.27,
+    3.35
+   ],
+   "words": [
+    0.27,
+    0.7,
+    1.1,
+    1.87,
+    2.16,
+    2.78,
+    3.12
+   ],
+   "runs": [
+    [
+     0.27,
+     1.48
+    ],
+    [
+     1.87,
+     3.35
+    ]
+   ],
+   "check": {
+    "heard": "आपने दोन लिया वो बहुज नहीं है",
+    "match": 0.82,
+    "align": 0.71
+   }
+  },
+  {
+   "n": 122,
+   "key": "c3BreaksRule",
+   "use": "lesson",
+   "file": "59_Which_figure_breaks_the_rule_for_a_polygon",
+   "en": "Which figure breaks the rule for a polygon?",
+   "hi": "कौन-सी आकृति बहुभुज का नियम तोड़ती है?",
+   "speech": [
+    0.28,
+    2.97
+   ],
+   "words": [
+    0.28,
+    0.74,
+    1.24,
+    1.84,
+    2.02,
+    2.32,
+    2.82
+   ],
+   "runs": [
+    [
+     0.28,
+     2.97
+    ]
+   ],
+   "check": {
+    "heard": "कोंसी आक्रती बहुबुजका नियम तोडती है?",
+    "match": 0.806,
+    "align": 0.651
+   }
+  },
+  {
+   "n": 123,
+   "key": "c3Questions",
+   "use": "lesson",
+   "file": "53_Is_it_closed_Does_it_have_only_straight_sides",
+   "en": "Is it closed? Does it have only straight sides?",
+   "hi": "क्या यह बंद है? क्या इसकी केवल सीधी भुजाएँ हैं?",
+   "speech": [
+    0.33,
+    4.23
+   ],
+   "words": [
+    0.33,
+    0.6,
+    0.78,
+    1.24,
+    2.03,
+    2.24,
+    2.6,
+    3.0,
+    3.5,
+    4.12
+   ],
+   "runs": [
+    [
+     0.33,
+     1.47
+    ],
+    [
+     2.03,
+     4.23
+    ]
+   ],
+   "check": {
+    "heard": "क्या ये बन्द है? क्या इसकी किवल सीदी भुजाए है?",
+    "match": 0.876,
+    "align": 0.705
+   }
+  },
+  {
+   "n": 124,
+   "key": "c4WhichPentagons",
+   "use": "lesson",
+   "file": "79_Select_pentagons",
+   "en": "Which of these are pentagons?",
+   "hi": "इनमें से कौन-से पंचभुज हैं?",
+   "speech": [
+    0.26,
+    2.35
+   ],
+   "words": [
+    0.26,
+    0.7,
+    1.01,
+    1.6,
+    2.18
+   ],
+   "runs": [
+    [
+     0.26,
+     0.83
+    ],
+    [
+     1.01,
+     1.48
+    ],
+    [
+     1.6,
+     2.35
+    ]
+   ],
+   "check": {
+    "heard": "इन में से कुन से पंच भुज हैं",
+    "match": 0.926,
+    "align": 0.677
+   }
+  },
+  {
+   "n": 125,
+   "key": "c4Exactly",
+   "use": "lesson",
+   "file": "60_Exactly_A_pentagon_always_has_five_sides",
+   "en": "Exactly! A pentagon always has five sides.",
+   "hi": "बिल्कुल! पंचभुज की हमेशा 5 भुजाएँ होती हैं।",
+   "speech": [
+    0.28,
+    4.22
+   ],
+   "words": [
+    0.28,
+    1.34,
+    1.92,
+    2.14,
+    3.03,
+    3.32,
+    3.82,
+    4.06
+   ],
+   "runs": [
+    [
+     0.28,
+     0.78
+    ],
+    [
+     1.34,
+     2.8
+    ],
+    [
+     3.03,
+     4.22
+    ]
+   ],
+   "check": {
+    "heard": "बिल्कुल पंच भुज की हमेशा पाच भुजाए हूती है",
+    "match": 0.892,
+    "align": 0.701
+   }
+  },
+  {
+   "n": 126,
+   "key": "c4CountEach",
+   "use": "lesson",
+   "file": "61_Count_the_sides_of_each_figure_carefully",
+   "en": "Count the sides of each figure carefully.",
+   "hi": "हर आकृति की भुजाएँ ध्यान से गिनें।",
+   "speech": [
+    0.31,
+    3.0
+   ],
+   "words": [
+    0.31,
+    0.62,
+    1.22,
+    1.38,
+    2.11,
+    2.52,
+    2.76
+   ],
+   "runs": [
+    [
+     0.31,
+     1.92
+    ],
+    [
+     2.11,
+     3.0
+    ]
+   ],
+   "check": {
+    "heard": "हर अक्रती की भूजाई दियान से गिने",
+    "match": 0.738,
+    "align": 0.571
+   }
+  },
+  {
+   "n": 127,
+   "key": "c4LookFor5",
+   "use": "lesson",
+   "file": "62_Look_for_every_figure_with_exactly_five_sides",
+   "en": "Look for every figure with exactly five sides.",
+   "hi": "ठीक 5 भुजाओं वाली हर आकृति ढूँढें।",
+   "missing": true
+  },
+  {
+   "n": 128,
+   "key": "c5Classify",
+   "use": "lesson",
+   "file": "46_Classify_each_figure_as_a_hexagon_or_a_heptagon",
+   "en": "Classify each figure as a hexagon or a heptagon.",
+   "hi": "हर आकृति को षट्भुज या सप्तभुज में बाँटें।",
+   "speech": [
+    0.3,
+    3.93
+   ],
+   "words": [
+    0.3,
+    0.58,
+    1.1,
+    1.65,
+    2.56,
+    2.76,
+    3.4,
+    3.62
+   ],
+   "runs": [
+    [
+     0.3,
+     1.39
+    ],
+    [
+     1.65,
+     2.31
+    ],
+    [
+     2.56,
+     3.0
+    ],
+    [
+     3.12,
+     3.93
+    ]
+   ],
+   "check": {
+    "heard": "हर अख्रती को, शटबुज, या सबत भुज में बाटें",
+    "match": 0.759,
+    "align": 0.621
+   }
+  },
+  {
+   "n": 130,
+   "key": "c5WellDone",
+   "use": "lesson",
+   "file": "63_Well_done_Hexagons_have_six_sides_and_heptagons_have_seven_sid",
+   "en": "Well done! Hexagons have six sides and heptagons have seven sides.",
+   "hi": "शाबाश! षट्भुज की 6 भुजाएँ होती हैं और सप्तभुज की 7 भुजाएँ।",
+   "speech": [
+    0.29,
+    5.82
+   ],
+   "words": [
+    0.29,
+    1.65,
+    2.24,
+    2.5,
+    2.76,
+    3.24,
+    3.52,
+    4.0,
+    4.2,
+    4.8,
+    5.0,
+    5.34
+   ],
+   "runs": [
+    [
+     0.29,
+     1.35
+    ],
+    [
+     1.65,
+     3.75
+    ],
+    [
+     4.0,
+     4.38
+    ],
+    [
+     4.5,
+     5.82
+    ]
+   ],
+   "check": {
+    "heard": "शब्दबुज की चे बूजाए होती है, और सब्दबुज की साथ बूजाए.",
+    "match": 0.692,
+    "align": 0.709
+   }
+  },
+  {
+   "n": 131,
+   "key": "c5CountWrong",
+   "use": "lesson",
+   "file": "64_Count_the_sides_of_the_ones_you_placed_wrong",
+   "en": "Count the sides of the ones you placed wrong.",
+   "hi": "जिन्हें आपने गलत जगह रखा, उनकी भुजाएँ गिनें।",
+   "speech": [
+    0.27,
+    3.63
+   ],
+   "words": [
+    0.27,
+    0.82,
+    1.12,
+    1.46,
+    1.78,
+    2.5,
+    2.84,
+    3.38
+   ],
+   "runs": [
+    [
+     0.27,
+     2.17
+    ],
+    [
+     2.5,
+     3.63
+    ]
+   ],
+   "check": {
+    "heard": "जिन ही आपनी गलत जगा रखा उनकी बुजाएं गिने",
+    "match": 0.829,
+    "align": 0.662
+   }
+  },
+  {
+   "n": 132,
+   "key": "c5Rule",
+   "use": "lesson",
+   "file": "65_Six_sides_make_a_hexagon_seven_make_a_heptagon",
+   "en": "Six sides make a hexagon, seven make a heptagon.",
+   "hi": "6 भुजाओं से षट्भुज बनता है, 7 से सप्तभुज।",
+   "speech": [
+    0.3,
+    4.06
+   ],
+   "words": [
+    0.3,
+    0.56,
+    1.06,
+    1.34,
+    1.86,
+    2.26,
+    2.69,
+    3.08,
+    3.34
+   ],
+   "runs": [
+    [
+     0.3,
+     2.39
+    ],
+    [
+     2.69,
+     4.06
+    ]
+   ],
+   "check": {
+    "heard": "6 भूजाउ से शट भूज बनता है, 7 से सबत भूज",
+    "match": 0.779,
+    "align": 0.658
+   }
+  },
+  {
+   "n": 133,
+   "key": "endReady",
+   "use": "lesson",
+   "file": "93_Now_you_know_everything_about_polygons_You_are_ready_to_help_Momo",
+   "en": "Now you know everything about polygons. You are ready to help Momo.",
+   "hi": "अब आप बहुभुज के बारे में सब कुछ जानते हैं। आप मोमो की मदद करने के लिए तैयार हैं।",
+   "speech": [
+    0.27,
+    5.66
+   ],
+   "words": [
+    0.27,
+    0.46,
+    0.68,
+    1.24,
+    1.42,
+    1.68,
+    1.92,
+    2.21,
+    2.38,
+    2.76,
+    3.29,
+    3.56,
+    3.92,
+    4.08,
+    4.36,
+    4.68,
+    4.88,
+    5.02,
+    5.5
+   ],
+   "runs": [
+    [
+     0.27,
+     2.08
+    ],
+    [
+     2.21,
+     2.87
+    ],
+    [
+     3.29,
+     5.66
+    ]
+   ],
+   "check": {
+    "heard": "अब आब बहुभुज के बारी में सब को जानते हैं आप मोमो की मदद करनी की लिए तयार हैं",
+    "match": 0.922,
+    "align": 0.768
+   }
+  },
+  {
+   "n": 32,
+   "key": "gameMeet",
+   "use": "game",
+   "id": "tut-1-meet",
+   "en": "This is Momo. He needs to find his friend.",
+   "hi": "यह मोमो है। उसे अपने दोस्त को ढूँढना है।",
+   "speech": [
+    0.32,
+    3.62
+   ],
+   "words": [
+    0.32,
+    0.6,
+    1.12,
+    1.8,
+    2.08,
+    2.44,
+    2.83,
+    2.96,
+    3.46
+   ],
+   "runs": [
+    [
+     0.32,
+     1.34
+    ],
+    [
+     1.8,
+     2.71
+    ],
+    [
+     2.83,
+     3.62
+    ]
+   ],
+   "check": {
+    "heard": "ये मो मो है, उसे अपने दोस्त को दूनना है",
+    "match": 0.895,
+    "align": 0.747
+   }
+  },
+  {
+   "n": 33,
+   "key": "gameGoal",
+   "use": "game",
+   "id": "tut-2-goal",
+   "en": "Help Momo cross the Frozen Pass!",
+   "hi": "मोमो को जमा हुआ दर्रा पार करने में मदद करें!",
+   "speech": [
+    0.28,
+    3.31
+   ],
+   "words": [
+    0.28,
+    0.74,
+    0.96,
+    1.38,
+    1.62,
+    2.08,
+    2.28,
+    2.58,
+    2.72,
+    3.0
+   ],
+   "runs": [
+    [
+     0.28,
+     3.31
+    ]
+   ],
+   "check": {
+    "heard": "मोमु को जमा हुए दर्रा पार करने में मददद करें",
+    "match": 0.943,
+    "align": 0.696
+   }
+  },
+  {
+   "n": 34,
+   "key": "gameWatchOut",
+   "use": "game",
+   "id": "tut-3-watch",
+   "en": "Watch out!",
+   "hi": "सावधान!",
+   "speech": [
+    0.26,
+    1.03
+   ],
+   "words": [
+    0.26
+   ],
+   "runs": [
+    [
+     0.26,
+     1.03
+    ]
+   ],
+   "check": {
+    "heard": "साव दहन",
+    "match": 0.615,
+    "align": 0.471
+   }
+  },
+  {
+   "n": 35,
+   "key": "gameTapJump",
+   "use": "game",
+   "id": "tut-4-jump",
+   "en": "Tap to jump over obstacles.",
+   "hi": "रुकावटों के ऊपर से कूदने के लिए टैप करें।",
+   "speech": [
+    0.27,
+    3.19
+   ],
+   "words": [
+    0.27,
+    0.94,
+    1.12,
+    1.46,
+    1.64,
+    2.06,
+    2.24,
+    2.61,
+    2.82
+   ],
+   "runs": [
+    [
+     0.27,
+     2.42
+    ],
+    [
+     2.61,
+     3.19
+    ]
+   ],
+   "check": {
+    "heard": "रूकावतों के उपर से कुदने के लिए ताप करें",
+    "match": 0.85,
+    "align": 0.749
+   }
+  },
+  {
+   "n": 36,
+   "key": "gamePathBroken",
+   "use": "game",
+   "id": "tut-5-broken",
+   "en": "Oh no! The path is broken.",
+   "hi": "अरे नहीं! रास्ता टूट गया है।",
+   "speech": [
+    0.26,
+    3.0
+   ],
+   "words": [
+    0.26,
+    0.58,
+    1.57,
+    2.1,
+    2.44,
+    2.74
+   ],
+   "runs": [
+    [
+     0.26,
+     1.29
+    ],
+    [
+     1.57,
+     3.0
+    ]
+   ],
+   "check": {
+    "heard": "अरे नहीं, रास्ता तूट गया है",
+    "match": 0.962,
+    "align": 0.776
+   }
+  },
+  {
+   "n": 37,
+   "key": "gameUseIcePiece",
+   "use": "game",
+   "id": "tut-6-use",
+   "en": "Use the right ice piece to fix the path.",
+   "hi": "रास्ता ठीक करने के लिए बर्फ़ का सही टुकड़ा इस्तेमाल करें।",
+   "speech": [
+    0.27,
+    3.99
+   ],
+   "words": [
+    0.27,
+    0.82,
+    1.14,
+    1.48,
+    1.66,
+    1.92,
+    2.42,
+    2.54,
+    2.94,
+    3.28,
+    3.74
+   ],
+   "runs": [
+    [
+     0.27,
+     3.99
+    ]
+   ],
+   "check": {
+    "heard": "रास्ता ठीक करने के लिए बर्व का सही तुक्डा इस्तमाल करें",
+    "match": 0.927,
+    "align": 0.729
+   }
+  },
+  {
+   "n": 38,
+   "key": "gameUsePiece",
+   "use": "game",
+   "id": "tut-6b-piece",
+   "en": "Use the right piece to fix the path.",
+   "hi": "रास्ता ठीक करने के लिए सही टुकड़ा इस्तेमाल करें।",
+   "speech": [
+    0.27,
+    3.55
+   ],
+   "words": [
+    0.27,
+    0.82,
+    1.24,
+    1.56,
+    1.7,
+    2.08,
+    2.46,
+    2.84,
+    3.28
+   ],
+   "runs": [
+    [
+     0.27,
+     1.12
+    ],
+    [
+     1.24,
+     1.95
+    ],
+    [
+     2.08,
+     3.55
+    ]
+   ],
+   "check": {
+    "heard": "रास्ता ठीक करने के लिए सही तुक्डा इस्तिमाल करें.",
+    "match": 0.936,
+    "align": 0.774
+   }
+  },
+  {
+   "n": 39,
+   "key": "gamePerfectFit",
+   "use": "game",
+   "id": "tut-7-fit",
+   "en": "Perfect fit! Keep going!",
+   "hi": "एकदम सही बैठा! आगे बढ़ते रहें!",
+   "speech": [
+    0.27,
+    3.12
+   ],
+   "words": [
+    0.27,
+    0.9,
+    1.36,
+    2.28,
+    2.56,
+    2.88
+   ],
+   "runs": [
+    [
+     0.27,
+     1.75
+    ],
+    [
+     2.28,
+     3.12
+    ]
+   ],
+   "check": {
+    "heard": "अगे बरते रहें",
+    "match": 0.537,
+    "align": 0.715
+   }
+  },
+  {
+   "n": 40,
+   "key": "signTriangle",
+   "use": "game",
+   "id": "sign-triangle",
+   "en": "Cut the triangle.",
+   "hi": "त्रिभुज काटें।",
+   "speech": [
+    0.28,
+    1.21
+   ],
+   "words": [
+    0.28,
+    0.72
+   ],
+   "runs": [
+    [
+     0.28,
+     1.21
+    ]
+   ],
+   "check": {
+    "heard": "त्रीभूच काते",
+    "match": 0.64,
+    "align": 0.611
+   }
+  },
+  {
+   "n": 41,
+   "key": "signQuadrilateral",
+   "use": "game",
+   "id": "sign-quadrilateral",
+   "en": "Cut the quadrilateral.",
+   "hi": "चतुर्भुज काटें।",
+   "speech": [
+    0.29,
+    1.58
+   ],
+   "words": [
+    0.29,
+    1.02
+   ],
+   "runs": [
+    [
+     0.29,
+     1.58
+    ]
+   ],
+   "check": {
+    "heard": "चटूर भूज काते",
+    "match": 0.593,
+    "align": 0.593
+   }
+  },
+  {
+   "n": 42,
+   "key": "signPentagon",
+   "use": "game",
+   "id": "sign-pentagon",
+   "en": "Cut the pentagon.",
+   "hi": "पंचभुज काटें।",
+   "speech": [
+    0.3,
+    1.38
+   ],
+   "words": [
+    0.3,
+    0.9
+   ],
+   "runs": [
+    [
+     0.3,
+     1.38
+    ]
+   ],
+   "check": {
+    "heard": "पन्च्भूज्काटी",
+    "match": 0.56,
+    "align": 0.562
+   }
+  },
+  {
+   "n": 43,
+   "key": "signHexagon",
+   "use": "game",
+   "id": "sign-hexagon",
+   "en": "Cut the hexagon.",
+   "hi": "षट्भुज काटें।",
+   "speech": [
+    0.28,
+    1.62
+   ],
+   "words": [
+    0.28,
+    1.0
+   ],
+   "runs": [
+    [
+     0.28,
+     1.62
+    ]
+   ],
+   "check": {
+    "heard": "शद भूज काटें",
+    "match": 0.667,
+    "align": 0.612
+   }
+  },
+  {
+   "n": 44,
+   "key": "signHeptagon",
+   "use": "game",
+   "id": "sign-heptagon",
+   "en": "Cut the heptagon.",
+   "hi": "सप्तभुज काटें।",
+   "speech": [
+    0.39,
+    1.68
+   ],
+   "words": [
+    0.39,
+    1.12
+   ],
+   "runs": [
+    [
+     0.39,
+     0.62
+    ],
+    [
+     0.77,
+     1.68
+    ]
+   ],
+   "check": {
+    "heard": "सब तो भूज काटी",
+    "match": 0.593,
+    "align": 0.529
+   }
+  },
+  {
+   "n": 45,
+   "key": "signPentagons",
+   "use": "game",
+   "id": "sign-pentagons",
+   "en": "Cut all the pentagons.",
+   "hi": "सभी पंचभुज काटें।",
+   "speech": [
+    0.32,
+    1.85
+   ],
+   "words": [
+    0.32,
+    0.91,
+    1.44
+   ],
+   "runs": [
+    [
+     0.32,
+     0.79
+    ],
+    [
+     0.91,
+     1.85
+    ]
+   ],
+   "check": {
+    "heard": "सभी पन्च्भूज्काते",
+    "match": 0.667,
+    "align": 0.666
+   }
+  },
+  {
+   "n": 46,
+   "key": "signHexagons",
+   "use": "game",
+   "id": "sign-hexagons",
+   "en": "Cut all the hexagons.",
+   "hi": "सभी षट्भुज काटें।",
+   "speech": [
+    0.29,
+    1.9
+   ],
+   "words": [
+    0.29,
+    0.76,
+    1.42
+   ],
+   "runs": [
+    [
+     0.29,
+     1.9
+    ]
+   ],
+   "check": {
+    "heard": "सभी शत्बुच काटें",
+    "match": 0.75,
+    "align": 0.663
+   }
+  }
+ ]
+}

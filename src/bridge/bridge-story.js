@@ -157,7 +157,8 @@
   function lessonTake(line) {
     if (!line.lesson || line.take !== undefined) return line.take || null;
     var rec = null;
-    try { rec = window.PolygonRecordedVoice && window.PolygonRecordedVoice.find(line.text); } catch (e) {}
+    // the English take always: the drafted story, and this scene with it, stays English under ?lan=
+    try { rec = window.PolygonRecordedVoice && window.PolygonRecordedVoice.find(line.text, { english: true }); } catch (e) {}
     line.take = rec || null;
     var n = line.text.split(' ').length;
     if (rec && rec.words && rec.words.length === n) {

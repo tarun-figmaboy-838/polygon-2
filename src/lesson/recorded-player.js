@@ -76,12 +76,15 @@
        media element: the checks that drive a fake one set window.POLYGON_VOICE_VIA_CONTEXT = false
        before the page loads, or this after it. */
     viaContext: window.POLYGON_VOICE_VIA_CONTEXT !== false,
-    wordStarts(entry, text) {
+    /* When each English word of `text` is said in the take, or null when the take's words are not
+       the line's. `anyOrder`: the times need not rise (a take in another language says its words
+       in its own order, so its English cue times do not, see cueStarts). */
+    wordStarts(entry, text, anyOrder) {
       if (!Array.isArray(entry.words) || !entry.words.length) return null;
       let previous = -1;
       const spoken = [];
       for (const item of entry.words) {
-        if (typeof item.word !== 'string' || !Number.isFinite(item.start) || item.start < 0 || item.start < previous) return null;
+        if (typeof item.word !== 'string' || !Number.isFinite(item.start) || item.start < 0 || (!anyOrder && item.start < previous)) return null;
         previous = item.start;
         normalize(item.word).split(' ').filter(Boolean).forEach(word => spoken.push({ word, start: item.start }));
       }
@@ -93,24 +96,61 @@
         return last;
       });
     },
-    find(text) {
+    /* A take in the page's language (a row of src/lesson/recordings-hi.js): for each English word of
+       the line, the moment its cue fires, which is when the word that says the same thing is said
+       in this take ("open" on खुली). Not in order. */
+    cueStarts(entry, text) { return this.wordStarts(entry, text, true); },
+    /* ...and when each word SHOWN is said: `shown` is the take's whole line or its opening words (a
+       step can show less than it says, screen 27). null when its words are not the take's. */
+    spokenStarts(entry, shown) {
+      const said = Array.isArray(entry.spoken) ? entry.spoken : null;
+      const words = String(shown || '').match(/\S+/g) || [];
+      if (!said || !words.length || said.length < words.length) return null;
+      const bare = w => String(w).replace(/[\s.,!?;:।…'"“”‘’—-]+/g, '');
+      for (let i = 0; i < words.length; i++) {
+        if (!said[i] || !Number.isFinite(said[i].start) || bare(said[i].word) !== bare(words[i])) return null;
+      }
+      return said.slice(0, words.length).map(w => w.start);
+    },
+    /* THE TAKE OF A LINE, found by its English words. In a language with a recorded voice of its
+       own (?lan=hi: src/lesson/recordings-hi.js, which src/i18n/i18n.js loads with the language's
+       words), that voice's take, or null where it has none: such a line is shown at a reading
+       pace, never said in the English voice under the language's words. Otherwise, and with
+       { english: true } (the drafted story's Help Momo scene, which stays English), the English
+       take. */
+    find(text, opts) {
+      const own = this.voice();
+      if (own && !(opts && opts.english)) return own.find(row => normalize(row.text) === normalize(text)) || null;
       return (window.POLYGON_RECORDINGS || []).find(row => normalize(row.text) === normalize(text));
+    },
+    /** The page's language's own takes, while that language is showing; null in English and in a
+        language that speaks with the English recordings. */
+    voice() {
+      const I = window.PolygonI18n, all = window.POLYGON_VOICES;
+      return I && I.on && all && Array.isArray(all[I.code]) ? all[I.code] : null;
     },
     play(game, text, entry, current, done, fail) {
       if (game._stopRecordedVoice) game._stopRecordedVoice();
       const audio = voiceFor(game, window.polygonAudioSrc(entry.src));
       audio.preload = 'auto';
-      /* IN ANOTHER LANGUAGE (?lan=, src/i18n/i18n.js) the recording is still the English one, and
-         its words still cue the screen; what is shown is the line's translation, the whole of it
-         on the board (narrShow), its words coming in as the same share of it as the voice has
-         said of the English. */
+      /* IN ANOTHER LANGUAGE (?lan=, src/i18n/i18n.js) what is shown is the line's translation, the
+         whole of it on the board (narrShow). Where the language speaks with the English recording,
+         the English words cue the screen and the shown words come in as the same share of the
+         line as the voice has said of the English. Where it has a take of its own (entry.spoken,
+         ?lan=hi), the shown words come in as that take says them, and each English cue ("open",
+         "sides", "vertex") fires when the word that says it in the take is said: in the take's
+         order, which is the language's, not the English order. */
       const I18N = window.PolygonI18n;
       const local = !!(I18N && I18N.on);
+      const own = local && Array.isArray(entry.spoken);
       const pages = local ? [text] : game.instructionPages(text);
       const counts = pages.map(page => (page.match(/\S+/g) || []).length);
       const total = counts.reduce((a, b) => a + b, 0);
-      const wordStarts = this.wordStarts(entry, text);
+      const wordStarts = own ? null : this.wordStarts(entry, text);
       const words = text.match(/\S+/g) || [];
+      const cueAt = own ? this.cueStarts(entry, text) : null;
+      const cueOrder = cueAt ? words.map((w, i) => i).sort((a, b) => cueAt[a] - cueAt[b] || a - b) : null;
+      let fired = 0;
       /* A step may speak only the opening of its recording. Screen 27 shows
          "Drag any vertex" and should say exactly that, but the studio take
          carries on into "Stretch it, squash it..." -- lines that belong to the
@@ -118,9 +158,12 @@
          the MP3 and lose the real voice, playback stops in the silence after
          the last spoken word, so the take is used exactly as recorded and
          simply ends where the sentence does. */
+      /* (In a take of the page's language the English word after the last one shown cues the
+         start of the sentence that says it, so the cut falls in the same pause.) */
       const speakWords = game.step().speakWords;
-      const cutAt = Number.isFinite(speakWords) && wordStarts && wordStarts.length > speakWords
-        ? Math.max(0, wordStarts[speakWords] - 0.3) : null;
+      const cutFrom = own ? cueAt : wordStarts;
+      const cutAt = Number.isFinite(speakWords) && cutFrom && cutFrom.length > speakWords
+        ? Math.max(0, cutFrom[speakWords] - 0.3) : null;
       let spoken = 0;
       let frame, pageIndex = -1, revealed = -1, stopped = false;
       const stop = () => {
@@ -142,6 +185,20 @@
         if (stopped || !current() || game.step().sc !== 'S11') return;
         game.setState({ voiceElapsedMs: audio.currentTime * 1000, voiceClockRunning: !!running });
       };
+      /* One English word said: the open / closed buttons it names, the boundary pulse it cues,
+         Swiftee's gesture on it. `at` is when it is said in the take, seconds. */
+      function cueWord(i, at, duration) {
+        if (game.revealChoiceWords) game.revealChoiceWords(words[i]);
+        if (game.boundaryScene && game.boundaryScene()) game.keyword(words[i], {
+          wordStartMs: at * 1000, mediaTimeMs: audio.currentTime * 1000, durationMs: duration * 1000
+        });
+        else if (game.guide && game.guide.onWord) game.guide.onWord(words[i], game.step());
+      }
+      let spokenKey = null, spokenFor = null;
+      const spokenStartsOf = shown => {
+        if (shown !== spokenKey) { spokenKey = shown; spokenFor = this.spokenStarts(entry, shown); }
+        return spokenFor;
+      };
       function update() {
         if (stopped || !current()) return;
         if (cutAt !== null && audio.currentTime >= cutAt) { finish(); return; }
@@ -151,20 +208,34 @@
         const spokenCount = wordStarts ? wordStarts.filter(start => start <= audio.currentTime).length : null;
         const position = wordStarts ? Math.max(0, spokenCount - 1) : Math.min(total - 0.001, Math.max(0, audio.currentTime / duration * total));
         const audibleCount = wordStarts ? spokenCount : Math.min(total, Math.floor(position) + 1);
-        while (spoken < audibleCount) {
-          if (game.revealChoiceWords) game.revealChoiceWords(words[spoken]);
-          if (game.boundaryScene && game.boundaryScene()) game.keyword(words[spoken], {
-            wordStartMs: (wordStarts ? wordStarts[spoken] : duration * spoken / total) * 1000,
-            mediaTimeMs: audio.currentTime * 1000, durationMs: duration * 1000
-          });
-          else if (game.guide && game.guide.onWord) game.guide.onWord(words[spoken], game.step());
+        if (own) {
+          // the English cues, each as the take says the word that carries it
+          while (fired < words.length) {
+            const i = cueOrder ? cueOrder[fired] : fired;
+            const at = cueAt ? cueAt[i] : duration * i / Math.max(1, words.length);
+            if (at > audio.currentTime) break;
+            cueWord(i, at, duration);
+            fired += 1;
+            if (game.step().sc === 'S8' && !game.state.reveal && normalize(words[i]) === 'polygon') game.keyword('polygon');
+          }
+        } else while (spoken < audibleCount) {
+          cueWord(spoken, wordStarts ? wordStarts[spoken] : duration * spoken / total, duration);
           spoken += 1;
         }
         // Scrub the paused CSS pulse from the media clock, including rate changes and pauses.
         if (game.boundaryScene && game.boundaryScene() && game.syncBoundaryPulse)
           game.syncBoundaryPulse(audio.currentTime * 1000);
         let page = 0, offset = 0, count;
-        if (local) {
+        if (own) {
+          /* the shown words as the take says them; a board that shows a shorter line than is said
+             (the classify screens: "आकृतियों को वर्गीकृत करें।" over the whole sentence) spreads its
+             words over the words said, the first with the first, never ahead of the voice */
+          const shown = game.state.narrShow || I18N.t(text);
+          const shownWords = (shown.match(/\S+/g) || []).length;
+          const starts = spokenStartsOf(shown) || Array.from({ length: shownWords },
+            (w, i) => entry.spoken[Math.floor(i * entry.spoken.length / Math.max(1, shownWords))].start);
+          count = starts.filter(start => start <= audio.currentTime).length;
+        } else if (local) {
           const shownWords = ((game.state.narrShow || I18N.t(text)).match(/\S+/g) || []).length;
           count = audibleCount > 0 ? Math.min(shownWords, Math.ceil(audibleCount / Math.max(1, total) * shownWords)) : 0;
           if (game.step().sc === 'S8' && !game.state.reveal && words.slice(0, audibleCount).some(word => normalize(word) === 'polygon')) game.keyword('polygon');

@@ -26,6 +26,8 @@ export const ASSET_V = {
   "assets/audio/universfield-ground-impact-352053.ogg": "f6742c2a",
   "assets/audio/universfield-sad-trumpet-278822.mp3": "318bbc84",
   "assets/audio/universfield-sad-trumpet-278822.ogg": "202ea116",
+  "assets/audio/vo-lines-hi.mp3": "895e5125",
+  "assets/audio/vo-lines-hi.ogg": "ebbb6834",
   "assets/audio/vo-lines.mp3": "fb39ef86",
   "assets/audio/vo-lines.ogg": "a80595e4",
   "assets/char/bear.webp": "ac7771ee",

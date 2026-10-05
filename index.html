@@ -18,9 +18,10 @@
   .game-viewport { position:fixed; inset:0; width:100%; height:100%; height:100dvh; overflow:hidden; background:#103574; }
 </style>
 <!-- The page's language, from ?lan= (en hi mr te gu od): its words come from
-     src/i18n/locales.json and its own font is fetched with them. English needs nothing
-     from it. See src/i18n/i18n.js. -->
-<script src="src/i18n/i18n.js"></script>
+     src/i18n/locales.json and its own font is fetched with them, and, for a language with a
+     recorded voice of its own (Hindi), its takes of the lesson's lines (data-voice). English
+     needs nothing from it. See src/i18n/i18n.js. -->
+<script src="src/i18n/i18n.js" data-voice="src/lesson/recordings-{code}.js"></script>
 <script src="src/lesson/responsive-layout.js"></script>
 <!-- Required lesson data and voice cues must be ready before the app mounts,
      including on a cold cache or a slow production connection. -->
@@ -1604,7 +1605,9 @@ class Component extends DCLogic {
     // question so each reveal has a real spoken cue, including on replay.
     const lines = [text];
     if (choiceQuestion && !(/\bopen\b/i.test(text) && /\bclosed?\b/i.test(text))) lines.push('Is it open or closed?');
-    this._voiceQueue = lines.flatMap(line => window.PolygonRecordedVoice && window.PolygonRecordedVoice.find(line) ? [line] : this.instructionPages(line)).map(part => ({ text: part })); this._voiceRetry = null; this._voiceContinue = null;
+    // (a line with no take is paged by its English width; in another language it is shown whole,
+    // as its translation, which an English page of it would not find)
+    this._voiceQueue = lines.flatMap(line => translated() || (window.PolygonRecordedVoice && window.PolygonRecordedVoice.find(line)) ? [line] : this.instructionPages(line)).map(part => ({ text: part })); this._voiceRetry = null; this._voiceContinue = null;
     this._voiceAfter = () => {
       if (o.then) o.then();
       else if (o.auto) {

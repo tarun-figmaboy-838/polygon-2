@@ -44,6 +44,8 @@ const ASSET_V = {
   "assets/audio/universfield-ground-impact-352053.ogg": "f6742c2a",
   "assets/audio/universfield-sad-trumpet-278822.mp3": "318bbc84",
   "assets/audio/universfield-sad-trumpet-278822.ogg": "202ea116",
+  "assets/audio/vo-lines-hi.mp3": "895e5125",
+  "assets/audio/vo-lines-hi.ogg": "ebbb6834",
   "assets/audio/vo-lines.mp3": "fb39ef86",
   "assets/audio/vo-lines.ogg": "a80595e4",
   "assets/char/bear.webp": "ac7771ee",
@@ -2247,6 +2249,31 @@ const CFG = {
          ending is the dance now, the camera pushes in on it, and a voice over the top was
          the same interruption the card was. The take still holds those seconds of audio —
          nothing asks for them. */
+    },
+    /* IN THE PAGE'S LANGUAGE (?lan=, ../src/i18n/i18n.js). A language with a recorded voice of
+       its own has its own take here, the same lines under the same ids, its windows' word starts
+       those of its own words on screen. It stands in for the English take once the language's
+       words are in (see AudioManager.voTake): the voice and the words are always one language.
+       Written by tools/voice/build-hindi-voice.py in the lesson's repository, from
+       docs/voice/hi/cue-map.json there. */
+    langs: {
+      hi: { src: 'assets/audio/vo-lines-hi.mp3', take: 39.98, lines: {
+          'tut-1-meet':      [0.00, 3.48, [0.06, 0.34, 0.86, 1.54, 1.82, 2.18, 2.57, 2.70, 3.20]],   // "यह मोमो है। उसे अपने दोस्त को ढूँढना है।" (This is Momo. He needs to find his friend.)
+          'tut-2-goal':      [3.88, 3.21, [0.06, 0.52, 0.74, 1.16, 1.40, 1.86, 2.06, 2.36, 2.50, 2.78]],   // "मोमो को जमा हुआ दर्रा पार करने में मदद करें!" (Help Momo cross the Frozen Pass!)
+          'tut-3-watch':     [7.49, 0.95, [0.06]],   // "सावधान!" (Watch out!)
+          'tut-4-jump':      [8.84, 3.10, [0.06, 0.73, 0.91, 1.25, 1.43, 1.85, 2.03, 2.40, 2.61]],   // "रुकावटों के ऊपर से कूदने के लिए टैप करें।" (Tap to jump over obstacles.)
+          'tut-5-broken':    [12.34, 2.92, [0.06, 0.38, 1.37, 1.90, 2.24, 2.54]],   // "अरे नहीं! रास्ता टूट गया है।" (Oh no! The path is broken.)
+          'tut-6-use':       [15.66, 3.90, [0.06, 0.61, 0.93, 1.27, 1.45, 1.71, 2.21, 2.33, 2.73, 3.07, 3.53]],   // "रास्ता ठीक करने के लिए बर्फ़ का सही टुकड़ा इस्तेमाल करें।" (Use the right ice piece to fix the path.)
+          'tut-6b-piece':    [19.96, 3.46, [0.06, 0.61, 1.03, 1.35, 1.49, 1.87, 2.25, 2.63, 3.07]],   // "रास्ता ठीक करने के लिए सही टुकड़ा इस्तेमाल करें।" (Use the right piece to fix the path.)
+          'tut-7-fit':       [23.82, 3.03, [0.06, 0.69, 1.15, 2.07, 2.35, 2.67]],   // "एकदम सही बैठा! आगे बढ़ते रहें!" (Perfect fit! Keep going!)
+          'sign-triangle':   [27.25, 1.11, [0.06, 0.50]],   // "त्रिभुज काटें।" (Cut the triangle.)
+          'sign-quadrilateral': [28.76, 1.47, [0.06, 0.79]],   // "चतुर्भुज काटें।" (Cut the quadrilateral.)
+          'sign-pentagon':   [30.63, 1.26, [0.06, 0.66]],   // "पंचभुज काटें।" (Cut the pentagon.)
+          'sign-hexagon':    [32.29, 1.52, [0.06, 0.78]],   // "षट्भुज काटें।" (Cut the hexagon.)
+          'sign-heptagon':   [34.21, 1.47, [0.06, 0.79]],   // "सप्तभुज काटें।" (Cut the heptagon.)
+          'sign-pentagons':  [36.08, 1.71, [0.06, 0.65, 1.18]],   // "सभी पंचभुज काटें।" (Cut all the pentagons.)
+          'sign-hexagons':   [38.19, 1.79, [0.06, 0.53, 1.19]],   // "सभी षट्भुज काटें।" (Cut all the hexagons.)
+      } }
     }
   },
   music: { src: 'assets/audio/bgm-ice-hunt.mp3', gain: 0.17, duck: 0.35, fadeMs: 2200 },
@@ -3199,12 +3226,28 @@ class AudioManager {
     if (this._voFetch) return this._voFetch;
     this._voFetch = (async () => {
       try {
-        const res = await fetch(assetUrl(V.src));
-        if (!res.ok) throw new Error(res.status + ' ' + V.src);
+        /* a language with a take of its own waits for its words: whether they came in decides
+           which take is the right one (voTake) */
+        const I = typeof window !== 'undefined' ? window.PolygonI18n : null;
+        if (I && I.ready && V.langs && V.langs[I.code]) await I.ready;
+        const T = this._voTake = this.voTake();
+        const res = await fetch(assetUrl(T.src));
+        if (!res.ok) throw new Error(res.status + ' ' + T.src);
         this.voBytes = await res.arrayBuffer();
       } catch (e) { this.voErr = 'fetch: ' + String((e && e.message) || e); }
     })();
     return this._voFetch;
+  }
+  /** WHICH TAKE IS SPOKEN: the page's language's own (CFG.vo.langs), once that language's words
+      are in, or the English one. It is settled when the take is fetched and kept from then on,
+      so the windows are always the windows of the bytes that were decoded. */
+  voTake() {
+    if (this._voTake) return this._voTake;
+    const V = CFG.vo;
+    const I = typeof window !== 'undefined' ? window.PolygonI18n : null;
+    const own = I && I.on && V.langs && V.langs[I.code];
+    return own && own.src ? { lang: I.code, src: own.src, gain: V.gain, lines: own.lines || {} }
+      : { lang: 'en', src: V.src, gain: V.gain, lines: V.lines || {} };
   }
   async loadVo() {
     const V = CFG.vo;
@@ -3213,7 +3256,8 @@ class AudioManager {
     const direct = typeof location !== 'undefined' && location.protocol === 'file:';
     try {
       if (direct) {
-        const el = new Audio(assetUrl(V.src));
+        const T = this._voTake = this.voTake();
+        const el = new Audio(assetUrl(T.src));
         el.preload = 'auto';
         el.volume = Math.min(1, V.gain || 1);
         this.voEl = el;
@@ -3246,7 +3290,7 @@ class AudioManager {
      instead of at an even rate that matches no delivery. A take with no offsets baked is
      still valid: the reveal falls back to spreading the words evenly. */
   voLine(id) {
-    const L = CFG.vo && CFG.vo.lines && CFG.vo.lines[id];
+    const L = CFG.vo && this.voTake().lines[id];
     return L ? { at: L[0], dur: L[1], words: L[2] || null } : null;
   }
   /** Speak one line of CFG.vo. Returns its length in seconds, or 0 if nothing will be heard. */
@@ -10584,6 +10628,10 @@ function createGame(canvas, hooks = {}) {
         line. The reveal is corrected against this rather than trusting its own clock, so a
         pause, a resume or a late start cannot leave the words and the voice apart. */
     voAt(id) { return audio.sayingAt(id); },
+    /** The language of the take being spoken ('en', or the page's language when it has its own
+        take, CFG.vo.langs): the tutorial times the words on screen by that take's words only
+        when they are the words it shows. */
+    voLang() { return audio.voTake().lang; },
     /** The voice id for a phase's question, from its instruction ("Cut all the PENTAGONS." ->
         sign-pentagons). One source: the sentence itself, so a re-worded phase cannot drift. */
     signVoId(text) { return voIdFor(text); },
@@ -11381,7 +11429,8 @@ class Frontend {
 const W = 1920, H = 1080;
 const clampN = (v, lo, hi) => v < lo ? lo : v > hi ? hi : v;
 /* THE PAGE'S LANGUAGE (?lan=, ../src/i18n/i18n.js, which index.html loads): what the tutorial
-   shows is put into it; its script, its voice and its timings stay English. */
+   shows is put into it; its script stays English, and so do its voice and its timings unless the
+   language has a recorded take of its own (CFG.vo.langs, see ownVoice). */
 const tutI18n = () => { const I = window.PolygonI18n; return I && I.on ? I : null; };
 
 
@@ -11830,12 +11879,22 @@ class Tutorial {
    * The sentences share the clip when there is a voice, in proportion to their length, so
    * what is on screen is what is being said at that moment.
    */
+  /** The page's language, when the voice speaking is in it too (a take of its own, CFG.vo.langs):
+      then a line's beats are its translation's sentences, timed by that take's own words. */
+  ownVoice() {
+    const lang = tutI18n();
+    return lang && this.game.voLang && this.game.voLang() === lang.code ? lang : null;
+  }
+
   beats(text) {
+    const own = this.ownVoice();
+    if (own && text) text = own.t(text);
     const key = (text || '') + '|' + (this.voDur || 0);
     if (this._beatKey === key) return this._beatPlan;
     /* Split on the punctuation and KEEP it: "Oh no!" is a beat BECAUSE of the "!", and a
-       sentence that arrives without its full stop reads as unfinished. */
-    const parts = String(text || '').match(/[^.!?]+[.!?]*/g) || [];
+       sentence that arrives without its full stop reads as unfinished. (The danda, ।, is the
+       Devanagari full stop.) */
+    const parts = String(text || '').match(/[^.!?।]+[.!?।]*/g) || [];
     const lines = parts.map(t => t.trim()).filter(Boolean);
     let plan;
     if (!lines.length) plan = [];
@@ -12177,9 +12236,10 @@ class Tutorial {
     const beat = this.beatAt(line, this.t);
     this._beat = beat;
     /* IN THE PAGE'S LANGUAGE (?lan=): the same sentence of the line's translation. Everything
-       that times the line (the beats, the voice, readTime) keeps to the English. */
+       that times the line (the beats, the voice, readTime) keeps to the English, unless the
+       voice is in the language too (ownVoice): then the beats are already its sentences. */
     const lang = tutI18n();
-    const text = lang ? lang.sentence(line, this.beats(line).indexOf(beat)) : beat.text;
+    const text = lang && !this.ownVoice() ? lang.sentence(line, this.beats(line).indexOf(beat)) : beat.text;
     this._beatDur = beat.dur;
 
     /* THE GAME IS TOLD A LINE IS PRESENTING, and it is the engine that acts on it: while
@@ -12341,8 +12401,9 @@ class Tutorial {
     const beat = this._beat;
     const all = this.voWords;
     let at = null;
-    // (a translated sentence has its own words: the English take's word times are not theirs)
-    if (!tutI18n() && all && beat && beat.i0 != null && all.length >= beat.i0 + words) {
+    // (a translated sentence has its own words: the English take's word times are not theirs,
+    // but its own language's take's are, ownVoice)
+    if ((!tutI18n() || this.ownVoice()) && all && beat && beat.i0 != null && all.length >= beat.i0 + words) {
       /* ANCHORED TO WHERE THE VOICE ACTUALLY IS, not to where this sentence was due.
          The offsets are measured from the start of the LINE, so a sentence's own delays
          are its words minus its first word. That is right only if the sentence is written

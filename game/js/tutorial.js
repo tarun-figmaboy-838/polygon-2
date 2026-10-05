@@ -50,7 +50,8 @@
 const W = 1920, H = 1080;
 const clampN = (v, lo, hi) => v < lo ? lo : v > hi ? hi : v;
 /* THE PAGE'S LANGUAGE (?lan=, ../src/i18n/i18n.js, which index.html loads): what the tutorial
-   shows is put into it; its script, its voice and its timings stay English. */
+   shows is put into it; its script stays English, and so do its voice and its timings unless the
+   language has a recorded take of its own (CFG.vo.langs, see ownVoice). */
 const tutI18n = () => { const I = window.PolygonI18n; return I && I.on ? I : null; };
 
 
@@ -500,12 +501,22 @@ export class Tutorial {
    * The sentences share the clip when there is a voice, in proportion to their length, so
    * what is on screen is what is being said at that moment.
    */
+  /** The page's language, when the voice speaking is in it too (a take of its own, CFG.vo.langs):
+      then a line's beats are its translation's sentences, timed by that take's own words. */
+  ownVoice() {
+    const lang = tutI18n();
+    return lang && this.game.voLang && this.game.voLang() === lang.code ? lang : null;
+  }
+
   beats(text) {
+    const own = this.ownVoice();
+    if (own && text) text = own.t(text);
     const key = (text || '') + '|' + (this.voDur || 0);
     if (this._beatKey === key) return this._beatPlan;
     /* Split on the punctuation and KEEP it: "Oh no!" is a beat BECAUSE of the "!", and a
-       sentence that arrives without its full stop reads as unfinished. */
-    const parts = String(text || '').match(/[^.!?]+[.!?]*/g) || [];
+       sentence that arrives without its full stop reads as unfinished. (The danda, ।, is the
+       Devanagari full stop.) */
+    const parts = String(text || '').match(/[^.!?।]+[.!?।]*/g) || [];
     const lines = parts.map(t => t.trim()).filter(Boolean);
     let plan;
     if (!lines.length) plan = [];
@@ -847,9 +858,10 @@ export class Tutorial {
     const beat = this.beatAt(line, this.t);
     this._beat = beat;
     /* IN THE PAGE'S LANGUAGE (?lan=): the same sentence of the line's translation. Everything
-       that times the line (the beats, the voice, readTime) keeps to the English. */
+       that times the line (the beats, the voice, readTime) keeps to the English, unless the
+       voice is in the language too (ownVoice): then the beats are already its sentences. */
     const lang = tutI18n();
-    const text = lang ? lang.sentence(line, this.beats(line).indexOf(beat)) : beat.text;
+    const text = lang && !this.ownVoice() ? lang.sentence(line, this.beats(line).indexOf(beat)) : beat.text;
     this._beatDur = beat.dur;
 
     /* THE GAME IS TOLD A LINE IS PRESENTING, and it is the engine that acts on it: while
@@ -1011,8 +1023,9 @@ export class Tutorial {
     const beat = this._beat;
     const all = this.voWords;
     let at = null;
-    // (a translated sentence has its own words: the English take's word times are not theirs)
-    if (!tutI18n() && all && beat && beat.i0 != null && all.length >= beat.i0 + words) {
+    // (a translated sentence has its own words: the English take's word times are not theirs,
+    // but its own language's take's are, ownVoice)
+    if ((!tutI18n() || this.ownVoice()) && all && beat && beat.i0 != null && all.length >= beat.i0 + words) {
       /* ANCHORED TO WHERE THE VOICE ACTUALLY IS, not to where this sentence was due.
          The offsets are measured from the start of the LINE, so a sentence's own delays
          are its words minus its first word. That is right only if the sentence is written

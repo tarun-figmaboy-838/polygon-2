@@ -27,8 +27,16 @@
    three names, for that script's characters only: English text keeps its faces exactly, and
    only the one file the language needs is fetched (assets/fonts/).
 
-   ready resolves once the words and the font are in, or could not be had (then the page
-   stays in English, or in the system's font). It never waits longer than READY_CAP. */
+   THE VOICE. A language in VOICED has a recorded voice of its own: Hindi. Its takes of the
+   lesson's lines are src/lesson/recordings-<code>.js (tools/voice/build-hindi-voice.py), and
+   Frozen Rush has its take (CFG.vo.langs). A page that speaks the lesson asks for them on this
+   script's tag, data-voice="src/lesson/recordings-{code}.js" (index.html), and they are loaded
+   with the words, so no line is looked up before they are in. The other languages speak with
+   the English recordings, their words coming in with them.
+
+   ready resolves once the words, the font and the voice are in, or could not be had (then the
+   page stays in English, or in the system's font, or with the English voice). It never waits
+   longer than READY_CAP. */
 (function () {
   'use strict';
   const script = document.currentScript;
@@ -37,6 +45,7 @@
   const ALIAS = { or: 'od', ori: 'od', odia: 'od', oriya: 'od', odiya: 'od', hindi: 'hi', marathi: 'mr', telugu: 'te',
     gujarati: 'gu', english: 'en', eng: 'en', hin: 'hi', mar: 'mr', tel: 'te', guj: 'gu' };
   const TAG = { od: 'or' };              // Odia is od in the address, or as a language tag
+  const VOICED = ['hi'];                 // the languages with a recorded voice of their own
   const READY_CAP = 10000;
   const FONTS = {
     hi: { file: 'baloo-2-devanagari.woff2', range: 'U+0900-097F, U+1CD0-1CF9, U+200C-200D, U+20A8, U+20B9, U+20F0, U+25CC, U+A830-A839, U+A8E0-A8FF' },
@@ -295,6 +304,19 @@
       return face.load();
     }))).then(() => true).catch(e => { try { console.warn('[i18n] the ' + asked + ' font could not be loaded.', e); } catch (x) {} return false; });
   }
+  /* the language's own takes, for a page that speaks them (data-voice on this script's tag) */
+  let voiced = false;
+  function loadVoice() {
+    const pattern = script && script.getAttribute && script.getAttribute('data-voice');
+    if (!wanted || !pattern || VOICED.indexOf(asked) < 0 || !document.createElement) return Promise.resolve(false);
+    return new Promise(resolve => {
+      const tag = document.createElement('script');
+      tag.src = new URL(pattern.replace('{code}', asked), location.href).href;
+      tag.onload = () => { voiced = !!(window.POLYGON_VOICES && window.POLYGON_VOICES[asked]); resolve(voiced); };
+      tag.onerror = e => { try { console.warn('[i18n] the ' + asked + ' voice could not be loaded; the English recordings speak.', e); } catch (x) {} resolve(false); };
+      (document.head || document.documentElement).appendChild(tag);
+    });
+  }
 
   /* Indian scripts join their letters: letter-spacing pulls them apart (the line along the
      top of Devanagari breaks into pieces), so it is off for the whole page once it is in one */
@@ -309,7 +331,7 @@
     if (document.title) document.title = t(document.title);
   }
   const ready = !wanted ? Promise.resolve() : Promise.race([
-    Promise.all([loadWords(), loadFont()]).then(settle),
+    Promise.all([loadWords(), loadFont(), loadVoice()]).then(settle),
     timeout(READY_CAP)
   ]);
 
@@ -321,6 +343,8 @@
     languages: LANGS.slice(),
     /** true once the page is showing another language than English */
     get on() { return loaded; },
+    /** true once the page is showing a language that speaks in its own recorded voice (VOICED) */
+    get voiced() { return loaded && voiced; },
     ready,
     t, key, marks, parts, sentence, sentences, translateDom, letter,
     /** the name of the boy the game is about, as the language writes it */

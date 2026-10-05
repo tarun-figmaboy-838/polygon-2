@@ -52,7 +52,9 @@ assets/
   audio/sfx/          answer and drawing sounds (Ogg + MP3)
   audio/story/        story voices and music (Ogg + MP3)
   audio/bridge/       Swiftee's two Broken Path lines (Ogg + MP3)
-  audio/source/       the six voice recordings as delivered; everything above is cut from them
+  audio/source/       the voice recordings as delivered; everything above is cut from them
+                      (hi/: the Hindi voice, one WAV per line, numbered as hi/script.csv)
+  audio/lesson/hi/    the Hindi takes of the lesson's lines (npm run build:hindi-voice)
   fonts/              Baloo 2, Nunito and Fredoka (with licences)
   vendor/             React and React DOM
 game/                 THE FROZEN PASS: the runner game, a complete page of its own
@@ -156,7 +158,8 @@ https://tarun-figmaboy-838.github.io/polygon-2/?lan=hi
 
 Everything the learner reads is in that language: Swiftee's lines in the lesson, the buttons, labels and name pills, the feedback, the recap, her lines over the game, the game's tutorial, its plank and its controls, the page title and the screen-reader messages. The key words are coloured as in English, orange for open, gap and curved and purple for the rest. The words come from [src/i18n/locales.json](src/i18n/locales.json), one block per language. [docs/i18n/translations-review.html](docs/i18n/translations-review.html) shows them side by side.
 
-- **The voice stays the English recording.** There are no recordings in the other languages and no synthetic voice, so Swiftee and the game voice speak English while the words appear in the chosen language, in step with the voice. Every cue the voice drives (the Open and Closed buttons, the outlines and counts) works as in English.
+- **In Hindi the voice is Hindi.** Swiftee's lesson lines, the recap, her lines over the game and her last line, and the game's tutorial and plank are all said in the Hindi recordings, and each word appears as it is said. Every cue the voice drives fires on the Hindi word that says it: the Open and Closed buttons on खुली and बंद, the boundaries pulsing on सीधी and वक्र, the pentagon's sides, vertex and angle drawn on भुजाएँ, शीर्ष and कोण, the recap's counts on the number. See [The Hindi voice](#the-hindi-voice).
+- **The other languages speak with the English recording.** There are no recordings in Marathi, Telugu, Gujarati or Odia and no synthetic voice, so Swiftee and the game voice speak English while the words appear in the chosen language, in step with the voice. Every cue the voice drives works as in English.
 - **Each language has its own font.** Nunito, Baloo 2 and Fredoka have no Indian scripts, so the matching Baloo is used under the same names: Baloo 2 for Hindi and Marathi, Baloo Tammudu 2 for Telugu, Baloo Bhai 2 for Gujarati and Baloo Bhaina 2 for Odia (`assets/fonts/`, about 100 kB). Only the chosen language's file is fetched, and English loads nothing new.
 - **The code keeps its English.** Every line is still written, compared, timed and looked up in English. Only what is shown is put into the language, by `src/i18n/i18n.js`, which finds each line in the JSON by its English. A line missing from the JSON is shown in English.
 - **To change a translation,** edit its line in `locales.json`. Key words are wrapped in `<strong>…</strong>`, and `{placeholders}` are filled in by the game. Then run `npm run test:i18n`, which checks the file and every screen, and `npm run build:i18n-review` to refresh the review page.
@@ -180,6 +183,21 @@ Every voice the learner hears is recorded. They were delivered as nine files, mo
 
 `docs/voice/cue-map.json` is the line-level map: for every line, which file, where it starts and ends, and when each word is said. It was measured from the recordings (a speech recogniser placed the words, then the waveform's own pauses decided where each line begins and ends). `npm run build:recorded-voice` (`tools/voice/cut-recordings.py`) builds everything the experience plays from the recordings and that map: the story's joined file and table, one file per lesson line under the name its row in `src/lesson/recordings.js` already uses (and that row's length and word times), Swiftee's two Broken Path takes in `assets/audio/bridge/`, and the game's take with its windows in `CFG.vo.lines`. So every line is played on its own, at its own moment, and its words appear as they are said. There are no stand-in voices and no lines without one. One line nobody recorded whole is joined from recorded words (the cue map's `joins`, built by the same tool, each piece cut in the silences around it and levelled as its own recording is): the game voice's "Use the right piece to fix the path." after the lesson, its own line with "ice" cut out ("fill the gap" was never recorded). A recording of it whole replaces the join. The lesson's lines play through the lesson's AudioContext once the game's PLAY has opened it (`src/lesson/recorded-player.js`), so Safari, which does not count a tap inside the game's frame for the page, still plays them; without a running context they play as media elements, as before. [docs/voice/VO-LIST.md](docs/voice/VO-LIST.md) lists every line and what it is recorded with. A new take for one line goes in on its own: add it to the cue map and run `npm run build:recorded-voice -- --only <id>`.
 
+### The Hindi voice
+
+With `?lan=hi` every line is said in Hindi. The Hindi voice-over was delivered as one WAV per line, numbered as its script, and is kept as delivered in `assets/audio/source/hi/` (`1.wav` ... `181.wav`; [script.csv](assets/audio/source/hi/script.csv) says which number is which line, and whether it came). The numbers follow the keys of `src/i18n/locales.json` in order, leaving out the twelve nobody hears (from `uiOptionLetters` to `a11yLabelPlaced`). Of those 181, the 97 the experience says are used; the rest are labels and screen-reader messages.
+
+| To change | Do |
+|---|---|
+| A Hindi take (a new one for a line, or a missing one) | drop it in `assets/audio/source/hi/` as `<number>.wav`, then measure it and build: `python tools/voice/measure-hindi-voice.py --model <whisper folder> --only <number>` and `npm run build:hindi-voice` |
+| Which Hindi word an English cue fires on | `CONCEPTS` (by word) or `CUE_AT` (one line's) in `tools/voice/build-hindi-voice.py`, or a line's `cues` in the cue map; then `npm run build:hindi-voice` |
+
+- **The map.** `docs/voice/hi/cue-map.json` holds, for every line said, its file, its key, its English and Hindi, where its speech starts and ends, its runs of speech between pauses, and when each shown word starts, with a check: a blind transcription of the file and how close it is to the script. It is measured by `tools/voice/measure-hindi-voice.py`: a multilingual Whisper aligns the line's own Hindi words to the recording, then the recording's pauses are fitted to the word boundaries (a pause comes between words, mostly where the line is punctuated; a short silence can be a stop inside a word, as in सप्तभुज). That tool needs `faster-whisper` and a multilingual model; its header says how to get them.
+- **The build.** `npm run build:hindi-voice` (`tools/voice/build-hindi-voice.py`, ffmpeg only) makes, from the delivered files and the map: each lesson line as `assets/audio/lesson/hi/<name>`, under its English take's name, cut and levelled as the English takes are; `src/lesson/recordings-hi.js`, the Hindi catalogue (each row found by its English, with its Hindi words' times and each English cue word's moment in the Hindi take); and Frozen Rush's Hindi take, `game/assets/audio/vo-lines-hi`, with its windows in `CFG.vo.langs.hi` (`game/js/engine.js` and its bundle) and its hashes in the game's asset versions.
+- **At run time.** `src/i18n/i18n.js` loads the catalogue with the Hindi words, for the page that asks for it (`data-voice` on its tag in `index.html`), so nothing is said before it is in. `PolygonRecordedVoice.find()` then returns the Hindi take of a line, and the lesson, the recap and Swiftee over the game play it, showing each word on its own time. The game waits for its page's words and plays its Hindi take with them (`AudioManager.voTake`); its tutorial times each Hindi sentence by that take's words (`Tutorial.ownVoice`). If the Hindi words do not load, the page and its voice both stay English.
+- **A line with no Hindi take** is shown in Hindi at a reading pace, without a voice, never in the English voice under Hindi words. One is not delivered yet: `127.wav`, "ठीक 5 भुजाओं वाली हर आकृति ढूँढें।" (Look for every figure with exactly 5 sides., a hint on the pentagon quiz).
+- The drafted story and its Help Momo scene (`?story=1`) stay English, voice and words.
+
 ## Testing
 
 ```bash
@@ -193,11 +211,13 @@ npm run test:opening                   # the game's cover and tutorial, Swiftee 
 npm run test:runner                    # just the hand-off: ?game=1, the Help Momo button, ?game=0 (~2 min)
 npm run test:i18n                      # the languages (?lan=): the JSON, every line in five languages, every screen in Hindi,
                                        # the game's tutorial and plank in Hindi, ?lan=xx left in English (~10 min)
+npm run test:hindi-voice               # the Hindi voice with real audio: every screen in its Hindi take, its words keeping to it,
+                                       # the recap, the opening, the end and the return; Marathi and English keep the English (~8 min)
 npm run test:bridge                    # Help Momo and the lesson's ending: order, locking, voice, Next, the game starting by itself (~5 min)
 npm run test:swiftee                   # Swiftee loading: sheet table, cold / slow / warm loads, state races (~2 min)
 npm run test:recap                     # the recap: states in order, voice, word cues, layout, phones, Next into the quizzes (~5 min)
 BASE=https://tarun-figmaboy-838.github.io/polygon-2/ npm run test:swiftee   # the same against a deployed site
-npm run test:checks                    # 32 focused lesson checks incl. the full 47-screen playthrough (~20 min)
+npm run test:checks                    # 33 focused lesson checks incl. the full 47-screen playthrough (~20 min)
 ENGINE=webkit npm test                 # the same in Safari's engine
 ```
 
