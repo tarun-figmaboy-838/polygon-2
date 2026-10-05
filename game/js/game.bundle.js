@@ -6556,8 +6556,6 @@ function createGame(canvas, hooks = {}) {
       // how long the spoken question runs, so the HUD can reveal the words in step with it
       voDur: G.voDur || 0,
       jumpEnabled: G.jumpEnabled, complete: G.complete,
-      // TEMPORARY: whether the review control that jumps to the ending may show
-      skippable: G.state !== 'BOOT' && G.state !== 'TITLE' && !G.complete,
 
       oops: G.oops,
       // the hint control asks for attention once the learner has been stuck a while
@@ -10428,20 +10426,6 @@ function createGame(canvas, hooks = {}) {
     _voice: () => ({ ready: !!(audio.vo || audio.voEl), saying: !!audio.saying, dur: G.voDur || 0,
                      ctx: audio.ctx ? audio.ctx.state : 'none', said: (audio.saidLog || []).slice(),
                      lines: Object.keys((CFG.vo && CFG.vo.lines) || {}).length }),
-    /** TEMPORARY, for reviewing the ending without playing seven phases: every crossing
-        is counted as mended and the run home starts with the friend a short way ahead, so
-        the real sequence plays — arrival, cross-fade into the dance, confetti, the banner
-        with all seven stamps. Remove with the button in index.html, its rule in style.css,
-        the hud.js lines, tests/skip-end.spec.mjs and the RUNNER note. */
-    skipToEnd() {
-      if (G.state === 'BOOT' || G.state === 'TITLE' || G.complete) return false;
-      G.phase = L1.phases.length; G.phasesDone = L1.phases.length;
-      G.oops = false; G.hitObstacle = null; G.hitReturn = null; G.hitFx = 0;
-      obstacles.reset();                            // nothing in the way of the run home
-      setState('FINAL_RUN');
-      G.bearAt = G.worldX + CFG.mammothX + 520 + 900;   // about a second and a half of running
-      return true;
-    },
     _player: () => mammoth,
     /** Draw one frame now, without advancing the simulation — for a test that wants to
         measure a deterministic pose on the real backbuffer. */
@@ -10623,7 +10607,6 @@ class Hud {
       /* No jump button any more (see index.html): the stage is the control. The lookup
          is gone with it rather than kept guarded — a lookup with no user is how a dead
          element gets wired back up by the next person reading this file. */
-      skipEnd: root.getElementById('btn-skip-end'),   // TEMPORARY review control
       instruction: root.getElementById('instruction'),
       pill: root.getElementById('instruction-pill'),
       text: root.getElementById('instruction-text'),
@@ -10785,7 +10768,6 @@ class Hud {
     // preventDefault also suppresses the browser's own :active state, so the
     // pressed look has to be driven by a class or the button never appears to move.
     // TEMPORARY review control: jump to the ending. Guarded like every other lookup.
-    if (this.el.skipEnd && handlers.onSkipEnd) this.el.skipEnd.addEventListener('click', () => handlers.onSkipEnd());
 
     /* NOTHING HERE BINDS A JUMP. The jump is a tap on the stage, which the engine reads
        off the canvas itself — there is no DOM control to press, to swap art on, to
@@ -10922,7 +10904,6 @@ class Hud {
     if (this.el.hint) this.el.hint.classList.toggle('nudge', !!h.hintNudge);
 
     // TEMPORARY review control: up whenever the game is playable and not yet complete
-    if (this.el.skipEnd) { const show = !!h.skippable; if (this.el.skipEnd.hidden === show) this.el.skipEnd.hidden = !show; }
 
     if (this.el.complete.hidden === h.complete) {
       this.el.complete.hidden = !h.complete;
@@ -12578,7 +12559,7 @@ const beginRun = () => {
 const lessonPart = params.get('lesson');
 /* and in the lesson there is no way round it: no Skip on the tutorial, and no review jump to
    the ending (the HUD's TEMPORARY control) */
-if (lessonPart) ['tut-skip', 'btn-skip-end'].forEach(id => { const b = document.getElementById(id); if (b) b.remove(); });
+if (lessonPart) { const b = document.getElementById('tut-skip'); if (b) b.remove(); }
 const whereOf = t => { try { return t.where(); } catch (e) { return null; } };
 const tutorialOptions = () => {
   if (lessonPart === 'intro') return { script: 'intro', holdAtEnd: true, onDone: t => tellHost('lesson', { where: whereOf(t) }) };
@@ -12830,8 +12811,6 @@ if (window.Juice) {
 hud.bind({
   onPause: paused => game.setPaused(paused),
   onReplay: () => game.restart(),
-  // TEMPORARY review control: end the tutorial if it is up, then jump to the ending
-  onSkipEnd: () => { if (tut) { tut.finish(); tut = null; } game.skipToEnd(); },
   // returns the new state so the HUD can swap the glyph without asking again
   onSound: () => game.toggleSound(),
   // re-states the objective; it never reveals which chunk is the answer

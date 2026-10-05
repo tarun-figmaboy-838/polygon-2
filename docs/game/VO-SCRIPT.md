@@ -72,7 +72,6 @@ require them.
 | ui-sound | Sound | The pause panel |
 | ui-rotate | Rotate your device | Shown in portrait |
 | ui-play-again | Play again | The ending |
-| ui-skip-ending | Skip to ending | A review control, not for players |
 
 ## 5. If the lines are ever re-recorded or re-written
 

@@ -86,7 +86,7 @@ const beginRun = () => {
 const lessonPart = params.get('lesson');
 /* and in the lesson there is no way round it: no Skip on the tutorial, and no review jump to
    the ending (the HUD's TEMPORARY control) */
-if (lessonPart) ['tut-skip', 'btn-skip-end'].forEach(id => { const b = document.getElementById(id); if (b) b.remove(); });
+if (lessonPart) { const b = document.getElementById('tut-skip'); if (b) b.remove(); }
 const whereOf = t => { try { return t.where(); } catch (e) { return null; } };
 const tutorialOptions = () => {
   if (lessonPart === 'intro') return { script: 'intro', holdAtEnd: true, onDone: t => tellHost('lesson', { where: whereOf(t) }) };
@@ -338,8 +338,6 @@ if (window.Juice) {
 hud.bind({
   onPause: paused => game.setPaused(paused),
   onReplay: () => game.restart(),
-  // TEMPORARY review control: end the tutorial if it is up, then jump to the ending
-  onSkipEnd: () => { if (tut) { tut.finish(); tut = null; } game.skipToEnd(); },
   // returns the new state so the HUD can swap the glyph without asking again
   onSound: () => game.toggleSound(),
   // re-states the objective; it never reveals which chunk is the answer

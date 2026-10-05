@@ -139,7 +139,7 @@ The game here is the Frozen Rush runner (`game/`). These are the hooks it needs;
 **`game/js/main.js`** (entry point):
 ```js
 const lessonPart = params.get('lesson');                    // 'intro' | 'end' | null
-if (lessonPart) ['tut-skip', 'btn-skip-end'].forEach(id => document.getElementById(id)?.remove());
+if (lessonPart) document.getElementById('tut-skip')?.remove();
 const tellHost = (word, more) => window.parent !== window && window.parent.postMessage(Object.assign({ iceAge: word }, more || {}), '*');
 const tutorialOptions = () => lessonPart === 'intro' ? { script: 'intro', holdAtEnd: true, onDone: t => tellHost('lesson', { where: t.where() }) }
                             : lessonPart === 'end'   ? { script: 'end', onHost: (id, where) => tellHost('swiftee', { id, where }) } : {};

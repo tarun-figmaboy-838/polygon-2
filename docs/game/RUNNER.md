@@ -313,7 +313,7 @@ and the page is told (`{ iceAge: 'lesson', where }`), and the page asks for the 
 tutorial, and at the ditch a host step stops the game (`{ iceAge: 'swiftee', id, where }`)
 until the page answers `said` (or 16 s pass), then line 6 on the plank. `where` is Momo's head
 and the far lip of the hole in stage space after the zoom, and the stage's place in the window
-(`Tutorial.where`). In both, the tutorial's Skip and the HUD's Skip to ending are taken out.
+(`Tutorial.where`). In both, the tutorial's Skip is taken out.
 
 ---
 
@@ -1669,13 +1669,11 @@ went with them. One key word pops per line: friend, cross, Watch, Tap, broken, r
 
 ### A temporary review control
 
-"Skip to ending" sits bottom-left during play (`#btn-skip-end`). It calls `game.skipToEnd()`,
-which counts every crossing as mended and starts the run home with the friend a short way
-ahead, so the real ending plays: arrival, cross-fade into the dance, confetti, the banner with
-all seven stamps. It is for reviewing the ending, not part of the game, and comes out in one
-pass: the button in `index.html`, its rule in `style.css`, the three `skipEnd` lines in
-`hud.js`, the `onSkipEnd` handler in `main.js`, `skipToEnd`/`skippable` in `engine.js`, and
-`tests/skip-end.spec.mjs`.
+"Skip to ending" (`#btn-skip-end`, `game.skipToEnd()`) jumped to the ending so it could be
+reviewed without playing seven phases. It was removed on 2026-10-06, in the one pass this note
+asked for: the button and its rule, the `skipEnd` lines in `hud.js`, the `onSkipEnd` handler,
+`skipToEnd` and `skippable` in the engine, and its label in every language. The ending is
+reached by playing.
 
 `obstacleName` (rock, log or fossil from an obstacle's kind) was removed in this copy: nothing called it.
 

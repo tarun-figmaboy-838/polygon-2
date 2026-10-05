@@ -5347,8 +5347,6 @@ export function createGame(canvas, hooks = {}) {
       // how long the spoken question runs, so the HUD can reveal the words in step with it
       voDur: G.voDur || 0,
       jumpEnabled: G.jumpEnabled, complete: G.complete,
-      // TEMPORARY: whether the review control that jumps to the ending may show
-      skippable: G.state !== 'BOOT' && G.state !== 'TITLE' && !G.complete,
 
       oops: G.oops,
       // the hint control asks for attention once the learner has been stuck a while
@@ -9219,20 +9217,6 @@ export function createGame(canvas, hooks = {}) {
     _voice: () => ({ ready: !!(audio.vo || audio.voEl), saying: !!audio.saying, dur: G.voDur || 0,
                      ctx: audio.ctx ? audio.ctx.state : 'none', said: (audio.saidLog || []).slice(),
                      lines: Object.keys((CFG.vo && CFG.vo.lines) || {}).length }),
-    /** TEMPORARY, for reviewing the ending without playing seven phases: every crossing
-        is counted as mended and the run home starts with the friend a short way ahead, so
-        the real sequence plays — arrival, cross-fade into the dance, confetti, the banner
-        with all seven stamps. Remove with the button in index.html, its rule in style.css,
-        the hud.js lines, tests/skip-end.spec.mjs and the RUNNER note. */
-    skipToEnd() {
-      if (G.state === 'BOOT' || G.state === 'TITLE' || G.complete) return false;
-      G.phase = L1.phases.length; G.phasesDone = L1.phases.length;
-      G.oops = false; G.hitObstacle = null; G.hitReturn = null; G.hitFx = 0;
-      obstacles.reset();                            // nothing in the way of the run home
-      setState('FINAL_RUN');
-      G.bearAt = G.worldX + CFG.mammothX + 520 + 900;   // about a second and a half of running
-      return true;
-    },
     _player: () => mammoth,
     /** Draw one frame now, without advancing the simulation — for a test that wants to
         measure a deterministic pose on the real backbuffer. */
