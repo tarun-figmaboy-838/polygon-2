@@ -473,61 +473,6 @@ window.POLYGON_RECORDINGS = [
     "source": "Swiftee's recorded take: swiftee-lesson-1.mp3, 67.51-72.34 s; word starts measured from the recording"
   },
   {
-    "text": "Tap the figure that is both closed and made of straight lines.",
-    "src": "assets/audio/lesson/16_Tap_the_figure_that_is_both_closed_and_made_of_straight_lines.mp3",
-    "duration": 4.73,
-    "words": [
-      {
-        "word": "Tap",
-        "start": 0.3
-      },
-      {
-        "word": "the",
-        "start": 0.56
-      },
-      {
-        "word": "figure",
-        "start": 0.88
-      },
-      {
-        "word": "that",
-        "start": 1.26
-      },
-      {
-        "word": "is",
-        "start": 1.4
-      },
-      {
-        "word": "both",
-        "start": 1.68
-      },
-      {
-        "word": "closed",
-        "start": 2.06
-      },
-      {
-        "word": "and",
-        "start": 2.8
-      },
-      {
-        "word": "made",
-        "start": 3.04
-      },
-      {
-        "word": "of",
-        "start": 3.26
-      },
-      {
-        "word": "straight",
-        "start": 3.62
-      },
-      {
-        "word": "lines.",
-        "start": 4.14
-      }
-    ]
-  },
-  {
     "text": "We call this a polygon.",
     "src": "assets/audio/lesson/17_We_call_this_a_polygon.mp3",
     "duration": 2.3,
@@ -814,68 +759,6 @@ window.POLYGON_RECORDINGS = [
       }
     ],
     "source": "Swiftee's recorded take: swiftee-lesson-1.mp3, 114.31-116.32 s; word starts measured from the recording"
-  },
-  {
-    "text": "How many sides does this polygon have?",
-    "src": "assets/audio/lesson/24_How_many_sides_does_this_polygon_have.mp3",
-    "duration": 3.261,
-    "words": [
-      {
-        "word": "How",
-        "start": 0.34
-      },
-      {
-        "word": "many",
-        "start": 0.52
-      },
-      {
-        "word": "sides",
-        "start": 1.04
-      },
-      {
-        "word": "does",
-        "start": 1.46
-      },
-      {
-        "word": "this",
-        "start": 1.72
-      },
-      {
-        "word": "polygon",
-        "start": 2.06
-      },
-      {
-        "word": "have?",
-        "start": 2.7
-      }
-    ]
-  },
-  {
-    "text": "This polygon has five sides.",
-    "src": "assets/audio/lesson/25_This_polygon_has_five_sides.mp3",
-    "duration": 3.108,
-    "words": [
-      {
-        "word": "This",
-        "start": 0.46
-      },
-      {
-        "word": "polygon",
-        "start": 0.68
-      },
-      {
-        "word": "has",
-        "start": 1.44
-      },
-      {
-        "word": "five",
-        "start": 1.96
-      },
-      {
-        "word": "sides.",
-        "start": 2.38
-      }
-    ]
   },
   {
     "text": "Now let's change how it looks.",
@@ -1454,85 +1337,6 @@ window.POLYGON_RECORDINGS = [
     "source": "Swiftee's recorded take: swiftee-lesson-1.mp3, 190.65-194.32 s; word starts measured from the recording"
   },
   {
-    "text": "Let's recall the different types of polygons we learnt about.",
-    "src": "assets/audio/lesson/41_Lets_recall_the_different_types_of_polygons_we_learnt_about.mp3",
-    "duration": 3.44,
-    "words": [
-      {
-        "word": "Let's",
-        "start": 0.25
-      },
-      {
-        "word": "recall",
-        "start": 0.52
-      },
-      {
-        "word": "the",
-        "start": 0.84
-      },
-      {
-        "word": "different",
-        "start": 1.06
-      },
-      {
-        "word": "types",
-        "start": 1.36
-      },
-      {
-        "word": "of",
-        "start": 1.68
-      },
-      {
-        "word": "polygons",
-        "start": 1.96
-      },
-      {
-        "word": "we",
-        "start": 2.32
-      },
-      {
-        "word": "learnt",
-        "start": 2.58
-      },
-      {
-        "word": "about.",
-        "start": 2.8
-      }
-    ],
-    "source": "Swiftee's recorded take: swiftee-lesson-1.mp3, 194.72-198.16 s; word starts measured from the recording"
-  },
-  {
-    "text": "Which of these is a polygon?",
-    "src": "assets/audio/lesson/42_Which_of_these_is_a_polygon.mp3",
-    "duration": 2.486,
-    "words": [
-      {
-        "word": "Which",
-        "start": 0.32
-      },
-      {
-        "word": "of",
-        "start": 0.5
-      },
-      {
-        "word": "these",
-        "start": 0.72
-      },
-      {
-        "word": "is",
-        "start": 1.24
-      },
-      {
-        "word": "a",
-        "start": 1.36
-      },
-      {
-        "word": "polygon?",
-        "start": 1.62
-      }
-    ]
-  },
-  {
     "text": "Classify the figures as a polygon or not a polygon.",
     "src": "assets/audio/lesson/43_Classify_the_figures_as_a_polygon_or_not_a_polygon.mp3",
     "duration": 3.99,
@@ -1581,88 +1385,6 @@ window.POLYGON_RECORDINGS = [
     "source": "Swiftee's recorded take: swiftee-lesson-1.mp3, 214.64-218.63 s; word starts measured from the recording"
   },
   {
-    "text": "Find the odd one out. Which figure is NOT a polygon?",
-    "src": "assets/audio/lesson/44_Find_the_odd_one_out_Which_figure_is_NOT_a_polygon.mp3",
-    "duration": 5.002,
-    "words": [
-      {
-        "word": "Find",
-        "start": 0.52
-      },
-      {
-        "word": "the",
-        "start": 0.72
-      },
-      {
-        "word": "odd",
-        "start": 0.96
-      },
-      {
-        "word": "one",
-        "start": 1.22
-      },
-      {
-        "word": "out.",
-        "start": 1.5
-      },
-      {
-        "word": "Which",
-        "start": 2.3
-      },
-      {
-        "word": "figure",
-        "start": 2.64
-      },
-      {
-        "word": "is",
-        "start": 3.08
-      },
-      {
-        "word": "NOT",
-        "start": 3.5
-      },
-      {
-        "word": "a",
-        "start": 3.9
-      },
-      {
-        "word": "polygon?",
-        "start": 4.14
-      }
-    ]
-  },
-  {
-    "text": "Which of these is a pentagon?",
-    "src": "assets/audio/lesson/45_Which_of_these_is_a_pentagon.mp3",
-    "duration": 2.447,
-    "words": [
-      {
-        "word": "Which",
-        "start": 0.34
-      },
-      {
-        "word": "of",
-        "start": 0.52
-      },
-      {
-        "word": "these",
-        "start": 0.72
-      },
-      {
-        "word": "is",
-        "start": 1.24
-      },
-      {
-        "word": "a",
-        "start": 1.3
-      },
-      {
-        "word": "pentagon?",
-        "start": 1.54
-      }
-    ]
-  },
-  {
     "text": "Classify each figure as a hexagon or a heptagon.",
     "src": "assets/audio/lesson/46_Classify_each_figure_as_a_hexagon_or_a_heptagon.mp3",
     "duration": 3.98,
@@ -1705,62 +1427,6 @@ window.POLYGON_RECORDINGS = [
       }
     ],
     "source": "Swiftee's recorded take: swiftee-lesson-2.mp3, 19.29-23.27 s; word starts measured from the recording"
-  },
-  {
-    "text": "You did it! Now you know what makes a figure a polygon.",
-    "src": "assets/audio/lesson/47_You_did_it_Now_you_know_what_makes_a_figure_a_polygon.mp3",
-    "duration": 3.97,
-    "words": [
-      {
-        "word": "You",
-        "start": 0.25
-      },
-      {
-        "word": "did",
-        "start": 0.41
-      },
-      {
-        "word": "it!",
-        "start": 0.67
-      },
-      {
-        "word": "Now",
-        "start": 1.3
-      },
-      {
-        "word": "you",
-        "start": 1.59
-      },
-      {
-        "word": "know",
-        "start": 1.79
-      },
-      {
-        "word": "what",
-        "start": 2.03
-      },
-      {
-        "word": "makes",
-        "start": 2.29
-      },
-      {
-        "word": "a",
-        "start": 2.55
-      },
-      {
-        "word": "figure",
-        "start": 2.71
-      },
-      {
-        "word": "a",
-        "start": 2.95
-      },
-      {
-        "word": "polygon.",
-        "start": 3.23
-      }
-    ],
-    "source": "Swiftee's recorded take: swiftee-lesson-2.mp3, 36.89-40.86 s; word starts measured from the recording"
   },
   {
     "text": "No gaps in its boundary. This shape is closed.",
@@ -2021,53 +1687,6 @@ window.POLYGON_RECORDINGS = [
       }
     ],
     "source": "Swiftee's recorded take: swiftee-lesson-2.mp3, 0.00-4.38 s; word starts measured from the recording"
-  },
-  {
-    "text": "A polygon is closed, with only straight sides. Try again.",
-    "src": "assets/audio/lesson/54_A_polygon_is_closed_with_only_straight_sides_Try_again.mp3",
-    "duration": 5.905,
-    "words": [
-      {
-        "word": "A",
-        "start": 0.26
-      },
-      {
-        "word": "polygon",
-        "start": 0.56
-      },
-      {
-        "word": "is",
-        "start": 1.2
-      },
-      {
-        "word": "closed,",
-        "start": 1.52
-      },
-      {
-        "word": "with",
-        "start": 2.28
-      },
-      {
-        "word": "only",
-        "start": 2.76
-      },
-      {
-        "word": "straight",
-        "start": 3.18
-      },
-      {
-        "word": "sides.",
-        "start": 3.74
-      },
-      {
-        "word": "Try",
-        "start": 4.9
-      },
-      {
-        "word": "again.",
-        "start": 5.32
-      }
-    ]
   },
   {
     "text": "Great job! You sorted the figures correctly.",
@@ -2821,61 +2440,6 @@ window.POLYGON_RECORDINGS = [
     "source": "Swiftee's recorded take: swiftee-lesson-1.mp3, 116.63-121.57 s; word starts measured from the recording"
   },
   {
-    "text": "Not that one. A side is straight, a vertex is a corner.",
-    "src": "assets/audio/lesson/74_Not_that_one_A_side_is_straight_a_vertex_is_a_corner.mp3",
-    "duration": 5.404,
-    "words": [
-      {
-        "word": "Not",
-        "start": 0.42
-      },
-      {
-        "word": "that",
-        "start": 0.66
-      },
-      {
-        "word": "one.",
-        "start": 0.96
-      },
-      {
-        "word": "A",
-        "start": 1.74
-      },
-      {
-        "word": "side",
-        "start": 2.2
-      },
-      {
-        "word": "is",
-        "start": 2.52
-      },
-      {
-        "word": "straight,",
-        "start": 2.8
-      },
-      {
-        "word": "a",
-        "start": 3.46
-      },
-      {
-        "word": "vertex",
-        "start": 3.82
-      },
-      {
-        "word": "is",
-        "start": 4.34
-      },
-      {
-        "word": "a",
-        "start": 4.46
-      },
-      {
-        "word": "corner.",
-        "start": 4.82
-      }
-    ]
-  },
-  {
     "text": "Not quite. Try again.",
     "src": "assets/audio/lesson/75_Not_quite_Try_again.mp3",
     "duration": 2.346,
@@ -3195,58 +2759,6 @@ window.POLYGON_RECORDINGS = [
     "source": "Swiftee's recorded take: swiftee-lesson-1.mp3, 176.07-178.47 s; word starts measured from the recording"
   },
   {
-    "text": "A polygon is a closed figure made only of straight sides.",
-    "src": "assets/audio/lesson/86_A_polygon_is_a_closed_figure.mp3",
-    "duration": 4.39,
-    "words": [
-      {
-        "word": "A",
-        "start": 0.25
-      },
-      {
-        "word": "polygon",
-        "start": 0.36
-      },
-      {
-        "word": "is",
-        "start": 0.88
-      },
-      {
-        "word": "a",
-        "start": 1.1
-      },
-      {
-        "word": "closed",
-        "start": 1.34
-      },
-      {
-        "word": "figure",
-        "start": 1.68
-      },
-      {
-        "word": "made",
-        "start": 1.98
-      },
-      {
-        "word": "only",
-        "start": 2.28
-      },
-      {
-        "word": "of",
-        "start": 2.74
-      },
-      {
-        "word": "straight",
-        "start": 3.06
-      },
-      {
-        "word": "sides.",
-        "start": 3.4
-      }
-    ],
-    "source": "Swiftee's recorded take: swiftee-lesson-1.mp3, 198.22-202.61 s; word starts measured from the recording"
-  },
-  {
     "text": "Not quite! A polygon is closed with only straight sides.",
     "src": "assets/audio/lesson/87_Not_quite_A_polygon_is_closed.mp3",
     "duration": 4.88,
@@ -3377,62 +2889,6 @@ window.POLYGON_RECORDINGS = [
       }
     ],
     "source": "Swiftee's recorded take: swiftee-lesson-4.mp3, 0.00-3.73 s; word starts measured from the recording"
-  },
-  {
-    "text": "You know all about polygons now. You are ready to help Momo.",
-    "src": "assets/audio/lesson/90_You_know_all_about_polygons_now_You_are_ready_to_help_Momo.mp3",
-    "duration": 4.829,
-    "words": [
-      {
-        "word": "You",
-        "start": 0.03
-      },
-      {
-        "word": "know",
-        "start": 0.24
-      },
-      {
-        "word": "all",
-        "start": 0.48
-      },
-      {
-        "word": "about",
-        "start": 0.9
-      },
-      {
-        "word": "polygons",
-        "start": 1.26
-      },
-      {
-        "word": "now.",
-        "start": 1.86
-      },
-      {
-        "word": "You",
-        "start": 2.695
-      },
-      {
-        "word": "are",
-        "start": 2.96
-      },
-      {
-        "word": "ready",
-        "start": 3.22
-      },
-      {
-        "word": "to",
-        "start": 3.46
-      },
-      {
-        "word": "help",
-        "start": 3.792
-      },
-      {
-        "word": "Momo.",
-        "start": 4.24
-      }
-    ],
-    "source": "Swiftee's recorded take: swiftee-lesson-3.mp3, 0.00-4.83 s; word starts measured from the recording"
   },
   {
     "text": "Is the boundary straight or curved?",

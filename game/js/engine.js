@@ -1173,17 +1173,6 @@ export const CFG = {
     { key: 'bgSunset',       src: 'assets/sky/06-sunset.webp',        at: 0.65, label: 'Sunset',        light: [255, 198, 154], dim: 0.80 },
     { key: 'bgDusk',         src: 'assets/sky/07-dusk.webp',          at: 0.78, label: 'Dusk',          light: [201, 203, 238], dim: 0.58 },
     { key: 'bgNight',        src: 'assets/sky/08-night.webp',         at: 0.90, label: 'Night',         light: [143, 166, 200], dim: 0.34 }
-  ],
-  /* NOT the curriculum. Every phase's instruction, targets and distractors live in
-     CFG.levelOne.phases and nowhere else — this array used to carry a second copy of
-     level 1's, which is how two definitions of the same level drift apart.
-
-     It survives only for the PARKED level 2 (drafts/level-2.draft.js), which reads
-     levels[1]; the first entry is a placeholder holding that index and is read by
-     nothing. */
-  levels: [
-    { id: 1, mechanic: 'hanging-shape-cut' },
-    { id: 2, instruction: 'Cut the shape along its diagonal.', mechanic: 'polygon-diagonal-cut', polygon: 'hexagon', sides: 6 }
   ]
 };
 
@@ -1526,8 +1515,6 @@ class AudioManager {
   stamp() { if (this.kit('coin')) return; this._note(7, 0.12, 0.05, 'triangle'); }
   /** The trample's splat, under the landing thud land() already plays. */
   trample() { this.kit('splat', { volume: 0.55, vary: 0 }); }
-  /** The stomp at the edge: a soft thud under the trample loop (first two stamps only). */
-  stomp() { if (!this.kit('land', { volume: 0.4, vary: 0 })) this.trample(); }
   /** THE TREMBLE'S SOUND: the owner's cartoon blink (CFG.sfx.tremble), played once as the
       strong tremble begins so the picture and the sound land together; the kit's doink
       stands in when the file is not there. */
@@ -2211,8 +2198,6 @@ class AudioManager {
       this._tone(300 + Math.random() * 500, 0.1, 0.022, 'sine', 900, 0.18 + i * 0.075);
     }
   }
-  plop() { this.splash(); }
-  clunk() { this.wedge(); }
   /** A chunk arriving on its stem. */
   pop() { this.bloop(); }
 
@@ -3886,14 +3871,6 @@ class PlayerController {
     this.lastSheet = sheet === this.sheet ? 'run' : sheet === this.jumpSheet ? 'jump'
       : sheet === this.skidSheet ? 'skid' : sheet === this.shakeSheet ? 'shake'
       : sheet === this.hurtSheet ? 'hurt' : sheet === this.idleSheet ? 'idle' : sheet === this.trembleSheet ? 'tremble' : '?';
-    /* GROUNDED poses are placed on THIS frame's own footline. A run cycle's vertical
-       variation is the bob and has to be kept, and an airborne frame's tucked legs are
-       the art; but a pose the character holds while standing still has no business
-       floating, and LOOK_DOWN holds one for as long as the puzzle takes. */
-    const GROUNDED = this.state === 'SKID_STOP' || this.state === 'SHAKE' ||
-                     this.state === 'LOOK_DOWN' || this.state === 'KNOCKOUT' ||
-                     this.state === 'SURPRISED' || this.state === 'IDLE_LOOK' ||
-                     this.state === 'CELEBRATE';
     // the art is aligned on its own foot line, so nothing needs lifting
     const lift = 0;
 
@@ -4164,17 +4141,6 @@ class GroundManager {
     p.closePath();
     return p;
   }
-  /** How wide the hole is at a depth below the surface, for a gap: the span of the notch's
-      envelope still open there. Zero when the notch has closed above that depth. A test
-      hook (api._notchWidth): a tapering answer must read narrower lower down. */
-  notchWidthAt(g, depth) {
-    const y0 = CFG.surfaceY, gw = g.x1 - g.x0;
-    const mk = g.throat ? gw / g.throat : 1, ins = mk > 1 ? gw * (1 - 1 / mk) / 2 : 0;
-    const env = this._notchEnvelope(0, g, ins, gw - ins, y0);
-    if (!env) return 0;
-    const open = env.filter(q => q.y >= y0 + depth);
-    return open.length ? open[open.length - 1].x - open[0].x : 0;
-  }
   /** The notch's lower outline across the neck, as points from nx0 to nx1 in screen space:
       for every sample x, the deepest boundary of any slot's answer silhouette there (or the
       surface where no silhouette reaches). Null when no slot carries a notch. */
@@ -4203,7 +4169,7 @@ class GroundManager {
       return 0;
     };
   }
-  _notchEnvelope(x0, g, nx0, nx1, y0, revealOverride) {
+  _notchEnvelope(x0, g, nx0, nx1, y0) {
     const mode = CFG.levelOne.notch || 'off';
     if (mode === 'off') return null;
     const polys = [];
@@ -4235,22 +4201,11 @@ class GroundManager {
     }
     /* 'exact' is the answer's outline throughout. 'reveal' shows the generic break until the
        piece seats (g.reveal runs 0 -> 1 in lockIn's wake) and lerps the two depth profiles. */
-    const reveal = revealOverride !== undefined ? revealOverride : (mode === 'exact' ? 1 : (g.reveal || 0));
+    const reveal = mode === 'exact' ? 1 : (g.reveal || 0);
     if (reveal >= 1) return out;
     let deepest = 0; for (const q of out) deepest = Math.max(deepest, q.y - y0);
     const gen = this._genericBreak(nx0, nx1, Math.max(60, Math.min(130, deepest * 0.5)), g.x0);
     return out.map(q => ({ x: q.x, y: y0 + Math.max(2, gen(q.x) + ((q.y - y0) - gen(q.x)) * reveal) }));
-  }
-  /** How far the current break still is from the answer's outline, 0 (the answer) .. 1 (far):
-      mean depth difference over the notch's own depth. The leak check: before the answer this
-      must stay well away from 0, or the hole is giving the answer away. */
-  notchLeak(g) {
-    const y0 = CFG.surfaceY, gw = g.x1 - g.x0;
-    const mk = g.throat ? gw / g.throat : 1, ins = mk > 1 ? gw * (1 - 1 / mk) / 2 : 0;
-    const now = this._notchEnvelope(0, g, ins, gw - ins, y0), exact = this._notchEnvelope(0, g, ins, gw - ins, y0, 1);
-    if (!now || !exact) return 1;
-    let sum = 0, deep = 1; for (let i = 0; i < now.length; i++) { sum += Math.abs(now[i].y - exact[i].y); deep = Math.max(deep, exact[i].y - y0); }
-    return Math.min(1, (sum / now.length) / deep);
   }
 
   /** Water surface height at a screen x, so ripples and splashes agree on one line. */
@@ -4432,7 +4387,6 @@ class GroundManager {
   /* The water's surface, drawn AFTER anything falling into it so a chunk visibly
      goes under rather than sitting on top of the pool. */
   drawWaterFront(ctx, worldX, t) {
-    const L1 = CFG.levelOne;
     for (const s of this.openGaps(worldX)) {
       const w = (s.x1 - s.x0) * s.g.open;
       if (!(w > 1)) continue;
@@ -6599,10 +6553,6 @@ export function createGame(canvas, hooks = {}) {
         if (sh.jiggle) sh.jiggle = 0;
         // the tap's flare on the halo, gone in under half a second
         if (sh.flash) sh.flash = Math.max(0, sh.flash - dt * 2.2);
-        // Swings on arrival, then settles to almost still. A permanent wobble on all
-        // three options was constant visual noise and made the ropes harder to cut.
-        const swing = lerp(reduced ? 0.012 : 0.05, reduced ? 0.003 : 0.007,
-                           clamp((sh.dropT - 0.6) / 2.6, 0, 1));
         /* The sway is applied by the renderer as one rotation of the whole rig about
            the rig line, so there is nothing to integrate here. `rot` and `x` are kept
            in step ONLY so that a cut piece starts from exactly where it was drawn — get
@@ -8793,7 +8743,6 @@ export function createGame(canvas, hooks = {}) {
       : p.cy;
 
     const gx0 = g.x0 - G.worldX, gx1 = g.x1 - G.worldX;
-    const waterY = CFG.surfaceY + CFG.levelOne.waterDepth;
     const sil = pieceSilhouette(p, cx, cy, kk, roll);
 
     ctx.save();
@@ -9129,28 +9078,12 @@ export function createGame(canvas, hooks = {}) {
        nothing can swap characters; _footline always returned null, because the
        per-frame footline measurement went when the slicer started baking every frame
        onto one shared line and there was nothing left to correct. */
-    /** The playable roster, for the selection screen. */
-    roster: () => CFG.characters.map(c => ({
-      id: c.id, name: c.name, tag: c.tag, blurb: c.blurb,
-      theme: c.theme, theme2: c.theme2, stats: c.stats
-    })),
     character: () => characterId,
     /** Play one of the game's own sounds from the DOM screens, so the cover, the
         select screen and the HUD buttons share one palette. */
     sfx(name) { audio.start(); audio.resume(); if (typeof audio[name] === 'function') audio[name](); },
-    /** A character's sheet URL + frame count, for portraits and DOM panels. */
-    sheetFor(id, slot) {
-      const cid = id || characterId;
-      const img = images[cid + ':' + slot];
-      if (!img) return null;
-      const ch = CFG.characters.find(c => c.id === cid);
-      const kc = CFG.sprite.cellK || 1;
-      return { src: img.src, frames: ch ? (ch.frames[slot] || 1) : 1,
-               cw: CFG.sprite.cw * kc, ch: CFG.sprite.ch * kc, cols: CFG.sprite.cols || 6 };
-    },
     /** The backbuffer's pixel scale (1..2); see setRenderScale in createGame. */
     setRenderScale(k) { setRenderScale(k); },
-    renderScale: () => rs,
     /** Which character art set was loaded: 'hd' (1.5x cells) or 'base'. */
     artSet: () => hdArt ? 'hd' : 'base',
     /** The tutorial has a line on screen (or is holding it for the reading pause). While it
@@ -9266,47 +9199,15 @@ export function createGame(canvas, hooks = {}) {
     mammothState: () => mammoth && mammoth.state,
     mammothFrame: () => mammoth ? mammoth.lastSheet + ':' + mammoth.lastFrame : '-',
     debug: () => G,
-    /** 'rock' | 'log' | 'bone' for an obstacle's kind index — the two delivered rocks sit
-        before the eight sliced pieces in the kinds list. The tutorial names what is ahead. */
-    obstacleName(kind) { return kind < 2 ? 'rock' : ((OBSTACLE_ART[kind - 2] || 'rock').split('-')[0]); },
     /** Create the audio graph and start decoding the recordings BEFORE the first gesture,
         so no cue is ever caught half-loaded. Nothing plays until a real tap resumes it. */
     warmAudio() { try { audio.start(); } catch (e) { /* no audio here */ } },
     /** Draw one tutorial subject alone onto `target` (a 1920x1080 canvas): 'mammoth',
         'rock', 'gap', 'blocks', or null to clear. See renderFocus. */
     renderFocus(target, kind) { renderFocus(target, kind); },
-    /* THE IMPACT LAYER, drivable from outside. It is the one piece of polish in here
-       that can stall the game rather than merely look wrong, so its tests have to be
-       able to fire a hold and a punch directly — including several on one frame —
-       instead of waiting for an impact to happen and hoping to catch the frame. */
     /* The decoded sfx table, so tools/bake-onsets.mjs can read the hit times the
        waveform analysis found and write them into the config — see that file. */
-    /* THE RIG. `swing` is the one angle every option hangs at; `bows` is how far each
-       rope's cord curves. The property worth holding is that the bows never change while
-       the swing does: the rope's bend having any clock of its own is what made a cord
-       appear to move differently from the block tied to it. */
-    _rig: () => ({
-      swing: rigSwing(), swayRad: CFG.comedy.swayRad,
-      bows: ((G.l1 && G.l1.shapes) || []).filter(s => s.state === 'hang').map(s => ropeBow(s))
-    }),
-    /* Where a rope is marked to be cut, for the one shape given. The dashes, the idle
-       hand and the tutorial's hand all read this same point (see cutGuide). */
-    _cutGuide: i => { const L = G.l1; const sh = L && L.shapes[i]; return sh ? cutGuide(sh) : null; },
-    /* THE SNOWFALL, for the test that holds it visible: how many flakes there are in each
-       layer, how big and how solid the front ones are drawn, and whether the sprite was
-       actually built (a null sprite means they fell back to dots). */
-    _snow: () => ({
-      far: atmos.far.length, mid: atmos.mid.length, near: atmos.near.length,
-      sprite: !!Atmosphere.flake(),
-      drawnPx: atmos.near.map(f => +(f.r * Atmosphere.FLAKE_K).toFixed(1)),
-      alpha: atmos.near.map(f => +f.a.toFixed(2)),
-      spins: atmos.near.map(f => +f.spin.toFixed(3))
-    }),
     _sfxTable: () => audio.sfx,
-    _hitStop: ms => hitStop(ms),
-    _punch: (amp, ms, x, y) => punch(amp, ms, x, y),
-    _juice: () => CFG.juice,
-    _ground: () => ground,
     _obstacles: () => obstacles,
     /* The live particle list, so a test or a capture harness can wait for the exact
        frame an effect exists on rather than guessing at a delay. */
@@ -9318,21 +9219,6 @@ export function createGame(canvas, hooks = {}) {
     _voice: () => ({ ready: !!(audio.vo || audio.voEl), saying: !!audio.saying, dur: G.voDur || 0,
                      ctx: audio.ctx ? audio.ctx.state : 'none', said: (audio.saidLog || []).slice(),
                      lines: Object.keys((CFG.vo && CFG.vo.lines) || {}).length }),
-    /* For the responsiveness spec: is the voice ready, is a line playing, and how big have the
-       pools and caches grown. Read-only. */
-    _perf: () => ({
-      voReady: !!(audio.vo || audio.voEl), saying: !!audio.saying,
-      pool: particles.list.length, gaps: ground.gaps.length,
-      walls: Object.keys(ground._wallCache || {}).length,
-      skies: Object.keys(bgm._cache || {}).length,
-      rs, rsCap, hd: hdArt, canvas: canvas.width + 'x' + canvas.height
-    }),
-    _notchWidth: (i, depth) => { const g = (G.gapsThisPhase || [])[i]; return g ? ground.notchWidthAt(g, depth) : -1; },
-    _notchLeak: i => { const g = (G.gapsThisPhase || [])[i]; return g ? ground.notchLeak(g) : -1; },
-    _notchReveal: i => { const g = (G.gapsThisPhase || [])[i]; return g ? (g.reveal || 0) : -1; },
-    /** The run's obstacle plan for a stretch index, and the leap in px — for the difficulty test. */
-    _runPlan: i => ({ plan: (CFG.obstacle.runs || [])[Math.min(i, (CFG.obstacle.runs || []).length - 1)] || null, leap: obstacles ? obstacles.leap : 0, speed: CFG.runSpeed }),
-    _force(s) { obstacles.reset(); setState(s); },
     /** TEMPORARY, for reviewing the ending without playing seven phases: every crossing
         is counted as mended and the run home starts with the friend a short way ahead, so
         the real sequence plays — arrival, cross-fade into the dance, confetti, the banner
@@ -9347,16 +9233,6 @@ export function createGame(canvas, hooks = {}) {
       G.bearAt = G.worldX + CFG.mammothX + 520 + 900;   // about a second and a half of running
       return true;
     },
-    /** Slice a hanging option by shape name — lets a test drive a phase to the end. */
-    _cut(kind) {
-      if (!G.l1) return false;
-      const sh = G.l1.shapes.find(s => s.state === 'hang' && s.kind === kind);
-      if (!sh) return false;
-      cutShape(sh); return true;
-    },
-    _skipTo(ms) { G.st += ms; },
-    /** Drive the character's animation state directly, for an animation audit. */
-    _anim(s) { mammoth.setState(s); },
     _player: () => mammoth,
     /** Draw one frame now, without advancing the simulation — for a test that wants to
         measure a deterministic pose on the real backbuffer. */

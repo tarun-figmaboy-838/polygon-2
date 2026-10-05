@@ -1827,7 +1827,6 @@ class Component extends DCLogic {
   }
   steps() {
     if (this._steps) return this._steps;
-    const S = this.sets();
     /* Worded to match the recordings 48 and 49 exactly: the recorded voice is
        found by text, so a paraphrase here silently falls back to the browser's
        synthetic voice. */
@@ -3796,7 +3795,6 @@ class Component extends DCLogic {
          not from the concept's component palette -- that palette also dresses
          the Side/Vertex/Angle tiles, whose text has to sit on their own
          coloured faces and cannot follow the dialogue. */
-      const theme = conceptTheme(concept);
       const ink = highlightInk(concept);
       const delay = Math.round(position * (this.state.wordInterval || 320));
       // A real word cue reveals sharp text immediately. Estimated CSS timing
@@ -3981,7 +3979,6 @@ class Component extends DCLogic {
       // Left of her, level with her head, above the panel of figures.
       const right = guide.x + guide.w * 0.16 - D.tail - D.gap;
       const left = Math.max((STAGE.w - BOUNDARY.boardW) / 2 + D.margin, right - D.maxW);
-      const bottom = BOUNDARY.dialogue.y + BOUNDARY.dialogue.h;
       return { x: left, y: BOUNDARY.dialogue.y, w: right - left, h: BOUNDARY.dialogue.h, anchorX: right, side: true,
         ceiling: D.margin / 2, floor: BOUNDARY.boardY - D.margin / 2 };
     }
@@ -5476,7 +5473,6 @@ class Component extends DCLogic {
         transition:this.reducedMotion() ? 'none' : 'stroke 360ms ease, fill 360ms ease'
       });
       if (s.sc === 'S18' && (state === 'ok' || state === 'bad')) {
-        const correct = state === 'ok', rim = correct ? CORRECT_RIM : INCORRECT_RIM;
         // A solid inner rim and tinted face remain clear even on a small screen.
         // Keep the artwork, dimensions and keyboard focus treatment intact.
         Object.assign(card.wrap, {

@@ -175,7 +175,7 @@ concavePentagon 5 · concaveHexagon 6 · concaveHeptagon 7
 Heptagons, octagons, irregular-convex and concave shapes all work. Name one of these in a
 brief and it needs no engine work.
 
-`verify()` checks every one: vertex count against its metadata, that a convex shape's
+`verify()` (in this copy, `tests/helpers/verify-polygons.cjs`, run by `tests/runner.test.cjs`) checks every one: vertex count against its metadata, that a convex shape's
 corners all turn the same way and a concave one's do not, no self-crossing sides, no
 near-collinear corner (which would make two sides read as one), no side under 16% of the
 longest, and that "regular" shapes really do have equal sides while "irregular" ones
@@ -1415,7 +1415,8 @@ resolves to the exact answer outline over 0.45 s (`g.reveal`) and the plug fills
 bound to its target up front (`slot.kind`, `slot.notch`) so the outline it resolves to and the
 piece that lands agree, and `targetFor` sends a cut piece to the slot cut for it. Below the
 deepest point the chasm stays open, so a wrong piece still falls through. A leak check
-(`_notchLeak`) holds that the pre-answer break stays far from the answer's outline. Instruction
+(`_notchLeak`) held that the pre-answer break stays far from the answer's outline (that hook and
+the spec are not in this copy). Instruction
 noun and target kind are checked against each other by test. Test: tests/notch.spec.mjs.
 
 ### The instruction stays, with the polygon set apart
@@ -1676,7 +1677,7 @@ pass: the button in `index.html`, its rule in `style.css`, the three `skipEnd` l
 `hud.js`, the `onSkipEnd` handler in `main.js`, `skipToEnd`/`skippable` in `engine.js`, and
 `tests/skip-end.spec.mjs`.
 
-The tutorial names what is ahead — rock, log or fossil — from the obstacle's kind (`obstacleName`).
+`obstacleName` (rock, log or fossil from an obstacle's kind) was removed in this copy: nothing called it.
 
 ---
 

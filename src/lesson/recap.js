@@ -695,7 +695,7 @@
 
   /* A card in the state its line leaves it in, at once: what every cue would have shown. */
   function settle(run, g) {
-    var V = g._c.visual || {}, id = g._c.id, i = V.at || 0, s = SUM.shape;
+    var V = g._c.visual || {}, id = g._c.id, i = V.at || 0;
     g._outline.setAttribute('opacity', 1);
     if (id === 'sides') allSides(g).forEach(function (l) { l.setAttribute('opacity', 1); });
     if (id === 'vertex') knob(g, i).setAttribute('opacity', 1);

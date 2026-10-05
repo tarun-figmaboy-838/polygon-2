@@ -13,12 +13,14 @@
      - Momo's jump is the Momo jump kit's (mammoth-jump-v2): the push-off cell, the flight
        cells in order with the arc, the three landing cells, and the run picked up on cell 24,
        at the base size and on a hi-DPI screen (the hd/ sheet)
+     - the game's fourteen polygons are the shapes their classification says (helpers/verify-polygons.cjs)
 
    node tests/runner.test.cjs          ENGINE=webkit node tests/runner.test.cjs */
 const path = require('path');
 const ROOT = path.resolve(__dirname, '..');
 const pw = require('playwright');
 const { serve } = require('./helpers/serve.cjs');
+const { verifyPolygons } = require('./helpers/verify-polygons.cjs');
 const ENGINE = process.env.ENGINE || 'chromium';
 
 const results = [];
@@ -67,6 +69,10 @@ async function toEnd(page) {
 const RUNNING = ['AVALANCHE', 'RUN_SEGMENT_1', 'TUTORIAL'];
 
 (async () => {
+  // the fourteen polygons the game draws are the shapes they are meant to be
+  const problems = await verifyPolygons();
+  check('game/js/polygons.js: every polygon is the shape its classification says', !problems.length, problems.join('; '));
+
   const srv = await serve(ROOT);
   const browser = await pw[ENGINE].launch();
 

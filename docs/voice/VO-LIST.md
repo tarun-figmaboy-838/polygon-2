@@ -192,7 +192,7 @@ Each line keeps a short breath of room either side, never past halfway into the 
 
 ## Recordings that are no longer used
 
-These 14 files are in `assets/audio/lesson/` but no screen says them any more (the lesson was rewritten). They do not need new takes. Two of them were in the delivered recordings anyway, and are now in Swiftee's recorded voice like the rest: "A polygon is a closed figure made only of straight sides." and "You did it! Now you know what makes a figure a polygon."
+These 14 takes were left over when the lesson was rewritten; none needs a new take. On 2026-10-05 the twelve that nothing can say any more were removed, files and catalogue rows alike (`src/lesson/recordings.js`; their lines in `cue-map.json` are `unused`, so `cut-recordings.py` will not cut them again). The test was the lesson's own lookup: `PolygonRecordedVoice.find()` finds none of them from any step's string, any `locales.json` string (placeholders filled) or any spoken literal. Two of the 14 stay, because a screen's feedback still says them: "That is right! These are the ones." (`71_…`) and "Not quite. Try again." (`75_…`). The list below is kept as the record of what was recorded.
 
 - "A polygon is a closed figure made only of straight sides." (`86_A_polygon_is_a_closed_figure.wav`): an old recap screen's line; the recap says each idea in the lesson's own words instead
 - "You did it! Now you know what makes a figure a polygon." (`47_You_did_it_Now_you_know_what_makes_a_figure_a_polygon.mp3`): an old completion screen's line

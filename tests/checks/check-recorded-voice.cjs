@@ -9,7 +9,7 @@ ctx.Audio=class {constructor(src){this.src=src;this.duration=6;this.currentTime=
 vm.runInContext(fs.readFileSync('src/lesson/recordings.js','utf8'),ctx);vm.runInContext(fs.readFileSync('src/lesson/recorded-player.js','utf8'),ctx);
 const rows=JSON.parse(fs.readFileSync('docs/voice/narrator-lines.json','utf8'));
 const missing=rows.filter(r=>!ctx.window.PolygonRecordedVoice.find(r.text)).map(r=>r.id);
-assert.deepEqual(missing,['N016','F003','F023']);
+assert.deepEqual(missing,['N016','N024','N025','N041','N042','N044','N045','N047','F003','F007','F023','F027']);   // that earlier script's lines with no recording: three never recorded, the rest retired with their takes
 // Audit the live lesson, not just the historical narration export.
 for(const step of game(0).steps())for(const text of [step.narr,step.done,...Object.values(step.fb||{})].filter(Boolean)) {
   const recording=ctx.window.PolygonRecordedVoice.find(text);

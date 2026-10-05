@@ -1221,10 +1221,8 @@ export class Tutorial {
 
     const pc = (v, of) => (v / of * 100).toFixed(2) + '%';
     /* Each axis as a percentage of ITS OWN axis, which is the only way a percentage
-       size lands where it was meant to: width against 1920, height against 1080. A box
-       that gives rx and ry gets an oval hugging it; one that gives a single r gets a
-       circle, because rx and ry come out equal. */
-    const rx = box.rx !== undefined ? box.rx : box.r;
+       size lands where it was meant to: width against 1920, height against 1080. The
+       subject's half-height is its ry, or its r when it gives a single radius. */
     const ry = box.ry !== undefined ? box.ry : box.r;
 
     /* THE FOCUS: THE SUBJECT, DRAWN ALONE, GLOWING ALONG ITS OWN OUTLINE.
