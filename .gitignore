@@ -23,3 +23,6 @@ tests/output/
 tests/checks/output/
 
 .env*
+
+# a translation master kept beside the project (it holds other games' strings too); not part of it
+/locales.json
