@@ -62,9 +62,9 @@
   'use strict';
 
   var GAME_URL = 'game/index.html';
-  /* lan / lang: the page's language goes on to the game, so its tutorial, its plank and its
-     controls are in the same language as the lesson (src/i18n/i18n.js) */
-  var PASS_THROUGH = ['sound', 'reduced', 'fast', 'speed', 'tutorial', 'rs', 'hd', 'lan', 'lang'];
+  /* and the page's language goes on to the game as ?lan= (gameSrc), so its tutorial, its plank
+     and its controls are in the same language as the lesson (src/i18n/i18n.js) */
+  var PASS_THROUGH = ['sound', 'reduced', 'fast', 'speed', 'tutorial', 'rs', 'hd'];
   function tr(text) { var I = window.PolygonI18n; return I && I.on ? I.t(text) : text; }
   /* a frame made before the language's words are in is named again when they are */
   function title(frame, text) {
@@ -140,6 +140,9 @@
     if (q) PASS_THROUGH.forEach(function (k) {
       if (q.has(k)) out.push(k + '=' + encodeURIComponent(q.get(k)));
     });
+    // the language the page settled on (src/i18n/i18n.js), however it was typed
+    var I = window.PolygonI18n;
+    if (I && I.code && I.code !== 'en') out.push('lan=' + I.code);
     return GAME_URL + (out.length ? '?' + out.join('&') : '');
   }
 

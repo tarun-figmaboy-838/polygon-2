@@ -1,8 +1,10 @@
 /* THE PAGE'S LANGUAGE: ?lan=<code> in the address, for example ?lan=hi.
 
    en English (the default and the base), hi Hindi, mr Marathi, te Telugu, gu Gujarati,
-   od Odia. ?lang= is read the same way, and ?lan=or is Odia too. Any other code, or none,
-   leaves the page in English.
+   od Odia. It is read forgivingly, because it is typed by hand: ?lang= and ?language= too,
+   the language's name as well as its code (?lan=hindi, ?lan=Odia, ?lan=oriya), a region
+   after it (hi-IN), a second ? where an & belongs (?dev=1?lan=hi), or after a # (#lan=te).
+   Any other code, or none, leaves the page in English.
 
    Every word the learner meets comes from src/i18n/locales.json: the lesson's lines, its
    buttons, labels, feedback and screen-reader messages, the recap, Swiftee's lines over the
@@ -32,7 +34,8 @@
   const script = document.currentScript;
   const BASE = (script && script.src) || location.href;
   const LANGS = ['en', 'hi', 'mr', 'te', 'gu', 'od'];
-  const ALIAS = { or: 'od' };
+  const ALIAS = { or: 'od', ori: 'od', odia: 'od', oriya: 'od', odiya: 'od', hindi: 'hi', marathi: 'mr', telugu: 'te',
+    gujarati: 'gu', english: 'en', eng: 'en', hin: 'hi', mar: 'mr', tel: 'te', guj: 'gu' };
   const TAG = { od: 'or' };              // Odia is od in the address, or as a language tag
   const READY_CAP = 10000;
   const FONTS = {
@@ -47,10 +50,20 @@
      when its descriptors match theirs */
   const FAMILIES = [['Nunito', '200 1000'], ['Baloo 2', '400 800'], ['Fredoka', '300 700']];
 
+  /* A SECOND ? TYPED WHERE AN & BELONGS (?dev=1?lan=hi) is put right first, before anything
+     reads the address, so every script reads it as it was meant: ?dev=1&lan=hi */
+  try {
+    const s = location.search;
+    if (s.indexOf('?', 1) > 0 && history.replaceState) history.replaceState(history.state, '', location.pathname + '?' + s.slice(1).replace(/\?/g, '&') + location.hash);
+  } catch (e) { /* the address stays as it is */ }
+
   const asked = (() => {
     let q = '';
-    try { const p = new URLSearchParams(location.search); q = p.get('lan') || p.get('lang') || ''; } catch (e) { q = ''; }
-    q = String(q).trim().toLowerCase();
+    try { const p = new URLSearchParams(location.search); q = p.get('lan') || p.get('lang') || p.get('language') || ''; } catch (e) { q = ''; }
+    // typed by hand: a second ? for an &, or the hash
+    if (!q) { const m = /[?&#;]\s*(?:lan|lang|language)\s*=\s*([^&#?;\s]*)/i.exec(String(location.search) + String(location.hash)); q = m ? m[1] : ''; }
+    try { q = decodeURIComponent(q); } catch (e) {}
+    q = String(q).trim().toLowerCase().replace(/^["']+|["'\/.]+$/g, '').split(/[-_\s]/)[0];
     q = ALIAS[q] || q;
     return LANGS.indexOf(q) >= 0 ? q : 'en';
   })();

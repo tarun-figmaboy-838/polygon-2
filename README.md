@@ -29,7 +29,7 @@ npx serve .
 | `?bridge=0` | With `?story=1`, leave that scene out: the lesson follows the story |
 | `?dev=1` | Review mode: the screen navigator (the jump menu, Back and Next), over everything, start to end: **Start** 1 the game's cover and tutorial, 2 Swiftee at the broken path (the game is fast-forwarded to it); **Screens** 1-47 the lesson; **End** 1 the game after the lesson, 2 Swiftee at the ditch. The story's Scenes menu with `?story=1` |
 | `?dev=1&devat=break` | Review: open the game's opening straight at the broken path (Start 2) |
-| `?lan=hi` | The whole experience in another language: `hi` Hindi, `mr` Marathi, `te` Telugu, `gu` Gujarati, `od` Odia (`en` English is the default; `?lang=` works too). See [Languages](#languages) |
+| `?lan=hi` | The whole experience in another language: `hi` Hindi, `mr` Marathi, `te` Telugu, `gu` Gujarati, `od` Odia (`en` English is the default). Capitals, `?lang=`, the language's name (`?lan=hindi`) and a second `?` for an `&` all work too. See [Languages](#languages) |
 
 ## Folders
 
