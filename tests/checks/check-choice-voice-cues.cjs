@@ -17,6 +17,7 @@ const server = http.createServer((req, res) => {
     const errors = []; page.on('pageerror', error => errors.push(error.message));
     await page.addInitScript(() => {
       window.testMedia = [];
+      window.POLYGON_VOICE_VIA_CONTEXT = false;   // the lines on this fake media element, not the AudioContext
       // Exercise the real recorded player deterministically with its own MP3 alignments.
       window.Audio = class {
         constructor(src) { this.src=src; this.currentTime=0; this.paused=true; this.duration=NaN; testMedia.push(this); }

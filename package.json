@@ -19,6 +19,7 @@
     "build:swiftee-lines": "python3 tools/voice/build-swiftee-lines.py",
     "build:story-music": "node tools/story/build-story-music.cjs",
     "build:lesson-music": "node tools/build-lesson-music.cjs",
+    "build:end-world": "node tools/build-end-world.cjs",
     "optimize:media": "node tools/optimize-media.cjs"
   },
   "devDependencies": {

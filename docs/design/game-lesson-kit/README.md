@@ -39,7 +39,7 @@ There is no Play screen, no blank or white screen, and no curtain between 7 and 
 | # | Screen | What is said | Who | Moves on |
 |---|---|---|---|---|
 | 1 | The recap (screen 41). The game starts loading here, invisibly | (the recap) | Swiftee | the recap's Next |
-| 2 | The quizzes, then the last screen | "Now you know everything about polygons. You are ready to help Momo." | Swiftee, lesson bubble | 1.3 s after the line, once the game's art is in |
+| 2 | The quizzes, then the last screen, already in the game's world: the board goes, the game's daylight fades in (0.9 s, `assets/images/end-world.webp`, the game's renderer at its first ditch, `npm run build:end-world`), and Swiftee lands on the ice path | "Now you know everything about polygons. You are ready to help Momo." | Swiftee, lesson bubble | 1.3 s after the line, once the game's art is in |
 | 3 | The screen dims to the game's night blue; the game appears and starts by itself, with no cover and no Play | — | — | 0.34 s + 0.58 s |
 | 4 | The game's avalanche, then the run; the rock is jumped with **no tutorial** | — | — | by itself |
 | 5 | Momo stops at the first ditch, and the game holds still | — | — | — |

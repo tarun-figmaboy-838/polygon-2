@@ -15,6 +15,7 @@ const server=http.createServer((req,res)=>{
  page.on('pageerror',e=>errors.push(e.message));
  await page.addInitScript(()=>{
  window.testMedia=[];
+ window.POLYGON_VOICE_VIA_CONTEXT=false;   // the lines on this fake media element, not the AudioContext
  window.Audio=class {
  constructor(src){this.src=src;this.currentTime=0;this.paused=true;this.duration=NaN;testMedia.push(this);}
  play(){this.paused=false;return Promise.resolve();}

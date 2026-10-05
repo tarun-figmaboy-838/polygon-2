@@ -84,7 +84,9 @@
     if (M) stopNow();
     opts = opts || {};
     var el;
-    try { el = new Audio(); } catch (e) { return; }
+    /* a real <audio> element, made directly: `new Audio()` is what the voice uses (and what the
+       checks that drive a fake voice replace), and the bed must never be taken for a line */
+    try { el = document.createElement('audio'); } catch (e) { return; }
     el.loop = true;
     el.preload = 'auto';
     var direct = location.protocol === 'file:';

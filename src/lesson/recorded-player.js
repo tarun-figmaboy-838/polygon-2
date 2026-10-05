@@ -64,13 +64,18 @@
   const voiceFor = (game, url) => {
     let ctx = null;
     try { ctx = game && game._ac && game._ac.state === 'running' ? game._ac : null; } catch (e) { ctx = null; }
-    if (ctx && location.protocol !== 'file:' && typeof fetch === 'function') return contextVoice(ctx, url);
+    const via = window.PolygonRecordedVoice ? window.PolygonRecordedVoice.viaContext !== false : true;
+    if (via && ctx && location.protocol !== 'file:' && typeof fetch === 'function') return contextVoice(ctx, url);
     return new Audio(url);
   };
   const numbers = ['zero','one','two','three','four','five','six','seven','eight','nine'];
   const normalize = text => text.toLowerCase().replace(/[0-9]/g, n => numbers[+n])
     .replace(/[’']/g, '').replace(/[^a-z]+/g, ' ').trim();
   window.PolygonRecordedVoice = {
+    /* Through the lesson's AudioContext when it is running (voiceFor). false keeps every line on a
+       media element: the checks that drive a fake one set window.POLYGON_VOICE_VIA_CONTEXT = false
+       before the page loads, or this after it. */
+    viaContext: window.POLYGON_VOICE_VIA_CONTEXT !== false,
     wordStarts(entry, text) {
       if (!Array.isArray(entry.words) || !entry.words.length) return null;
       let previous = -1;

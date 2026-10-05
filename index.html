@@ -253,6 +253,8 @@
   <div data-lesson="{{ lessonScene }}" data-layout="{{ responsiveLayout }}" style="{{ scalerStyle }}">
     <!-- Scenery and learning content share the same 16:9 coordinate system. -->
     <img class="lesson-background" sc-camel-src="{{ backgroundSrc }}" alt="" draggable="false" style="{{ bgStyle }}" />
+    <!-- The last screen only: the game's own world, faded in over the painting (see endWorld) -->
+    <img class="end-world" sc-camel-src="{{ endWorldSrc }}" alt="" draggable="false" style="{{ endWorldStyle }}" />
 
     <!-- ============ decorative weather ============ z 5 -->
     <div class="scene-weather" aria-hidden="true">
@@ -630,6 +632,14 @@ const GUIDE_BOX = {
   y: Math.round(SWIFTEE_FEET - SWIFTEE_CELL * SWIFTEE_BASELINE),
   w: SWIFTEE_CELL, h: SWIFTEE_CELL
 };
+/* THE LAST SCREEN IS IN THE GAME'S WORLD (asked for): Swiftee says her line back to Momo standing
+   on Frozen Rush's own ice path, the ditch just ahead, in the game's daylight, with no board.
+   The picture is the game's renderer at its first break (tools/build-end-world.cjs); its walking
+   surface is at 866 of the stage, so her feet go there (the sprite's baseline is 0.877 of the
+   cell), and she is drawn larger, as the game's characters are. */
+const END_WORLD = 'assets/images/end-world.webp';
+const END_GUIDE = { x: 110, y: Math.round(866 - 420 * SWIFTEE_BASELINE), w: 420, h: 420 };
+const BLANK_IMG = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
 
 function pc(v, total) { return (100 * v / total).toFixed(4) + '%'; }
 /* Turns a stage-pixel box into a percentage-positioned absolute style. */
@@ -3353,7 +3363,7 @@ class Component extends DCLogic {
        on rather than competing with its own reflection. */
     const backdropStyle = {
       position:'absolute', inset:0, zIndex:0, pointerEvents:'none',
-      background:'#103574 url(assets/images/lesson-background.webp) center / cover no-repeat',
+      background:'#103574 url(' + (this.endWorld() ? END_WORLD : 'assets/images/lesson-background.webp') + ') center / cover no-repeat',
       filter:'blur(44px) brightness(.52) saturate(.92)',
       transform:'scale(1.12)', transformOrigin:'center center'
     };
@@ -3388,6 +3398,9 @@ class Component extends DCLogic {
          moving on -- and the blurred backdrop behind the frame is drawn from
          the first painting, so the two no longer matched while it was up. */
       backgroundSrc: 'assets/images/lesson-background.webp',
+      // fetched from the recap on, so it is in by the last screen and costs nothing before
+      endWorldSrc: this.P && st.ready && this.state.k >= this.steps().findIndex(x => x.recap) ? END_WORLD : BLANK_IMG,
+      endWorldStyle: this.endWorldStyle(),
       lessonScene: this.learningReferenceScene() ? 'parts-reference' : this.polygonIntroScene() ? 'polygon-intro' : this.topLessonScene() ? 'boundary' : 'standard',
       safeStyle: this.safeStyle(),
       showGuide: GUIDE_VISIBLE, guideViewport: this.guideViewportStyle(), guideStyle: this.guideStyle(),
@@ -3841,6 +3854,15 @@ class Component extends DCLogic {
       grid: {x:Math.round(stageMid - 370),y:187,tile:350,gap:40}
     };
   }
+  /* The last screen, in the game's world (END_WORLD). */
+  endWorld() {
+    return !!(this.P && this.state.ready && this.step().sc === 'END');
+  }
+  endWorldStyle() {
+    const on = this.endWorld();
+    return Object.assign(this.bgStyle(), { zIndex: 1, opacity: on ? 1 : 0,
+      transition: this.reducedMotion() ? 'opacity 200ms linear' : 'opacity 900ms ease-in-out' });
+  }
   bgStyle() {
     return Object.assign({position:'absolute',zIndex:0,left:0,top:0,width:'100%',height:'100%'},
       { display: 'block', objectFit: 'cover', userSelect: 'none', pointerEvents: 'none',
@@ -3853,7 +3875,7 @@ class Component extends DCLogic {
     const box = this.learningReferenceScene() ? this.teachingBoard() : this.polygonIntroScene() ? this.polygonIntroLayout().board : this.topLessonScene() ? {x:(STAGE.w-boundaryWidth)/2,y:BOUNDARY.boardY,w:boundaryWidth,h:BOUNDARY.boardH} : BOARD;
     const travel = this.learningReferenceScene() || this.polygonIntroScene() || this.topLessonScene() || this.state.boundaryTravel;
     return Object.assign(stageBox(box, 30), {
-      opacity: this.state.storyContent ? 1 : 0, transition: this.reducedMotion() ? 'none' :
+      opacity: this.state.storyContent && !this.endWorld() ? 1 : 0, transition: this.reducedMotion() ? 'none' :
         (travel ? 'opacity 260ms ease-out, left 900ms ease-in-out, top 900ms ease-in-out, width 900ms ease-in-out, height 900ms ease-in-out' : 'opacity 260ms ease-out'),
       pointerEvents: 'none'
     });
@@ -3884,6 +3906,9 @@ class Component extends DCLogic {
       // Between the two pentagons, over her head.
       const c = this.compareLayout().cards;
       left = c.leftX + c.size + D.clearance; right = c.rightX - D.clearance;
+    } else if (this.endWorld()) {
+      // In the open sky over her head: no board and no figure to keep clear of.
+      left = D.margin + 40; right = left + D.maxW;
     } else if (this.polygonIntroScene() || this.learningReferenceScene()) {
       // The board's left lane, from its rim to the figure, the grid or the sockets.
       const board = this.polygonIntroScene() ? this.polygonIntroLayout().board : this.teachingBoard();
@@ -4074,6 +4099,7 @@ class Component extends DCLogic {
   /* Swiftee's cell, scene-relative; the wrapper inside carries the only motion. */
   guideLayout() {
     return this.compareFocus() ? this.compareLayout().guide
+      : this.endWorld() ? END_GUIDE
       : this.learningReferenceScene() ? {x:180,y:700,w:300,h:300}
       : this.polygonIntroScene() ? this.polygonIntroLayout().guide
       : this.topLessonScene() ? BOUNDARY.guide : GUIDE_BOX;

@@ -33,6 +33,7 @@ The displayed screen number is the position in `steps()`, starting at 1. Interna
 | When the drafted story and scene play (`?story=1`) | `src/intro/opening.js` `storyFirst`, `BridgeStory.afterStory`, `BridgeStory.ending` |
 | The lesson's own music: the track, its level, the dip under a voice, the fade into the game | `src/lesson/lesson-music.js`; the track is `assets/audio/music/lesson-music` (`tools/build-lesson-music.cjs`); started in `boot()`, ducked by `musicDucks()`, stopped in `startPart2` (`index.html`) |
 | The recap, screen 41 before the quizzes (presented the Part 1 Summary Kit's way): what it says, its look, its states and timing | `index.html`: `recapConcepts`, `startRecap`; `src/lesson/recap.js` (states at the top), `styles/recap.css`, `assets/ui/panel.webp` |
+| The last screen in the game's world: the picture, where Swiftee stands, her bubble | `index.html`: `END_WORLD`, `END_GUIDE`, `endWorld`, `endWorldStyle` (and the `endWorld` branches in `guideLayout`, `dialogueLayout`, `boardStyle`); the picture is made by `tools/build-end-world.cjs` |
 | The end: the last line, then the game by itself | `index.html`: `finishLesson`, `startPart2`; `src/runner/runner-stage.js`; `game/js/main.js` (`?cover=0`, `window.iceAgeBegin`) |
 | The hand-off to the runner game: when it loads, the curtain, its URL flags | `src/runner/runner-stage.js`, `styles/runner-stage.css` |
 | The gold Play and the pill buttons (Next, Help Momo, Play again) | `styles/buttons-kit.css`, `src/fx/play-fx.js`, `assets/ui/`; in the lesson `pillBtn` in `index.html` |
