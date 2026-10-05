@@ -1,5 +1,7 @@
 # Swiftee — character sprite sheets
 
+> In this project's copy the @2x sheets and atlases (`spritesheets/2x`, `atlas/2x`, each extra pack's `2x`) were removed on 2026-10-05: the lesson plays the @1x sheets only (`tools/build-swiftee.cjs`) and nothing read them. The manifest still describes them; `build/` can regenerate them from the Rive file.
+
 Engine-agnostic sprite sheets generated from the Rive rig, built so that **any
 frame of any animation can be dropped in anywhere and the character will not
 shift a pixel.**

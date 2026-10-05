@@ -51,7 +51,7 @@
     "start": 1.17
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/47.wav (swifteeNeedsHelp), 0.05-2.31 s"
+  "source": "Hindi take: assets/audio/source/hi/47.flac (swifteeNeedsHelp), 0.05-2.31 s"
  },
  {
   "text": "But to help Momo, you need to learn about polygons.",
@@ -158,7 +158,7 @@
     "start": 2.97
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/48.wav (swifteeLearnFirst), 0.03-5.10 s"
+  "source": "Hindi take: assets/audio/source/hi/48.flac (swifteeLearnFirst), 0.03-5.10 s"
  },
  {
   "text": "Now let's help Momo.",
@@ -213,7 +213,7 @@
     "start": 1.94
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/49.wav (swifteeLetsHelp), 0.04-2.73 s"
+  "source": "Hindi take: assets/audio/source/hi/49.flac (swifteeLetsHelp), 0.04-2.73 s"
  },
  {
   "text": "Look! A point.",
@@ -248,7 +248,7 @@
     "start": 1.62
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/50.wav (s01Point), 0.04-2.37 s"
+  "source": "Hindi take: assets/audio/source/hi/50.flac (s01Point), 0.04-2.37 s"
  },
  {
   "text": "Woah! It drew a shape.",
@@ -303,7 +303,7 @@
     "start": 1.76
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/51.wav (s02DrewShape), 0.04-3.25 s"
+  "source": "Hindi take: assets/audio/source/hi/51.flac (s02DrewShape), 0.04-3.25 s"
  },
  {
   "text": "Let's look at this shape closely.",
@@ -366,7 +366,7 @@
     "start": 2.21
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/52.wav (s03LookClosely), 0.05-3.03 s"
+  "source": "Hindi take: assets/audio/source/hi/52.flac (s03LookClosely), 0.05-3.03 s"
  },
  {
   "text": "There are no gaps in its boundary.",
@@ -437,7 +437,7 @@
     "start": 0.58
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/53.wav (s04NoGaps), 0.02-2.91 s"
+  "source": "Hindi take: assets/audio/source/hi/53.flac (s04NoGaps), 0.02-2.91 s"
  },
  {
   "text": "Is it open or closed?",
@@ -488,7 +488,7 @@
     "start": 1.58
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/54.wav (s05OpenOrClosed), 0.00-2.23 s"
+  "source": "Hindi take: assets/audio/source/hi/54.flac (s05OpenOrClosed), 0.00-2.23 s"
  },
  {
   "text": "Is this shape open or closed?",
@@ -547,7 +547,7 @@
     "start": 2.36
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/55.wav (s06ThisShapeOpenOrClosed), 0.04-3.01 s"
+  "source": "Hindi take: assets/audio/source/hi/55.flac (s06ThisShapeOpenOrClosed), 0.04-3.01 s"
  },
  {
   "text": "What about this one?",
@@ -590,7 +590,7 @@
     "start": 1.0
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/56.wav (s07WhatAboutThis), 0.10-1.50 s"
+  "source": "Hindi take: assets/audio/source/hi/56.flac (s07WhatAboutThis), 0.10-1.50 s"
  },
  {
   "text": "And this?",
@@ -617,7 +617,7 @@
     "start": 0.55
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/57.wav (s08AndThis), 0.03-1.13 s"
+  "source": "Hindi take: assets/audio/source/hi/57.flac (s08AndThis), 0.03-1.13 s"
  },
  {
   "text": "How about this one?",
@@ -660,7 +660,7 @@
     "start": 1.28
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/58.wav (s09HowAboutThis), 0.02-1.72 s"
+  "source": "Hindi take: assets/audio/source/hi/58.flac (s09HowAboutThis), 0.02-1.72 s"
  },
  {
   "text": "No gaps in its boundary. This shape is closed.",
@@ -751,7 +751,7 @@
     "start": 4.07
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/59.wav (ocFbClosed), 0.02-4.82 s"
+  "source": "Hindi take: assets/audio/source/hi/59.flac (ocFbClosed), 0.02-4.82 s"
  },
  {
   "text": "There is a gap in its boundary. It is open.",
@@ -838,7 +838,7 @@
     "start": 2.78
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/60.wav (ocFbOpen), 0.02-3.63 s"
+  "source": "Hindi take: assets/audio/source/hi/60.flac (ocFbOpen), 0.02-3.63 s"
  },
  {
   "text": "Yes! It is closed.",
@@ -881,7 +881,7 @@
     "start": 1.16
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/61.wav (ocYesClosed), 0.00-1.99 s"
+  "source": "Hindi take: assets/audio/source/hi/61.flac (ocYesClosed), 0.00-1.99 s"
  },
  {
   "text": "Yes! It is open.",
@@ -924,7 +924,7 @@
     "start": 0.98
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/62.wav (ocYesOpen), 0.02-1.89 s"
+  "source": "Hindi take: assets/audio/source/hi/62.flac (ocYesOpen), 0.02-1.89 s"
  },
  {
   "text": "These two shapes are open...",
@@ -975,7 +975,7 @@
     "start": 1.53
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/63.wav (s10TwoOpen), 0.01-2.27 s"
+  "source": "Hindi take: assets/audio/source/hi/63.flac (s10TwoOpen), 0.01-2.27 s"
  },
  {
   "text": "...and these two shapes are closed.",
@@ -1034,7 +1034,7 @@
     "start": 2.04
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/64.wav (s11TwoClosed), 0.02-2.89 s"
+  "source": "Hindi take: assets/audio/source/hi/64.flac (s11TwoClosed), 0.02-2.89 s"
  },
  {
   "text": "Look! The boundaries of the shapes are different too.",
@@ -1109,7 +1109,7 @@
     "start": 3.16
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/65.wav (s12BoundariesDifferent), 0.04-3.57 s"
+  "source": "Hindi take: assets/audio/source/hi/65.flac (s12BoundariesDifferent), 0.04-3.57 s"
  },
  {
   "text": "Some are straight and some are curved.",
@@ -1172,7 +1172,7 @@
     "start": 1.94
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/66.wav (s13StraightAndCurved), 0.02-2.73 s"
+  "source": "Hindi take: assets/audio/source/hi/66.flac (s13StraightAndCurved), 0.02-2.73 s"
  },
  {
   "text": "Which boundaries are straight and which are curved?",
@@ -1243,7 +1243,7 @@
     "start": 2.89
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/67.wav (s14WhichStraightCurved), 0.03-3.61 s"
+  "source": "Hindi take: assets/audio/source/hi/67.flac (s14WhichStraightCurved), 0.03-3.61 s"
  },
  {
   "text": "Is the boundary straight or curved?",
@@ -1302,7 +1302,7 @@
     "start": 2.28
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/68.wav (s14AskAgain), 0.02-2.93 s"
+  "source": "Hindi take: assets/audio/source/hi/68.flac (s14AskAgain), 0.02-2.93 s"
  },
  {
   "text": "Look! This boundary isn't curved. It is made of straight lines.",
@@ -1405,7 +1405,7 @@
     "start": 3.98
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/69.wav (s14NotCurved), 0.00-5.27 s"
+  "source": "Hindi take: assets/audio/source/hi/69.flac (s14NotCurved), 0.00-5.27 s"
  },
  {
   "text": "Look closely. This boundary bends smoothly. It is curved.",
@@ -1496,7 +1496,7 @@
     "start": 5.2
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/70.wav (s14IsCurved), 0.03-6.11 s"
+  "source": "Hindi take: assets/audio/source/hi/70.flac (s14IsCurved), 0.03-6.11 s"
  },
  {
   "text": "You got it! These boundaries are straight, while these are curved.",
@@ -1591,7 +1591,7 @@
     "start": 3.78
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/71.wav (s15GotIt), 0.00-4.64 s"
+  "source": "Hindi take: assets/audio/source/hi/71.flac (s15GotIt), 0.00-4.64 s"
  },
  {
   "text": "Tap the closed figure made with straight lines.",
@@ -1670,7 +1670,7 @@
     "start": 0.78
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/72.wav (s16TapClosedStraight), 0.02-3.70 s"
+  "source": "Hindi take: assets/audio/source/hi/72.flac (s16TapClosedStraight), 0.02-3.70 s"
  },
  {
   "text": "Yes! It is closed and made of straight lines.",
@@ -1757,7 +1757,7 @@
     "start": 2.6
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/73.wav (s16Yes), 0.04-3.94 s"
+  "source": "Hindi take: assets/audio/source/hi/73.flac (s16Yes), 0.04-3.94 s"
  },
  {
   "text": "Not quite. Look for a figure with no gaps and no curves.",
@@ -1876,7 +1876,7 @@
     "start": 5.26
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/74.wav (s16NotQuite), 0.04-5.95 s"
+  "source": "Hindi take: assets/audio/source/hi/74.flac (s16NotQuite), 0.04-5.95 s"
  },
  {
   "text": "We call this a polygon.",
@@ -1927,7 +1927,7 @@
     "start": 0.86
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/75.wav (s17CallPolygon), 0.06-2.38 s"
+  "source": "Hindi take: assets/audio/source/hi/75.flac (s17CallPolygon), 0.06-2.38 s"
  },
  {
   "text": "A closed figure made of only straight line segments is called a polygon.",
@@ -2030,7 +2030,7 @@
     "start": 3.2
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/76.wav (s18Definition), 0.02-4.50 s"
+  "source": "Hindi take: assets/audio/source/hi/76.flac (s18Definition), 0.02-4.50 s"
  },
  {
   "text": "Which of these figures are polygons?",
@@ -2089,7 +2089,7 @@
     "start": 2.07
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/77.wav (s19WhichPolygons), 0.05-3.09 s"
+  "source": "Hindi take: assets/audio/source/hi/77.flac (s19WhichPolygons), 0.05-3.09 s"
  },
  {
   "text": "Great job! You identified all the polygons.",
@@ -2156,7 +2156,7 @@
     "start": 2.28
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/78.wav (s19GreatJob), 0.02-3.77 s"
+  "source": "Hindi take: assets/audio/source/hi/78.flac (s19GreatJob), 0.02-3.77 s"
  },
  {
   "text": "A polygon is closed, with only straight sides.",
@@ -2243,7 +2243,7 @@
     "start": 3.01
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/79.wav (polygonRule), 0.05-4.85 s"
+  "source": "Hindi take: assets/audio/source/hi/79.flac (polygonRule), 0.05-4.85 s"
  },
  {
   "text": "That is right! These are the ones.",
@@ -2302,7 +2302,7 @@
     "start": 1.99
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/80.wav (fbTheseAreTheOnes), 0.01-2.41 s"
+  "source": "Hindi take: assets/audio/source/hi/80.flac (fbTheseAreTheOnes), 0.01-2.41 s"
  },
  {
   "text": "Not quite. Try again.",
@@ -2365,7 +2365,7 @@
     "start": 2.28
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/81.wav (fbNotQuiteTryAgain), 0.04-3.23 s"
+  "source": "Hindi take: assets/audio/source/hi/81.flac (fbNotQuiteTryAgain), 0.04-3.23 s"
  },
  {
   "text": "These line segments are the sides of the polygon.",
@@ -2436,7 +2436,7 @@
     "start": 1.61
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/83.wav (s20Sides), 0.06-3.40 s"
+  "source": "Hindi take: assets/audio/source/hi/83.flac (s20Sides), 0.06-3.40 s"
  },
  {
   "text": "The point where two sides meet is called a vertex.",
@@ -2531,7 +2531,7 @@
     "start": 3.37
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/84.wav (s21Vertex), 0.01-4.74 s"
+  "source": "Hindi take: assets/audio/source/hi/84.flac (s21Vertex), 0.01-4.74 s"
  },
  {
   "text": "When two sides meet, they also form an angle.",
@@ -2626,7 +2626,7 @@
     "start": 3.15
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/85.wav (s22Angle), 0.01-4.46 s"
+  "source": "Hindi take: assets/audio/source/hi/85.flac (s22Angle), 0.01-4.46 s"
  },
  {
   "text": "Label the parts of the polygon.",
@@ -2685,7 +2685,7 @@
     "start": 0.25
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/86.wav (s23LabelParts), 0.02-2.81 s"
+  "source": "Hindi take: assets/audio/source/hi/86.flac (s23LabelParts), 0.02-2.81 s"
  },
  {
   "text": "Perfect! Side, vertex and angle — all labelled.",
@@ -2764,7 +2764,7 @@
     "start": 4.26
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/87.wav (s23Perfect), 0.02-4.86 s"
+  "source": "Hindi take: assets/audio/source/hi/87.flac (s23Perfect), 0.02-4.86 s"
  },
  {
   "text": "Let's count the sides of the polygon.",
@@ -2823,7 +2823,7 @@
     "start": 1.01
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/88.wav (s24CountSides), 0.03-2.89 s"
+  "source": "Hindi take: assets/audio/source/hi/88.flac (s24CountSides), 0.03-2.89 s"
  },
  {
   "text": "Count each side carefully and try again.",
@@ -2902,7 +2902,7 @@
     "start": 2.81
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/89.wav (countCarefully), 0.03-3.73 s"
+  "source": "Hindi take: assets/audio/source/hi/89.flac (countCarefully), 0.03-3.73 s"
  },
  {
   "text": "Correct! This polygon has five sides.",
@@ -2965,7 +2965,7 @@
     "start": 2.66
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/90.wav (s25Correct5), 0.02-3.57 s"
+  "source": "Hindi take: assets/audio/source/hi/90.flac (s25Correct5), 0.02-3.57 s"
  },
  {
   "text": "Now let's change how it looks.",
@@ -3020,7 +3020,7 @@
     "start": 1.86
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/91.wav (s26ChangeLooks), 0.04-2.30 s"
+  "source": "Hindi take: assets/audio/source/hi/91.flac (s26ChangeLooks), 0.04-2.30 s"
  },
  {
   "text": "Drag any vertex. Stretch it, squash it, or resize it.",
@@ -3115,7 +3115,7 @@
     "start": 5.17
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/92.wav (s27DragVertex), 0.01-5.80 s"
+  "source": "Hindi take: assets/audio/source/hi/92.flac (s27DragVertex), 0.01-5.80 s"
  },
  {
   "text": "Whoa! It looks quite different now.",
@@ -3182,7 +3182,7 @@
     "start": 2.65
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/94.wav (s28Whoa), 0.01-3.37 s"
+  "source": "Hindi take: assets/audio/source/hi/94.flac (s28Whoa), 0.01-3.37 s"
  },
  {
   "text": "Its appearance has completely changed.",
@@ -3241,7 +3241,7 @@
     "start": 2.02
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/95.wav (s29Appearance), 0.04-2.74 s"
+  "source": "Hindi take: assets/audio/source/hi/95.flac (s29Appearance), 0.04-2.74 s"
  },
  {
   "text": "But not everything has changed.",
@@ -3296,7 +3296,7 @@
     "start": 1.4
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/96.wav (s30NotEverything), 0.04-2.23 s"
+  "source": "Hindi take: assets/audio/source/hi/96.flac (s30NotEverything), 0.04-2.23 s"
  },
  {
   "text": "Let's count the sides again.",
@@ -3347,7 +3347,7 @@
     "start": 2.2
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/97.wav (s31CountAgain), 0.02-2.74 s"
+  "source": "Hindi take: assets/audio/source/hi/97.flac (s31CountAgain), 0.02-2.74 s"
  },
  {
   "text": "Both polygons still have five sides.",
@@ -3414,7 +3414,7 @@
     "start": 2.42
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/98.wav (s32Still5), 0.04-3.31 s"
+  "source": "Hindi take: assets/audio/source/hi/98.flac (s32Still5), 0.04-3.31 s"
  },
  {
   "text": "So the number of sides gives us a good way to name polygons.",
@@ -3533,7 +3533,7 @@
     "start": 2.6
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/99.wav (s33NameBySides), 0.04-5.30 s"
+  "source": "Hindi take: assets/audio/source/hi/99.flac (s33NameBySides), 0.04-5.30 s"
  },
  {
   "text": "A polygon with three sides is called a triangle.",
@@ -3612,7 +3612,7 @@
     "start": 2.51
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/100.wav (s34Triangle), 0.03-3.73 s"
+  "source": "Hindi take: assets/audio/source/hi/100.flac (s34Triangle), 0.03-3.73 s"
  },
  {
   "text": "A polygon with four sides is called a quadrilateral.",
@@ -3691,7 +3691,7 @@
     "start": 2.23
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/101.wav (s35Quadrilateral), 0.06-3.59 s"
+  "source": "Hindi take: assets/audio/source/hi/101.flac (s35Quadrilateral), 0.06-3.59 s"
  },
  {
   "text": "Select all the quadrilaterals.",
@@ -3730,7 +3730,7 @@
     "start": 0.66
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/102.wav (s36SelectQuadrilaterals), 0.02-1.91 s"
+  "source": "Hindi take: assets/audio/source/hi/102.flac (s36SelectQuadrilaterals), 0.02-1.91 s"
  },
  {
   "text": "That's right! Quadrilaterals are polygons with four sides.",
@@ -3809,7 +3809,7 @@
     "start": 2.8
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/103.wav (s36ThatsRight), 0.06-4.66 s"
+  "source": "Hindi take: assets/audio/source/hi/103.flac (s36ThatsRight), 0.06-4.66 s"
  },
  {
   "text": "Quadrilaterals are polygons with four sides.",
@@ -3872,7 +3872,7 @@
     "start": 1.4
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/104.wav (s36Rule), 0.02-3.37 s"
+  "source": "Hindi take: assets/audio/source/hi/104.flac (s36Rule), 0.02-3.37 s"
  },
  {
   "text": "Is this shape a quadrilateral?",
@@ -3923,7 +3923,7 @@
     "start": 1.25
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/105.wav (s36IsThisQuad), 0.01-2.33 s"
+  "source": "Hindi take: assets/audio/source/hi/105.flac (s36IsThisQuad), 0.01-2.33 s"
  },
  {
   "text": "A polygon with five sides is called a pentagon.",
@@ -4002,7 +4002,7 @@
     "start": 2.41
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/106.wav (s37Pentagon), 0.01-3.75 s"
+  "source": "Hindi take: assets/audio/source/hi/106.flac (s37Pentagon), 0.01-3.75 s"
  },
  {
   "text": "A polygon with six sides is called a hexagon.",
@@ -4081,7 +4081,7 @@
     "start": 2.31
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/107.wav (s38Hexagon), 0.07-3.67 s"
+  "source": "Hindi take: assets/audio/source/hi/107.flac (s38Hexagon), 0.07-3.67 s"
  },
  {
   "text": "A polygon with seven sides is called a heptagon.",
@@ -4160,7 +4160,7 @@
     "start": 2.55
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/108.wav (s39Heptagon), 0.00-3.98 s"
+  "source": "Hindi take: assets/audio/source/hi/108.flac (s39Heptagon), 0.00-3.98 s"
  },
  {
   "text": "A polygon with eight sides is called an octagon.",
@@ -4239,7 +4239,7 @@
     "start": 2.57
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/109.wav (s40Octagon), 0.02-3.88 s"
+  "source": "Hindi take: assets/audio/source/hi/109.flac (s40Octagon), 0.02-3.88 s"
  },
  {
   "text": "Let's recall what we learnt today.",
@@ -4306,7 +4306,7 @@
     "start": 2.6
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/110.wav (recapRecall), 0.04-3.59 s"
+  "source": "Hindi take: assets/audio/source/hi/110.flac (recapRecall), 0.04-3.59 s"
  },
  {
   "text": "Polygons have different names based on their number of sides.",
@@ -4405,7 +4405,7 @@
     "start": 0.25
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/111.wav (recapNames), 0.03-4.86 s"
+  "source": "Hindi take: assets/audio/source/hi/111.flac (recapNames), 0.03-4.86 s"
  },
  {
   "text": "Which of these are polygons?",
@@ -4456,7 +4456,7 @@
     "start": 1.42
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/112.wav (c1WhichPolygons), 0.06-2.54 s"
+  "source": "Hindi take: assets/audio/source/hi/112.flac (c1WhichPolygons), 0.06-2.54 s"
  },
  {
   "text": "Yes! Closed, with only straight sides.",
@@ -4515,7 +4515,7 @@
     "start": 2.92
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/113.wav (c1Yes), 0.02-3.66 s"
+  "source": "Hindi take: assets/audio/source/hi/113.flac (c1Yes), 0.02-3.66 s"
  },
  {
   "text": "Not quite! A polygon is closed with only straight sides.",
@@ -4630,7 +4630,7 @@
     "start": 5.31
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/114.wav (c1NotQuite), 0.03-6.49 s"
+  "source": "Hindi take: assets/audio/source/hi/114.flac (c1NotQuite), 0.03-6.49 s"
  },
  {
   "text": "Classify the figures as a polygon or not a polygon.",
@@ -4713,7 +4713,7 @@
     "start": 2.3
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/115.wav (c2Classify), 0.04-4.30 s"
+  "source": "Hindi take: assets/audio/source/hi/115.flac (c2Classify), 0.04-4.30 s"
  },
  {
   "text": "Great job! You sorted the figures correctly.",
@@ -4780,7 +4780,7 @@
     "start": 3.14
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/117.wav (c2GreatJob), 0.02-3.81 s"
+  "source": "Hindi take: assets/audio/source/hi/117.flac (c2GreatJob), 0.02-3.81 s"
  },
  {
   "text": "Wrong group. Check for gaps or curved sides.",
@@ -4855,7 +4855,7 @@
     "start": 3.08
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/118.wav (c2WrongGroup), 0.02-4.22 s"
+  "source": "Hindi take: assets/audio/source/hi/118.flac (c2WrongGroup), 0.02-4.22 s"
  },
  {
   "text": "Polygons are closed, with only straight sides. Try again.",
@@ -4962,7 +4962,7 @@
     "start": 5.37
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/119.wav (c2Rule), 0.05-6.29 s"
+  "source": "Hindi take: assets/audio/source/hi/119.flac (c2Rule), 0.05-6.29 s"
  },
  {
   "text": "Which figure is NOT a polygon?",
@@ -5017,7 +5017,7 @@
     "start": 1.19
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/120.wav (c3WhichNot), 0.00-2.46 s"
+  "source": "Hindi take: assets/audio/source/hi/120.flac (c3WhichNot), 0.00-2.46 s"
  },
  {
   "text": "You found it! That is not a polygon.",
@@ -5088,7 +5088,7 @@
     "start": 2.14
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/121.wav (c3Found), 0.02-3.60 s"
+  "source": "Hindi take: assets/audio/source/hi/121.flac (c3Found), 0.02-3.60 s"
  },
  {
   "text": "Which figure breaks the rule for a polygon?",
@@ -5159,7 +5159,7 @@
     "start": 1.21
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/122.wav (c3BreaksRule), 0.03-3.22 s"
+  "source": "Hindi take: assets/audio/source/hi/122.flac (c3BreaksRule), 0.03-3.22 s"
  },
  {
   "text": "Is it closed? Does it have only straight sides?",
@@ -5246,7 +5246,7 @@
     "start": 3.42
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/123.wav (c3Questions), 0.08-4.48 s"
+  "source": "Hindi take: assets/audio/source/hi/123.flac (c3Questions), 0.08-4.48 s"
  },
  {
   "text": "Which of these are pentagons?",
@@ -5297,7 +5297,7 @@
     "start": 1.59
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/124.wav (c4WhichPentagons), 0.01-2.60 s"
+  "source": "Hindi take: assets/audio/source/hi/124.flac (c4WhichPentagons), 0.01-2.60 s"
  },
  {
   "text": "Exactly! A pentagon always has five sides.",
@@ -5368,7 +5368,7 @@
     "start": 3.29
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/125.wav (c4Exactly), 0.03-4.47 s"
+  "source": "Hindi take: assets/audio/source/hi/125.flac (c4Exactly), 0.03-4.47 s"
  },
  {
   "text": "Count the sides of each figure carefully.",
@@ -5435,7 +5435,7 @@
     "start": 2.7
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/126.wav (c4CountEach), 0.06-3.25 s"
+  "source": "Hindi take: assets/audio/source/hi/126.flac (c4CountEach), 0.06-3.25 s"
  },
  {
   "text": "Look for every figure with exactly five sides.",
@@ -5506,7 +5506,7 @@
     "start": 1.08
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/127.wav (c4LookFor5), 0.04-3.25 s"
+  "source": "Hindi take: assets/audio/source/hi/127.flac (c4LookFor5), 0.04-3.25 s"
  },
  {
   "text": "Classify each figure as a hexagon or a heptagon.",
@@ -5585,7 +5585,7 @@
     "start": 2.71
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/128.wav (c5Classify), 0.05-4.18 s"
+  "source": "Hindi take: assets/audio/source/hi/128.flac (c5Classify), 0.05-4.18 s"
  },
  {
   "text": "Well done! Hexagons have six sides and heptagons have seven sides.",
@@ -5688,7 +5688,7 @@
     "start": 5.3
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/130.wav (c5WellDone), 0.04-6.07 s"
+  "source": "Hindi take: assets/audio/source/hi/130.flac (c5WellDone), 0.04-6.07 s"
  },
  {
   "text": "Count the sides of the ones you placed wrong.",
@@ -5767,7 +5767,7 @@
     "start": 3.36
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/131.wav (c5CountWrong), 0.02-3.88 s"
+  "source": "Hindi take: assets/audio/source/hi/131.flac (c5CountWrong), 0.02-3.88 s"
  },
  {
   "text": "Six sides make a hexagon, seven make a heptagon.",
@@ -5850,7 +5850,7 @@
     "start": 3.29
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/132.wav (c5Rule), 0.05-4.31 s"
+  "source": "Hindi take: assets/audio/source/hi/132.flac (c5Rule), 0.05-4.31 s"
  },
  {
   "text": "Now you know everything about polygons. You are ready to help Momo.",
@@ -5985,6 +5985,6 @@
     "start": 5.0
    }
   ],
-  "source": "Hindi take: assets/audio/source/hi/133.wav (endReady), 0.02-5.91 s"
+  "source": "Hindi take: assets/audio/source/hi/133.flac (endReady), 0.02-5.91 s"
  }
 ];

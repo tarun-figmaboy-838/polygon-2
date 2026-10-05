@@ -1,182 +1,182 @@
 file,key,english,hindi,delivered
-1.wav,lessonTitle,Polygon Adventure,बहुभुज का रोमांच,yes
-2.wav,swifteeGuideLabel,"Swiftee, your guide","स्विफ़्टी, आपकी मार्गदर्शक",yes
-3.wav,uiCheck,Check,जाँचें,yes
-4.wav,uiNext,Next,आगे,yes
-5.wav,uiPlayAgain,Play again,फिर से खेलें,yes
-6.wav,uiOpen,Open,खुली,yes
-7.wav,uiClosed,Closed,बंद,yes
-8.wav,uiStraight,Straight,सीधी,yes
-9.wav,uiCurved,Curved,वक्र,yes
-10.wav,uiSide,Side,भुजा,yes
-11.wav,uiSides,Sides,भुजाएँ,yes
-12.wav,uiVertex,Vertex,शीर्ष,yes
-13.wav,uiAngle,Angle,कोण,yes
-14.wav,uiPolygon,Polygon,बहुभुज,yes
-15.wav,uiPolygonCaps,POLYGON,बहुभुज,yes
-16.wav,uiNotAPolygon,Not a polygon,बहुभुज नहीं,yes
-17.wav,uiTriangle,Triangle,त्रिभुज,yes
-18.wav,uiQuadrilateral,Quadrilateral,चतुर्भुज,yes
-19.wav,uiPentagon,Pentagon,पंचभुज,yes
-20.wav,uiHexagon,Hexagon,षट्भुज,yes
-21.wav,uiHeptagon,Heptagon,सप्तभुज,yes
-22.wav,uiOctagon,Octagon,अष्टभुज,yes
-23.wav,uiNumberOfSides,Number of sides,भुजाओं की संख्या,yes
-24.wav,uiNumberOfSidesAfter,Number of sides after,बाद में भुजाओं की संख्या,yes
-25.wav,uiIncreaseSides,Increase number of sides,भुजाओं की संख्या बढ़ाएँ,yes
-26.wav,uiDecreaseSides,Decrease number of sides,भुजाओं की संख्या घटाएँ,yes
-27.wav,uiAudioUnavailable,Audio unavailable,ऑडियो उपलब्ध नहीं है,yes
-28.wav,uiFigureN,Figure {number}: {name},आकृति {number}: {name},yes
-29.wav,uiLanguage,Language,भाषा,yes
-30.wav,uiChooseLanguage,Choose your language,अपनी भाषा चुनें,yes
-31.wav,langSelectedMessage,The game is now in {language}.,गेम अब {language} में है।,yes
-32.wav,gameMeet,This is Momo. He needs to find his friend.,यह मोमो है। उसे अपने दोस्त को ढूँढना है।,yes
-33.wav,gameGoal,Help Momo cross the Frozen Pass!,मोमो को जमा हुआ दर्रा पार करने में मदद करें!,yes
-34.wav,gameWatchOut,Watch out!,सावधान!,yes
-35.wav,gameTapJump,Tap to jump over obstacles.,रुकावटों के ऊपर से कूदने के लिए टैप करें।,yes
-36.wav,gamePathBroken,Oh no! The path is broken.,अरे नहीं! रास्ता टूट गया है।,yes
-37.wav,gameUseIcePiece,Use the right ice piece to fix the path.,रास्ता ठीक करने के लिए बर्फ़ का सही टुकड़ा इस्तेमाल करें।,yes
-38.wav,gameUsePiece,Use the right piece to fix the path.,रास्ता ठीक करने के लिए सही टुकड़ा इस्तेमाल करें।,yes
-39.wav,gamePerfectFit,Perfect fit! Keep going!,एकदम सही बैठा! आगे बढ़ते रहें!,yes
-40.wav,signTriangle,Cut the triangle.,त्रिभुज काटें।,yes
-41.wav,signQuadrilateral,Cut the quadrilateral.,चतुर्भुज काटें।,yes
-42.wav,signPentagon,Cut the pentagon.,पंचभुज काटें।,yes
-43.wav,signHexagon,Cut the hexagon.,षट्भुज काटें।,yes
-44.wav,signHeptagon,Cut the heptagon.,सप्तभुज काटें।,yes
-45.wav,signPentagons,Cut all the pentagons.,सभी पंचभुज काटें।,yes
-46.wav,signHexagons,Cut all the hexagons.,सभी षट्भुज काटें।,yes
-47.wav,swifteeNeedsHelp,Momo needs your help.,मोमो को आपकी मदद चाहिए।,yes
-48.wav,swifteeLearnFirst,"But to help Momo, you need to learn about polygons.",लेकिन मोमो की मदद करने के लिए आपको बहुभुज के बारे में सीखना होगा।,yes
-49.wav,swifteeLetsHelp,Now let's help Momo.,"चलिए, अब मोमो की मदद करते हैं।",yes
-50.wav,s01Point,Look! A point.,देखिए! एक बिंदु।,yes
-51.wav,s02DrewShape,Woah! It drew a shape.,वाह! इसने एक आकृति बना दी।,yes
-52.wav,s03LookClosely,Let's look at this shape closely.,"आइए, इस आकृति को ध्यान से देखें।",yes
-53.wav,s04NoGaps,There are no gaps in its boundary.,इसकी सीमा में कोई खाली जगह नहीं है।,yes
-54.wav,s05OpenOrClosed,Is it open or closed?,यह खुली है या बंद?,yes
-55.wav,s06ThisShapeOpenOrClosed,Is this shape open or closed?,यह आकृति खुली है या बंद?,yes
-56.wav,s07WhatAboutThis,What about this one?,इसके बारे में क्या?,yes
-57.wav,s08AndThis,And this?,और यह?,yes
-58.wav,s09HowAboutThis,How about this one?,यह वाली कैसी है?,yes
-59.wav,ocFbClosed,No gaps in its boundary. This shape is closed.,इसकी सीमा में कोई खाली जगह नहीं। यह आकृति बंद है।,yes
-60.wav,ocFbOpen,There is a gap in its boundary. It is open.,इसकी सीमा में खाली जगह है। यह खुली है।,yes
-61.wav,ocYesClosed,Yes! It is closed.,हाँ! यह बंद है।,yes
-62.wav,ocYesOpen,Yes! It is open.,हाँ! यह खुली है।,yes
-63.wav,s10TwoOpen,These two shapes are open...,ये दो आकृतियाँ खुली हैं...,yes
-64.wav,s11TwoClosed,...and these two shapes are closed.,...और ये दो आकृतियाँ बंद हैं।,yes
-65.wav,s12BoundariesDifferent,Look! The boundaries of the shapes are different too.,देखिए! आकृतियों की सीमाएँ भी अलग-अलग हैं।,yes
-66.wav,s13StraightAndCurved,Some are straight and some are curved.,कुछ सीधी हैं और कुछ वक्र।,yes
-67.wav,s14WhichStraightCurved,Which boundaries are straight and which are curved?,कौन-सी सीमाएँ सीधी हैं और कौन-सी वक्र?,yes
-68.wav,s14AskAgain,Is the boundary straight or curved?,यह सीमा सीधी है या वक्र?,yes
-69.wav,s14NotCurved,Look! This boundary isn't curved. It is made of straight lines.,देखिए! यह सीमा वक्र नहीं है। यह सीधी रेखाओं से बनी है।,yes
-70.wav,s14IsCurved,Look closely. This boundary bends smoothly. It is curved.,ध्यान से देखिए। यह सीमा धीरे-धीरे मुड़ती है। यह वक्र है।,yes
-71.wav,s15GotIt,"You got it! These boundaries are straight, while these are curved.","बिल्कुल सही! ये सीमाएँ सीधी हैं, जबकि ये वक्र हैं।",yes
-72.wav,s16TapClosedStraight,Tap the closed figure made with straight lines.,सीधी रेखाओं से बनी बंद आकृति पर टैप करें।,yes
-73.wav,s16Yes,Yes! It is closed and made of straight lines.,हाँ! यह बंद है और सीधी रेखाओं से बनी है।,yes
-74.wav,s16NotQuite,Not quite. Look for a figure with no gaps and no curves.,"पूरी तरह से सही नहीं। ऐसी आकृति ढूँढें जिसमें न खाली जगह हो, न मोड़।",yes
-75.wav,s17CallPolygon,We call this a polygon.,इसे हम बहुभुज कहते हैं।,yes
-76.wav,s18Definition,A closed figure made of only straight line segments is called a polygon.,केवल रेखाखंडों से बनी बंद आकृति को बहुभुज कहते हैं।,yes
-77.wav,s19WhichPolygons,Which of these figures are polygons?,इनमें से कौन-सी आकृतियाँ बहुभुज हैं?,yes
-78.wav,s19GreatJob,Great job! You identified all the polygons.,बहुत बढ़िया! आपने सभी बहुभुज पहचान लिए।,yes
-79.wav,polygonRule,"A polygon is closed, with only straight sides.","बहुभुज बंद होता है, और उसकी सभी भुजाएँ सीधी होती हैं।",yes
-80.wav,fbTheseAreTheOnes,That is right! These are the ones.,बिल्कुल सही! यही वाली हैं।,yes
-81.wav,fbNotQuiteTryAgain,Not quite. Try again.,पूरी तरह से सही नहीं। फिर से प्रयास करें।,yes
-82.wav,fbTryAgain,Try again.,फिर से प्रयास करें।,yes
-83.wav,s20Sides,These line segments are the sides of the polygon.,ये रेखाखंड बहुभुज की भुजाएँ हैं।,yes
-84.wav,s21Vertex,The point where two sides meet is called a vertex.,"जिस बिंदु पर दो भुजाएँ मिलती हैं, उसे शीर्ष कहते हैं।",yes
-85.wav,s22Angle,"When two sides meet, they also form an angle.","जब दो भुजाएँ मिलती हैं, तो वे एक कोण भी बनाती हैं।",yes
-86.wav,s23LabelParts,Label the parts of the polygon.,बहुभुज के भागों के नाम लगाएँ।,yes
-87.wav,s23Perfect,"Perfect! Side, vertex and angle — all labelled.","शानदार! भुजा, शीर्ष और कोण — सबके नाम लग गए।",yes
-88.wav,s24CountSides,Let's count the sides of the polygon.,"आइए, बहुभुज की भुजाएँ गिनें।",yes
-89.wav,countCarefully,Count each side carefully and try again.,हर भुजा ध्यान से गिनें और फिर से प्रयास करें।,yes
-90.wav,s25Correct5,Correct! This polygon has 5 sides.,सही! इस बहुभुज की 5 भुजाएँ हैं।,yes
-91.wav,s26ChangeLooks,Now let's change how it looks.,अब इसका रूप बदलते हैं।,yes
-92.wav,s27DragVertex,"Drag any vertex. Stretch it, squash it, or resize it.","कोई भी शीर्ष खींचें। इसे फैलाएँ, दबाएँ या इसका आकार बदलें।",yes
-93.wav,s27DragVertexShort,Drag any vertex,कोई भी शीर्ष खींचें,yes
-94.wav,s28Whoa,Whoa! It looks quite different now.,वाह! अब यह बिल्कुल अलग दिख रहा है।,yes
-95.wav,s29Appearance,Its appearance has completely changed.,इसका रूप पूरी तरह बदल गया है।,yes
-96.wav,s30NotEverything,But not everything has changed.,लेकिन सब कुछ नहीं बदला है।,yes
-97.wav,s31CountAgain,Let's count the sides again.,"आइए, भुजाएँ फिर से गिनें।",yes
-98.wav,s32Still5,Both polygons still have 5 sides.,दोनों बहुभुजों की अब भी 5 भुजाएँ हैं।,yes
-99.wav,s33NameBySides,So the number of sides gives us a good way to name polygons.,इसलिए भुजाओं की संख्या से हम बहुभुजों के नाम आसानी से रख सकते हैं।,yes
-100.wav,s34Triangle,A polygon with 3 sides is called a triangle.,3 भुजाओं वाले बहुभुज को त्रिभुज कहते हैं।,yes
-101.wav,s35Quadrilateral,A polygon with 4 sides is called a quadrilateral.,4 भुजाओं वाले बहुभुज को चतुर्भुज कहते हैं।,yes
-102.wav,s36SelectQuadrilaterals,Select all the quadrilaterals.,सभी चतुर्भुज चुनें।,yes
-103.wav,s36ThatsRight,That’s right! Quadrilaterals are polygons with 4 sides.,बिल्कुल सही! चतुर्भुज 4 भुजाओं वाले बहुभुज होते हैं।,yes
-104.wav,s36Rule,Quadrilaterals are polygons with 4 sides.,चतुर्भुज 4 भुजाओं वाले बहुभुज होते हैं।,yes
-105.wav,s36IsThisQuad,Is this shape a quadrilateral?,क्या यह आकृति चतुर्भुज है?,yes
-106.wav,s37Pentagon,A polygon with 5 sides is called a pentagon.,5 भुजाओं वाले बहुभुज को पंचभुज कहते हैं।,yes
-107.wav,s38Hexagon,A polygon with 6 sides is called a hexagon.,6 भुजाओं वाले बहुभुज को षट्भुज कहते हैं।,yes
-108.wav,s39Heptagon,A polygon with 7 sides is called a heptagon.,7 भुजाओं वाले बहुभुज को सप्तभुज कहते हैं।,yes
-109.wav,s40Octagon,A polygon with 8 sides is called an octagon.,8 भुजाओं वाले बहुभुज को अष्टभुज कहते हैं।,yes
-110.wav,recapRecall,Let's recall what we learnt today.,"आइए, याद करें कि आज हमने क्या सीखा।",yes
-111.wav,recapNames,Polygons have different names based on their number of sides.,भुजाओं की संख्या के आधार पर बहुभुजों के अलग-अलग नाम होते हैं।,yes
-112.wav,c1WhichPolygons,Which of these are polygons?,इनमें से कौन-से बहुभुज हैं?,yes
-113.wav,c1Yes,"Yes! Closed, with only straight sides.","हाँ! बंद, और केवल सीधी भुजाएँ।",yes
-114.wav,c1NotQuite,Not quite! A polygon is closed with only straight sides.,पूरी तरह से सही नहीं! बहुभुज बंद होता है और उसकी केवल सीधी भुजाएँ होती हैं।,yes
-115.wav,c2Classify,Classify the figures as a polygon or not a polygon.,आकृतियों को बहुभुज या बहुभुज नहीं में बाँटें।,yes
-116.wav,c2ClassifyShort,Classify the figures.,आकृतियों को वर्गीकृत करें।,yes
-117.wav,c2GreatJob,Great job! You sorted the figures correctly.,बहुत बढ़िया! आपने आकृतियों को सही-सही बाँटा।,yes
-118.wav,c2WrongGroup,Wrong group. Check for gaps or curved sides.,गलत समूह। खाली जगह या वक्र भुजाएँ देखें।,yes
-119.wav,c2Rule,"Polygons are closed, with only straight sides. Try again.","बहुभुज बंद होते हैं, और उनकी केवल सीधी भुजाएँ होती हैं। फिर से प्रयास करें।",yes
-120.wav,c3WhichNot,Which figure is NOT a polygon?,कौन-सी आकृति बहुभुज नहीं है?,yes
-121.wav,c3Found,You found it! That is not a polygon.,आपने ढूँढ लिया! वह बहुभुज नहीं है।,yes
-122.wav,c3BreaksRule,Which figure breaks the rule for a polygon?,कौन-सी आकृति बहुभुज का नियम तोड़ती है?,yes
-123.wav,c3Questions,Is it closed? Does it have only straight sides?,क्या यह बंद है? क्या इसकी केवल सीधी भुजाएँ हैं?,yes
-124.wav,c4WhichPentagons,Which of these are pentagons?,इनमें से कौन-से पंचभुज हैं?,yes
-125.wav,c4Exactly,Exactly! A pentagon always has 5 sides.,बिल्कुल! पंचभुज की हमेशा 5 भुजाएँ होती हैं।,yes
-126.wav,c4CountEach,Count the sides of each figure carefully.,हर आकृति की भुजाएँ ध्यान से गिनें।,yes
-127.wav,c4LookFor5,Look for every figure with exactly 5 sides.,ठीक 5 भुजाओं वाली हर आकृति ढूँढें।,yes
-128.wav,c5Classify,Classify each figure as a hexagon or a heptagon.,हर आकृति को षट्भुज या सप्तभुज में बाँटें।,yes
-129.wav,c5ClassifyShort,Classify the figure,आकृति को वर्गीकृत करें,yes
-130.wav,c5WellDone,Well done! Hexagons have 6 sides and heptagons have 7 sides.,शाबाश! षट्भुज की 6 भुजाएँ होती हैं और सप्तभुज की 7 भुजाएँ।,yes
-131.wav,c5CountWrong,Count the sides of the ones you placed wrong.,"जिन्हें आपने गलत जगह रखा, उनकी भुजाएँ गिनें।",yes
-132.wav,c5Rule,"6 sides make a hexagon, 7 make a heptagon.","6 भुजाओं से षट्भुज बनता है, 7 से सप्तभुज।",yes
-133.wav,endReady,Now you know everything about polygons. You are ready to help Momo.,अब आप बहुभुज के बारे में सब कुछ जानते हैं। आप मोमो की मदद करने के लिए तैयार हैं।,yes
-134.wav,a11yChooseLabelFirst,"Choose a label first, then choose a question-mark target.","पहले एक नाम चुनें, फिर प्रश्नचिह्न वाला स्थान चुनें।",yes
-135.wav,a11ySelected,{label} selected. Choose a question-mark target. Press Escape to cancel.,{label} चुना गया। प्रश्नचिह्न वाला स्थान चुनें। रद्द करने के लिए Escape दबाएँ।,yes
-136.wav,a11ySelectionCancelled,{label} selection cancelled.,{label} का चयन रद्द हुआ।,yes
-137.wav,a11yPlaced,{label} correctly placed.,{label} सही जगह पर रखा गया।,yes
-138.wav,a11yAreaFull,This area already has its two figures.,इस हिस्से में पहले से दो आकृतियाँ हैं।,yes
-139.wav,a11yPlacedInColumn,Correct. Placed in the {column} column. {count} of {total} sorted.,सही। {column} कॉलम में रखा गया। {total} में से {count} बाँटे गए।,yes
-140.wav,a11yNotColumn,Not the {column} column. The figure is back with the others.,{column} कॉलम नहीं। आकृति बाकी आकृतियों के पास लौट आई है।,yes
-141.wav,a11yTraceOutline,Trace the shape outline. Then choose Open or Closed.,आकृति की रूपरेखा पर उँगली चलाएँ। फिर खुली या बंद चुनें।,yes
-142.wav,a11yShapeOutline,Shape outline.,आकृति की रूपरेखा।,yes
-143.wav,a11yCurvedFigure,Figure containing curved lines.,वक्र रेखाओं वाली आकृति।,yes
-144.wav,a11yStraightFigure,Figure with straight segments.,सीधे रेखाखंडों वाली आकृति।,yes
-145.wav,gamePageTitle,Ice Age Mammoth Runner,हिमयुग मैमथ रनर,yes
-146.wav,gameAriaLabel,Ice Age mammoth runner game,हिमयुग मैमथ रनर गेम,yes
-147.wav,gamePlay,Play,खेलें,yes
-148.wav,gameLoading,Loading…,लोड हो रहा है…,yes
-149.wav,gamePause,Pause,रोकें,yes
-150.wav,gamePaused,Paused,रुका हुआ,yes
-151.wav,gameResume,Resume,फिर से शुरू करें,yes
-152.wav,gameStartOver,Start over,शुरू से करें,yes
-153.wav,gameSound,Sound,आवाज़,yes
-154.wav,gameSoundOn,Sound on,आवाज़ चालू,yes
-155.wav,gameSoundOff,Sound off,आवाज़ बंद,MISSING
-156.wav,gameRotate,Rotate your device,अपना डिवाइस घुमाएँ,yes
-157.wav,gameSkip,Skip,छोड़ें,yes
-158.wav,gameSkipToEnding,Skip to ending,अंत पर जाएँ,yes
-159.wav,termPoint,point,बिंदु,yes
-160.wav,termShape,shape,आकृति,yes
-161.wav,termFigure,figure,आकृति,yes
-162.wav,termBoundary,boundary,सीमा,yes
-163.wav,termGap,gap,खाली जगह,yes
-164.wav,termOpen,open,खुली,yes
-165.wav,termClosed,closed,बंद,yes
-166.wav,termStraight,straight,सीधी,yes
-167.wav,termCurved,curved,वक्र,yes
-168.wav,termStraightLine,straight line,सीधी रेखा,yes
-169.wav,termLineSegment,line segment,रेखाखंड,yes
-170.wav,termPolygon,polygon,बहुभुज,yes
-171.wav,termPolygons,polygons,बहुभुज,yes
-172.wav,termSide,side,भुजा,yes
-173.wav,termSides,sides,भुजाएँ,yes
-174.wav,termVertex,vertex,शीर्ष,yes
-175.wav,termAngle,angle,कोण,yes
-176.wav,termTriangle,triangle,त्रिभुज,yes
-177.wav,termQuadrilateral,quadrilateral,चतुर्भुज,yes
-178.wav,termPentagon,pentagon,पंचभुज,yes
-179.wav,termHexagon,hexagon,षट्भुज,yes
-180.wav,termHeptagon,heptagon,सप्तभुज,yes
-181.wav,termOctagon,octagon,अष्टभुज,yes
+1.flac,lessonTitle,Polygon Adventure,बहुभुज का रोमांच,yes
+2.flac,swifteeGuideLabel,"Swiftee, your guide","स्विफ़्टी, आपकी मार्गदर्शक",yes
+3.flac,uiCheck,Check,जाँचें,yes
+4.flac,uiNext,Next,आगे,yes
+5.flac,uiPlayAgain,Play again,फिर से खेलें,yes
+6.flac,uiOpen,Open,खुली,yes
+7.flac,uiClosed,Closed,बंद,yes
+8.flac,uiStraight,Straight,सीधी,yes
+9.flac,uiCurved,Curved,वक्र,yes
+10.flac,uiSide,Side,भुजा,yes
+11.flac,uiSides,Sides,भुजाएँ,yes
+12.flac,uiVertex,Vertex,शीर्ष,yes
+13.flac,uiAngle,Angle,कोण,yes
+14.flac,uiPolygon,Polygon,बहुभुज,yes
+15.flac,uiPolygonCaps,POLYGON,बहुभुज,yes
+16.flac,uiNotAPolygon,Not a polygon,बहुभुज नहीं,yes
+17.flac,uiTriangle,Triangle,त्रिभुज,yes
+18.flac,uiQuadrilateral,Quadrilateral,चतुर्भुज,yes
+19.flac,uiPentagon,Pentagon,पंचभुज,yes
+20.flac,uiHexagon,Hexagon,षट्भुज,yes
+21.flac,uiHeptagon,Heptagon,सप्तभुज,yes
+22.flac,uiOctagon,Octagon,अष्टभुज,yes
+23.flac,uiNumberOfSides,Number of sides,भुजाओं की संख्या,yes
+24.flac,uiNumberOfSidesAfter,Number of sides after,बाद में भुजाओं की संख्या,yes
+25.flac,uiIncreaseSides,Increase number of sides,भुजाओं की संख्या बढ़ाएँ,yes
+26.flac,uiDecreaseSides,Decrease number of sides,भुजाओं की संख्या घटाएँ,yes
+27.flac,uiAudioUnavailable,Audio unavailable,ऑडियो उपलब्ध नहीं है,yes
+28.flac,uiFigureN,Figure {number}: {name},आकृति {number}: {name},yes
+29.flac,uiLanguage,Language,भाषा,yes
+30.flac,uiChooseLanguage,Choose your language,अपनी भाषा चुनें,yes
+31.flac,langSelectedMessage,The game is now in {language}.,गेम अब {language} में है।,yes
+32.flac,gameMeet,This is Momo. He needs to find his friend.,यह मोमो है। उसे अपने दोस्त को ढूँढना है।,yes
+33.flac,gameGoal,Help Momo cross the Frozen Pass!,मोमो को जमा हुआ दर्रा पार करने में मदद करें!,yes
+34.flac,gameWatchOut,Watch out!,सावधान!,yes
+35.flac,gameTapJump,Tap to jump over obstacles.,रुकावटों के ऊपर से कूदने के लिए टैप करें।,yes
+36.flac,gamePathBroken,Oh no! The path is broken.,अरे नहीं! रास्ता टूट गया है।,yes
+37.flac,gameUseIcePiece,Use the right ice piece to fix the path.,रास्ता ठीक करने के लिए बर्फ़ का सही टुकड़ा इस्तेमाल करें।,yes
+38.flac,gameUsePiece,Use the right piece to fix the path.,रास्ता ठीक करने के लिए सही टुकड़ा इस्तेमाल करें।,yes
+39.flac,gamePerfectFit,Perfect fit! Keep going!,एकदम सही बैठा! आगे बढ़ते रहें!,yes
+40.flac,signTriangle,Cut the triangle.,त्रिभुज काटें।,yes
+41.flac,signQuadrilateral,Cut the quadrilateral.,चतुर्भुज काटें।,yes
+42.flac,signPentagon,Cut the pentagon.,पंचभुज काटें।,yes
+43.flac,signHexagon,Cut the hexagon.,षट्भुज काटें।,yes
+44.flac,signHeptagon,Cut the heptagon.,सप्तभुज काटें।,yes
+45.flac,signPentagons,Cut all the pentagons.,सभी पंचभुज काटें।,yes
+46.flac,signHexagons,Cut all the hexagons.,सभी षट्भुज काटें।,yes
+47.flac,swifteeNeedsHelp,Momo needs your help.,मोमो को आपकी मदद चाहिए।,yes
+48.flac,swifteeLearnFirst,"But to help Momo, you need to learn about polygons.",लेकिन मोमो की मदद करने के लिए आपको बहुभुज के बारे में सीखना होगा।,yes
+49.flac,swifteeLetsHelp,Now let's help Momo.,"चलिए, अब मोमो की मदद करते हैं।",yes
+50.flac,s01Point,Look! A point.,देखिए! एक बिंदु।,yes
+51.flac,s02DrewShape,Woah! It drew a shape.,वाह! इसने एक आकृति बना दी।,yes
+52.flac,s03LookClosely,Let's look at this shape closely.,"आइए, इस आकृति को ध्यान से देखें।",yes
+53.flac,s04NoGaps,There are no gaps in its boundary.,इसकी सीमा में कोई खाली जगह नहीं है।,yes
+54.flac,s05OpenOrClosed,Is it open or closed?,यह खुली है या बंद?,yes
+55.flac,s06ThisShapeOpenOrClosed,Is this shape open or closed?,यह आकृति खुली है या बंद?,yes
+56.flac,s07WhatAboutThis,What about this one?,इसके बारे में क्या?,yes
+57.flac,s08AndThis,And this?,और यह?,yes
+58.flac,s09HowAboutThis,How about this one?,यह वाली कैसी है?,yes
+59.flac,ocFbClosed,No gaps in its boundary. This shape is closed.,इसकी सीमा में कोई खाली जगह नहीं। यह आकृति बंद है।,yes
+60.flac,ocFbOpen,There is a gap in its boundary. It is open.,इसकी सीमा में खाली जगह है। यह खुली है।,yes
+61.flac,ocYesClosed,Yes! It is closed.,हाँ! यह बंद है।,yes
+62.flac,ocYesOpen,Yes! It is open.,हाँ! यह खुली है।,yes
+63.flac,s10TwoOpen,These two shapes are open...,ये दो आकृतियाँ खुली हैं...,yes
+64.flac,s11TwoClosed,...and these two shapes are closed.,...और ये दो आकृतियाँ बंद हैं।,yes
+65.flac,s12BoundariesDifferent,Look! The boundaries of the shapes are different too.,देखिए! आकृतियों की सीमाएँ भी अलग-अलग हैं।,yes
+66.flac,s13StraightAndCurved,Some are straight and some are curved.,कुछ सीधी हैं और कुछ वक्र।,yes
+67.flac,s14WhichStraightCurved,Which boundaries are straight and which are curved?,कौन-सी सीमाएँ सीधी हैं और कौन-सी वक्र?,yes
+68.flac,s14AskAgain,Is the boundary straight or curved?,यह सीमा सीधी है या वक्र?,yes
+69.flac,s14NotCurved,Look! This boundary isn't curved. It is made of straight lines.,देखिए! यह सीमा वक्र नहीं है। यह सीधी रेखाओं से बनी है।,yes
+70.flac,s14IsCurved,Look closely. This boundary bends smoothly. It is curved.,ध्यान से देखिए। यह सीमा धीरे-धीरे मुड़ती है। यह वक्र है।,yes
+71.flac,s15GotIt,"You got it! These boundaries are straight, while these are curved.","बिल्कुल सही! ये सीमाएँ सीधी हैं, जबकि ये वक्र हैं।",yes
+72.flac,s16TapClosedStraight,Tap the closed figure made with straight lines.,सीधी रेखाओं से बनी बंद आकृति पर टैप करें।,yes
+73.flac,s16Yes,Yes! It is closed and made of straight lines.,हाँ! यह बंद है और सीधी रेखाओं से बनी है।,yes
+74.flac,s16NotQuite,Not quite. Look for a figure with no gaps and no curves.,"पूरी तरह से सही नहीं। ऐसी आकृति ढूँढें जिसमें न खाली जगह हो, न मोड़।",yes
+75.flac,s17CallPolygon,We call this a polygon.,इसे हम बहुभुज कहते हैं।,yes
+76.flac,s18Definition,A closed figure made of only straight line segments is called a polygon.,केवल रेखाखंडों से बनी बंद आकृति को बहुभुज कहते हैं।,yes
+77.flac,s19WhichPolygons,Which of these figures are polygons?,इनमें से कौन-सी आकृतियाँ बहुभुज हैं?,yes
+78.flac,s19GreatJob,Great job! You identified all the polygons.,बहुत बढ़िया! आपने सभी बहुभुज पहचान लिए।,yes
+79.flac,polygonRule,"A polygon is closed, with only straight sides.","बहुभुज बंद होता है, और उसकी सभी भुजाएँ सीधी होती हैं।",yes
+80.flac,fbTheseAreTheOnes,That is right! These are the ones.,बिल्कुल सही! यही वाली हैं।,yes
+81.flac,fbNotQuiteTryAgain,Not quite. Try again.,पूरी तरह से सही नहीं। फिर से प्रयास करें।,yes
+82.flac,fbTryAgain,Try again.,फिर से प्रयास करें।,yes
+83.flac,s20Sides,These line segments are the sides of the polygon.,ये रेखाखंड बहुभुज की भुजाएँ हैं।,yes
+84.flac,s21Vertex,The point where two sides meet is called a vertex.,"जिस बिंदु पर दो भुजाएँ मिलती हैं, उसे शीर्ष कहते हैं।",yes
+85.flac,s22Angle,"When two sides meet, they also form an angle.","जब दो भुजाएँ मिलती हैं, तो वे एक कोण भी बनाती हैं।",yes
+86.flac,s23LabelParts,Label the parts of the polygon.,बहुभुज के भागों के नाम लगाएँ।,yes
+87.flac,s23Perfect,"Perfect! Side, vertex and angle — all labelled.","शानदार! भुजा, शीर्ष और कोण — सबके नाम लग गए।",yes
+88.flac,s24CountSides,Let's count the sides of the polygon.,"आइए, बहुभुज की भुजाएँ गिनें।",yes
+89.flac,countCarefully,Count each side carefully and try again.,हर भुजा ध्यान से गिनें और फिर से प्रयास करें।,yes
+90.flac,s25Correct5,Correct! This polygon has 5 sides.,सही! इस बहुभुज की 5 भुजाएँ हैं।,yes
+91.flac,s26ChangeLooks,Now let's change how it looks.,अब इसका रूप बदलते हैं।,yes
+92.flac,s27DragVertex,"Drag any vertex. Stretch it, squash it, or resize it.","कोई भी शीर्ष खींचें। इसे फैलाएँ, दबाएँ या इसका आकार बदलें।",yes
+93.flac,s27DragVertexShort,Drag any vertex,कोई भी शीर्ष खींचें,yes
+94.flac,s28Whoa,Whoa! It looks quite different now.,वाह! अब यह बिल्कुल अलग दिख रहा है।,yes
+95.flac,s29Appearance,Its appearance has completely changed.,इसका रूप पूरी तरह बदल गया है।,yes
+96.flac,s30NotEverything,But not everything has changed.,लेकिन सब कुछ नहीं बदला है।,yes
+97.flac,s31CountAgain,Let's count the sides again.,"आइए, भुजाएँ फिर से गिनें।",yes
+98.flac,s32Still5,Both polygons still have 5 sides.,दोनों बहुभुजों की अब भी 5 भुजाएँ हैं।,yes
+99.flac,s33NameBySides,So the number of sides gives us a good way to name polygons.,इसलिए भुजाओं की संख्या से हम बहुभुजों के नाम आसानी से रख सकते हैं।,yes
+100.flac,s34Triangle,A polygon with 3 sides is called a triangle.,3 भुजाओं वाले बहुभुज को त्रिभुज कहते हैं।,yes
+101.flac,s35Quadrilateral,A polygon with 4 sides is called a quadrilateral.,4 भुजाओं वाले बहुभुज को चतुर्भुज कहते हैं।,yes
+102.flac,s36SelectQuadrilaterals,Select all the quadrilaterals.,सभी चतुर्भुज चुनें।,yes
+103.flac,s36ThatsRight,That’s right! Quadrilaterals are polygons with 4 sides.,बिल्कुल सही! चतुर्भुज 4 भुजाओं वाले बहुभुज होते हैं।,yes
+104.flac,s36Rule,Quadrilaterals are polygons with 4 sides.,चतुर्भुज 4 भुजाओं वाले बहुभुज होते हैं।,yes
+105.flac,s36IsThisQuad,Is this shape a quadrilateral?,क्या यह आकृति चतुर्भुज है?,yes
+106.flac,s37Pentagon,A polygon with 5 sides is called a pentagon.,5 भुजाओं वाले बहुभुज को पंचभुज कहते हैं।,yes
+107.flac,s38Hexagon,A polygon with 6 sides is called a hexagon.,6 भुजाओं वाले बहुभुज को षट्भुज कहते हैं।,yes
+108.flac,s39Heptagon,A polygon with 7 sides is called a heptagon.,7 भुजाओं वाले बहुभुज को सप्तभुज कहते हैं।,yes
+109.flac,s40Octagon,A polygon with 8 sides is called an octagon.,8 भुजाओं वाले बहुभुज को अष्टभुज कहते हैं।,yes
+110.flac,recapRecall,Let's recall what we learnt today.,"आइए, याद करें कि आज हमने क्या सीखा।",yes
+111.flac,recapNames,Polygons have different names based on their number of sides.,भुजाओं की संख्या के आधार पर बहुभुजों के अलग-अलग नाम होते हैं।,yes
+112.flac,c1WhichPolygons,Which of these are polygons?,इनमें से कौन-से बहुभुज हैं?,yes
+113.flac,c1Yes,"Yes! Closed, with only straight sides.","हाँ! बंद, और केवल सीधी भुजाएँ।",yes
+114.flac,c1NotQuite,Not quite! A polygon is closed with only straight sides.,पूरी तरह से सही नहीं! बहुभुज बंद होता है और उसकी केवल सीधी भुजाएँ होती हैं।,yes
+115.flac,c2Classify,Classify the figures as a polygon or not a polygon.,आकृतियों को बहुभुज या बहुभुज नहीं में बाँटें।,yes
+116.flac,c2ClassifyShort,Classify the figures.,आकृतियों को वर्गीकृत करें।,yes
+117.flac,c2GreatJob,Great job! You sorted the figures correctly.,बहुत बढ़िया! आपने आकृतियों को सही-सही बाँटा।,yes
+118.flac,c2WrongGroup,Wrong group. Check for gaps or curved sides.,गलत समूह। खाली जगह या वक्र भुजाएँ देखें।,yes
+119.flac,c2Rule,"Polygons are closed, with only straight sides. Try again.","बहुभुज बंद होते हैं, और उनकी केवल सीधी भुजाएँ होती हैं। फिर से प्रयास करें।",yes
+120.flac,c3WhichNot,Which figure is NOT a polygon?,कौन-सी आकृति बहुभुज नहीं है?,yes
+121.flac,c3Found,You found it! That is not a polygon.,आपने ढूँढ लिया! वह बहुभुज नहीं है।,yes
+122.flac,c3BreaksRule,Which figure breaks the rule for a polygon?,कौन-सी आकृति बहुभुज का नियम तोड़ती है?,yes
+123.flac,c3Questions,Is it closed? Does it have only straight sides?,क्या यह बंद है? क्या इसकी केवल सीधी भुजाएँ हैं?,yes
+124.flac,c4WhichPentagons,Which of these are pentagons?,इनमें से कौन-से पंचभुज हैं?,yes
+125.flac,c4Exactly,Exactly! A pentagon always has 5 sides.,बिल्कुल! पंचभुज की हमेशा 5 भुजाएँ होती हैं।,yes
+126.flac,c4CountEach,Count the sides of each figure carefully.,हर आकृति की भुजाएँ ध्यान से गिनें।,yes
+127.flac,c4LookFor5,Look for every figure with exactly 5 sides.,ठीक 5 भुजाओं वाली हर आकृति ढूँढें।,yes
+128.flac,c5Classify,Classify each figure as a hexagon or a heptagon.,हर आकृति को षट्भुज या सप्तभुज में बाँटें।,yes
+129.flac,c5ClassifyShort,Classify the figure,आकृति को वर्गीकृत करें,yes
+130.flac,c5WellDone,Well done! Hexagons have 6 sides and heptagons have 7 sides.,शाबाश! षट्भुज की 6 भुजाएँ होती हैं और सप्तभुज की 7 भुजाएँ।,yes
+131.flac,c5CountWrong,Count the sides of the ones you placed wrong.,"जिन्हें आपने गलत जगह रखा, उनकी भुजाएँ गिनें।",yes
+132.flac,c5Rule,"6 sides make a hexagon, 7 make a heptagon.","6 भुजाओं से षट्भुज बनता है, 7 से सप्तभुज।",yes
+133.flac,endReady,Now you know everything about polygons. You are ready to help Momo.,अब आप बहुभुज के बारे में सब कुछ जानते हैं। आप मोमो की मदद करने के लिए तैयार हैं।,yes
+134.flac,a11yChooseLabelFirst,"Choose a label first, then choose a question-mark target.","पहले एक नाम चुनें, फिर प्रश्नचिह्न वाला स्थान चुनें।",yes
+135.flac,a11ySelected,{label} selected. Choose a question-mark target. Press Escape to cancel.,{label} चुना गया। प्रश्नचिह्न वाला स्थान चुनें। रद्द करने के लिए Escape दबाएँ।,yes
+136.flac,a11ySelectionCancelled,{label} selection cancelled.,{label} का चयन रद्द हुआ।,yes
+137.flac,a11yPlaced,{label} correctly placed.,{label} सही जगह पर रखा गया।,yes
+138.flac,a11yAreaFull,This area already has its two figures.,इस हिस्से में पहले से दो आकृतियाँ हैं।,yes
+139.flac,a11yPlacedInColumn,Correct. Placed in the {column} column. {count} of {total} sorted.,सही। {column} कॉलम में रखा गया। {total} में से {count} बाँटे गए।,yes
+140.flac,a11yNotColumn,Not the {column} column. The figure is back with the others.,{column} कॉलम नहीं। आकृति बाकी आकृतियों के पास लौट आई है।,yes
+141.flac,a11yTraceOutline,Trace the shape outline. Then choose Open or Closed.,आकृति की रूपरेखा पर उँगली चलाएँ। फिर खुली या बंद चुनें।,yes
+142.flac,a11yShapeOutline,Shape outline.,आकृति की रूपरेखा।,yes
+143.flac,a11yCurvedFigure,Figure containing curved lines.,वक्र रेखाओं वाली आकृति।,yes
+144.flac,a11yStraightFigure,Figure with straight segments.,सीधे रेखाखंडों वाली आकृति।,yes
+145.flac,gamePageTitle,Ice Age Mammoth Runner,हिमयुग मैमथ रनर,yes
+146.flac,gameAriaLabel,Ice Age mammoth runner game,हिमयुग मैमथ रनर गेम,yes
+147.flac,gamePlay,Play,खेलें,yes
+148.flac,gameLoading,Loading…,लोड हो रहा है…,yes
+149.flac,gamePause,Pause,रोकें,yes
+150.flac,gamePaused,Paused,रुका हुआ,yes
+151.flac,gameResume,Resume,फिर से शुरू करें,yes
+152.flac,gameStartOver,Start over,शुरू से करें,yes
+153.flac,gameSound,Sound,आवाज़,yes
+154.flac,gameSoundOn,Sound on,आवाज़ चालू,yes
+155.flac,gameSoundOff,Sound off,आवाज़ बंद,MISSING
+156.flac,gameRotate,Rotate your device,अपना डिवाइस घुमाएँ,yes
+157.flac,gameSkip,Skip,छोड़ें,yes
+158.flac,gameSkipToEnding,Skip to ending,अंत पर जाएँ,yes
+159.flac,termPoint,point,बिंदु,yes
+160.flac,termShape,shape,आकृति,yes
+161.flac,termFigure,figure,आकृति,yes
+162.flac,termBoundary,boundary,सीमा,yes
+163.flac,termGap,gap,खाली जगह,yes
+164.flac,termOpen,open,खुली,yes
+165.flac,termClosed,closed,बंद,yes
+166.flac,termStraight,straight,सीधी,yes
+167.flac,termCurved,curved,वक्र,yes
+168.flac,termStraightLine,straight line,सीधी रेखा,yes
+169.flac,termLineSegment,line segment,रेखाखंड,yes
+170.flac,termPolygon,polygon,बहुभुज,yes
+171.flac,termPolygons,polygons,बहुभुज,yes
+172.flac,termSide,side,भुजा,yes
+173.flac,termSides,sides,भुजाएँ,yes
+174.flac,termVertex,vertex,शीर्ष,yes
+175.flac,termAngle,angle,कोण,yes
+176.flac,termTriangle,triangle,त्रिभुज,yes
+177.flac,termQuadrilateral,quadrilateral,चतुर्भुज,yes
+178.flac,termPentagon,pentagon,पंचभुज,yes
+179.flac,termHexagon,hexagon,षट्भुज,yes
+180.flac,termHeptagon,heptagon,सप्तभुज,yes
+181.flac,termOctagon,octagon,अष्टभुज,yes

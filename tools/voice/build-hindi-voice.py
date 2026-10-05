@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Build the Hindi voice from the delivered files and docs/voice/hi/cue-map.json.
 
-The Hindi voice-over was delivered as one WAV per line (assets/audio/source/hi/<n>.wav,
-numbered as script.csv there). tools/voice/measure-hindi-voice.py measured where each spoken
+The Hindi voice-over was delivered as one WAV per line and is kept as lossless FLAC
+(assets/audio/source/hi/<n>.flac, bit for bit the delivered sound; numbered as script.csv there). tools/voice/measure-hindi-voice.py measured where each spoken
 line's speech is and when each of its shown words starts; this builds, from those files and
 that map and nothing else (no speech recogniser, only ffmpeg):
 
@@ -222,7 +222,12 @@ def encode(wav, base, mp3_rate='128k', ogg_rate='40k'):
 
 
 def source(cue, line):
-    return os.path.join(ROOT, cue['source'], '%d.wav' % line['n'])
+    """The line's delivered take: the lossless FLAC, or a WAV newly dropped in beside it."""
+    base = os.path.join(ROOT, cue['source'], '%d' % line['n'])
+    for ext in ('.flac', '.wav'):
+        if os.path.exists(base + ext):
+            return base + ext
+    return base + '.flac'
 
 
 def lesson(cue, lines):
@@ -251,7 +256,7 @@ def lesson(cue, lines):
                 'duration': round(len(clip) / RATE, 3),
                 'spoken': [{'word': w, 'start': t} for w, t in zip(ht, starts)],
                 'words': [{'word': w, 'start': starts[j]} for w, j in zip(et, pick)],
-                'source': 'Hindi take: assets/audio/source/hi/%d.wav (%s), %.2f-%.2f s' % (line['n'], line['key'], max(0, lo), hi)
+                'source': 'Hindi take: %s (%s), %.2f-%.2f s' % (os.path.relpath(source(cue, line), ROOT), line['key'], max(0, lo), hi)
             })
             print('lesson %3d %-24s %.2fs  %s' % (line['n'], line['key'], len(clip) / RATE,
                   ' '.join('%s=%s' % (w, ht[j]) for w, j in zip(et, pick) if normalize(w).split()[0] in STEM)))
@@ -334,10 +339,10 @@ def main():
     game_lines = [l for l in ready if l['use'] == 'game']
     if len(game_lines) != len([l for l in cue['lines'] if l['use'] == 'game']):
         raise SystemExit('the game\'s take needs every one of its lines: %s missing' %
-                         ', '.join('%d.wav' % l['n'] for l in missing if l['use'] == 'game'))
+                         ', '.join('%d.flac' % l['n'] for l in missing if l['use'] == 'game'))
     game(cue, game_lines)
     for l in missing:
-        print('not built, no file: %d.wav (%s) "%s"' % (l['n'], l['key'], l['hi']))
+        print('not built, no file: %d.flac (or .wav) (%s) "%s"' % (l['n'], l['key'], l['hi']))
 
 
 if __name__ == '__main__':

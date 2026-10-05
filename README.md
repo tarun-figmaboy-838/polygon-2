@@ -63,7 +63,7 @@ tools/                build scripts (media, story voices and music, Swiftee shee
 tests/                Playwright QA and the lesson checks
 docs/                 folder guide and screen map, design notes, voice scripts
   game/               the runner's own contract (RUNNER.md), animation and voice notes
-source-art/           Swiftee's character pack, used by tools/build-swiftee.cjs
+source-art/           Swiftee's character pack, used by tools/build-swiftee.cjs (@1x sheets; the unused @2x ones were removed)
 ```
 
 [docs/STRUCTURE.md](docs/STRUCTURE.md) lists which file to edit for what and maps all 47 screens.
@@ -190,17 +190,17 @@ Every voice the learner hears is recorded. They were delivered as nine files, mo
 
 ### The Hindi voice
 
-With `?lan=hi` every line is said in Hindi. The Hindi voice-over was delivered as one WAV per line, numbered as its script, and is kept as delivered in `assets/audio/source/hi/` (`1.wav` ... `181.wav`; [script.csv](assets/audio/source/hi/script.csv) says which number is which line, and whether it came). The numbers follow the keys of `src/i18n/locales.json` in order, leaving out the twelve nobody hears (from `uiOptionLetters` to `a11yLabelPlaced`). Of those 181, the 98 the experience says are used; the rest are labels and screen-reader messages.
+With `?lan=hi` every line is said in Hindi. The Hindi voice-over was delivered as one WAV per line, numbered as its script, and is kept in `assets/audio/source/hi/` as lossless FLAC, bit for bit the delivered sound at half the size (`1.flac` ... `181.flac`; [script.csv](assets/audio/source/hi/script.csv) says which number is which line, and whether it came). The numbers follow the keys of `src/i18n/locales.json` in order, leaving out the twelve nobody hears (from `uiOptionLetters` to `a11yLabelPlaced`). Of those 181, the 98 the experience says are used; the rest are labels and screen-reader messages.
 
 | To change | Do |
 |---|---|
-| A Hindi take (a new one for a line, or a missing one) | drop it in `assets/audio/source/hi/` as `<number>.wav`, then measure it and build: `python tools/voice/measure-hindi-voice.py --model <whisper folder> --only <number>` and `npm run build:hindi-voice` |
+| A Hindi take (a new one for a line, or a missing one) | drop it in `assets/audio/source/hi/` as `<number>.flac` (or `.wav`), then measure it and build: `python tools/voice/measure-hindi-voice.py --model <whisper folder> --only <number>` and `npm run build:hindi-voice` |
 | Which Hindi word an English cue fires on | `CONCEPTS` (by word) or `CUE_AT` (one line's) in `tools/voice/build-hindi-voice.py`, or a line's `cues` in the cue map; then `npm run build:hindi-voice` |
 
 - **The map.** `docs/voice/hi/cue-map.json` holds, for every line said, its file, its key, its English and Hindi, where its speech starts and ends, its runs of speech between pauses, and when each shown word starts, with a check: a blind transcription of the file and how close it is to the script. It is measured by `tools/voice/measure-hindi-voice.py`: a multilingual Whisper aligns the line's own Hindi words to the recording, then the recording's pauses are fitted to the word boundaries (a pause comes between words, mostly where the line is punctuated; a short silence can be a stop inside a word, as in सप्तभुज). That tool needs `faster-whisper` and a multilingual model; its header says how to get them.
 - **The build.** `npm run build:hindi-voice` (`tools/voice/build-hindi-voice.py`, ffmpeg only) makes, from the delivered files and the map: each lesson line as `assets/audio/lesson/hi/<name>`, under its English take's name, cut and levelled as the English takes are; `src/lesson/recordings-hi.js`, the Hindi catalogue (each row found by its English, with its Hindi words' times and each English cue word's moment in the Hindi take); and Frozen Rush's Hindi take, `game/assets/audio/vo-lines-hi`, with its windows in `CFG.vo.langs.hi` (`game/js/engine.js` and its bundle) and its hashes in the game's asset versions.
 - **At run time.** `src/i18n/i18n.js` loads the catalogue with the Hindi words, for the page that asks for it (`data-voice` on its tag in `index.html`), so nothing is said before it is in. `PolygonRecordedVoice.find()` then returns the Hindi take of a line, and the lesson, the recap and Swiftee over the game play it, showing each word on its own time. The game waits for its page's words and plays its Hindi take with them (`AudioManager.voTake`); its tutorial times each Hindi sentence by that take's words (`Tutorial.ownVoice`). If the Hindi words do not load, the page and its voice both stay English.
-- **A line with no Hindi take** is shown in Hindi at a reading pace, without a voice, never in the English voice under Hindi words. Every line has one now: the last to come, `127.wav` ("ठीक 5 भुजाओं वाली हर आकृति ढूँढें।", a hint on the pentagon quiz), was delivered after the rest.
+- **A line with no Hindi take** is shown in Hindi at a reading pace, without a voice, never in the English voice under Hindi words. Every line has one now: the last to come, `127.flac` ("ठीक 5 भुजाओं वाली हर आकृति ढूँढें।", a hint on the pentagon quiz), was delivered after the rest.
 - The drafted story and its Help Momo scene (`?story=1`) stay English, voice and words.
 
 ## Testing

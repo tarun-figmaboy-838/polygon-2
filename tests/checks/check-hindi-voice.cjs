@@ -115,7 +115,7 @@ const duration = file => {
     assert(ended && g.state.wordReveal === 'complete', text + ': read, and the lesson goes on');
   }
   console.log('PASS: ' + rows.length + ' Hindi takes: files, lengths, the words shown, in order, cues inside the take' +
-    (notYet.length ? '; not yet delivered: ' + cueMap.lines.filter(l => l.missing).map(l => l.n + '.wav "' + l.hi + '"').join(', ') : ''));
+    (notYet.length ? '; not yet delivered: ' + cueMap.lines.filter(l => l.missing).map(l => l.n + '.flac "' + l.hi + '"').join(', ') : ''));
 
   // each line, played: its Hindi file, and its words as the take says them
   let lines = 0;

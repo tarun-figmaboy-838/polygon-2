@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Measure the Hindi voice: where each line's speech is and when each of its words starts.
 
-The Hindi voice-over was delivered as one WAV per line, numbered as its script
-(assets/audio/source/hi/script.csv): the keys of src/i18n/locales.json in order, with the
+The Hindi voice-over was delivered as one WAV per line, kept as lossless FLAC, numbered as its
+script (assets/audio/source/hi/script.csv): the keys of src/i18n/locales.json in order, with the
 twelve keys nobody hears left out. This finds every line the experience SPEAKS (the lesson's
 recorded lines, src/lesson/recordings.js, and Frozen Rush's tutorial and plank, CFG.vo.lines),
 takes its delivered file, and writes docs/voice/hi/cue-map.json: per line, where its speech
@@ -284,8 +284,9 @@ def letters(s):
 
 
 def measure(aligner, line):
-    path = os.path.join(SOURCE, '%d.wav' % line['n'])
-    if not os.path.exists(path):
+    # the lossless FLAC, or a WAV newly dropped in beside it
+    path = next((p for p in (os.path.join(SOURCE, '%d%s' % (line['n'], ext)) for ext in ('.flac', '.wav')) if os.path.exists(p)), None)
+    if not path:
         return dict(line, missing=True)
     tokens = line['hi'].split(' ')
     # what is said for each shown word: its letters, numerals as words, a hyphen a word break
@@ -343,14 +344,14 @@ def main():
             m['cues'] = prev['cues']
         out.append(m)
         if m.get('missing'):
-            print('%3d %-24s MISSING %d.wav' % (m['n'], m['key'], m['n']))
+            print('%3d %-24s MISSING %d.flac' % (m['n'], m['key'], m['n']))
         else:
             print('%3d %-24s match %.2f align %.2f  %s' % (m['n'], m['key'], m['check']['match'], m['check']['align'],
                   ' '.join('%s@%.2f' % (w, t) for w, t in zip(m['hi'].split(' '), m['words']))))
     os.makedirs(os.path.dirname(MAP), exist_ok=True)
     doc = {
         'about': 'The Hindi voice, measured by tools/voice/measure-hindi-voice.py from the delivered files '
-                 '(assets/audio/source/hi/<n>.wav, numbered as script.csv there). For each line the experience '
+                 '(assets/audio/source/hi/<n>.flac, lossless, numbered as script.csv there). For each line the experience '
                  'speaks: its number, its key in src/i18n/locales.json, where it is used (lesson: a line of '
                  'src/lesson/recordings.js, built as assets/audio/lesson/hi/<file>; game: a window of Frozen '
                  "Rush's take, CFG.vo.lines <id>), its English and its Hindi as shown, where its speech starts "
