@@ -125,7 +125,7 @@ file,key,english,hindi,delivered
 124.wav,c4WhichPentagons,Which of these are pentagons?,इनमें से कौन-से पंचभुज हैं?,yes
 125.wav,c4Exactly,Exactly! A pentagon always has 5 sides.,बिल्कुल! पंचभुज की हमेशा 5 भुजाएँ होती हैं।,yes
 126.wav,c4CountEach,Count the sides of each figure carefully.,हर आकृति की भुजाएँ ध्यान से गिनें।,yes
-127.wav,c4LookFor5,Look for every figure with exactly 5 sides.,ठीक 5 भुजाओं वाली हर आकृति ढूँढें।,MISSING
+127.wav,c4LookFor5,Look for every figure with exactly 5 sides.,ठीक 5 भुजाओं वाली हर आकृति ढूँढें।,yes
 128.wav,c5Classify,Classify each figure as a hexagon or a heptagon.,हर आकृति को षट्भुज या सप्तभुज में बाँटें।,yes
 129.wav,c5ClassifyShort,Classify the figure,आकृति को वर्गीकृत करें,yes
 130.wav,c5WellDone,Well done! Hexagons have 6 sides and heptagons have 7 sides.,शाबाश! षट्भुज की 6 भुजाएँ होती हैं और सप्तभुज की 7 भुजाएँ।,yes

@@ -143,6 +143,28 @@ const duration = file => {
     lines++;
   });
   assert(lines > 30, 'screens checked: ' + lines);
+  // ...and every feedback and hint line, on its own screen, the same way
+  let feedback = 0;
+  game(0).steps().forEach((step, k) => {
+    for (const text of [step.done, ...Object.values(step.fb || {})].filter(Boolean)) {
+      const row = V.find(text);
+      if (!row) continue;
+      const g = game(k);
+      g.narrate(text, {});
+      const a = hi.media.at(-1);
+      assert.equal(a.src, row.src, (k + 1) + ' "' + text + '": plays its Hindi take');
+      a.onplaying();
+      row.spoken.forEach((w, i) => {
+        a.currentTime = w.start - 0.02; a.ontimeupdate();
+        assert.equal(g.state.revealedWords, i, (k + 1) + ' "' + w.word + '": not before it is said');
+        a.currentTime = w.start; a.ontimeupdate();
+        assert(g.state.revealedWords === i + 1 || (i + 1 < row.spoken.length && row.spoken[i + 1].start === w.start), (k + 1) + ' "' + w.word + '": as it is said');
+      });
+      a.currentTime = row.duration; a.onended();
+      feedback++;
+    }
+  });
+  assert(feedback > 20, 'feedback lines checked: ' + feedback);
   // a board showing a shorter line than is said (the classify screens): its words spread over the
   // words said, the first with the first, none ahead of the voice, all of them by its end
   let shorter = 0;
@@ -161,7 +183,7 @@ const duration = file => {
     shorter++;
   });
   assert(shorter >= 2, 'the classify screens checked: ' + shorter);
-  console.log('PASS: ' + lines + ' screens play their Hindi take, every word shown as it is said, none before; ' +
+  console.log('PASS: ' + lines + ' screens and ' + feedback + ' feedback and hint lines play their Hindi take, every word shown as it is said, none before; ' +
     shorter + ' showing a shorter line spread it over the words said');
 
   // the cues, on the Hindi word that says them

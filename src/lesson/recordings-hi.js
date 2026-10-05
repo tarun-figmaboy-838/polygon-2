@@ -5438,6 +5438,77 @@
   "source": "Hindi take: assets/audio/source/hi/126.wav (c4CountEach), 0.06-3.25 s"
  },
  {
+  "text": "Look for every figure with exactly five sides.",
+  "shown": "ठीक 5 भुजाओं वाली हर आकृति ढूँढें।",
+  "src": "assets/audio/lesson/hi/62_Look_for_every_figure_with_exactly_five_sides.mp3",
+  "duration": 3.21,
+  "spoken": [
+   {
+    "word": "ठीक",
+    "start": 0.25
+   },
+   {
+    "word": "5",
+    "start": 0.71
+   },
+   {
+    "word": "भुजाओं",
+    "start": 1.08
+   },
+   {
+    "word": "वाली",
+    "start": 1.48
+   },
+   {
+    "word": "हर",
+    "start": 1.8
+   },
+   {
+    "word": "आकृति",
+    "start": 2.1
+   },
+   {
+    "word": "ढूँढें।",
+    "start": 2.54
+   }
+  ],
+  "words": [
+   {
+    "word": "Look",
+    "start": 2.54
+   },
+   {
+    "word": "for",
+    "start": 0.25
+   },
+   {
+    "word": "every",
+    "start": 0.71
+   },
+   {
+    "word": "figure",
+    "start": 2.1
+   },
+   {
+    "word": "with",
+    "start": 1.48
+   },
+   {
+    "word": "exactly",
+    "start": 1.8
+   },
+   {
+    "word": "five",
+    "start": 0.71
+   },
+   {
+    "word": "sides.",
+    "start": 1.08
+   }
+  ],
+  "source": "Hindi take: assets/audio/source/hi/127.wav (c4LookFor5), 0.04-3.25 s"
+ },
+ {
   "text": "Classify each figure as a hexagon or a heptagon.",
   "shown": "हर आकृति को षट्भुज या सप्तभुज में बाँटें।",
   "src": "assets/audio/lesson/hi/46_Classify_each_figure_as_a_hexagon_or_a_heptagon.mp3",

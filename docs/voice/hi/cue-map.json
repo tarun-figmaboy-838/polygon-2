@@ -2880,7 +2880,34 @@
    "file": "62_Look_for_every_figure_with_exactly_five_sides",
    "en": "Look for every figure with exactly five sides.",
    "hi": "ठीक 5 भुजाओं वाली हर आकृति ढूँढें।",
-   "missing": true
+   "speech": [
+    0.29,
+    3.0
+   ],
+   "words": [
+    0.29,
+    0.75,
+    1.12,
+    1.52,
+    1.84,
+    2.14,
+    2.58
+   ],
+   "runs": [
+    [
+     0.29,
+     0.62
+    ],
+    [
+     0.75,
+     3.0
+    ]
+   ],
+   "check": {
+    "heard": "थीक पाज भुजाव वाली हर अक्रती दूड़े",
+    "match": 0.657,
+    "align": 0.56
+   }
   },
   {
    "n": 128,
