@@ -153,7 +153,21 @@ const wantScale = () => {
   const r = stageEl ? stageEl.getBoundingClientRect() : null;
   const cssW = r && r.width ? r.width : window.innerWidth;
   const k = cssW * (window.devicePixelRatio || 1) / 1920;
-  return Math.min(2, Math.max(1, Math.round(k * 4) / 4));
+  /* THE FLOOR IS 0.5, NOT 1 — and that one character was costing most of the frame.
+
+     k is exactly the right number: the stage's CSS width times the device ratio, over
+     the 1920 the game is laid out in. On a 1280-wide stage at dpr 1 it comes to 0.667,
+     meaning 'fill 1280x720, which is all this display can show'. Math.max(1, ...) then
+     threw that away and asked for 1920x1080 — 2.25x the pixels — which the browser
+     immediately scaled back DOWN to 1280. Every one of those extra pixels was blended
+     for nothing, and measured (in the Polygon Part 1 build of this game, where this was
+     found) the game's own draw was 38.4ms against a 16.7ms budget for 60fps.
+
+     Below 1 there is nothing to lose: the backbuffer matches the display one to one, so
+     it is not softer than what the screen can show. Above 1 is still worth having for a
+     hi-DPI panel, which is what the cap at 2 is for. 0.5 is the floor because half of
+     1920 is still 960 wide and anything less is visibly soft on a small window. */
+  return Math.min(2, Math.max(0.5, Math.round(k * 4) / 4));
 };
 
 /* WARM THE TYPE AND THE PRESSED PICTURES. Baloo 2 is only fetched when text first uses it,

@@ -5133,7 +5133,8 @@ export function createGame(canvas, hooks = {}) {
   let rs = 1, rsCap = 2;
   let pausedAsking = false;             // see api.setPaused
   function setRenderScale(k) {
-    k = clamp(Math.min(Number(k) || 1, rsCap), 1, 2);
+    // floor 0.5, not 1: see the note in main.js wantScale() for why 1 was costing 2.25x
+    k = clamp(Math.min(Number(k) || 1, rsCap), 0.5, 2);
     const w = Math.round(CFG.W * k), h = Math.round(CFG.H * k);
     if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
     rs = k;
@@ -5143,13 +5144,13 @@ export function createGame(canvas, hooks = {}) {
      cannot fill at speed, and a sharp game at 20fps is a worse game than a soft one at 60.
      So it is measured, not assumed: the frame loop keeps a running mean of the frame
      interval and, once the game is a few seconds in, steps the scale down a quarter
-     whenever that mean sits under 40fps, until it reaches 1 — and caps it there, so a
+     whenever that mean sits under 40fps, until it reaches 0.5 — and caps it there, so a
      resize cannot put it back. It never steps UP: a scale that flickers is worse than a
      slightly soft one. Only for an auto-picked scale; ?rs=N is a request and stays. */
   const scaleForced = !!hooks.renderScaleForced;
   let fpsMean = 60, fpsClock = 0;
   function guardScale(dtWall) {
-    if (scaleForced || rs <= 1 || !(dtWall > 0) || dtWall > 0.5) return;
+    if (scaleForced || rs <= 0.5 || !(dtWall > 0) || dtWall > 0.5) return;
     fpsMean += (1 / dtWall - fpsMean) * 0.05;
     fpsClock += dtWall;
     /* HOW FAST IT GIVES UP. It used to need four seconds under 40fps for each quarter-step, so
@@ -5159,7 +5160,7 @@ export function createGame(canvas, hooks = {}) {
        step), under 30 it takes a half, otherwise a quarter. It still never steps back up. */
     if (fpsClock > 1.2 && fpsMean < 40) {
       const step = fpsMean < 22 ? rs / 2 : fpsMean < 30 ? 0.5 : 0.25;
-      rsCap = Math.max(1, Math.round((rs - step) * 4) / 4);
+      rsCap = Math.max(0.5, Math.round((rs - step) * 4) / 4);
       setRenderScale(rsCap);
       fpsClock = 0; fpsMean = 60;
     }
@@ -9011,13 +9012,21 @@ export function createGame(canvas, hooks = {}) {
     let dt = (ts - last) / 1000; last = ts;
     if (paused) return;
     guardScale(dt);                       // on the wall-clock interval, before the cap
-    dt = Math.min(dt, 1 / 30);
+    /* GAME TIME KEEPS UP WITH THE CLOCK ON A SLOW DEVICE (as in the Polygon Part 1 build of this
+       game). dt used to be cut to 1/30 s, so a device drawing 20 frames a second ran the whole game
+       at two thirds speed: Momo, the music's cues and every timed beat drifted apart, and the run
+       felt laggy rather than merely less smooth. A long frame is now simulated in steps of at most
+       1/30 s each - the same small steps, so collisions stay exact - and only a frame over 0.2 s
+       (a tab switch) is cut. */
+    dt = Math.min(Math.max(dt, 0), 0.2);
+    const steps = Math.max(1, Math.ceil(dt * 30));
     /* Fast-forward STEPS the simulation; it does not scale dt. Multiplying dt would
        give the same game time with each step that much coarser, which changes the jump
        arc and everything that depends on it — a fast-forward that quietly alters
        physics is worse than none. Rendering once per frame is what makes it cheap:
        rendering is the expensive half. */
-    for (let i = 0; i < fastForward; i++) update(dt);
+    for (let i = 0; i < fastForward; i++)
+      for (let step = 0; step < steps; step++) update(dt / steps);
     /* NOT PAINTED BEHIND THE ROTATE PROMPT. Turning a phone to portrait puts an opaque panel
        over the stage, and the game deliberately keeps running so it resumes exactly where it
        was — but it was also still painting a full frame behind that panel, the most expensive
@@ -9080,7 +9089,7 @@ export function createGame(canvas, hooks = {}) {
     /** Play one of the game's own sounds from the DOM screens, so the cover, the
         select screen and the HUD buttons share one palette. */
     sfx(name) { audio.start(); audio.resume(); if (typeof audio[name] === 'function') audio[name](); },
-    /** The backbuffer's pixel scale (1..2); see setRenderScale in createGame. */
+    /** The backbuffer's pixel scale (0.5..2); see setRenderScale in createGame. */
     setRenderScale(k) { setRenderScale(k); },
     /** Which character art set was loaded: 'hd' (1.5x cells) or 'base'. */
     artSet: () => hdArt ? 'hd' : 'base',
