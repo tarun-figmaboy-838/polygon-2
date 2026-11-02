@@ -105,10 +105,18 @@ function judge(tag, s, errors, failed) {
         try { const bmp = await createImageBitmap(await r.blob()); w = bmp.width; h = bmp.height; } catch (e) { ok = false; }
         out.push({ name, url: c.image, status: r.status, type, w, h, cols: c.cols, rows: c.rows, frames: c.frames, cell: S.cell, ok });
       }
+      // and each clip's 2x sheet (a screen that draws her large), on the same grid at the 2x cell
+      for (const [name, url] of Object.entries((S.hd && S.hd.images) || {})) {
+        const c = S.clips[name], r = await fetch(url, { cache: 'no-store' });
+        const type = r.headers.get('content-type') || '';
+        let w = 0, h = 0, ok = r.ok && !!c;
+        try { const bmp = await createImageBitmap(await r.blob()); w = bmp.width; h = bmp.height; } catch (e) { ok = false; }
+        out.push({ name: name + ' 2x', url, status: r.status, type, w, h, cols: c.cols, rows: c.rows, frames: c.frames, cell: S.hd.cell, ok });
+      }
       return out;
     });
     const bad = audit.filter(a => !a.ok || a.status !== 200 || !/webp/.test(a.type) || a.w !== a.cols * a.cell || a.h !== a.rows * a.cell || a.frames > a.cols * a.rows || a.frames <= (a.rows - 1) * a.cols);
-    check('sheet table: all ' + audit.length + ' sheets are served, decode, and match their grids', audit.length > 30 && !bad.length, bad.map(a => a.name + ' ' + a.status + ' ' + a.type + ' ' + a.w + 'x' + a.h).join('; '));
+    check('sheet table: all ' + audit.length + ' sheets (1x and 2x) are served, decode, and match their grids', audit.length >= 50 && !bad.length, bad.map(a => a.name + ' ' + a.status + ' ' + a.type + ' ' + a.w + 'x' + a.h).join('; '));
     await context.close();
   } catch (e) { check('scenario crashed: ' + e.message.split('\n')[0], false); }
 

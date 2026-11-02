@@ -1285,9 +1285,11 @@ const avifReady = new Promise(done => {
 /* `plain` asks for the WebP even where there is an AVIF: the second try of a picture whose
    AVIF did not load. */
 function assetUrl(src, plain) {
-  if (src.endsWith('.mp3') && playsOgg()) {
+  /* (where the build ships no .mp3 for a sound, its .ogg is the only file there is: a browser
+     without Ogg Opus is handed that and plays on silent, rather than asking for a file that 404s) */
+  if (src.endsWith('.mp3')) {
     const ogg = src.slice(0, -4) + '.ogg';
-    if (ASSET_V[ogg]) src = ogg;
+    if (ASSET_V[ogg] && (playsOgg() || !ASSET_V[src])) src = ogg;
   }
   if (src.endsWith('.webp') && !plain) {
     avifAsked = true;

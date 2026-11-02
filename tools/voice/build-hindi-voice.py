@@ -345,4 +345,7 @@ def main():
 
 
 if __name__ == '__main__':
+    if not os.path.isdir(os.path.join(ROOT, 'assets', 'audio', 'source')):
+        raise SystemExit('The delivered recordings are not in the working tree. Restore them first:\n'
+                         '    git checkout ee1ca5c -- assets/audio/source')
     main()

@@ -49,20 +49,10 @@ window.SWIFTEE = {
    "loop": "surprised",
    "stop": "surprised_stop"
   },
-  "relieved": {
-   "start": "relieved_start",
-   "loop": "relieved",
-   "stop": "relieved_stop"
-  },
   "daydreaming": {
    "start": "daydream_start",
    "loop": "daydreaming",
    "stop": "daydreaming_stop"
-  },
-  "puzzleing": {
-   "start": "puzzle_start",
-   "loop": "puzzleing",
-   "stop": "puzzle_stop"
   }
  },
  "clips": {
@@ -258,30 +248,6 @@ window.SWIFTEE = {
    "pingpong": false,
    "exitsCell": false
   },
-  "relieved_start": {
-   "image": "assets/swiftee/swiftee_relieved_start@1x.webp",
-   "frames": 8,
-   "cols": 3,
-   "rows": 3,
-   "pingpong": false,
-   "exitsCell": false
-  },
-  "relieved": {
-   "image": "assets/swiftee/swiftee_relieved@1x.webp",
-   "frames": 45,
-   "cols": 7,
-   "rows": 7,
-   "pingpong": false,
-   "exitsCell": false
-  },
-  "relieved_stop": {
-   "image": "assets/swiftee/swiftee_relieved_stop@1x.webp",
-   "frames": 8,
-   "cols": 3,
-   "rows": 3,
-   "pingpong": false,
-   "exitsCell": false
-  },
   "daydream_start": {
    "image": "assets/swiftee/swiftee_daydream_start@1x.webp",
    "frames": 8,
@@ -306,30 +272,6 @@ window.SWIFTEE = {
    "pingpong": false,
    "exitsCell": false
   },
-  "puzzle_start": {
-   "image": "assets/swiftee/swiftee_puzzle_start@1x.webp",
-   "frames": 7,
-   "cols": 3,
-   "rows": 3,
-   "pingpong": false,
-   "exitsCell": false
-  },
-  "puzzleing": {
-   "image": "assets/swiftee/swiftee_puzzleing@1x.webp",
-   "frames": 37,
-   "cols": 7,
-   "rows": 6,
-   "pingpong": false,
-   "exitsCell": false
-  },
-  "puzzle_stop": {
-   "image": "assets/swiftee/swiftee_puzzle_stop@1x.webp",
-   "frames": 7,
-   "cols": 3,
-   "rows": 3,
-   "pingpong": false,
-   "exitsCell": false
-  },
   "blinking": {
    "image": "assets/swiftee/swiftee_blinking@1x.webp",
    "frames": 40,
@@ -343,14 +285,6 @@ window.SWIFTEE = {
    "frames": 27,
    "cols": 6,
    "rows": 5,
-   "pingpong": false,
-   "exitsCell": false
-  },
-  "reset": {
-   "image": "assets/swiftee/swiftee_reset@1x.webp",
-   "frames": 3,
-   "cols": 2,
-   "rows": 2,
    "pingpong": false,
    "exitsCell": false
   }
@@ -382,18 +316,11 @@ window.SWIFTEE = {
    "surprised_start": "assets/swiftee/swiftee_surprised_start@2x.webp",
    "surprised": "assets/swiftee/swiftee_surprised@2x.webp",
    "surprised_stop": "assets/swiftee/swiftee_surprised_stop@2x.webp",
-   "relieved_start": "assets/swiftee/swiftee_relieved_start@2x.webp",
-   "relieved": "assets/swiftee/swiftee_relieved@2x.webp",
-   "relieved_stop": "assets/swiftee/swiftee_relieved_stop@2x.webp",
    "daydream_start": "assets/swiftee/swiftee_daydream_start@2x.webp",
    "daydreaming": "assets/swiftee/swiftee_daydreaming@2x.webp",
    "daydreaming_stop": "assets/swiftee/swiftee_daydreaming_stop@2x.webp",
-   "puzzle_start": "assets/swiftee/swiftee_puzzle_start@2x.webp",
-   "puzzleing": "assets/swiftee/swiftee_puzzleing@2x.webp",
-   "puzzle_stop": "assets/swiftee/swiftee_puzzle_stop@2x.webp",
    "blinking": "assets/swiftee/swiftee_blinking@2x.webp",
-   "flapping": "assets/swiftee/swiftee_flapping@2x.webp",
-   "reset": "assets/swiftee/swiftee_reset@2x.webp"
+   "flapping": "assets/swiftee/swiftee_flapping@2x.webp"
   }
  }
 };

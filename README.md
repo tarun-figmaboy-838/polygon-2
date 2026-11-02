@@ -52,8 +52,8 @@ assets/
   audio/sfx/          answer and drawing sounds
   audio/story/        story voices and music
   audio/bridge/       Swiftee's two Broken Path lines
-  audio/source/       the voice recordings as delivered; everything above is cut from them
-                      (hi/: the Hindi voice, one WAV per line, numbered as hi/script.csv)
+  audio/source/       (not in the working tree: restore it from git history, see The voices)
+                      the voice recordings as delivered; everything above is cut from them
   audio/lesson/hi/    the Hindi takes of the lesson's lines (npm run build:hindi-voice)
   fonts/              Baloo 2, Nunito and Fredoka (with licences)
   vendor/             React and React DOM
@@ -63,8 +63,8 @@ tools/                build scripts (media, story voices and music, Swiftee shee
 tests/                Playwright QA and the lesson checks
 docs/                 folder guide and screen map, design notes, voice scripts
   game/               the runner's own contract (RUNNER.md), animation and voice notes
-source-art/           Swiftee's character pack, used by tools/build-swiftee.cjs (the @1x sheets, and the @2x
-                      sheets of the clips the lesson plays; the rest of the pack's @2x sheets were removed)
+source-art/           Swiftee's character pack: its Rive sources, build scripts and manifest (read by
+                      tools/build-swiftee.cjs); the sheets the lesson plays are the ones in assets/swiftee/
 ```
 
 [docs/STRUCTURE.md](docs/STRUCTURE.md) lists which file to edit for what and maps all 47 screens.
@@ -171,6 +171,12 @@ Everything the learner reads is in that language: Swiftee's lines in the lesson,
 - The review controls (`?dev=1`) and the drafted story (`?story=1`) stay in English.
 
 ## The voices
+
+> **The delivered recordings are not in the working tree** (18.7 MB the game never loads; left out so the project zip is about 24 MB). They are in git history, untouched. Before running any voice tool (`build:recorded-voice`, `build:hindi-voice`, `measure-hindi-voice.py`), bring them back with:
+>
+> ```bash
+> git checkout ee1ca5c -- assets/audio/source
+> ```
 
 Every voice the learner hears is recorded. They were delivered as nine files, most of them several lines to a file, and are kept as delivered in `assets/audio/source/`:
 

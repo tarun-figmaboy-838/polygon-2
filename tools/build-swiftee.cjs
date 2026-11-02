@@ -18,31 +18,40 @@ const SCALE = '1x';
    cell is drawn from is decided in src/lesson/swiftee-flying.js (hdWanted, sheet); a clip whose
    2x sheet is not in the pack is drawn from its 1x sheet wherever it shows. */
 const HD = '2x';
-/* States (full start → loop → stop triads) and standalone clips the guide uses. */
+/* States (full start → loop → stop triads) and standalone clips the guide uses: only those the
+   code plays (index.html's SwifteeGuide, src/lesson/recap.js, src/intro/swiftee-cameo.js), since
+   the lesson preloads every sheet in this table. relieved, puzzleing and reset were never played. */
 const SHIP = {
   states: ['talking', 'waving', 'happy', 'confused', 'curious', 'celebrating', 'proud',
-           'surprised', 'relieved', 'daydreaming', 'puzzleing'],
-  clips: ['blinking', 'flapping', 'reset']
+           'surprised', 'daydreaming'],
+  clips: ['blinking', 'flapping']
 };
 const manifest = JSON.parse(fs.readFileSync(path.join(PACK, 'atlas', 'swiftee.manifest.json'), 'utf8'));
 const sheets = manifest.scales[SCALE].sheets;
 const hdSheets = (manifest.scales[HD] && manifest.scales[HD].sheets) || {};
 fs.mkdirSync(OUT, { recursive: true });
 const clips = {}, states = {}, hd = { cell: manifest.cell[HD], images: {} };
+/* A sheet from the pack, or, where the pack's copy has been left out of the repository (it
+   was byte for byte the shipped one), the copy already in assets/swiftee/. */
+function place(rel, dest, what) {
+  const src = path.join(PACK, rel);
+  if (fs.existsSync(src)) fs.copyFileSync(src, dest);
+  else if (!fs.existsSync(dest)) throw new Error(what + ': neither ' + rel + ' in the pack nor ' + path.relative(ROOT, dest));
+}
 function ship(name) {
   const s = sheets[name];
   if (!s) throw new Error('manifest has no ' + SCALE + ' sheet for "' + name + '"');
   if (s.pages !== 1) throw new Error(name + ' is paged; the lesson player expects one page');
   const file = path.basename(s.image);
-  fs.copyFileSync(path.join(PACK, s.image), path.join(OUT, file));
+  place(s.image, path.join(OUT, file), name);
   const anim = manifest.animations[name] || {};
   clips[name] = { image: 'assets/swiftee/' + file, frames: s.frames, cols: s.cols, rows: s.rows,
     pingpong: !!anim.pingpong, exitsCell: manifest.exitsCell.includes(name) };
   const h = hdSheets[name];
-  if (h && fs.existsSync(path.join(PACK, h.image))) {
+  if (h && (fs.existsSync(path.join(PACK, h.image)) || fs.existsSync(path.join(OUT, path.basename(h.image))))) {
     if (h.pages !== 1 || h.frames !== s.frames || h.cols !== s.cols || h.rows !== s.rows) throw new Error(name + ': its ' + HD + ' sheet is not cut on the ' + SCALE + ' grid');
     const hf = path.basename(h.image);
-    fs.copyFileSync(path.join(PACK, h.image), path.join(OUT, hf));
+    place(h.image, path.join(OUT, hf), name + ' ' + HD);
     hd.images[name] = 'assets/swiftee/' + hf;
   }
 }
