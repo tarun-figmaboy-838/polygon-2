@@ -89,7 +89,7 @@ npm run optimize:media -- game/assets/audio/new-sound.mp3 --bitrate=96k
 
 ## Buttons
 
-The round gold **Play** and the pill buttons come from the buttons kit of Swiftee & the Polygons (Part 1): the art is in `assets/ui/`, the styles in `styles/buttons-kit.css`, the Play button's glow, crystals and press in `src/fx/play-fx.js` (with `src/fx/snowflake.js`). The story's start card has the gold Play. **Next** is the blue pill, on the story into the game and on the lesson's recap screen, and with `?bridge=0` the completion screen offers a blue **Help Momo** and a gold **Play again**. The lesson's other buttons (Check and the answers) are still its ice buttons. The kit's own pages are `buttons-kit.html` and `momo-jump-kit.html`.
+The round gold **Play** and the pill buttons come from the buttons kit of Swiftee & the Polygons (Part 1): the art is in `assets/ui/`, the styles in `styles/buttons-kit.css`, the Play button's glow, crystals and press in `src/fx/play-fx.js` (with `src/fx/snowflake.js`). The story's start card has the gold Play. **Next** is the blue pill, on the story into the game and on the lesson's recap screen, and with `?bridge=0` the completion screen offers a blue **Help Momo** and a gold **Play again**. The lesson's other buttons (Check and the answers) are still its ice buttons.
 
 ## The Momo + Popo story (on draft)
 
@@ -141,7 +141,6 @@ It plays in an `<iframe>`, not inside the lesson's document. The game's styleshe
 | The Help Momo scene: its timing, lines, layout and states | `src/bridge/bridge-story.js`, `styles/bridge-story.css` |
 | The opening: the game's cover and tutorial, Swiftee at the broken path, the snow into the lesson | `src/intro/opening.js`, `src/runner/runner-stage.js` (`opening`, `toLesson`, `flurry`); `src/intro/swiftee-cameo.js`; `game/js/tutorial.js` (the intro and end scripts) |
 | Swiftee over the game: her flight, her look at the ditch, her box, what she says | `src/intro/swiftee-cameo.js`; her lines are `OPENING_LINES` and `DITCH_LINES` in `src/runner/runner-stage.js` |
-| All of the above as a kit for another game: the sequence, the screens, the messages, the files | [docs/design/game-lesson-kit/](docs/design/game-lesson-kit/) (`README.md`, and `index.html`, the storyboard) |
 | When the drafted Help Momo scene plays (`?story=1`) | `src/intro/opening.js`: `storyFirst`; `BridgeStory.afterStory`, `BridgeStory.ending` |
 | The recap before the quizzes: what it says, its look | `index.html`: `recapConcepts`, `startRecap`; `src/lesson/recap.js`, `styles/recap.css` |
 | The end of the lesson: the last line, then the game by itself | `index.html`: `finishLesson`, `startPart2`; `src/runner/runner-stage.js` |

@@ -21,7 +21,5 @@ src/i18n/locales.js
 # the game's modules concatenated, only for game/index.html opened off the disk; over http its modules load
 game/js/game.bundle.js
 game/README.md
-# the design kits' demo pages and a translation master kept beside the project: not part of the game
-buttons-kit.html
-momo-jump-kit.html
+# a translation master kept beside the project: not part of the game
 locales.json

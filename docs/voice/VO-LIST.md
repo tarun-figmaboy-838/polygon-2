@@ -1,6 +1,6 @@
 # Voice-over list — every line, by part and character
 
-Every line the learner hears, taken from the code as it ships today (2026-10-01): the Momo + Popo story, the Help Momo scene after it (the Broken Path), the lesson, and the Frozen Rush game. Use it to cast, generate or record the voices, then hand the files back to be put in. The same rows, one per line, are in [vo-list-all.csv](vo-list-all.csv) for batch generation.
+Every line the learner hears, taken from the code as it ships today (2026-10-01): the Momo + Popo story, the Help Momo scene after it (the Broken Path), the lesson, and the Frozen Rush game. Use it to cast, generate or record the voices, then hand the files back to be put in.
 
 ## At a glance
 
