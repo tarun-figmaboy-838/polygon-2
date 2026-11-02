@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Polygon Adventure</title>
 <meta name="description" content="Explore shapes, sides, vertices, and angles with Swiftee in a playful polygon adventure.">
+<!-- the tab's icon (the game's own), so no load asks for a /favicon.ico that is not there -->
+<link rel="icon" type="image/png" sizes="64x64" href="game/favicon.png">
 <link rel="preload" href="assets/fonts/baloo-2-latin.woff2" as="font" type="font/woff2" crossorigin>
 <!-- AVIF where the browser takes it, WebP everywhere else (README: Media formats). A picture a
      stylesheet names picks for itself with image-set(), and the instruction board is preloaded
@@ -81,9 +83,16 @@
      waits on Opening.gate, so nothing starts under them. The Momo + Popo story and the Help
      Momo scene are on draft: ?story=1 brings them back in place of the game's opening. -->
 <link rel="stylesheet" href="styles/story-intro.css">
-<script src="src/story/story-voice.js"></script>
-<script src="src/story/story-data.js"></script>
-<script src="src/story/story-intro.js"></script>
+<!-- ON DRAFT, SO NOT FETCHED UNLESS ASKED FOR: the story's three scripts (and, below, the Help Momo scene's and
+     the game's sound kit it plays) load only where ?story= or ?bridge= is on the address; every other visit
+     skipped about 230 KB of script it would never run. document.write keeps them in this very place and order
+     (opening.js reads them at DOMContentLoaded), so nothing else changes. -->
+<script>
+  if (/[?&](story|bridge)=/.test(location.search)) document.write(
+    '<script src="src/story/story-voice.js"><\/script>' +
+    '<script src="src/story/story-data.js"><\/script>' +
+    '<script src="src/story/story-intro.js"><\/script>');
+</script>
 <!-- The opening's sequence: the game's cover and tutorial (or, on ?story=1, the story and the
      Help Momo scene), then the lesson. -->
 <script src="src/intro/opening.js"></script>
@@ -102,8 +111,11 @@
 <link rel="stylesheet" href="styles/bridge-story.css">
 <!-- the Frozen Rush game's comic sound kit (synthesised, no files), for the avalanche the
      Help Momo scene opens on: the same cues the game plays for its own opening -->
-<script src="game/js/sfx.js"></script>
-<script src="src/bridge/bridge-story.js"></script>
+<script>
+  if (/[?&](story|bridge)=/.test(location.search)) document.write(
+    '<script src="game/js/sfx.js"><\/script>' +
+    '<script src="src/bridge/bridge-story.js"><\/script>');
+</script>
 </head>
 <body>
 <x-dc>
