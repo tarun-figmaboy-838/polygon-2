@@ -182,11 +182,11 @@
      and quiet for a small bird swooping in; and the interface tap the cover's Play uses. */
   var MASTER = 0.7;
   var SFX = {
-    step:    { src: 'assets/audio/freesound_community-foot_steps_snow_heavy-38297.mp3', mode: 'onset', dur: 0.40, gain: 0.42, rate: 0.10 },
-    tremble: { src: 'assets/audio/dragon-studio-cartoon-blinking-372481.mp3', mode: 'window', at: 0.04, dur: 0.50, gain: 0.55, rate: 0.03 },
-    whoosh:  { src: 'assets/audio/dragon-studio-heavy-whoosh-06-414584.mp3', mode: 'onset', dur: 0.55, gain: 0.16, rate: 0.04, pitch: 1.5 },
-    ui:      { src: 'assets/audio/floraphonic-punchy-taps-ui-5-183901.mp3', mode: 'onset', dur: 0.22, gain: 0.45, rate: 0.08 },
-    rumble:  { src: 'assets/audio/themediaguy-earthquake-rumble-amp-cracking-379298.mp3', mode: 'window', at: 0, dur: 2.60, gain: 0.55, rate: 0.02 }
+    step:    { src: 'assets/audio/freesound_community-foot_steps_snow_heavy-38297.ogg', mode: 'onset', dur: 0.40, gain: 0.42, rate: 0.10 },
+    tremble: { src: 'assets/audio/dragon-studio-cartoon-blinking-372481.ogg', mode: 'window', at: 0.04, dur: 0.50, gain: 0.55, rate: 0.03 },
+    whoosh:  { src: 'assets/audio/dragon-studio-heavy-whoosh-06-414584.ogg', mode: 'onset', dur: 0.55, gain: 0.16, rate: 0.04, pitch: 1.5 },
+    ui:      { src: 'assets/audio/floraphonic-punchy-taps-ui-5-183901.ogg', mode: 'onset', dur: 0.22, gain: 0.45, rate: 0.08 },
+    rumble:  { src: 'assets/audio/themediaguy-earthquake-rumble-amp-cracking-379298.ogg', mode: 'window', at: 0, dur: 2.60, gain: 0.55, rate: 0.02 }
   };
 
   /* THE TIMELINE, in ms of scene time. The run is short on purpose: in, a stretch of
@@ -509,13 +509,11 @@
     if (avif !== src && V[avif] && window.polygonAvif && window.polygonAvif()) src = avif;
     return gameUrl(V, src);
   }
-  /* The game's own choice of sound file: Ogg Opus where the browser plays it, MP3
-     elsewhere. The word times were measured on the same take, so either serves. */
+  /* The game's sound files are Ogg Opus, the one format every sound ships in; a sound the game's
+     table still names by its old .mp3 name is its Ogg. */
   function gameAudioUrl(V, src) {
-    var ogg = false;
-    try { ogg = location.protocol !== 'file:' && !!new Audio().canPlayType('audio/ogg; codecs="opus"'); } catch (e) {}
-    if (ogg) { var o = src.replace(/\.mp3$/, '.ogg'); if (V[o]) src = o; }
-    return gameUrl(V, src);
+    var o = src.replace(/\.mp3$/, '.ogg');
+    return gameUrl(V, V[o] ? o : src);
   }
   /* `plain`: the WebP to ask for instead if an AVIF will not load */
   function loadImg(url, plain) {

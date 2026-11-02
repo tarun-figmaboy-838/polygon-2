@@ -9,9 +9,9 @@ classroom pace and lifted a little for a small bright bird; trimmed, levelled to
 lesson's loudness, and word starts measured from the finished audio.
 
 Each line becomes one lesson recording, as the lesson's studio takes are:
-assets/audio/lesson/<file>.ogg + .mp3, and a row with its duration and word starts
+assets/audio/lesson/<file>.ogg, and a row with its duration and word starts
 in src/lesson/recordings.js (added, or replaced when the text is already there).
-To use a studio take instead, put its .ogg and .mp3 under the same name and give
+To use a studio take instead, put its .ogg under the same name and give
 its row the take's own word starts (docs/voice/cue-map.json, tools/voice/cut-recordings.py).
 
 Usage (macOS only, from the project folder, after `npm install`):
@@ -61,9 +61,7 @@ def main():
             base = os.path.join(OUT_DIR, line['file'])
             subprocess.run([SV.FFMPEG, '-y', '-v', 'error', '-i', wav, '-c:a', 'libopus', '-b:a', '40k',
                             '-application', 'voip', base + '.ogg'], check=True)
-            subprocess.run([SV.FFMPEG, '-y', '-v', 'error', '-i', wav, '-c:a', 'libmp3lame', '-q:a', '5',
-                            base + '.mp3'], check=True)
-            rows.append({'text': line['text'], 'src': 'assets/audio/lesson/' + line['file'] + '.mp3',
+            rows.append({'text': line['text'], 'src': 'assets/audio/lesson/' + line['file'] + '.ogg',
                          'duration': entry['duration'],
                          'words': [{'word': w['text'], 'start': w['start']} for w in entry['words']],
                          'source': entry['source'] + '; word starts measured from the rendered audio'})

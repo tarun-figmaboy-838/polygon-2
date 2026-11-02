@@ -1365,8 +1365,8 @@
   function preferredExt() {
     try {
       var a = document.createElement('audio');
-      return a.canPlayType && a.canPlayType('audio/ogg; codecs="opus"') ? 'ogg' : 'mp3';
-    } catch (e) { return 'mp3'; }
+      return 'ogg';   // Ogg Opus is the one format every sound ships in
+    } catch (e) { return 'ogg'; }
   }
 
   function createAudio() {
@@ -1423,8 +1423,7 @@
       });
     };
 
-    /* Fetch and decode `base` + .ogg (or .mp3). If the Ogg file will not
-       decode here, the MP3 is tried before giving up. */
+    /* Fetch and decode `base` + .ogg: Ogg Opus is the one format every sound ships in. */
     A.load = function (base) {
       var get = function (ext) {
         var ctrl = window.AbortController ? new AbortController() : null;
@@ -1434,10 +1433,7 @@
           .then(function (ab) { clearTimeout(timer); return A.decode(ab); },
                 function (err) { clearTimeout(timer); throw err; });
       };
-      return get(A.ext).catch(function (err) {
-        if (A.ext === 'mp3') throw err;
-        return get('mp3');
-      });
+      return get(A.ext);
     };
 
     A.unlock = function () {

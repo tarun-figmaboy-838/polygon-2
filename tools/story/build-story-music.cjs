@@ -14,11 +14,11 @@
    is seamless.
 
    Rendering runs in a headless Chromium OfflineAudioContext (Playwright is a
-   dev dependency); encoding needs ffmpeg with libopus and libmp3lame (set
+   dev dependency); encoding needs ffmpeg with libopus (set
    FFMPEG, or install the ffmpeg-static package).
 
    Usage:  node tools/story/build-story-music.cjs
-   Output: assets/audio/story/story-music.ogg (+ .mp3 for browsers without Ogg)
+   Output: assets/audio/story/story-music.ogg (Ogg Opus, the one format every sound ships in)
            and the section table printed for src/story/story-data.js. */
 const fs = require('fs');
 const os = require('os');
@@ -315,10 +315,9 @@ async function compose() {
   fs.writeFileSync(tmp, wav);
   const ff = ffmpegPath();
   execFileSync(ff, ['-y', '-v', 'error', '-i', tmp, '-c:a', 'libopus', '-b:a', '72k', '-vbr', 'on', '-application', 'audio', path.join(OUT_DIR, 'story-music.ogg')]);
-  execFileSync(ff, ['-y', '-v', 'error', '-i', tmp, '-c:a', 'libmp3lame', '-q:a', '4', path.join(OUT_DIR, 'story-music.mp3')]);
   fs.unlinkSync(tmp);
   console.log('sections:', JSON.stringify(table));
-  ['ogg', 'mp3'].forEach(ext => {
+  ['ogg'].forEach(ext => {
     const f = path.join(OUT_DIR, 'story-music.' + ext);
     console.log(path.relative(ROOT, f), Math.round(fs.statSync(f).size / 1024) + ' KB');
   });

@@ -2,7 +2,7 @@
 window.POLYGON_RECORDINGS = [
   {
     "text": "Look! A point.",
-    "src": "assets/audio/lesson/01_Look_A_point.mp3",
+    "src": "assets/audio/lesson/01_Look_A_point.ogg",
     "duration": 1.92,
     "words": [
       {
@@ -22,7 +22,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Woah! It drew a shape.",
-    "src": "assets/audio/lesson/02_Woah_It_drew_a_shape.mp3",
+    "src": "assets/audio/lesson/02_Woah_It_drew_a_shape.ogg",
     "duration": 2.94,
     "words": [
       {
@@ -50,7 +50,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Let's look at this shape closely.",
-    "src": "assets/audio/lesson/03_Lets_look_at_this_shape_closely.mp3",
+    "src": "assets/audio/lesson/03_Lets_look_at_this_shape_closely.ogg",
     "duration": 2.35,
     "words": [
       {
@@ -82,7 +82,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "There are no gaps in its boundary.",
-    "src": "assets/audio/lesson/04_There_are_no_gaps_in_its_boundary.mp3",
+    "src": "assets/audio/lesson/04_There_are_no_gaps_in_its_boundary.ogg",
     "duration": 2.49,
     "words": [
       {
@@ -118,7 +118,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Is it open or closed?",
-    "src": "assets/audio/lesson/05_Is_it_open_or_closed.mp3",
+    "src": "assets/audio/lesson/05_Is_it_open_or_closed.ogg",
     "duration": 2.55,
     "words": [
       {
@@ -146,7 +146,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Is this shape open or closed?",
-    "src": "assets/audio/lesson/06_Is_this_shape_open_or_closed.mp3",
+    "src": "assets/audio/lesson/06_Is_this_shape_open_or_closed.ogg",
     "duration": 2.78,
     "words": [
       {
@@ -178,7 +178,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "What about this one?",
-    "src": "assets/audio/lesson/07_What_about_this_one.mp3",
+    "src": "assets/audio/lesson/07_What_about_this_one.ogg",
     "duration": 1.57,
     "words": [
       {
@@ -202,7 +202,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "And this?",
-    "src": "assets/audio/lesson/08_And_this.mp3",
+    "src": "assets/audio/lesson/08_And_this.ogg",
     "duration": 1.19,
     "words": [
       {
@@ -218,7 +218,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "How about this one?",
-    "src": "assets/audio/lesson/09_How_about_this_one.mp3",
+    "src": "assets/audio/lesson/09_How_about_this_one.ogg",
     "duration": 1.71,
     "words": [
       {
@@ -242,7 +242,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "These two shapes are open...",
-    "src": "assets/audio/lesson/10_These_two_shapes_are_open.mp3",
+    "src": "assets/audio/lesson/10_These_two_shapes_are_open.ogg",
     "duration": 2.35,
     "words": [
       {
@@ -270,7 +270,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "...and these two shapes are closed.",
-    "src": "assets/audio/lesson/11_and_these_two_shapes_are_closed.mp3",
+    "src": "assets/audio/lesson/11_and_these_two_shapes_are_closed.ogg",
     "duration": 2.62,
     "words": [
       {
@@ -302,7 +302,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Look! The boundaries of the shapes are different too.",
-    "src": "assets/audio/lesson/12_Look_The_boundaries_of_the_shapes_are_different_too.mp3",
+    "src": "assets/audio/lesson/12_Look_The_boundaries_of_the_shapes_are_different_too.ogg",
     "duration": 3.67,
     "words": [
       {
@@ -346,7 +346,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Some are straight and some are curved.",
-    "src": "assets/audio/lesson/13_Some_are_straight_and_some_are_curved.mp3",
+    "src": "assets/audio/lesson/13_Some_are_straight_and_some_are_curved.ogg",
     "duration": 2.71,
     "words": [
       {
@@ -382,7 +382,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Which boundaries are straight and which are curved?",
-    "src": "assets/audio/lesson/14_Which_boundaries_are_straight_and_which_are_curved.mp3",
+    "src": "assets/audio/lesson/14_Which_boundaries_are_straight_and_which_are_curved.ogg",
     "duration": 3.51,
     "words": [
       {
@@ -422,7 +422,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "You got it! These boundaries are straight, while these are curved.",
-    "src": "assets/audio/lesson/15_You_got_it_These_boundaries_are_straight_while_these_are_curve.mp3",
+    "src": "assets/audio/lesson/15_You_got_it_These_boundaries_are_straight_while_these_are_curve.ogg",
     "duration": 4.83,
     "words": [
       {
@@ -474,7 +474,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "We call this a polygon.",
-    "src": "assets/audio/lesson/17_We_call_this_a_polygon.mp3",
+    "src": "assets/audio/lesson/17_We_call_this_a_polygon.ogg",
     "duration": 2.3,
     "words": [
       {
@@ -502,7 +502,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "A closed figure made of only straight line segments is called a polygon.",
-    "src": "assets/audio/lesson/18_A_closed_figure_made_of_only_straight_line_segments_is_called.mp3",
+    "src": "assets/audio/lesson/18_A_closed_figure_made_of_only_straight_line_segments_is_called.ogg",
     "duration": 4.93,
     "words": [
       {
@@ -562,7 +562,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Which of these figures are polygons?",
-    "src": "assets/audio/lesson/19_Which_of_these_figures_are_polygons.mp3",
+    "src": "assets/audio/lesson/19_Which_of_these_figures_are_polygons.ogg",
     "duration": 2.32,
     "words": [
       {
@@ -594,7 +594,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "These line segments are the sides of the polygon.",
-    "src": "assets/audio/lesson/20_These_line_segments_are_the_sides_of_the_polygon.mp3",
+    "src": "assets/audio/lesson/20_These_line_segments_are_the_sides_of_the_polygon.ogg",
     "duration": 3.1,
     "words": [
       {
@@ -638,7 +638,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "The point where two sides meet is called a vertex.",
-    "src": "assets/audio/lesson/21_The_point_where_two_sides_meet_is_called_a_vertex.mp3",
+    "src": "assets/audio/lesson/21_The_point_where_two_sides_meet_is_called_a_vertex.ogg",
     "duration": 3.48,
     "words": [
       {
@@ -686,7 +686,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "When two sides meet, they also form an angle.",
-    "src": "assets/audio/lesson/22_When_two_sides_meet_they_also_form_an_angle.mp3",
+    "src": "assets/audio/lesson/22_When_two_sides_meet_they_also_form_an_angle.ogg",
     "duration": 3.33,
     "words": [
       {
@@ -730,7 +730,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Label the parts of the polygon.",
-    "src": "assets/audio/lesson/23_Label_the_parts_of_the_polygon.mp3",
+    "src": "assets/audio/lesson/23_Label_the_parts_of_the_polygon.ogg",
     "duration": 2.01,
     "words": [
       {
@@ -762,7 +762,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Now let's change how it looks.",
-    "src": "assets/audio/lesson/26_Now_lets_change_how_it_looks.mp3",
+    "src": "assets/audio/lesson/26_Now_lets_change_how_it_looks.ogg",
     "duration": 1.92,
     "words": [
       {
@@ -794,7 +794,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Drag any vertex. Stretch it, squash it, or resize it.",
-    "src": "assets/audio/lesson/27_Drag_any_vertex_Stretch_it_squash_it_or_resize_it.mp3",
+    "src": "assets/audio/lesson/27_Drag_any_vertex_Stretch_it_squash_it_or_resize_it.ogg",
     "duration": 5.26,
     "words": [
       {
@@ -842,7 +842,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Whoa! It looks quite different now.",
-    "src": "assets/audio/lesson/28_Whoa_It_looks_quite_different_now.mp3",
+    "src": "assets/audio/lesson/28_Whoa_It_looks_quite_different_now.ogg",
     "duration": 2.94,
     "words": [
       {
@@ -874,7 +874,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Its appearance has completely changed.",
-    "src": "assets/audio/lesson/29_Its_appearance_has_completely_changed.mp3",
+    "src": "assets/audio/lesson/29_Its_appearance_has_completely_changed.ogg",
     "duration": 2.52,
     "words": [
       {
@@ -902,7 +902,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "But not everything has changed.",
-    "src": "assets/audio/lesson/30_But_not_everything_has_changed.mp3",
+    "src": "assets/audio/lesson/30_But_not_everything_has_changed.ogg",
     "duration": 2.26,
     "words": [
       {
@@ -930,7 +930,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Let's count the sides again.",
-    "src": "assets/audio/lesson/31_Lets_count_the_sides_again.mp3",
+    "src": "assets/audio/lesson/31_Lets_count_the_sides_again.ogg",
     "duration": 1.93,
     "words": [
       {
@@ -958,7 +958,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Both polygons still have five sides.",
-    "src": "assets/audio/lesson/32_Both_polygons_still_have_five_sides.mp3",
+    "src": "assets/audio/lesson/32_Both_polygons_still_have_five_sides.ogg",
     "duration": 3.14,
     "words": [
       {
@@ -990,7 +990,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "So the number of sides gives us a good way to name polygons.",
-    "src": "assets/audio/lesson/33_So_the_number_of_sides_gives_us_a_good_way_to_name_polygons.mp3",
+    "src": "assets/audio/lesson/33_So_the_number_of_sides_gives_us_a_good_way_to_name_polygons.ogg",
     "duration": 3.76,
     "words": [
       {
@@ -1050,7 +1050,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "A polygon with three sides is called a triangle.",
-    "src": "assets/audio/lesson/34_A_polygon_with_three_sides_is_called_a_triangle.mp3",
+    "src": "assets/audio/lesson/34_A_polygon_with_three_sides_is_called_a_triangle.ogg",
     "duration": 3.4,
     "words": [
       {
@@ -1094,7 +1094,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "A polygon with four sides is called a quadrilateral.",
-    "src": "assets/audio/lesson/35_A_polygon_with_four_sides_is_called_a_quadrilateral.mp3",
+    "src": "assets/audio/lesson/35_A_polygon_with_four_sides_is_called_a_quadrilateral.ogg",
     "duration": 3.74,
     "words": [
       {
@@ -1138,7 +1138,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Select all the quadrilaterals.",
-    "src": "assets/audio/lesson/36_Select_all_the_quadrilaterals.mp3",
+    "src": "assets/audio/lesson/36_Select_all_the_quadrilaterals.ogg",
     "duration": 2.43,
     "words": [
       {
@@ -1162,7 +1162,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "A polygon with five sides is called a pentagon.",
-    "src": "assets/audio/lesson/37_A_polygon_with_five_sides_is_called_a_pentagon.mp3",
+    "src": "assets/audio/lesson/37_A_polygon_with_five_sides_is_called_a_pentagon.ogg",
     "duration": 3.81,
     "words": [
       {
@@ -1206,7 +1206,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "A polygon with six sides is called a hexagon.",
-    "src": "assets/audio/lesson/38_A_polygon_with_six_sides_is_called_a_hexagon.mp3",
+    "src": "assets/audio/lesson/38_A_polygon_with_six_sides_is_called_a_hexagon.ogg",
     "duration": 3.75,
     "words": [
       {
@@ -1250,7 +1250,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "A polygon with seven sides is called a heptagon.",
-    "src": "assets/audio/lesson/39_A_polygon_with_seven_sides_is_called_a_heptagon.mp3",
+    "src": "assets/audio/lesson/39_A_polygon_with_seven_sides_is_called_a_heptagon.ogg",
     "duration": 3.66,
     "words": [
       {
@@ -1294,7 +1294,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "A polygon with eight sides is called an octagon.",
-    "src": "assets/audio/lesson/40_A_polygon_with_eight_sides_is_called_an_octagon.mp3",
+    "src": "assets/audio/lesson/40_A_polygon_with_eight_sides_is_called_an_octagon.ogg",
     "duration": 3.67,
     "words": [
       {
@@ -1338,7 +1338,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Classify the figures as a polygon or not a polygon.",
-    "src": "assets/audio/lesson/43_Classify_the_figures_as_a_polygon_or_not_a_polygon.mp3",
+    "src": "assets/audio/lesson/43_Classify_the_figures_as_a_polygon_or_not_a_polygon.ogg",
     "duration": 3.99,
     "words": [
       {
@@ -1386,7 +1386,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Classify each figure as a hexagon or a heptagon.",
-    "src": "assets/audio/lesson/46_Classify_each_figure_as_a_hexagon_or_a_heptagon.mp3",
+    "src": "assets/audio/lesson/46_Classify_each_figure_as_a_hexagon_or_a_heptagon.ogg",
     "duration": 3.98,
     "words": [
       {
@@ -1430,7 +1430,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "No gaps in its boundary. This shape is closed.",
-    "src": "assets/audio/lesson/48_No_gaps_in_its_boundary_This_shape_is_closed.mp3",
+    "src": "assets/audio/lesson/48_No_gaps_in_its_boundary_This_shape_is_closed.ogg",
     "duration": 4.43,
     "words": [
       {
@@ -1474,7 +1474,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "There is a gap in its boundary. It is open.",
-    "src": "assets/audio/lesson/49_There_is_a_gap_in_its_boundary_It_is_open.mp3",
+    "src": "assets/audio/lesson/49_There_is_a_gap_in_its_boundary_It_is_open.ogg",
     "duration": 3.42,
     "words": [
       {
@@ -1522,7 +1522,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Not quite. Look for a figure with no gaps and no curves.",
-    "src": "assets/audio/lesson/50_Not_quite_Look_for_a_figure_with_no_gaps_and_no_curves.mp3",
+    "src": "assets/audio/lesson/50_Not_quite_Look_for_a_figure_with_no_gaps_and_no_curves.ogg",
     "duration": 4.5,
     "words": [
       {
@@ -1578,7 +1578,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Count each side carefully and try again.",
-    "src": "assets/audio/lesson/51_Count_each_side_carefully_and_try_again.mp3",
+    "src": "assets/audio/lesson/51_Count_each_side_carefully_and_try_again.ogg",
     "duration": 3.13,
     "words": [
       {
@@ -1614,7 +1614,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Yes! Closed, with only straight sides.",
-    "src": "assets/audio/lesson/52_Yes_Closed_with_only_straight_sides.mp3",
+    "src": "assets/audio/lesson/52_Yes_Closed_with_only_straight_sides.ogg",
     "duration": 3.79,
     "words": [
       {
@@ -1646,7 +1646,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Is it closed? Does it have only straight sides?",
-    "src": "assets/audio/lesson/53_Is_it_closed_Does_it_have_only_straight_sides.mp3",
+    "src": "assets/audio/lesson/53_Is_it_closed_Does_it_have_only_straight_sides.ogg",
     "duration": 4.38,
     "words": [
       {
@@ -1690,7 +1690,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Great job! You sorted the figures correctly.",
-    "src": "assets/audio/lesson/55_Great_job_You_sorted_the_figures_correctly.mp3",
+    "src": "assets/audio/lesson/55_Great_job_You_sorted_the_figures_correctly.ogg",
     "duration": 3.12,
     "words": [
       {
@@ -1726,7 +1726,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Wrong group. Check for gaps or curved sides.",
-    "src": "assets/audio/lesson/56_Wrong_group_Check_for_gaps_or_curved_sides.mp3",
+    "src": "assets/audio/lesson/56_Wrong_group_Check_for_gaps_or_curved_sides.ogg",
     "duration": 4.02,
     "words": [
       {
@@ -1766,7 +1766,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Polygons are closed, with only straight sides. Try again.",
-    "src": "assets/audio/lesson/57_Polygons_are_closed_with_only_straight_sides_Try_again.mp3",
+    "src": "assets/audio/lesson/57_Polygons_are_closed_with_only_straight_sides_Try_again.ogg",
     "duration": 5.03,
     "words": [
       {
@@ -1810,7 +1810,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "You found it! That is not a polygon.",
-    "src": "assets/audio/lesson/58_You_found_it_That_is_not_a_polygon.mp3",
+    "src": "assets/audio/lesson/58_You_found_it_That_is_not_a_polygon.ogg",
     "duration": 3.07,
     "words": [
       {
@@ -1850,7 +1850,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Which figure breaks the rule for a polygon?",
-    "src": "assets/audio/lesson/59_Which_figure_breaks_the_rule_for_a_polygon.mp3",
+    "src": "assets/audio/lesson/59_Which_figure_breaks_the_rule_for_a_polygon.ogg",
     "duration": 2.719,
     "words": [
       {
@@ -1890,7 +1890,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Exactly! A pentagon always has five sides.",
-    "src": "assets/audio/lesson/60_Exactly_A_pentagon_always_has_five_sides.mp3",
+    "src": "assets/audio/lesson/60_Exactly_A_pentagon_always_has_five_sides.ogg",
     "duration": 4.35,
     "words": [
       {
@@ -1926,7 +1926,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Count the sides of each figure carefully.",
-    "src": "assets/audio/lesson/61_Count_the_sides_of_each_figure_carefully.mp3",
+    "src": "assets/audio/lesson/61_Count_the_sides_of_each_figure_carefully.ogg",
     "duration": 2.53,
     "words": [
       {
@@ -1962,7 +1962,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Look for every figure with exactly five sides.",
-    "src": "assets/audio/lesson/62_Look_for_every_figure_with_exactly_five_sides.mp3",
+    "src": "assets/audio/lesson/62_Look_for_every_figure_with_exactly_five_sides.ogg",
     "duration": 3.79,
     "words": [
       {
@@ -2002,7 +2002,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Well done! Hexagons have six sides and heptagons have seven sides.",
-    "src": "assets/audio/lesson/63_Well_done_Hexagons_have_six_sides_and_heptagons_have_seven_sid.mp3",
+    "src": "assets/audio/lesson/63_Well_done_Hexagons_have_six_sides_and_heptagons_have_seven_sid.ogg",
     "duration": 5.85,
     "words": [
       {
@@ -2054,7 +2054,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Count the sides of the ones you placed wrong.",
-    "src": "assets/audio/lesson/64_Count_the_sides_of_the_ones_you_placed_wrong.mp3",
+    "src": "assets/audio/lesson/64_Count_the_sides_of_the_ones_you_placed_wrong.ogg",
     "duration": 2.72,
     "words": [
       {
@@ -2098,7 +2098,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Six sides make a hexagon, seven make a heptagon.",
-    "src": "assets/audio/lesson/65_Six_sides_make_a_hexagon_seven_make_a_heptagon.mp3",
+    "src": "assets/audio/lesson/65_Six_sides_make_a_hexagon_seven_make_a_heptagon.ogg",
     "duration": 4.12,
     "words": [
       {
@@ -2142,7 +2142,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Yes! It is closed.",
-    "src": "assets/audio/lesson/66_Yes_It_is_closed.mp3",
+    "src": "assets/audio/lesson/66_Yes_It_is_closed.ogg",
     "duration": 2.53,
     "words": [
       {
@@ -2166,7 +2166,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Yes! It is open.",
-    "src": "assets/audio/lesson/67_Yes_It_is_open.mp3",
+    "src": "assets/audio/lesson/67_Yes_It_is_open.ogg",
     "duration": 2.21,
     "words": [
       {
@@ -2190,7 +2190,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Look! This boundary isn't curved. It is made of straight lines.",
-    "src": "assets/audio/lesson/68_Look_This_boundary_isnt_curved_It_is_made_of_straight_lines.mp3",
+    "src": "assets/audio/lesson/68_Look_This_boundary_isnt_curved_It_is_made_of_straight_lines.ogg",
     "duration": 4.94,
     "words": [
       {
@@ -2242,7 +2242,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Look closely. This boundary bends smoothly. It is curved.",
-    "src": "assets/audio/lesson/69_Look_closely_This_boundary_bends_smoothly_It_is_curved.mp3",
+    "src": "assets/audio/lesson/69_Look_closely_This_boundary_bends_smoothly_It_is_curved.ogg",
     "duration": 5.1,
     "words": [
       {
@@ -2286,7 +2286,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Yes! It is closed and made of straight lines.",
-    "src": "assets/audio/lesson/70_Yes_It_is_closed_and_made_of_straight_lines.mp3",
+    "src": "assets/audio/lesson/70_Yes_It_is_closed_and_made_of_straight_lines.ogg",
     "duration": 4.02,
     "words": [
       {
@@ -2330,7 +2330,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "That is right! These are the ones.",
-    "src": "assets/audio/lesson/71_That_is_right_These_are_the_ones.mp3",
+    "src": "assets/audio/lesson/71_That_is_right_These_are_the_ones.ogg",
     "duration": 3.121,
     "words": [
       {
@@ -2365,7 +2365,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "A polygon is closed, with only straight sides.",
-    "src": "assets/audio/lesson/72_A_polygon_is_closed_with_only_straight_sides.mp3",
+    "src": "assets/audio/lesson/72_A_polygon_is_closed_with_only_straight_sides.ogg",
     "duration": 3.87,
     "words": [
       {
@@ -2405,7 +2405,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Perfect! Side, vertex and angle — all labelled.",
-    "src": "assets/audio/lesson/73_Perfect_Side_vertex_and_angle_all_labelled.mp3",
+    "src": "assets/audio/lesson/73_Perfect_Side_vertex_and_angle_all_labelled.ogg",
     "duration": 4.94,
     "words": [
       {
@@ -2441,7 +2441,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Not quite. Try again.",
-    "src": "assets/audio/lesson/75_Not_quite_Try_again.mp3",
+    "src": "assets/audio/lesson/75_Not_quite_Try_again.ogg",
     "duration": 2.346,
     "words": [
       {
@@ -2488,7 +2488,7 @@ window.POLYGON_RECORDINGS = [
     ],
     "source": "Swiftee's recorded take: swiftee-lesson-1.mp3, 203.00-205.16 s; word starts measured from the recording",
     "text": "Which of these are polygons?",
-    "src": "assets/audio/lesson/77_Select_polygons.mp3"
+    "src": "assets/audio/lesson/77_Select_polygons.ogg"
   },
   {
     "duration": 2.64,
@@ -2520,7 +2520,7 @@ window.POLYGON_RECORDINGS = [
     ],
     "source": "Swiftee's recorded take: swiftee-lesson-1.mp3, 232.09-234.73 s; word starts measured from the recording",
     "text": "Which figure is NOT a polygon?",
-    "src": "assets/audio/lesson/78_Not_a_polygon.mp3"
+    "src": "assets/audio/lesson/78_Not_a_polygon.ogg"
   },
   {
     "duration": 2.33,
@@ -2548,11 +2548,11 @@ window.POLYGON_RECORDINGS = [
     ],
     "source": "Swiftee's recorded take: swiftee-lesson-2.mp3, 4.90-7.23 s; word starts measured from the recording",
     "text": "Which of these are pentagons?",
-    "src": "assets/audio/lesson/79_Select_pentagons.mp3"
+    "src": "assets/audio/lesson/79_Select_pentagons.ogg"
   },
   {
     "text": "Tap the closed figure made with straight lines.",
-    "src": "assets/audio/lesson/80_Tap_the_closed_figure_made_with_straight_lines.mp3",
+    "src": "assets/audio/lesson/80_Tap_the_closed_figure_made_with_straight_lines.ogg",
     "duration": 3.06,
     "words": [
       {
@@ -2592,7 +2592,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Great job! You identified all the polygons.",
-    "src": "assets/audio/lesson/81_Great_job_You_identified_all_the_polygons.mp3",
+    "src": "assets/audio/lesson/81_Great_job_You_identified_all_the_polygons.ogg",
     "duration": 3.74,
     "words": [
       {
@@ -2628,7 +2628,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Correct! This polygon has five sides.",
-    "src": "assets/audio/lesson/82_Correct_This_polygon_has_five_sides.mp3",
+    "src": "assets/audio/lesson/82_Correct_This_polygon_has_five_sides.ogg",
     "duration": 3.5,
     "words": [
       {
@@ -2660,7 +2660,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "That's right! Quadrilaterals are polygons with four sides.",
-    "src": "assets/audio/lesson/83_Thats_right_Quadrilaterals_are_polygons.mp3",
+    "src": "assets/audio/lesson/83_Thats_right_Quadrilaterals_are_polygons.ogg",
     "duration": 4.55,
     "words": [
       {
@@ -2700,7 +2700,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Quadrilaterals are polygons with four sides.",
-    "src": "assets/audio/lesson/84_Quadrilaterals_are_polygons_with_four_sides.mp3",
+    "src": "assets/audio/lesson/84_Quadrilaterals_are_polygons_with_four_sides.ogg",
     "duration": 3.51,
     "words": [
       {
@@ -2732,7 +2732,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Is this shape a quadrilateral?",
-    "src": "assets/audio/lesson/85_Is_this_shape_a_quadrilateral.mp3",
+    "src": "assets/audio/lesson/85_Is_this_shape_a_quadrilateral.ogg",
     "duration": 2.4,
     "words": [
       {
@@ -2760,7 +2760,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Not quite! A polygon is closed with only straight sides.",
-    "src": "assets/audio/lesson/87_Not_quite_A_polygon_is_closed.mp3",
+    "src": "assets/audio/lesson/87_Not_quite_A_polygon_is_closed.ogg",
     "duration": 4.88,
     "words": [
       {
@@ -2808,7 +2808,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Let's count the sides of the polygon.",
-    "src": "assets/audio/lesson/88_Lets_count_the_sides_of_the_polygon.mp3",
+    "src": "assets/audio/lesson/88_Lets_count_the_sides_of_the_polygon.ogg",
     "duration": 2.25,
     "words": [
       {
@@ -2844,7 +2844,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "But for that first you need to learn about polygons.",
-    "src": "assets/audio/lesson/89_But_for_that_first_you_need_to_learn_about_polygons.mp3",
+    "src": "assets/audio/lesson/89_But_for_that_first_you_need_to_learn_about_polygons.ogg",
     "duration": 3.73,
     "words": [
       {
@@ -2892,7 +2892,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Is the boundary straight or curved?",
-    "src": "assets/audio/lesson/88_Is_the_boundary_straight_or_curved.mp3",
+    "src": "assets/audio/lesson/88_Is_the_boundary_straight_or_curved.ogg",
     "duration": 2.6,
     "words": [
       {
@@ -2924,7 +2924,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Oh no! The path is broken.",
-    "src": "assets/audio/bridge/bridge-1-path-is-broken.mp3",
+    "src": "assets/audio/bridge/bridge-1-path-is-broken.ogg",
     "duration": 2.46,
     "words": [
       {
@@ -2956,7 +2956,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Help Momo cross the Frozen Pass!",
-    "src": "assets/audio/bridge/bridge-2-help-momo-cross.mp3",
+    "src": "assets/audio/bridge/bridge-2-help-momo-cross.ogg",
     "duration": 2.41,
     "words": [
       {
@@ -2988,7 +2988,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Let's recall what we learnt today.",
-    "src": "assets/audio/lesson/91_Lets_recall_what_we_learnt_today.mp3",
+    "src": "assets/audio/lesson/91_Lets_recall_what_we_learnt_today.ogg",
     "duration": 2.48,
     "words": [
       {
@@ -3020,7 +3020,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Polygons have different names based on their number of sides.",
-    "src": "assets/audio/lesson/92_Polygons_have_different_names_based_on_their_number_of_sides.mp3",
+    "src": "assets/audio/lesson/92_Polygons_have_different_names_based_on_their_number_of_sides.ogg",
     "duration": 4.29,
     "words": [
       {
@@ -3068,7 +3068,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Now you know everything about polygons. You are ready to help Momo.",
-    "src": "assets/audio/lesson/93_Now_you_know_everything_about_polygons_You_are_ready_to_help_Momo.mp3",
+    "src": "assets/audio/lesson/93_Now_you_know_everything_about_polygons_You_are_ready_to_help_Momo.ogg",
     "duration": 5.228,
     "words": [
       {
@@ -3124,7 +3124,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Now let's help Momo.",
-    "src": "assets/audio/lesson/90_Now_lets_help_Momo.mp3",
+    "src": "assets/audio/lesson/90_Now_lets_help_Momo.ogg",
     "duration": 2.097,
     "words": [
       {
@@ -3148,7 +3148,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "But to help Momo, you need to learn about polygons.",
-    "src": "assets/audio/lesson/91_But_to_help_Momo_you_need_to_learn_about_polygons.mp3",
+    "src": "assets/audio/lesson/91_But_to_help_Momo_you_need_to_learn_about_polygons.ogg",
     "duration": 3.97,
     "words": [
       {
@@ -3196,7 +3196,7 @@ window.POLYGON_RECORDINGS = [
   },
   {
     "text": "Momo needs your help.",
-    "src": "assets/audio/lesson/92_Momo_needs_your_help.mp3",
+    "src": "assets/audio/lesson/92_Momo_needs_your_help.ogg",
     "duration": 1.79,
     "words": [
       {

@@ -77,8 +77,9 @@ game/
     ├── ui/plank-l/m/r.webp                the hanging instruction plank, in three
     │                                      slices so it grows with its sentence
     ├── ui/btn-play*.webp                   the picture buttons
-    └── audio/*.ogg, *.mp3                 the music bed, the recorded cues and the voice:
-                                           Ogg Opus, with an MP3 copy for older Safari
+    └── audio/*.ogg                        the music bed, the recorded cues and the voice, as
+                                           Ogg Opus (the MP3 copies for older Safari were dropped
+                                           in this project; CFG still names them, assetUrl resolves them)
     (a picture may have an .avif twin beside its .webp, used where the browser
      decodes AVIF: see assetUrl in js/engine.js)
 ```

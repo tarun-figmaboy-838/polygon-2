@@ -6,7 +6,7 @@ The Hindi voice-over was delivered as one WAV per line and is kept as lossless F
 line's speech is and when each of its shown words starts; this builds, from those files and
 that map and nothing else (no speech recogniser, only ffmpeg):
 
-  lesson   each of Swiftee's lines as assets/audio/lesson/hi/<name> (.ogg + .mp3), the name
+  lesson   each of Swiftee's lines as assets/audio/lesson/hi/<name> (.ogg), the name
            its English take has, cut with the lesson's quarter second of room either side and
            levelled as the lesson's takes are; and src/lesson/recordings-hi.js, the Hindi
            catalogue: per line its English (what the lesson looks it up by), its Hindi as
@@ -14,8 +14,8 @@ that map and nothing else (no speech recogniser, only ffmpeg):
            `words` (each English word with the moment its cue fires in the Hindi take: the
            lesson's cues are English words, "open", "sides", "vertex", and fire when the Hindi
            word that says the same thing is said)
-  game     Frozen Rush's lines joined into one take, game/assets/audio/vo-lines-hi (.mp3 +
-           .ogg), as its English take is one, with each line's window and Hindi word starts
+  game     Frozen Rush's lines joined into one take, game/assets/audio/vo-lines-hi (.ogg),
+           as its English take is one, with each line's window and Hindi word starts
            written into CFG.vo.langs.hi in game/js/engine.js and its bundle, and the take's
            content hashes into the game's asset versions
 
@@ -212,13 +212,11 @@ def level(path, lo, hi, target):
     return min(target - i, PEAK_CEIL - peak)
 
 
-def encode(wav, base, mp3_rate='128k', ogg_rate='40k'):
+def encode(wav, base, ogg_rate='40k'):
     os.makedirs(os.path.dirname(base), exist_ok=True)
     # bitexact: no random Ogg stream serial, so the same cut always makes the same file
     run([FFMPEG, '-y', '-v', 'error', '-i', wav, '-c:a', 'libopus', '-b:a', ogg_rate, '-application', 'voip',
          '-fflags', '+bitexact', '-flags:a', '+bitexact', base + '.ogg'])
-    run([FFMPEG, '-y', '-v', 'error', '-i', wav, '-c:a', 'libmp3lame', '-b:a', mp3_rate,
-         '-fflags', '+bitexact', '-flags:a', '+bitexact', base + '.mp3'])
 
 
 def source(cue, line):
@@ -252,7 +250,7 @@ def lesson(cue, lines):
             rows.append({
                 'text': line['en'],
                 'shown': line['hi'],
-                'src': rel + '.mp3',
+                'src': rel + '.ogg',
                 'duration': round(len(clip) / RATE, 3),
                 'spoken': [{'word': w, 'start': t} for w, t in zip(ht, starts)],
                 'words': [{'word': w, 'start': starts[j]} for w, j in zip(et, pick)],
@@ -276,7 +274,7 @@ def lesson(cue, lines):
 
 def game(cue, lines):
     """One take, a window per line, at the English take's level."""
-    english_i, _ = loudness(GAME_TAKE + '.mp3')
+    english_i, _ = loudness(GAME_TAKE + '.ogg')
     joined, windows = array.array('h'), {}
     for line in lines:
         path = source(cue, line)
@@ -294,7 +292,7 @@ def game(cue, lines):
     with tempfile.TemporaryDirectory() as tmp:
         wav = os.path.join(tmp, 'take.wav')
         write_wav(wav, joined)
-        encode(wav, base, mp3_rate='160k', ogg_rate='48k')
+        encode(wav, base, ogg_rate='48k')
     total = len(joined) / RATE
 
     def fmt(key, w):
@@ -302,25 +300,26 @@ def game(cue, lines):
         pad = ' ' * max(1, 20 - len(key) - 4)
         return "          '%s':%s[%.2f, %.2f, [%s]],   // \"%s\" (%s)" % (key, pad, lo, length, ', '.join('%.2f' % t for t in words), hi, en)
     block = '\n'.join(fmt(l['id'], windows[l['id']]) for l in lines)
-    rels = ['assets/audio/vo-lines-%s.mp3' % LANG, 'assets/audio/vo-lines-%s.ogg' % LANG]
+    rels = ['assets/audio/vo-lines-%s.ogg' % LANG]
     hashes = {rel: hashlib.md5(open(os.path.join(ROOT, 'game', rel), 'rb').read()).hexdigest()[:8] for rel in rels}
     for js in ('game/js/engine.js', 'game/js/game.bundle.js', 'game/js/asset-versions.js'):
         path = os.path.join(ROOT, js)
         s = open(path, encoding='utf-8').read()
         if 'engine' in js or 'bundle' in js:
             s, n = re.subn(r"(      %s: \{ src: '[^']*', take: [\d.]+, lines: \{\n)(?:          '[^\n]*\n)*" % LANG,
+                           # (the engine's CFG keeps naming its sounds .mp3; assetUrl() resolves them to the .ogg)
                            lambda m: "      %s: { src: 'assets/audio/vo-lines-%s.mp3', take: %.2f, lines: {\n" % (LANG, LANG, total) + block + '\n',
                            s, count=1)
             if n != 1:
                 raise SystemExit('could not find CFG.vo.langs.%s in %s' % (LANG, js))
-        if '"assets/audio/vo-lines.mp3": "' in s:          # the asset versions' table (not engine.js)
+        if '"assets/audio/vo-lines.ogg": "' in s:          # the asset versions' table (not engine.js)
             for rel, h in sorted(hashes.items(), reverse=True):
                 entry = '"%s": "%s"' % (rel, h)
                 if ('"%s":' % rel) in s:
                     s = re.sub(r'"%s": "[0-9a-f]{8}"' % re.escape(rel), entry, s)
                     continue
                 # a new file: in its place in the sorted table, before the English take's
-                # ("vo-lines-hi.mp3" < "vo-lines-hi.ogg" < "vo-lines.mp3")
+                # ("vo-lines-hi.ogg" < "vo-lines.ogg")
                 after = re.compile(r'\n(\s*)("assets/audio/vo-lines[-.][^"]*": "[0-9a-f]{8}",)')
                 m = next((m for m in after.finditer(s) if m.group(2).split('"')[1] > rel), None)
                 if not m:

@@ -9,7 +9,7 @@
  {
   "text": "Momo needs your help.",
   "shown": "मोमो को आपकी मदद चाहिए।",
-  "src": "assets/audio/lesson/hi/92_Momo_needs_your_help.mp3",
+  "src": "assets/audio/lesson/hi/92_Momo_needs_your_help.ogg",
   "duration": 2.26,
   "spoken": [
    {
@@ -56,7 +56,7 @@
  {
   "text": "But to help Momo, you need to learn about polygons.",
   "shown": "लेकिन मोमो की मदद करने के लिए आपको बहुभुज के बारे में सीखना होगा।",
-  "src": "assets/audio/lesson/hi/91_But_to_help_Momo_you_need_to_learn_about_polygons.mp3",
+  "src": "assets/audio/lesson/hi/91_But_to_help_Momo_you_need_to_learn_about_polygons.ogg",
   "duration": 5.07,
   "spoken": [
    {
@@ -163,7 +163,7 @@
  {
   "text": "Now let's help Momo.",
   "shown": "चलिए, अब मोमो की मदद करते हैं।",
-  "src": "assets/audio/lesson/hi/90_Now_lets_help_Momo.mp3",
+  "src": "assets/audio/lesson/hi/90_Now_lets_help_Momo.ogg",
   "duration": 2.69,
   "spoken": [
    {
@@ -218,7 +218,7 @@
  {
   "text": "Look! A point.",
   "shown": "देखिए! एक बिंदु।",
-  "src": "assets/audio/lesson/hi/01_Look_A_point.mp3",
+  "src": "assets/audio/lesson/hi/01_Look_A_point.ogg",
   "duration": 2.33,
   "spoken": [
    {
@@ -253,7 +253,7 @@
  {
   "text": "Woah! It drew a shape.",
   "shown": "वाह! इसने एक आकृति बना दी।",
-  "src": "assets/audio/lesson/hi/02_Woah_It_drew_a_shape.mp3",
+  "src": "assets/audio/lesson/hi/02_Woah_It_drew_a_shape.ogg",
   "duration": 3.21,
   "spoken": [
    {
@@ -308,7 +308,7 @@
  {
   "text": "Let's look at this shape closely.",
   "shown": "आइए, इस आकृति को ध्यान से देखें।",
-  "src": "assets/audio/lesson/hi/03_Lets_look_at_this_shape_closely.mp3",
+  "src": "assets/audio/lesson/hi/03_Lets_look_at_this_shape_closely.ogg",
   "duration": 2.98,
   "spoken": [
    {
@@ -371,7 +371,7 @@
  {
   "text": "There are no gaps in its boundary.",
   "shown": "इसकी सीमा में कोई खाली जगह नहीं है।",
-  "src": "assets/audio/lesson/hi/04_There_are_no_gaps_in_its_boundary.mp3",
+  "src": "assets/audio/lesson/hi/04_There_are_no_gaps_in_its_boundary.ogg",
   "duration": 2.89,
   "spoken": [
    {
@@ -442,7 +442,7 @@
  {
   "text": "Is it open or closed?",
   "shown": "यह खुली है या बंद?",
-  "src": "assets/audio/lesson/hi/05_Is_it_open_or_closed.mp3",
+  "src": "assets/audio/lesson/hi/05_Is_it_open_or_closed.ogg",
   "duration": 2.23,
   "spoken": [
    {
@@ -493,7 +493,7 @@
  {
   "text": "Is this shape open or closed?",
   "shown": "यह आकृति खुली है या बंद?",
-  "src": "assets/audio/lesson/hi/06_Is_this_shape_open_or_closed.mp3",
+  "src": "assets/audio/lesson/hi/06_Is_this_shape_open_or_closed.ogg",
   "duration": 2.97,
   "spoken": [
    {
@@ -552,7 +552,7 @@
  {
   "text": "What about this one?",
   "shown": "इसके बारे में क्या?",
-  "src": "assets/audio/lesson/hi/07_What_about_this_one.mp3",
+  "src": "assets/audio/lesson/hi/07_What_about_this_one.ogg",
   "duration": 1.4,
   "spoken": [
    {
@@ -595,7 +595,7 @@
  {
   "text": "And this?",
   "shown": "और यह?",
-  "src": "assets/audio/lesson/hi/08_And_this.mp3",
+  "src": "assets/audio/lesson/hi/08_And_this.ogg",
   "duration": 1.1,
   "spoken": [
    {
@@ -622,7 +622,7 @@
  {
   "text": "How about this one?",
   "shown": "यह वाली कैसी है?",
-  "src": "assets/audio/lesson/hi/09_How_about_this_one.mp3",
+  "src": "assets/audio/lesson/hi/09_How_about_this_one.ogg",
   "duration": 1.7,
   "spoken": [
    {
@@ -665,7 +665,7 @@
  {
   "text": "No gaps in its boundary. This shape is closed.",
   "shown": "इसकी सीमा में कोई खाली जगह नहीं। यह आकृति बंद है।",
-  "src": "assets/audio/lesson/hi/48_No_gaps_in_its_boundary_This_shape_is_closed.mp3",
+  "src": "assets/audio/lesson/hi/48_No_gaps_in_its_boundary_This_shape_is_closed.ogg",
   "duration": 4.8,
   "spoken": [
    {
@@ -756,7 +756,7 @@
  {
   "text": "There is a gap in its boundary. It is open.",
   "shown": "इसकी सीमा में खाली जगह है। यह खुली है।",
-  "src": "assets/audio/lesson/hi/49_There_is_a_gap_in_its_boundary_It_is_open.mp3",
+  "src": "assets/audio/lesson/hi/49_There_is_a_gap_in_its_boundary_It_is_open.ogg",
   "duration": 3.61,
   "spoken": [
    {
@@ -843,7 +843,7 @@
  {
   "text": "Yes! It is closed.",
   "shown": "हाँ! यह बंद है।",
-  "src": "assets/audio/lesson/hi/66_Yes_It_is_closed.mp3",
+  "src": "assets/audio/lesson/hi/66_Yes_It_is_closed.ogg",
   "duration": 1.99,
   "spoken": [
    {
@@ -886,7 +886,7 @@
  {
   "text": "Yes! It is open.",
   "shown": "हाँ! यह खुली है।",
-  "src": "assets/audio/lesson/hi/67_Yes_It_is_open.mp3",
+  "src": "assets/audio/lesson/hi/67_Yes_It_is_open.ogg",
   "duration": 1.87,
   "spoken": [
    {
@@ -929,7 +929,7 @@
  {
   "text": "These two shapes are open...",
   "shown": "ये दो आकृतियाँ खुली हैं...",
-  "src": "assets/audio/lesson/hi/10_These_two_shapes_are_open.mp3",
+  "src": "assets/audio/lesson/hi/10_These_two_shapes_are_open.ogg",
   "duration": 2.26,
   "spoken": [
    {
@@ -980,7 +980,7 @@
  {
   "text": "...and these two shapes are closed.",
   "shown": "...और ये दो आकृतियाँ बंद हैं।",
-  "src": "assets/audio/lesson/hi/11_and_these_two_shapes_are_closed.mp3",
+  "src": "assets/audio/lesson/hi/11_and_these_two_shapes_are_closed.ogg",
   "duration": 2.87,
   "spoken": [
    {
@@ -1039,7 +1039,7 @@
  {
   "text": "Look! The boundaries of the shapes are different too.",
   "shown": "देखिए! आकृतियों की सीमाएँ भी अलग-अलग हैं।",
-  "src": "assets/audio/lesson/hi/12_Look_The_boundaries_of_the_shapes_are_different_too.mp3",
+  "src": "assets/audio/lesson/hi/12_Look_The_boundaries_of_the_shapes_are_different_too.ogg",
   "duration": 3.53,
   "spoken": [
    {
@@ -1114,7 +1114,7 @@
  {
   "text": "Some are straight and some are curved.",
   "shown": "कुछ सीधी हैं और कुछ वक्र।",
-  "src": "assets/audio/lesson/hi/13_Some_are_straight_and_some_are_curved.mp3",
+  "src": "assets/audio/lesson/hi/13_Some_are_straight_and_some_are_curved.ogg",
   "duration": 2.71,
   "spoken": [
    {
@@ -1177,7 +1177,7 @@
  {
   "text": "Which boundaries are straight and which are curved?",
   "shown": "कौन-सी सीमाएँ सीधी हैं और कौन-सी वक्र?",
-  "src": "assets/audio/lesson/hi/14_Which_boundaries_are_straight_and_which_are_curved.mp3",
+  "src": "assets/audio/lesson/hi/14_Which_boundaries_are_straight_and_which_are_curved.ogg",
   "duration": 3.58,
   "spoken": [
    {
@@ -1248,7 +1248,7 @@
  {
   "text": "Is the boundary straight or curved?",
   "shown": "यह सीमा सीधी है या वक्र?",
-  "src": "assets/audio/lesson/hi/88_Is_the_boundary_straight_or_curved.mp3",
+  "src": "assets/audio/lesson/hi/88_Is_the_boundary_straight_or_curved.ogg",
   "duration": 2.91,
   "spoken": [
    {
@@ -1307,7 +1307,7 @@
  {
   "text": "Look! This boundary isn't curved. It is made of straight lines.",
   "shown": "देखिए! यह सीमा वक्र नहीं है। यह सीधी रेखाओं से बनी है।",
-  "src": "assets/audio/lesson/hi/68_Look_This_boundary_isnt_curved_It_is_made_of_straight_lines.mp3",
+  "src": "assets/audio/lesson/hi/68_Look_This_boundary_isnt_curved_It_is_made_of_straight_lines.ogg",
   "duration": 5.35,
   "spoken": [
    {
@@ -1410,7 +1410,7 @@
  {
   "text": "Look closely. This boundary bends smoothly. It is curved.",
   "shown": "ध्यान से देखिए। यह सीमा धीरे-धीरे मुड़ती है। यह वक्र है।",
-  "src": "assets/audio/lesson/hi/69_Look_closely_This_boundary_bends_smoothly_It_is_curved.mp3",
+  "src": "assets/audio/lesson/hi/69_Look_closely_This_boundary_bends_smoothly_It_is_curved.ogg",
   "duration": 6.08,
   "spoken": [
    {
@@ -1501,7 +1501,7 @@
  {
   "text": "You got it! These boundaries are straight, while these are curved.",
   "shown": "बिल्कुल सही! ये सीमाएँ सीधी हैं, जबकि ये वक्र हैं।",
-  "src": "assets/audio/lesson/hi/15_You_got_it_These_boundaries_are_straight_while_these_are_curve.mp3",
+  "src": "assets/audio/lesson/hi/15_You_got_it_These_boundaries_are_straight_while_these_are_curve.ogg",
   "duration": 4.64,
   "spoken": [
    {
@@ -1596,7 +1596,7 @@
  {
   "text": "Tap the closed figure made with straight lines.",
   "shown": "सीधी रेखाओं से बनी बंद आकृति पर टैप करें।",
-  "src": "assets/audio/lesson/hi/80_Tap_the_closed_figure_made_with_straight_lines.mp3",
+  "src": "assets/audio/lesson/hi/80_Tap_the_closed_figure_made_with_straight_lines.ogg",
   "duration": 3.68,
   "spoken": [
    {
@@ -1675,7 +1675,7 @@
  {
   "text": "Yes! It is closed and made of straight lines.",
   "shown": "हाँ! यह बंद है और सीधी रेखाओं से बनी है।",
-  "src": "assets/audio/lesson/hi/70_Yes_It_is_closed_and_made_of_straight_lines.mp3",
+  "src": "assets/audio/lesson/hi/70_Yes_It_is_closed_and_made_of_straight_lines.ogg",
   "duration": 3.9,
   "spoken": [
    {
@@ -1762,7 +1762,7 @@
  {
   "text": "Not quite. Look for a figure with no gaps and no curves.",
   "shown": "पूरी तरह से सही नहीं। ऐसी आकृति ढूँढें जिसमें न खाली जगह हो, न मोड़।",
-  "src": "assets/audio/lesson/hi/50_Not_quite_Look_for_a_figure_with_no_gaps_and_no_curves.mp3",
+  "src": "assets/audio/lesson/hi/50_Not_quite_Look_for_a_figure_with_no_gaps_and_no_curves.ogg",
   "duration": 5.91,
   "spoken": [
    {
@@ -1881,7 +1881,7 @@
  {
   "text": "We call this a polygon.",
   "shown": "इसे हम बहुभुज कहते हैं।",
-  "src": "assets/audio/lesson/hi/17_We_call_this_a_polygon.mp3",
+  "src": "assets/audio/lesson/hi/17_We_call_this_a_polygon.ogg",
   "duration": 2.32,
   "spoken": [
    {
@@ -1932,7 +1932,7 @@
  {
   "text": "A closed figure made of only straight line segments is called a polygon.",
   "shown": "केवल रेखाखंडों से बनी बंद आकृति को बहुभुज कहते हैं।",
-  "src": "assets/audio/lesson/hi/18_A_closed_figure_made_of_only_straight_line_segments_is_called.mp3",
+  "src": "assets/audio/lesson/hi/18_A_closed_figure_made_of_only_straight_line_segments_is_called.ogg",
   "duration": 4.48,
   "spoken": [
    {
@@ -2035,7 +2035,7 @@
  {
   "text": "Which of these figures are polygons?",
   "shown": "इनमें से कौन-सी आकृतियाँ बहुभुज हैं?",
-  "src": "assets/audio/lesson/hi/19_Which_of_these_figures_are_polygons.mp3",
+  "src": "assets/audio/lesson/hi/19_Which_of_these_figures_are_polygons.ogg",
   "duration": 3.04,
   "spoken": [
    {
@@ -2094,7 +2094,7 @@
  {
   "text": "Great job! You identified all the polygons.",
   "shown": "बहुत बढ़िया! आपने सभी बहुभुज पहचान लिए।",
-  "src": "assets/audio/lesson/hi/81_Great_job_You_identified_all_the_polygons.mp3",
+  "src": "assets/audio/lesson/hi/81_Great_job_You_identified_all_the_polygons.ogg",
   "duration": 3.75,
   "spoken": [
    {
@@ -2161,7 +2161,7 @@
  {
   "text": "A polygon is closed, with only straight sides.",
   "shown": "बहुभुज बंद होता है, और उसकी सभी भुजाएँ सीधी होती हैं।",
-  "src": "assets/audio/lesson/hi/72_A_polygon_is_closed_with_only_straight_sides.mp3",
+  "src": "assets/audio/lesson/hi/72_A_polygon_is_closed_with_only_straight_sides.ogg",
   "duration": 4.8,
   "spoken": [
    {
@@ -2248,7 +2248,7 @@
  {
   "text": "That is right! These are the ones.",
   "shown": "बिल्कुल सही! यही वाली हैं।",
-  "src": "assets/audio/lesson/hi/71_That_is_right_These_are_the_ones.mp3",
+  "src": "assets/audio/lesson/hi/71_That_is_right_These_are_the_ones.ogg",
   "duration": 2.4,
   "spoken": [
    {
@@ -2307,7 +2307,7 @@
  {
   "text": "Not quite. Try again.",
   "shown": "पूरी तरह से सही नहीं। फिर से प्रयास करें।",
-  "src": "assets/audio/lesson/hi/75_Not_quite_Try_again.mp3",
+  "src": "assets/audio/lesson/hi/75_Not_quite_Try_again.ogg",
   "duration": 3.19,
   "spoken": [
    {
@@ -2370,7 +2370,7 @@
  {
   "text": "These line segments are the sides of the polygon.",
   "shown": "ये रेखाखंड बहुभुज की भुजाएँ हैं।",
-  "src": "assets/audio/lesson/hi/20_These_line_segments_are_the_sides_of_the_polygon.mp3",
+  "src": "assets/audio/lesson/hi/20_These_line_segments_are_the_sides_of_the_polygon.ogg",
   "duration": 3.34,
   "spoken": [
    {
@@ -2441,7 +2441,7 @@
  {
   "text": "The point where two sides meet is called a vertex.",
   "shown": "जिस बिंदु पर दो भुजाएँ मिलती हैं, उसे शीर्ष कहते हैं।",
-  "src": "assets/audio/lesson/hi/21_The_point_where_two_sides_meet_is_called_a_vertex.mp3",
+  "src": "assets/audio/lesson/hi/21_The_point_where_two_sides_meet_is_called_a_vertex.ogg",
   "duration": 4.73,
   "spoken": [
    {
@@ -2536,7 +2536,7 @@
  {
   "text": "When two sides meet, they also form an angle.",
   "shown": "जब दो भुजाएँ मिलती हैं, तो वे एक कोण भी बनाती हैं।",
-  "src": "assets/audio/lesson/hi/22_When_two_sides_meet_they_also_form_an_angle.mp3",
+  "src": "assets/audio/lesson/hi/22_When_two_sides_meet_they_also_form_an_angle.ogg",
   "duration": 4.45,
   "spoken": [
    {
@@ -2631,7 +2631,7 @@
  {
   "text": "Label the parts of the polygon.",
   "shown": "बहुभुज के भागों के नाम लगाएँ।",
-  "src": "assets/audio/lesson/hi/23_Label_the_parts_of_the_polygon.mp3",
+  "src": "assets/audio/lesson/hi/23_Label_the_parts_of_the_polygon.ogg",
   "duration": 2.79,
   "spoken": [
    {
@@ -2690,7 +2690,7 @@
  {
   "text": "Perfect! Side, vertex and angle — all labelled.",
   "shown": "शानदार! भुजा, शीर्ष और कोण — सबके नाम लग गए।",
-  "src": "assets/audio/lesson/hi/73_Perfect_Side_vertex_and_angle_all_labelled.mp3",
+  "src": "assets/audio/lesson/hi/73_Perfect_Side_vertex_and_angle_all_labelled.ogg",
   "duration": 4.84,
   "spoken": [
    {
@@ -2769,7 +2769,7 @@
  {
   "text": "Let's count the sides of the polygon.",
   "shown": "आइए, बहुभुज की भुजाएँ गिनें।",
-  "src": "assets/audio/lesson/hi/88_Lets_count_the_sides_of_the_polygon.mp3",
+  "src": "assets/audio/lesson/hi/88_Lets_count_the_sides_of_the_polygon.ogg",
   "duration": 2.86,
   "spoken": [
    {
@@ -2828,7 +2828,7 @@
  {
   "text": "Count each side carefully and try again.",
   "shown": "हर भुजा ध्यान से गिनें और फिर से प्रयास करें।",
-  "src": "assets/audio/lesson/hi/51_Count_each_side_carefully_and_try_again.mp3",
+  "src": "assets/audio/lesson/hi/51_Count_each_side_carefully_and_try_again.ogg",
   "duration": 3.7,
   "spoken": [
    {
@@ -2907,7 +2907,7 @@
  {
   "text": "Correct! This polygon has five sides.",
   "shown": "सही! इस बहुभुज की 5 भुजाएँ हैं।",
-  "src": "assets/audio/lesson/hi/82_Correct_This_polygon_has_five_sides.mp3",
+  "src": "assets/audio/lesson/hi/82_Correct_This_polygon_has_five_sides.ogg",
   "duration": 3.55,
   "spoken": [
    {
@@ -2970,7 +2970,7 @@
  {
   "text": "Now let's change how it looks.",
   "shown": "अब इसका रूप बदलते हैं।",
-  "src": "assets/audio/lesson/hi/26_Now_lets_change_how_it_looks.mp3",
+  "src": "assets/audio/lesson/hi/26_Now_lets_change_how_it_looks.ogg",
   "duration": 2.26,
   "spoken": [
    {
@@ -3025,7 +3025,7 @@
  {
   "text": "Drag any vertex. Stretch it, squash it, or resize it.",
   "shown": "कोई भी शीर्ष खींचें। इसे फैलाएँ, दबाएँ या इसका आकार बदलें।",
-  "src": "assets/audio/lesson/hi/27_Drag_any_vertex_Stretch_it_squash_it_or_resize_it.mp3",
+  "src": "assets/audio/lesson/hi/27_Drag_any_vertex_Stretch_it_squash_it_or_resize_it.ogg",
   "duration": 5.79,
   "spoken": [
    {
@@ -3120,7 +3120,7 @@
  {
   "text": "Whoa! It looks quite different now.",
   "shown": "वाह! अब यह बिल्कुल अलग दिख रहा है।",
-  "src": "assets/audio/lesson/hi/28_Whoa_It_looks_quite_different_now.mp3",
+  "src": "assets/audio/lesson/hi/28_Whoa_It_looks_quite_different_now.ogg",
   "duration": 3.36,
   "spoken": [
    {
@@ -3187,7 +3187,7 @@
  {
   "text": "Its appearance has completely changed.",
   "shown": "इसका रूप पूरी तरह बदल गया है।",
-  "src": "assets/audio/lesson/hi/29_Its_appearance_has_completely_changed.mp3",
+  "src": "assets/audio/lesson/hi/29_Its_appearance_has_completely_changed.ogg",
   "duration": 2.7,
   "spoken": [
    {
@@ -3246,7 +3246,7 @@
  {
   "text": "But not everything has changed.",
   "shown": "लेकिन सब कुछ नहीं बदला है।",
-  "src": "assets/audio/lesson/hi/30_But_not_everything_has_changed.mp3",
+  "src": "assets/audio/lesson/hi/30_But_not_everything_has_changed.ogg",
   "duration": 2.19,
   "spoken": [
    {
@@ -3301,7 +3301,7 @@
  {
   "text": "Let's count the sides again.",
   "shown": "आइए, भुजाएँ फिर से गिनें।",
-  "src": "assets/audio/lesson/hi/31_Lets_count_the_sides_again.mp3",
+  "src": "assets/audio/lesson/hi/31_Lets_count_the_sides_again.ogg",
   "duration": 2.72,
   "spoken": [
    {
@@ -3352,7 +3352,7 @@
  {
   "text": "Both polygons still have five sides.",
   "shown": "दोनों बहुभुजों की अब भी 5 भुजाएँ हैं।",
-  "src": "assets/audio/lesson/hi/32_Both_polygons_still_have_five_sides.mp3",
+  "src": "assets/audio/lesson/hi/32_Both_polygons_still_have_five_sides.ogg",
   "duration": 3.27,
   "spoken": [
    {
@@ -3419,7 +3419,7 @@
  {
   "text": "So the number of sides gives us a good way to name polygons.",
   "shown": "इसलिए भुजाओं की संख्या से हम बहुभुजों के नाम आसानी से रख सकते हैं।",
-  "src": "assets/audio/lesson/hi/33_So_the_number_of_sides_gives_us_a_good_way_to_name_polygons.mp3",
+  "src": "assets/audio/lesson/hi/33_So_the_number_of_sides_gives_us_a_good_way_to_name_polygons.ogg",
   "duration": 5.26,
   "spoken": [
    {
@@ -3538,7 +3538,7 @@
  {
   "text": "A polygon with three sides is called a triangle.",
   "shown": "3 भुजाओं वाले बहुभुज को त्रिभुज कहते हैं।",
-  "src": "assets/audio/lesson/hi/34_A_polygon_with_three_sides_is_called_a_triangle.mp3",
+  "src": "assets/audio/lesson/hi/34_A_polygon_with_three_sides_is_called_a_triangle.ogg",
   "duration": 3.7,
   "spoken": [
    {
@@ -3617,7 +3617,7 @@
  {
   "text": "A polygon with four sides is called a quadrilateral.",
   "shown": "4 भुजाओं वाले बहुभुज को चतुर्भुज कहते हैं।",
-  "src": "assets/audio/lesson/hi/35_A_polygon_with_four_sides_is_called_a_quadrilateral.mp3",
+  "src": "assets/audio/lesson/hi/35_A_polygon_with_four_sides_is_called_a_quadrilateral.ogg",
   "duration": 3.53,
   "spoken": [
    {
@@ -3696,7 +3696,7 @@
  {
   "text": "Select all the quadrilaterals.",
   "shown": "सभी चतुर्भुज चुनें।",
-  "src": "assets/audio/lesson/hi/36_Select_all_the_quadrilaterals.mp3",
+  "src": "assets/audio/lesson/hi/36_Select_all_the_quadrilaterals.ogg",
   "duration": 1.89,
   "spoken": [
    {
@@ -3735,7 +3735,7 @@
  {
   "text": "That's right! Quadrilaterals are polygons with four sides.",
   "shown": "बिल्कुल सही! चतुर्भुज 4 भुजाओं वाले बहुभुज होते हैं।",
-  "src": "assets/audio/lesson/hi/83_Thats_right_Quadrilaterals_are_polygons.mp3",
+  "src": "assets/audio/lesson/hi/83_Thats_right_Quadrilaterals_are_polygons.ogg",
   "duration": 4.6,
   "spoken": [
    {
@@ -3814,7 +3814,7 @@
  {
   "text": "Quadrilaterals are polygons with four sides.",
   "shown": "चतुर्भुज 4 भुजाओं वाले बहुभुज होते हैं।",
-  "src": "assets/audio/lesson/hi/84_Quadrilaterals_are_polygons_with_four_sides.mp3",
+  "src": "assets/audio/lesson/hi/84_Quadrilaterals_are_polygons_with_four_sides.ogg",
   "duration": 3.35,
   "spoken": [
    {
@@ -3877,7 +3877,7 @@
  {
   "text": "Is this shape a quadrilateral?",
   "shown": "क्या यह आकृति चतुर्भुज है?",
-  "src": "assets/audio/lesson/hi/85_Is_this_shape_a_quadrilateral.mp3",
+  "src": "assets/audio/lesson/hi/85_Is_this_shape_a_quadrilateral.ogg",
   "duration": 2.32,
   "spoken": [
    {
@@ -3928,7 +3928,7 @@
  {
   "text": "A polygon with five sides is called a pentagon.",
   "shown": "5 भुजाओं वाले बहुभुज को पंचभुज कहते हैं।",
-  "src": "assets/audio/lesson/hi/37_A_polygon_with_five_sides_is_called_a_pentagon.mp3",
+  "src": "assets/audio/lesson/hi/37_A_polygon_with_five_sides_is_called_a_pentagon.ogg",
   "duration": 3.74,
   "spoken": [
    {
@@ -4007,7 +4007,7 @@
  {
   "text": "A polygon with six sides is called a hexagon.",
   "shown": "6 भुजाओं वाले बहुभुज को षट्भुज कहते हैं।",
-  "src": "assets/audio/lesson/hi/38_A_polygon_with_six_sides_is_called_a_hexagon.mp3",
+  "src": "assets/audio/lesson/hi/38_A_polygon_with_six_sides_is_called_a_hexagon.ogg",
   "duration": 3.6,
   "spoken": [
    {
@@ -4086,7 +4086,7 @@
  {
   "text": "A polygon with seven sides is called a heptagon.",
   "shown": "7 भुजाओं वाले बहुभुज को सप्तभुज कहते हैं।",
-  "src": "assets/audio/lesson/hi/39_A_polygon_with_seven_sides_is_called_a_heptagon.mp3",
+  "src": "assets/audio/lesson/hi/39_A_polygon_with_seven_sides_is_called_a_heptagon.ogg",
   "duration": 3.98,
   "spoken": [
    {
@@ -4165,7 +4165,7 @@
  {
   "text": "A polygon with eight sides is called an octagon.",
   "shown": "8 भुजाओं वाले बहुभुज को अष्टभुज कहते हैं।",
-  "src": "assets/audio/lesson/hi/40_A_polygon_with_eight_sides_is_called_an_octagon.mp3",
+  "src": "assets/audio/lesson/hi/40_A_polygon_with_eight_sides_is_called_an_octagon.ogg",
   "duration": 3.86,
   "spoken": [
    {
@@ -4244,7 +4244,7 @@
  {
   "text": "Let's recall what we learnt today.",
   "shown": "आइए, याद करें कि आज हमने क्या सीखा।",
-  "src": "assets/audio/lesson/hi/91_Lets_recall_what_we_learnt_today.mp3",
+  "src": "assets/audio/lesson/hi/91_Lets_recall_what_we_learnt_today.ogg",
   "duration": 3.55,
   "spoken": [
    {
@@ -4311,7 +4311,7 @@
  {
   "text": "Polygons have different names based on their number of sides.",
   "shown": "भुजाओं की संख्या के आधार पर बहुभुजों के अलग-अलग नाम होते हैं।",
-  "src": "assets/audio/lesson/hi/92_Polygons_have_different_names_based_on_their_number_of_sides.mp3",
+  "src": "assets/audio/lesson/hi/92_Polygons_have_different_names_based_on_their_number_of_sides.ogg",
   "duration": 4.83,
   "spoken": [
    {
@@ -4410,7 +4410,7 @@
  {
   "text": "Which of these are polygons?",
   "shown": "इनमें से कौन-से बहुभुज हैं?",
-  "src": "assets/audio/lesson/hi/77_Select_polygons.mp3",
+  "src": "assets/audio/lesson/hi/77_Select_polygons.ogg",
   "duration": 2.48,
   "spoken": [
    {
@@ -4461,7 +4461,7 @@
  {
   "text": "Yes! Closed, with only straight sides.",
   "shown": "हाँ! बंद, और केवल सीधी भुजाएँ।",
-  "src": "assets/audio/lesson/hi/52_Yes_Closed_with_only_straight_sides.mp3",
+  "src": "assets/audio/lesson/hi/52_Yes_Closed_with_only_straight_sides.ogg",
   "duration": 3.64,
   "spoken": [
    {
@@ -4520,7 +4520,7 @@
  {
   "text": "Not quite! A polygon is closed with only straight sides.",
   "shown": "पूरी तरह से सही नहीं! बहुभुज बंद होता है और उसकी केवल सीधी भुजाएँ होती हैं।",
-  "src": "assets/audio/lesson/hi/87_Not_quite_A_polygon_is_closed.mp3",
+  "src": "assets/audio/lesson/hi/87_Not_quite_A_polygon_is_closed.ogg",
   "duration": 6.46,
   "spoken": [
    {
@@ -4635,7 +4635,7 @@
  {
   "text": "Classify the figures as a polygon or not a polygon.",
   "shown": "आकृतियों को बहुभुज या बहुभुज नहीं में बाँटें।",
-  "src": "assets/audio/lesson/hi/43_Classify_the_figures_as_a_polygon_or_not_a_polygon.mp3",
+  "src": "assets/audio/lesson/hi/43_Classify_the_figures_as_a_polygon_or_not_a_polygon.ogg",
   "duration": 4.26,
   "spoken": [
    {
@@ -4718,7 +4718,7 @@
  {
   "text": "Great job! You sorted the figures correctly.",
   "shown": "बहुत बढ़िया! आपने आकृतियों को सही-सही बाँटा।",
-  "src": "assets/audio/lesson/hi/55_Great_job_You_sorted_the_figures_correctly.mp3",
+  "src": "assets/audio/lesson/hi/55_Great_job_You_sorted_the_figures_correctly.ogg",
   "duration": 3.79,
   "spoken": [
    {
@@ -4785,7 +4785,7 @@
  {
   "text": "Wrong group. Check for gaps or curved sides.",
   "shown": "गलत समूह। खाली जगह या वक्र भुजाएँ देखें।",
-  "src": "assets/audio/lesson/hi/56_Wrong_group_Check_for_gaps_or_curved_sides.mp3",
+  "src": "assets/audio/lesson/hi/56_Wrong_group_Check_for_gaps_or_curved_sides.ogg",
   "duration": 4.2,
   "spoken": [
    {
@@ -4860,7 +4860,7 @@
  {
   "text": "Polygons are closed, with only straight sides. Try again.",
   "shown": "बहुभुज बंद होते हैं, और उनकी केवल सीधी भुजाएँ होती हैं। फिर से प्रयास करें।",
-  "src": "assets/audio/lesson/hi/57_Polygons_are_closed_with_only_straight_sides_Try_again.mp3",
+  "src": "assets/audio/lesson/hi/57_Polygons_are_closed_with_only_straight_sides_Try_again.ogg",
   "duration": 6.24,
   "spoken": [
    {
@@ -4967,7 +4967,7 @@
  {
   "text": "Which figure is NOT a polygon?",
   "shown": "कौन-सी आकृति बहुभुज नहीं है?",
-  "src": "assets/audio/lesson/hi/78_Not_a_polygon.mp3",
+  "src": "assets/audio/lesson/hi/78_Not_a_polygon.ogg",
   "duration": 2.47,
   "spoken": [
    {
@@ -5022,7 +5022,7 @@
  {
   "text": "You found it! That is not a polygon.",
   "shown": "आपने ढूँढ लिया! वह बहुभुज नहीं है।",
-  "src": "assets/audio/lesson/hi/58_You_found_it_That_is_not_a_polygon.mp3",
+  "src": "assets/audio/lesson/hi/58_You_found_it_That_is_not_a_polygon.ogg",
   "duration": 3.58,
   "spoken": [
    {
@@ -5093,7 +5093,7 @@
  {
   "text": "Which figure breaks the rule for a polygon?",
   "shown": "कौन-सी आकृति बहुभुज का नियम तोड़ती है?",
-  "src": "assets/audio/lesson/hi/59_Which_figure_breaks_the_rule_for_a_polygon.mp3",
+  "src": "assets/audio/lesson/hi/59_Which_figure_breaks_the_rule_for_a_polygon.ogg",
   "duration": 3.19,
   "spoken": [
    {
@@ -5164,7 +5164,7 @@
  {
   "text": "Is it closed? Does it have only straight sides?",
   "shown": "क्या यह बंद है? क्या इसकी केवल सीधी भुजाएँ हैं?",
-  "src": "assets/audio/lesson/hi/53_Is_it_closed_Does_it_have_only_straight_sides.mp3",
+  "src": "assets/audio/lesson/hi/53_Is_it_closed_Does_it_have_only_straight_sides.ogg",
   "duration": 4.4,
   "spoken": [
    {
@@ -5251,7 +5251,7 @@
  {
   "text": "Which of these are pentagons?",
   "shown": "इनमें से कौन-से पंचभुज हैं?",
-  "src": "assets/audio/lesson/hi/79_Select_pentagons.mp3",
+  "src": "assets/audio/lesson/hi/79_Select_pentagons.ogg",
   "duration": 2.59,
   "spoken": [
    {
@@ -5302,7 +5302,7 @@
  {
   "text": "Exactly! A pentagon always has five sides.",
   "shown": "बिल्कुल! पंचभुज की हमेशा 5 भुजाएँ होती हैं।",
-  "src": "assets/audio/lesson/hi/60_Exactly_A_pentagon_always_has_five_sides.mp3",
+  "src": "assets/audio/lesson/hi/60_Exactly_A_pentagon_always_has_five_sides.ogg",
   "duration": 4.44,
   "spoken": [
    {
@@ -5373,7 +5373,7 @@
  {
   "text": "Count the sides of each figure carefully.",
   "shown": "हर आकृति की भुजाएँ ध्यान से गिनें।",
-  "src": "assets/audio/lesson/hi/61_Count_the_sides_of_each_figure_carefully.mp3",
+  "src": "assets/audio/lesson/hi/61_Count_the_sides_of_each_figure_carefully.ogg",
   "duration": 3.19,
   "spoken": [
    {
@@ -5440,7 +5440,7 @@
  {
   "text": "Look for every figure with exactly five sides.",
   "shown": "ठीक 5 भुजाओं वाली हर आकृति ढूँढें।",
-  "src": "assets/audio/lesson/hi/62_Look_for_every_figure_with_exactly_five_sides.mp3",
+  "src": "assets/audio/lesson/hi/62_Look_for_every_figure_with_exactly_five_sides.ogg",
   "duration": 3.21,
   "spoken": [
    {
@@ -5511,7 +5511,7 @@
  {
   "text": "Classify each figure as a hexagon or a heptagon.",
   "shown": "हर आकृति को षट्भुज या सप्तभुज में बाँटें।",
-  "src": "assets/audio/lesson/hi/46_Classify_each_figure_as_a_hexagon_or_a_heptagon.mp3",
+  "src": "assets/audio/lesson/hi/46_Classify_each_figure_as_a_hexagon_or_a_heptagon.ogg",
   "duration": 4.13,
   "spoken": [
    {
@@ -5590,7 +5590,7 @@
  {
   "text": "Well done! Hexagons have six sides and heptagons have seven sides.",
   "shown": "शाबाश! षट्भुज की 6 भुजाएँ होती हैं और सप्तभुज की 7 भुजाएँ।",
-  "src": "assets/audio/lesson/hi/63_Well_done_Hexagons_have_six_sides_and_heptagons_have_seven_sid.mp3",
+  "src": "assets/audio/lesson/hi/63_Well_done_Hexagons_have_six_sides_and_heptagons_have_seven_sid.ogg",
   "duration": 6.03,
   "spoken": [
    {
@@ -5693,7 +5693,7 @@
  {
   "text": "Count the sides of the ones you placed wrong.",
   "shown": "जिन्हें आपने गलत जगह रखा, उनकी भुजाएँ गिनें।",
-  "src": "assets/audio/lesson/hi/64_Count_the_sides_of_the_ones_you_placed_wrong.mp3",
+  "src": "assets/audio/lesson/hi/64_Count_the_sides_of_the_ones_you_placed_wrong.ogg",
   "duration": 3.86,
   "spoken": [
    {
@@ -5772,7 +5772,7 @@
  {
   "text": "Six sides make a hexagon, seven make a heptagon.",
   "shown": "6 भुजाओं से षट्भुज बनता है, 7 से सप्तभुज।",
-  "src": "assets/audio/lesson/hi/65_Six_sides_make_a_hexagon_seven_make_a_heptagon.mp3",
+  "src": "assets/audio/lesson/hi/65_Six_sides_make_a_hexagon_seven_make_a_heptagon.ogg",
   "duration": 4.26,
   "spoken": [
    {
@@ -5855,7 +5855,7 @@
  {
   "text": "Now you know everything about polygons. You are ready to help Momo.",
   "shown": "अब आप बहुभुज के बारे में सब कुछ जानते हैं। आप मोमो की मदद करने के लिए तैयार हैं।",
-  "src": "assets/audio/lesson/hi/93_Now_you_know_everything_about_polygons_You_are_ready_to_help_Momo.mp3",
+  "src": "assets/audio/lesson/hi/93_Now_you_know_everything_about_polygons_You_are_ready_to_help_Momo.ogg",
   "duration": 5.89,
   "spoken": [
    {

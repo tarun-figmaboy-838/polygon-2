@@ -41,11 +41,7 @@
   function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
   function reduced() { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); }
   function el(tag, cls, parent) { var n = document.createElement(tag); if (cls) n.className = cls; if (parent) parent.appendChild(n); return n; }
-  function oggOr(base) {
-    var ogg = false;
-    try { ogg = document.createElement('audio').canPlayType('audio/ogg; codecs="opus"') !== ''; } catch (e) {}
-    return base + (ogg ? '.ogg' : '.mp3');
-  }
+  function oggOf(base) { return base + '.ogg'; }   // the one format every sound ships in
   function bytes(url) {
     if (!cache[url]) cache[url] = fetch(url).then(function (r) { return r.ok ? r.arrayBuffer() : null; }).catch(function () { return null; });
     return cache[url];
@@ -58,10 +54,15 @@
     return { src: window.polygonAudioSrc ? window.polygonAudioSrc(rec.src) : rec.src, starts: starts, dur: rec.duration };
   }
 
+  /* Her sheets at the scale the page draws her at everywhere (src/lesson/swiftee-flying.js: hdForPage),
+     so her visits and the lesson share one set. */
+  function hdForPage() { return !!(SW && SW.hdForPage && SW.hdForPage()); }
+  function sheet(name, hd) { var c = clip(name); return c ? ((SW.sheet && SW.sheet(name, hd)) || c) : null; }
   function preload(texts) {
-    CLIPS.forEach(function (n) { var c = clip(n); if (c) { var im = new Image(); im.src = c.image; } });
+    var hd = hdForPage();
+    CLIPS.forEach(function (n) { var sh = sheet(n, hd); if (sh) { var im = new Image(); im.src = sh.image; } });
     if (location.protocol !== 'file:') {
-      bytes(oggOr(WHOOSH));
+      bytes(oggOf(WHOOSH));
       // her takes once the page's language has settled: in Hindi they are her Hindi ones (take())
       var I = window.PolygonI18n, takes = function () { (texts || []).forEach(function (t) { var k = take(t); if (k) bytes(k.src); }); };
       if (I && I.ready && I.code !== 'en') I.ready.then(takes, takes); else takes();
@@ -76,7 +77,7 @@
     var s = C.bird.style;
     if (C.sheet !== name) {
       C.sheet = name;
-      s.backgroundImage = 'url("' + c.image + '")';
+      s.backgroundImage = 'url("' + sheet(name, C.hd).image + '")';
       s.backgroundSize = (c.cols * 100) + '% ' + (c.rows * 100) + '%';
     }
     s.backgroundPosition = (c.cols > 1 ? col / (c.cols - 1) * 100 : 0) + '% ' + (c.rows > 1 ? row / (c.rows - 1) * 100 : 0) + '%';
@@ -117,7 +118,7 @@
   /* ---- the game's whoosh, lighter for a small bird (as the Help Momo scene plays it) ---- */
   function whoosh(ctx) {
     if (!ctx || location.protocol === 'file:') return;
-    bytes(oggOr(WHOOSH)).then(function (buf) {
+    bytes(oggOf(WHOOSH)).then(function (buf) {
       if (!buf || !C) return null;
       return ctx.decodeAudioData(buf.slice(0));
     }).then(function (b) {
@@ -314,6 +315,7 @@
     C = parts;
     C.scale = scale;
     C.size = BIRD * zoom * scale;
+    C.hd = hdForPage();   // her 2x sheets where the page draws her from them
     C.perch = { x: feet.x, y: feet.y + (1 - ((SW && SW.baseline) || 0.877)) * C.size };   // her cell's bottom, so her feet are on the ice
     C.bird.style.width = C.bird.style.height = Math.round(C.size) + 'px';
     C.raf = requestAnimationFrame(tick);

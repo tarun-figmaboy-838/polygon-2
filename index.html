@@ -593,6 +593,8 @@ const NAME_LABEL_GAP = 48;
    how long it takes. Small enough to read as attention rather than a jump. */
 const S1_ZOOM = 1.22;
 const S1_ZOOM_MS = 950;
+/* ...and how long after the line is heard it starts: the first words land, then the camera moves. */
+const S1_LEAN_DELAY = 300;
 /* Screens 10-16, the comparison run. One composition for all seven: Swiftee and
    her bubble across the top, the row of figures in the panel beneath them. */
 const BOUNDARY = {
@@ -735,6 +737,9 @@ const GUIDE_VISIBLE = !!(window.SWIFTEE && window.SWIFTEE.clips);
 class SwifteeSprite {
   constructor(data, canvasGetter) {
     this.d = data; this.getCanvas = canvasGetter;
+    /* Drawn from her 2x sheets where her cell would be stretched past 1.5x on this screen (hdForPage,
+       src/lesson/swiftee-flying.js, which reckons with SWIFTEE_CELL). Decided once, as the lesson mounts. */
+    this.hd = !!(data.hdForPage && data.hdForPage());
     this.images = {}; this.queue = []; this.seg = null; this.shown = 0; this.acc = 0;
     this.last = 0; this.running = false; this.raf = 0;
     /* A SHEET IS READY WHEN IT IS DECODED, not when its src is set and not merely when it
@@ -743,6 +748,10 @@ class SwifteeSprite {
     this.loading = {}; this.decoded = new Set(); this.failed = new Set();
   }
   clip(name) { return this.d.clips[name]; }
+  /* The clip's sheet at the scale this sprite draws from: its image, and a cell's size in it. */
+  sheet(name) { const c = this.clip(name); if (!c) return null; return (this.d.sheet && this.d.sheet(name, this.hd)) || { image: c.image, cell: this.d.cell }; }
+  /* The size the canvas is drawn at: the cell of the chosen scale. */
+  get cell() { return this.hd && this.d.hd ? this.d.hd.cell : this.d.cell; }
   image(name) { this.load(name); return this.images[name]; }
   /* Request a sheet, wait for it to load, then decode() it (off the main thread where the
      browser can), and only then count it as ready. Resolves true when it can be drawn, false
@@ -756,7 +765,7 @@ class SwifteeSprite {
     this.loading[name] = new Promise(resolve => {
       const done = ok => {
         if (ok) this.decoded.add(name);
-        else { this.failed.add(name); console.warn('[swiftee] sheet did not load, its clip is skipped: ' + clip.image); }
+        else { this.failed.add(name); console.warn('[swiftee] sheet did not load, its clip is skipped: ' + this.sheet(name).image); }
         resolve(ok);
         if (ok && this.seg && this.seg.clip === name) this.draw();
       };
@@ -767,7 +776,7 @@ class SwifteeSprite {
       };
       im.onload = decode;
       im.onerror = () => done(false);
-      im.src = clip.image;
+      im.src = this.sheet(name).image;
       if (im.complete && im.naturalWidth) { im.onload = null; decode(); }
     });
     return this.loading[name];
@@ -817,7 +826,7 @@ class SwifteeSprite {
   draw() {
     const canvas = this.getCanvas();
     if (!canvas || !this.seg || !this.ready(this.seg.clip)) return;
-    const c = this.clip(this.seg.clip), cell = this.d.cell, i = this.frameIndex();
+    const c = this.clip(this.seg.clip), cell = this.sheet(this.seg.clip).cell, i = this.frameIndex();
     const ctx = canvas.getContext('2d'); if (!ctx) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(this.image(this.seg.clip), (i % c.cols) * cell, Math.floor(i / c.cols) * cell, cell, cell, 0, 0, canvas.width, canvas.height);
@@ -1076,6 +1085,9 @@ class Component extends DCLogic {
   componentDidMount() {
 
     this.loadDrawingSound();
+    /* The two answer sounds too, asked for now (preload) rather than at the first answer, so
+       neither waits on the network the first time it is played. */
+    this.answerClip('ok'); this.answerClip('no');
     this.stageRef = React.createRef();
     this.zoneARef = React.createRef(); this.zoneBRef = React.createRef();
     this.narrRef = React.createRef();
@@ -1286,7 +1298,7 @@ class Component extends DCLogic {
     });
   }
   loadDrawingSound() {
-    if (!this._drawingLoad) this._drawingLoad = fetch(audioSrc('assets/audio/sfx/pencil-draw.mp3'))
+    if (!this._drawingLoad) this._drawingLoad = fetch(audioSrc('assets/audio/sfx/pencil-draw.ogg'))
       .then(response => { if (!response.ok) throw new Error('Drawing audio unavailable'); return response.arrayBuffer(); })
       .then(data => { const ac = this.ac(); return ac ? ac.decodeAudioData(data) : null; })
       .then(buffer => { if (!this._gone) this._drawingBuffer = buffer; })
@@ -1362,7 +1374,7 @@ class Component extends DCLogic {
      sound when a learner answers quickly. Rewinding the same element means one
      attempt can only ever be one sound. */
   answerClip(kind) {
-    const files = { ok: 'correct.mp3', no: 'incorrect.mp3' };
+    const files = { ok: 'correct.ogg', no: 'incorrect.ogg' };
     if (!files[kind] || typeof Audio === 'undefined') return null;
     this._answerClips = this._answerClips || {};
     if (!this._answerClips[kind]) {
@@ -1645,6 +1657,10 @@ class Component extends DCLogic {
     // (a line with no take is paged by its English width; in another language it is shown whole,
     // as its translation, which an English page of it would not find)
     this._voiceQueue = lines.flatMap(line => translated() || (window.PolygonRecordedVoice && window.PolygonRecordedVoice.find(line)) ? [line] : this.instructionPages(line)).map(part => ({ text: part })); this._voiceRetry = null; this._voiceContinue = null;
+    /* The takes after this one are fetched now, while it plays: the rest of this screen's queue, its
+       right-answer line, and the next screen's line, so a slow connection never holds a line back
+       (src/lesson/recorded-player.js: prefetch). */
+    this.prefetchVoice(lines);
     this._voiceAfter = () => {
       if (o.then) o.then();
       else if (o.auto) {
@@ -1681,6 +1697,15 @@ class Component extends DCLogic {
     }), () => { this.pumpVoice(); });
   }
   replay = () => { const t = this.state.narr; if (t) this.narrate(t, {}); };
+  prefetchVoice(lines) {
+    const V = window.PolygonRecordedVoice;
+    if (!V || !V.prefetch) return;
+    /* ...and of this screen's feedback only the line every learner hears, the right answer's; a hint
+       is fetched when it is needed, so a learner who makes no slip downloads nothing for it. */
+    const step = this.step(), next = this.steps()[this.state.k + 1];
+    const ahead = (lines || []).concat(step.fb && step.fb.ok ? [step.fb.ok] : [], next && next.narr ? [next.narr] : []);
+    ahead.forEach(line => { try { V.prefetch(this, line); } catch (error) {} });
+  }
   /* Narration stays mandatory: state.muted only gates withAudio() and the
      AudioContext, i.e. the chimes and taps, never the spoken instruction. */
 
@@ -1977,7 +2002,7 @@ class Component extends DCLogic {
     this.stopSfx();
     const s = this.steps()[k];
     this._voiceStarted = false; this._voiceLocked = true; this._voiceReading = false;
-    this._storyCountStart = null; this._openingTraceStart = null; this._lastExplore = 0;
+    this._storyCountStart = null; this._openingTraceStart = null; this._openingZoomStart = null; this._zoomSettled = false; this._lastExplore = 0;
     this._voiceQueue = []; this._voiceAfter = null;
     this._advanceAfterVoice = false; this._voiceRetry = null; this._voiceContinue = null;
     this._stage2Shown = false;
@@ -2066,11 +2091,23 @@ class Component extends DCLogic {
           });
           return;
         }
-        // Listen, move closer, then inspect: each beat has one visual focus.
+        /* Move closer AS she says so. The camera leans in from the moment the line is heard
+           (storyVoiceStart, the way the trace screen starts tracing on it), a few hundred ms in so
+           the first words land first; by the end of the line the figure has settled at its new
+           size, and the screen moves on a beat later. It used to lean in only after the line, and
+           then hold for the whole lean-in: the figure sat still through the line and the hold, and
+           the screen read as the lesson pausing. Where the line is never heard (no voice), the
+           lean-in comes with the fallback's continue and the beat waits for it to settle. */
         if (s.ph === 'closer') {
-          this.narrate(s.narr, { then: () => {
+          const lean = () => {
+            if (this.state.zoomed) return;
             this.setState({ zoomed: true });
-            this.later(() => this.advance(), this.reducedMotion() ? 250 : S1_ZOOM_MS + 220);
+            this.later(() => { this._zoomSettled = true; }, this.reducedMotion() ? 0 : S1_ZOOM_MS);
+          };
+          this._openingZoomStart = () => this.later(lean, this.reducedMotion() ? 0 : S1_LEAN_DELAY);
+          this.narrate(s.narr, { then: () => {
+            if (this._openingZoomStart) { this._openingZoomStart = null; lean(); }   // a fallback that completed without a media-start event
+            this.later(() => this.advance(), this._zoomSettled || this.reducedMotion() ? 350 : S1_ZOOM_MS + 220);
           } });
           return;
         }
@@ -2194,6 +2231,9 @@ class Component extends DCLogic {
   }
   storyVoiceStart() {
     this.guide.onInstructionStart();
+    if (this._openingZoomStart) {
+      const start = this._openingZoomStart; this._openingZoomStart = null; start();
+    }
     if (this._openingTraceStart) {
       const start = this._openingTraceStart; this._openingTraceStart = null; start();
     }
@@ -3485,7 +3525,7 @@ class Component extends DCLogic {
       lessonScene: this.learningReferenceScene() ? 'parts-reference' : this.polygonIntroScene() ? 'polygon-intro' : this.topLessonScene() ? 'boundary' : 'standard',
       safeStyle: this.safeStyle(),
       showGuide: GUIDE_VISIBLE, guideViewport: this.guideViewportStyle(), guideStyle: this.guideStyle(),
-      guideRef: this.guideRef, guideHidden: st.guideHidden, guideCell: (window.SWIFTEE && window.SWIFTEE.cell) || 256,
+      guideRef: this.guideRef, guideHidden: st.guideHidden, guideCell: (this.guide && this.guide.sprite ? this.guide.sprite.cell : (window.SWIFTEE && window.SWIFTEE.cell)) || 256,
       guideCanvasStyle: { position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'block', pointerEvents: 'none' },
       fx: this.fxStyles(),
       stageDown: this.stageDown, hovOut: this.hovOff,

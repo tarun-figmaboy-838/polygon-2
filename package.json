@@ -2,6 +2,7 @@
   "name": "polygon-learning-experience",
   "private": true,
   "scripts": {
+    "build": "node tools/build-dist.cjs",
     "test": "node tests/run.cjs",
     "test:quick": "node tests/run.cjs --quick",
     "test:lesson": "node tests/lesson.test.cjs",

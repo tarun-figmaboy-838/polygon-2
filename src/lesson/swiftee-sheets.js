@@ -354,5 +354,46 @@ window.SWIFTEE = {
    "pingpong": false,
    "exitsCell": false
   }
+ },
+ "hd": {
+  "cell": 512,
+  "images": {
+   "talk_start": "assets/swiftee/swiftee_talk_start@2x.webp",
+   "talking": "assets/swiftee/swiftee_talking@2x.webp",
+   "talk_stop": "assets/swiftee/swiftee_talk_stop@2x.webp",
+   "wave_start": "assets/swiftee/swiftee_wave_start@2x.webp",
+   "waving": "assets/swiftee/swiftee_waving@2x.webp",
+   "wave_stop": "assets/swiftee/swiftee_wave_stop@2x.webp",
+   "happy_start": "assets/swiftee/swiftee_happy_start@2x.webp",
+   "happy": "assets/swiftee/swiftee_happy@2x.webp",
+   "happy_stop": "assets/swiftee/swiftee_happy_stop@2x.webp",
+   "confused_start": "assets/swiftee/swiftee_confused_start@2x.webp",
+   "confused": "assets/swiftee/swiftee_confused@2x.webp",
+   "confused_stop": "assets/swiftee/swiftee_confused_stop@2x.webp",
+   "curious_start": "assets/swiftee/swiftee_curious_start@2x.webp",
+   "curious": "assets/swiftee/swiftee_curious@2x.webp",
+   "curious_stop": "assets/swiftee/swiftee_curious_stop@2x.webp",
+   "celebrate_start": "assets/swiftee/swiftee_celebrate_start@2x.webp",
+   "celebrating": "assets/swiftee/swiftee_celebrating@2x.webp",
+   "celebrate_stop": "assets/swiftee/swiftee_celebrate_stop@2x.webp",
+   "proud_start": "assets/swiftee/swiftee_proud_start@2x.webp",
+   "proud": "assets/swiftee/swiftee_proud@2x.webp",
+   "proud_stop": "assets/swiftee/swiftee_proud_stop@2x.webp",
+   "surprised_start": "assets/swiftee/swiftee_surprised_start@2x.webp",
+   "surprised": "assets/swiftee/swiftee_surprised@2x.webp",
+   "surprised_stop": "assets/swiftee/swiftee_surprised_stop@2x.webp",
+   "relieved_start": "assets/swiftee/swiftee_relieved_start@2x.webp",
+   "relieved": "assets/swiftee/swiftee_relieved@2x.webp",
+   "relieved_stop": "assets/swiftee/swiftee_relieved_stop@2x.webp",
+   "daydream_start": "assets/swiftee/swiftee_daydream_start@2x.webp",
+   "daydreaming": "assets/swiftee/swiftee_daydreaming@2x.webp",
+   "daydreaming_stop": "assets/swiftee/swiftee_daydreaming_stop@2x.webp",
+   "puzzle_start": "assets/swiftee/swiftee_puzzle_start@2x.webp",
+   "puzzleing": "assets/swiftee/swiftee_puzzleing@2x.webp",
+   "puzzle_stop": "assets/swiftee/swiftee_puzzle_stop@2x.webp",
+   "blinking": "assets/swiftee/swiftee_blinking@2x.webp",
+   "flapping": "assets/swiftee/swiftee_flapping@2x.webp",
+   "reset": "assets/swiftee/swiftee_reset@2x.webp"
+  }
  }
 };

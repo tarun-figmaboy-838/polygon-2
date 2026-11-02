@@ -3,9 +3,8 @@
      images  .png / .jpg  ->  .webp   (sharp; alpha kept)
              and an .avif twin of the .webp, where one is the same picture for clearly
              fewer bytes (see avifTwin below); a .webp given on its own gets just the twin
-     audio   .mp3 / .wav  ->  .ogg    (Ogg Opus via ffmpeg) plus an .mp3
-                                       fallback for browsers without Ogg
-                                       (older Safari); an existing .mp3 is kept.
+     audio   .mp3 / .wav  ->  .ogg    (Ogg Opus via ffmpeg), the one format every sound
+                                       ships in; there is no MP3 copy any more.
 
    Usage:
      node tools/optimize-media.cjs <file-or-folder> [...more]
@@ -146,13 +145,7 @@ function audio(file) {
   const opus = SPEECH ? ['-ac', '1', '-b:a', '40k', '-application', 'voip'] : ['-b:a', BITRATE, '-application', 'audio'];
   // the audio stream only: an MP3's cover picture would otherwise come along as a video stream
   execFileSync(ffmpeg(), ['-y', '-v', 'error', '-i', file, '-map', '0:a:0', '-map_metadata', '-1', '-c:a', 'libopus', ...opus, ogg]);
-  const outs = [ogg];
-  if (/\.wav$/i.test(file)) {
-    const mp3 = base + '.mp3';
-    execFileSync(ffmpeg(), ['-y', '-v', 'error', '-i', file, '-c:a', 'libmp3lame', '-q:a', SPEECH ? '5' : '4', mp3]);
-    outs.push(mp3);
-  }
-  return outs;
+  return [ogg];
 }
 
 (async () => {
@@ -170,7 +163,7 @@ function audio(file) {
     const primary = fs.statSync(isImg ? outs[outs.length - 1] : outs[0]).size;
     before += size; after += primary; count++;
     console.log(`${path.relative(process.cwd(), f)}  ${Math.round(size / 1024)}KB -> ${outs.map(o => path.basename(o) + ' ' + Math.round(fs.statSync(o).size / 1024) + 'KB').join(', ')}`);
-    if (REMOVE && !(isAud && /\.mp3$/i.test(f)) && !/\.webp$/i.test(f)) fs.unlinkSync(f);   // an .mp3 source stays as the fallback, a .webp as the WebP
+    if (REMOVE && !/\.webp$/i.test(f)) fs.unlinkSync(f);   // a .webp stays as the WebP
   }
   console.log(`${count} files: ${Math.round(before / 1024)}KB -> ${Math.round(after / 1024)}KB`);
 })().catch(e => { console.error(e); process.exit(1); });

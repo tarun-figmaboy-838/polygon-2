@@ -4,6 +4,9 @@ node_modules/
 # vercel
 .vercel/
 
+# the production build (tools/build-dist.cjs): what the deployment ships, copied out
+dist/
+
 # logs
 *.log
 npm-debug.log*
@@ -26,3 +29,6 @@ tests/checks/output/
 
 # a translation master kept beside the project (it holds other games' strings too); not part of it
 /locales.json
+
+# Python bytecode from the voice tools
+__pycache__/

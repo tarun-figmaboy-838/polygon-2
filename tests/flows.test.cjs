@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /* User-behaviour tests for the story, each in a fresh page: Escape (mid-story
    and on the start card; the page has no Skip button), a double tap on Play,
-   switching tabs mid-line, replay, Ogg failing (MP3 fallback), all audio
-   failing (text still runs), and a missing scene image (on to the lesson,
+   switching tabs mid-line, replay, Ogg failing (no MP3 asked for; Ogg Opus is the one
+   format shipped), all audio failing (text still runs), and a missing scene image (on to the lesson,
    never stuck). Wherever the story ends, however it ends, the Help Momo scene
    follows it (tests/bridge.test.cjs), and its Next leads into the lesson.
 
@@ -142,14 +142,20 @@ const SCENARIOS = {
     await context.close();
   },
 
-  async oggFallsBackToMp3(browser, srv) {
+  /* Ogg Opus is the one format shipped (README: Media formats), so an Ogg that will not load
+     has nothing behind it: the story must ask for no MP3 (there is none to find), show its lines
+     anyway, and hand over to the lesson. */
+  async oggMissing(browser, srv) {
+    const asked = [];
     const { page, context } = await fresh(browser, srv, { route: { pattern: '**/assets/audio/story/*.ogg', handler: r => r.fulfill({ status: 404, body: '' }) } });
+    page.on('request', r => { if (/\.mp3(\?|$)/.test(r.url())) asked.push(new URL(r.url()).pathname); });
     await ready(page); await page.click('.story-play');
     await until(page, () => window.StoryIntro.state().scene === 3);
     const s = await state(page);
-    check('Ogg missing: voices fall back to MP3', s.history.filter(e => e.event === 'voice').every(e => e.withAudio) && s.voiceLoaded, JSON.stringify(s.history.filter(e => e.event === 'voice')));
-    check('Ogg missing: music falls back to MP3', s.music && s.music.loaded);
+    check('Ogg missing: no MP3 is asked for', !asked.length, asked.join(', '));
+    check('Ogg missing: the story goes on, a line at a time', s.history.filter(e => e.event === 'voice').length >= 3, JSON.stringify(s.history.filter(e => e.event === 'voice').slice(0, 3)));
     await page.keyboard.press('Escape');
+    check('Ogg missing: the lesson starts afterwards', await lessonStarted(page));
     await context.close();
   },
 

@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-/* The media formats (README: Media formats): AVIF with WebP behind it, Ogg Opus with MP3
-   behind it, and every picture and sound fetched in one format only.
+/* The media formats (README: Media formats): AVIF with WebP behind it, every sound as Ogg Opus
+   and nothing else, and every picture and sound fetched in one format only.
 
    On disk
-     - every .ogg is Ogg Opus, sound only (no cover art riding along as a video stream), and
-       has its .mp3; no game MP3 carries a picture
+     - every .ogg is Ogg Opus, sound only (no cover art riding along as a video stream); no MP3
+       copy ships beside it (the delivered recordings in assets/audio/source are not shipped)
      - every .avif decodes, is the size of its .webp, and is named somewhere that can ask for it
      - game/js/asset-versions.js and game.bundle.js are what tools/build-game-bundle.cjs makes,
        and every ?v= in the game's stylesheets is the table's
@@ -16,7 +16,8 @@
      - no AVIF (the page's AVIF probe made to fail, and the stylesheets read as a browser that
        has no image-set() reads them): not one AVIF is asked for, each of those pictures comes
        as its WebP, and nothing fails
-     - no Ogg (canPlayType says no): every sound comes as its MP3 and the game decodes them all
+     - no Ogg (canPlayType says no): the page and the game still come up, with no script error,
+       and nothing but a sound is asked for that is not there
 
    node tests/media.test.cjs          ENGINE=webkit node tests/media.test.cjs */
 const fs = require('fs');
@@ -52,13 +53,13 @@ async function onDisk() {
     return !head.startsWith('OggS') || !head.includes('OpusHead') || /theora|\x01vorbis/.test(head);
   });
   check(`every .ogg is Ogg Opus, sound only (${oggs.length})`, oggs.length > 100 && !notOpus.length, notOpus.join(', '));
-  const lone = oggs.filter(f => !fs.existsSync(path.join(ROOT, f.replace(/\.ogg$/, '.mp3'))));
-  check('every .ogg has its .mp3', !lone.length, lone.join(', '));
-  const pictured = shipped.filter(f => f.startsWith('game/assets/audio/') && f.endsWith('.mp3')).filter(f => {
-    const d = fs.readFileSync(path.join(ROOT, f)).subarray(0, 65536);
-    return d.subarray(0, 3).toString() === 'ID3' && d.indexOf('APIC') > 0;
-  });
-  check('no game MP3 carries a picture', !pictured.length, pictured.join(', '));
+  const mp3s = shipped.filter(f => f.endsWith('.mp3'));
+  check('no MP3 copy ships (Ogg Opus is the one format)', !mp3s.length, mp3s.join(', '));
+  const mp3Named = [];
+  for (const f of ['src/lesson/recordings.js', 'src/lesson/recordings-hi.js', 'src/story/story-voice.js', 'src/bridge/bridge-story.js', 'src/intro/swiftee-cameo.js', 'src/lesson/lesson-music.js', 'index.html']) {
+    for (const m of fs.readFileSync(path.join(ROOT, f), 'utf8').matchAll(/assets\/audio\/(?!source\/)[\w./@-]+\.mp3/g)) mp3Named.push(f + ': ' + m[0]);
+  }
+  check('the lesson side names no .mp3 file', !mp3Named.length, mp3Named.join(', '));
 
   /* the pictures */
   const bad = [];
@@ -193,7 +194,7 @@ async function run(browser, srv, mode) {
   await b.goto(srv.url + '/?intro=0&game=0', { waitUntil: 'domcontentloaded' });
   out.lesson = await b.waitForFunction(() => window.__poly && window.__poly.state.ready, null, { timeout: 60000 }).then(() => true, () => false);
   out.avifAnswer = await b.evaluate(() => window.polygonAvif && window.polygonAvif());
-  out.audioSrc = await b.evaluate(() => window.polygonAudioSrc('assets/audio/sfx/correct.mp3'));
+  out.audioSrc = await b.evaluate(() => window.polygonAudioSrc('assets/audio/sfx/correct.ogg'));
   await b.evaluate(() => {
     for (const c of ['primary', 'nav', 'success', 'danger']) {
       const k = document.createElement('button'); k.className = 'kit-btn kit-btn--' + c; k.textContent = c;
@@ -265,12 +266,13 @@ const MUST = ['game/assets/env/path', 'game/assets/env/rock-tall', 'game/assets/
   check('no AVIF: every request succeeds', !B.failed.length, B.failed.join(', '));
   check('no AVIF: no script errors', !B.errors.length, B.errors.join(' | '));
 
+  /* A browser without Ogg Opus (Safari before 17.4) has no sound: there is no second format any
+     more. It must still come up and run, and only a sound may be asked for and not found. */
   const C = await run(browser, srv, 'no-ogg');
-  const gameAudioC = C.reqs.filter(u => /^(game\/)?assets\/audio\//.test(u));
-  check('no Ogg: every sound comes as its MP3', gameAudioC.length >= 9 && gameAudioC.every(u => u.endsWith('.mp3')), [...new Set(gameAudioC.filter(u => !u.endsWith('.mp3')))].join(', '));
-  check('no Ogg: the lesson asks for MP3', /\.mp3$/.test(C.audioSrc), C.audioSrc);
-  check('no Ogg: the game decodes all eight sounds from the MP3s, and has its voice', C.sounds >= 8 && C.voice, C.sounds + ' ' + C.voice);
-  check('no Ogg: every request succeeds', !C.failed.length, C.failed.join(', '));
+  check('no Ogg: the page and the game still come up', C.cover && C.lesson && C.recap);
+  check('no Ogg: the lesson still names its Ogg', /\.ogg$/.test(C.audioSrc), C.audioSrc);
+  const notSound = C.failed.filter(f => !/\.(ogg|mp3)(\?|$)/.test(f));
+  check('no Ogg: nothing but a sound fails to load', !notSound.length, notSound.join(', '));
   check('no Ogg: no script errors', !C.errors.length, C.errors.join(' | '));
 
   /* one format per picture, in every run */

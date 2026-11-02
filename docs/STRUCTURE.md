@@ -28,7 +28,7 @@ The displayed screen number is the position in `steps()`, starting at 1. Interna
 | Story lines, coloured words, balloon position and tail, effects, timing | `src/story/story-data.js` |
 | Story look (the narration label and speech bubbles, comic page and panel) | `styles/story-intro.css` |
 | Story behaviour (sequencing, audio, effects) | `src/story/story-intro.js` |
-| Swiftee's animation sheets | `tools/build-swiftee.cjs` (writes `assets/swiftee/` and `src/lesson/swiftee-sheets.js`) |
+| Swiftee's animation sheets | `tools/build-swiftee.cjs` (writes `assets/swiftee/`, the 1x sheets and the 2x of each, and `src/lesson/swiftee-sheets.js`); which scale a screen draws her from: `hdWanted` in `src/lesson/swiftee-flying.js` |
 | The Help Momo scene between the story and the lesson (the Broken Path): timing, lines, layout, states | `src/bridge/bridge-story.js`, `styles/bridge-story.css` |
 | When the drafted story and scene play (`?story=1`) | `src/intro/opening.js` `storyFirst`, `BridgeStory.afterStory`, `BridgeStory.ending` |
 | The lesson's own music: the track, its level, the dip under a voice, the fade into the game | `src/lesson/lesson-music.js`; the track is `assets/audio/music/lesson-music` (`tools/build-lesson-music.cjs`); started in `boot()`, ducked by `musicDucks()`, stopped in `startPart2` (`index.html`) |

@@ -47,11 +47,11 @@ styles/               all CSS (lesson, story, Help Momo, recap, buttons, fonts, 
 assets/
   story/              the nine story scenes (WebP)
   images/             lesson backgrounds and artwork (WebP, and an AVIF twin where one is smaller)
-  swiftee/            Swiftee's animation sheets (WebP)
-  audio/lesson/       narration: Ogg Opus, plus MP3 for browsers without Ogg
-  audio/sfx/          answer and drawing sounds (Ogg + MP3)
-  audio/story/        story voices and music (Ogg + MP3)
-  audio/bridge/       Swiftee's two Broken Path lines (Ogg + MP3)
+  swiftee/            Swiftee's animation sheets (WebP, at 1x and, for a screen that draws her large, 2x)
+  audio/lesson/       narration (Ogg Opus, the one format every sound ships in)
+  audio/sfx/          answer and drawing sounds
+  audio/story/        story voices and music
+  audio/bridge/       Swiftee's two Broken Path lines
   audio/source/       the voice recordings as delivered; everything above is cut from them
                       (hi/: the Hindi voice, one WAV per line, numbered as hi/script.csv)
   audio/lesson/hi/    the Hindi takes of the lesson's lines (npm run build:hindi-voice)
@@ -63,7 +63,8 @@ tools/                build scripts (media, story voices and music, Swiftee shee
 tests/                Playwright QA and the lesson checks
 docs/                 folder guide and screen map, design notes, voice scripts
   game/               the runner's own contract (RUNNER.md), animation and voice notes
-source-art/           Swiftee's character pack, used by tools/build-swiftee.cjs (@1x sheets; the unused @2x ones were removed)
+source-art/           Swiftee's character pack, used by tools/build-swiftee.cjs (the @1x sheets, and the @2x
+                      sheets of the clips the lesson plays; the rest of the pack's @2x sheets were removed)
 ```
 
 [docs/STRUCTURE.md](docs/STRUCTURE.md) lists which file to edit for what and maps all 47 screens.
@@ -72,8 +73,8 @@ source-art/           Swiftee's character pack, used by tools/build-swiftee.cjs 
 
 - **Images are WebP, with an AVIF twin where one is the same picture for clearly fewer bytes.** A browser that decodes AVIF gets the AVIF; every other browser gets the WebP, and no browser fetches a picture in both formats. A twin is only made when it is at least 20% smaller and still matches the WebP pixel for pixel to a strict bar, both on average and in its worst spot (`tools/optimize-media.cjs`: `fidelity`), so it is the same picture. That is 24 of them: the lesson's board, background, end world, recap card and pill buttons, and the game's path, rocks, platform ends, four obstacles, the morning sky, the Play button, the plank and the tutorial's hand. Swiftee's sheets, Momo's sheets, the ice blocks, the story, the other skies and the game's cover stay WebP only: as AVIF they are larger, or not enough smaller to be the same picture.
   - **How a picture picks.** A stylesheet names both with `image-set()`, after a plain WebP `url()` for browsers without it (under `@supports` where it sets a custom property, as the pill buttons do). A picture the code draws asks first: the game through `assetUrl()` (its table, `game/js/asset-versions.js`, says which pictures have a twin), the lesson through `polygonAvif()`, set up at the top of `index.html`. Both decode a one-pixel AVIF with alpha and keep the first answer they give for the page (the game waits for it before its first picture; the lesson answers no if it is not in yet, which only a very slow browser would see). In the game and the Help Momo scene, an AVIF that will not load is asked for again as its WebP. The instruction board's preload is made in the same format its rule picks.
-- **Audio is Ogg Opus, with an MP3 copy** of every file. Browsers that play Ogg Opus get the smaller Ogg file; older Safari gets the MP3 automatically. The game's sounds are Opus too (96 kbps stereo; 64 kbps for the UI tap and the footsteps), so the lesson and the game ask the browser the same question.
-- **There is no video**, and no GIF: Swiftee's and Momo's animations are sprite sheets drawn frame by frame by the code, in step with her voice and the game, which an animated image could not be.
+- **Audio is Ogg Opus, and nothing else.** Every current browser plays it (Safari since 17.4, March 2024). Until November 2026 an MP3 copy of every file shipped beside the Ogg for older Safari: 16 MB that no other browser ever fetched, so they are gone, and the one copy that ships is the one the learner hears. A browser without Ogg Opus (an iPad left on iOS 16, say) still runs the whole experience, without sound: the lesson shows each line for as long as it takes to read and goes on (`speak()` in `index.html`), and the game plays its synthesised cues with no music or voice (its own silent-failure rules, `game/js/engine.js`). The catalogues name each take's `.ogg`; the game's table (`CFG` in `engine.js`) still names its sounds by their `.mp3` names, which `assetUrl()` resolves to the Ogg, so the game itself is unchanged. The voice is 40 kbps mono (speech-tuned), the game's sounds 96 kbps stereo (64 kbps for the UI tap and the footsteps), the music 97 to 100 kbps.
+- **There is no video**, and no GIF: Swiftee's and Momo's animations are sprite sheets drawn frame by frame by the code, in step with her voice and the game, which an animated image could not be. Swiftee's sheets come at two scales (`npm run build:swiftee`): 256px cells, and 512px cells for a screen that would stretch a cell past 1.5 times, a hi-DPI laptop or tablet, a 2K or 4K display (`src/lesson/swiftee-flying.js`: `hdWanted`); a phone keeps the small set, and the 2x set costs about a third more bytes where it is used. Momo's run at 1.5x (`game/assets/char/hd/`) is the game's own equivalent.
 - **Icons are SVG** where they are drawn as icons (the game's control glyphs). The painted art (buttons, planks, the tutorial's glossy hand) stays raster, since tracing it to vectors would change how it looks.
 
 To add or replace media, drop in the PNG, JPG, MP3 or WAV and convert it. A picture gets its WebP and, if it clears the bar, its AVIF; a WebP given on its own gets just the AVIF. A new AVIF is used once the code asks for it (above): in `game/` run `node tools/build-game-bundle.cjs` so the game's table lists it.
@@ -223,7 +224,7 @@ npm run test:swiftee                   # Swiftee loading: sheet table, cold / sl
 npm run test:recap                     # the recap: states in order, voice, word cues, layout, phones, Next into the quizzes (~5 min)
 BASE=https://tarun-figmaboy-838.github.io/polygon-2/ npm run test:swiftee   # the same against a deployed site
 npm run test:checks                    # 33 focused lesson checks incl. the full 47-screen playthrough (~20 min)
-npm run test:media                     # the formats: AVIF and WebP, Opus and MP3, one format per picture, and the game's
+npm run test:media                     # the formats: AVIF and WebP, Ogg Opus alone, one format per picture, and the game's
                                        # generated files; then the same pages with no AVIF and with no Ogg (~2 min)
 ENGINE=webkit npm test                 # the same in Safari's engine
 ```
@@ -233,7 +234,8 @@ Screenshots of every story panel on every screen size are saved to `tests/output
 ## Deploy
 
 - **GitHub Pages** serves the `main` branch as it is. Every push updates the live game within a minute or two.
-- **Vercel** works too: framework preset **Other**, no build command. `.vercelignore` keeps tools, tests, docs and source art out of the deploy; `game/` ships with the page.
+- **Vercel** works too: framework preset **Other**, no build command. `.vercelignore` keeps tools, tests, docs, source art, the kit pages and the two scripts that only a page opened off the disk needs (`src/i18n/locales.js`, `game/js/game.bundle.js`) out of the deploy; `game/` ships with the page. `vercel.json` has every file revalidated on each load (`max-age=0, must-revalidate`, so no learner is ever held on an old build), except the game's content-hashed asset URLs (`?v=`, from `game/js/asset-versions.js`) and the version-named vendor scripts, which are cached for a year as immutable.
+- **The production build is the deployment itself.** `npm run build` (`tools/build-dist.cjs`) copies exactly what the deployment ships into `dist/`, with a size report and the largest files, so the build can be served and tested as the learner gets it: `npx serve dist`. There is no bundling or minification, by design: the sources are what runs, and the host compresses text on the wire.
 
 ## Notes
 

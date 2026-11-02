@@ -2,7 +2,7 @@
    lesson playing them, without a browser: the page's own i18n.js (in Hindi), the catalogues and
    the lesson's script, with a media element whose clock the check moves.
      - every line the lesson says has its Hindi take (bar the ones the cue map lists as not yet
-       delivered), its file is there in .mp3 and .ogg and as long as the row says, its words are
+       delivered), its Ogg file is there and as long as the row says, its words are
        the words shown, in order, inside the take, and its English cue times are inside it too
      - each line plays its Hindi file, and its words come in exactly as the take says them
      - the cues fire on the Hindi word that says them: the Open / Closed buttons, the boundary
@@ -74,7 +74,7 @@ const duration = file => {
 
   // the catalogue: files, lengths, the words shown, the cues
   for (const row of rows) {
-    for (const ext of ['.mp3', '.ogg']) assert(fs.existsSync(row.src.replace(/\.mp3$/, ext)), 'file: ' + row.src.replace(/\.mp3$/, ext));
+    assert(/\.ogg$/.test(row.src) && fs.existsSync(row.src), 'file: ' + row.src);
     const real = duration(row.src);
     assert(Math.abs(real - row.duration) < 0.06, row.text + ': the row says ' + row.duration + ' s, the file is ' + real);
     // (the take's English says numbers as words, the screen as numerals: the screens below check
@@ -259,9 +259,9 @@ const duration = file => {
     assert.equal(w.words.length, words(w.text).length, id + ': a start for every word shown');
     assert(w.at + w.len <= take + 0.01 && w.words.every((t, i) => t >= 0 && t < w.len && (!i || t > w.words[i - 1])), id + ': inside its window, in order');
   }
-  const takeLen = duration('game/assets/audio/vo-lines-hi.mp3');
+  const takeLen = duration('game/assets/audio/vo-lines-hi.ogg');
   assert(Math.abs(takeLen - take) < 0.1, 'the take is as long as its windows say: ' + takeLen + ' / ' + take);
-  for (const ext of ['mp3', 'ogg']) {
+  for (const ext of ['ogg']) {
     const rel = 'assets/audio/vo-lines-hi.' + ext, h = crypto.createHash('md5').update(fs.readFileSync('game/' + rel)).digest('hex').slice(0, 8);
     for (const js of ['game/js/asset-versions.js', 'game/js/game.bundle.js']) assert(fs.readFileSync(js, 'utf8').includes('"' + rel + '": "' + h + '"'), js + ' has ' + rel + ' at ' + h);
   }

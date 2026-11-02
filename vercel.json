@@ -17,6 +17,25 @@
           "value": "strict-origin-when-cross-origin"
         }
       ]
+    },
+    {
+      "source": "/game/assets/(.*)",
+      "has": [{ "type": "query", "key": "v" }],
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/assets/vendor/(.*)-([0-9.]+)\\.min\\.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
     }
   ]
 }

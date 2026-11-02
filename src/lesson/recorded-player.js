@@ -1,14 +1,12 @@
 /* Shared recording playback. The media clock owns phrase and word progress. */
 (function () {
   'use strict';
-  /* Every recording and sound ships twice under one name: Ogg Opus (small) and
-     MP3 (plays everywhere). Catalog paths name the MP3; browsers that fully
-     support Ogg Opus get the .ogg instead. */
-  const ogg = (() => {
-    try { return document.createElement('audio').canPlayType('audio/ogg; codecs="opus"') === 'probably'; }
-    catch (error) { return false; }
-  })();
-  window.polygonAudioSrc = src => ogg ? String(src).replace(/\.mp3$/i, '.ogg') : src;
+  /* Every recording and sound ships once, as Ogg Opus, which every current browser plays
+     (Safari since 17.4). The MP3 copies that stood behind them for older Safari are gone
+     (16 MB nobody else ever fetched): a browser without Ogg Opus goes on without the voice,
+     as it does with any take that cannot play (speak(), index.html). A path that still names
+     a take by its old .mp3 name resolves to the Ogg. */
+  window.polygonAudioSrc = src => String(src).replace(/\.mp3$/i, '.ogg');
   /* THE VOICE THROUGH THE LESSON'S AUDIO CONTEXT, where it is open. A media element may only
      start with sound after a tap on this page, and in Safari a tap inside the game's frame (its
      PLAY, which opens the experience) does not count, so the lesson's first line sat waiting for
@@ -61,12 +59,17 @@
     v.load = () => {};
     return v;
   }
-  const voiceFor = (game, url) => {
+  /* The lesson's AudioContext, where a line plays through it (see contextVoice); null where a
+     media element is used instead. */
+  const contextOf = game => {
     let ctx = null;
     try { ctx = game && game._ac && game._ac.state === 'running' ? game._ac : null; } catch (e) { ctx = null; }
     const via = window.PolygonRecordedVoice ? window.PolygonRecordedVoice.viaContext !== false : true;
-    if (via && ctx && location.protocol !== 'file:' && typeof fetch === 'function') return contextVoice(ctx, url);
-    return new Audio(url);
+    return via && ctx && location.protocol !== 'file:' && typeof fetch === 'function' ? ctx : null;
+  };
+  const voiceFor = (game, url) => {
+    const ctx = contextOf(game);
+    return ctx ? contextVoice(ctx, url) : new Audio(url);
   };
   const numbers = ['zero','one','two','three','four','five','six','seven','eight','nine'];
   const normalize = text => text.toLowerCase().replace(/[0-9]/g, n => numbers[+n])
@@ -128,6 +131,19 @@
     voice() {
       const I = window.PolygonI18n, all = window.POLYGON_VOICES;
       return I && I.on && all && Array.isArray(all[I.code]) ? all[I.code] : null;
+    },
+    /* A take's bytes, from the one cache every line fetched here goes through (`bytes`): the recap
+       asks for them, so a line the lesson has already said or fetched ahead is not fetched again. */
+    bytes(url) { return fetchBytes(url); },
+    /* A line's take fetched before its moment (the lesson asks for the next screen's line and its
+       right-answer line while the current line plays), so a slow connection never holds a screen
+       back: the bytes wait in `bytes` for play(), which fetches each take once whoever asked first.
+       Only where a line plays through the context, which is what reads those bytes (a media
+       element fetches for itself); a line with no take is left alone. */
+    prefetch(game, text) {
+      if (!contextOf(game)) return;
+      const entry = this.find(text);
+      if (entry && entry.src) fetchBytes(window.polygonAudioSrc(entry.src)).catch(() => {});
     },
     play(game, text, entry, current, done, fail) {
       if (game._stopRecordedVoice) game._stopRecordedVoice();

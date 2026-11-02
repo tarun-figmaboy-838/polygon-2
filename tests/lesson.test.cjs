@@ -55,15 +55,15 @@ async function open(browser, srv, query) {
     art: window.STORY_DATA ? window.STORY_DATA.scenes.map(s => window.STORY_DATA.imageBase + s.image) : []
   }));
   const urls = [];
-  catalog.lesson.forEach(src => { urls.push(src); urls.push(src.replace(/\.(mp3|wav)$/i, '.ogg')); });
-  catalog.story.concat(catalog.music ? [catalog.music] : []).forEach(src => { urls.push(src + '.ogg'); urls.push(src + '.mp3'); });
+  catalog.lesson.forEach(src => urls.push(src));
+  catalog.story.concat(catalog.music ? [catalog.music] : []).forEach(src => urls.push(src + '.ogg'));
   catalog.art.forEach(src => urls.push(src));
   const absent = [];
   for (const u of urls) {
     const status = await a.page.evaluate(async (url) => (await fetch(url, { method: 'HEAD' })).status, u);
     if (status !== 200) absent.push(status + ' ' + decodeURIComponent(u));
   }
-  check(`all ${urls.length} media files exist (lesson Ogg + MP3, story Ogg + MP3, scene art)`, !absent.length, absent.slice(0, 10).join(', '));
+  check(`all ${urls.length} media files exist (lesson Ogg, story Ogg, scene art)`, !absent.length, absent.slice(0, 10).join(', '));
   await a.page.close();
 
   const b = await open(browser, srv, '?preview=1');

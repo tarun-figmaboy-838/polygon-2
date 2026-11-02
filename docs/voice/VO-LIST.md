@@ -183,7 +183,7 @@ The voices arrive as long recordings, several lines to a file, and are kept as d
 
 | Part | What it builds |
 |---|---|
-| Story | the 16 parts, joined into `assets/audio/story/story-voice` (.ogg + .mp3) with the table of where each part starts and when each word is said (`src/story/story-voice.js`) |
+| Story | the 16 parts, joined into `assets/audio/story/story-voice` (.ogg) with the table of where each part starts and when each word is said (`src/story/story-voice.js`) |
 | Lesson | one file per line in `assets/audio/lesson/`, under the name its row in `src/lesson/recordings.js` already uses, and that row's length and word starts; a line with no row yet (L21) gets one |
 | Help Momo (Broken Path) | B1 and B2 in `assets/audio/bridge/`, with rows in `src/lesson/recordings.js`, where the scene finds all three of its lines by their words |
 | Game | the take itself as `game/assets/audio/vo-lines` and a window per line, with its word starts, in `CFG.vo.lines` (`game/js/engine.js` and its bundle), and the take's content hash in the game's asset versions |

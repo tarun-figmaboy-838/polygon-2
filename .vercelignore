@@ -4,14 +4,26 @@ tests/
 tools/
 source-art/
 node_modules/
+dist/
 package.json
 package-lock.json
 README.md
 .env*
 .git/
+.gitignore
+.gitattributes
+.vercelignore
 .codex/
 .agents/
 .thumbnail
+.DS_Store
 assets/audio/source/
 # the words as a script, only for a page opened off the disk (file://); over http the JSON is fetched
 src/i18n/locales.js
+# the game's modules concatenated, only for game/index.html opened off the disk; over http its modules load
+game/js/game.bundle.js
+game/README.md
+# the design kits' demo pages and a translation master kept beside the project: not part of the game
+buttons-kit.html
+momo-jump-kit.html
+locales.json

@@ -1,4 +1,4 @@
-The recording catalogue includes word timestamps in seconds relative to each MP3, including its leading silence. Playback uses the audio clock to reveal complete words, so pauses and playback interruptions do not advance the text independently.
+The recording catalogue includes word timestamps in seconds relative to each take's file, including its leading silence. Playback uses the audio clock to reveal complete words, so pauses and playback interruptions do not advance the text independently.
 
 Every line is a studio recording. Its word starts are kept in `docs/voice/cue-map.json`, measured from the delivered recording and checked against a Whisper transcript, and `tools/voice/cut-recordings.py` (`npm run build:recorded-voice`) cuts each line and writes its duration and word starts into `src/lesson/recordings.js` (the story's into `src/story/story-voice.js`). To change a word's time, change it in the cue map and rebuild; [VO-LIST.md](VO-LIST.md) says how a new recording is added.
 

@@ -12,7 +12,7 @@
    point cannot click.
 
    Usage:  node tools/build-lesson-music.cjs        (npm run build:lesson-music)
-   Output: assets/audio/music/lesson-music.ogg (+ .mp3 for browsers without Ogg Opus) */
+   Output: assets/audio/music/lesson-music.ogg (Ogg Opus, the one format every sound ships in) */
 const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('child_process');
@@ -43,5 +43,4 @@ const filter = 'volume=' + gain.toFixed(2) + 'dB,afade=t=in:st=0:d=0.015,afade=t
 fs.mkdirSync(path.dirname(OUT), { recursive: true });
 const common = ['-y', '-v', 'error', '-ss', String(FROM), '-t', String(TO - FROM), '-i', SRC, '-af', filter, '-fflags', '+bitexact', '-flags:a', '+bitexact'];
 execFileSync(FF, common.concat(['-c:a', 'libopus', '-b:a', '96k', OUT + '.ogg']));
-execFileSync(FF, common.concat(['-c:a', 'libmp3lame', '-b:a', '160k', OUT + '.mp3']));
-console.log('lesson music: ' + (TO - FROM) + ' s from the score, ' + gain.toFixed(1) + ' dB -> ' + path.relative(ROOT, OUT) + '.ogg / .mp3');
+console.log('lesson music: ' + (TO - FROM) + ' s from the score, ' + gain.toFixed(1) + ' dB -> ' + path.relative(ROOT, OUT) + '.ogg');

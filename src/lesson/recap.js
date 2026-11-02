@@ -396,19 +396,27 @@
     try { return window.PolygonRecordedVoice && window.PolygonRecordedVoice.find(text); } catch (e) { return null; }
   }
   function srcOf(rec) { return window.polygonAudioSrc ? window.polygonAudioSrc(rec.src) : rec.src; }
+  /* The take's bytes, through the lesson's voice player where it is there (src/lesson/recorded-player.js:
+     bytes): it holds every line the lesson has said or fetched ahead, so a line the recap says again
+     (the polygon, its parts, the six names) is not fetched a second time. null when the fetch fails. */
+  function bytesOf(rec) {
+    var V = window.PolygonRecordedVoice;
+    var p = V && V.bytes ? V.bytes(srcOf(rec)) : fetch(srcOf(rec)).then(function (r) { return r.ok ? r.arrayBuffer() : null; });
+    return p.catch(function () { return null; });
+  }
   function prefetch(run) {
     run.bytes = {};
     run.opts.concepts.forEach(function (c) {
       var rec = recordingOf(c.text);
       if (!rec || run.bytes[rec.src]) return;
-      try { run.bytes[rec.src] = fetch(srcOf(rec)).then(function (r) { return r.ok ? r.arrayBuffer() : null; }).catch(function () { return null; }); } catch (e) {}
+      try { run.bytes[rec.src] = bytesOf(rec); } catch (e) {}
     });
   }
   function bufferOf(run, rec, ctx) {
     run.buffers = run.buffers || {};
     if (run.buffers[rec.src]) return run.buffers[rec.src];
     var bytes = run.bytes && run.bytes[rec.src];
-    if (!bytes) { try { bytes = run.bytes[rec.src] = fetch(srcOf(rec)).then(function (r) { return r.ok ? r.arrayBuffer() : null; }); } catch (e) { return Promise.resolve(null); } }
+    if (!bytes) { try { bytes = run.bytes[rec.src] = bytesOf(rec); } catch (e) { return Promise.resolve(null); } }
     run.buffers[rec.src] = bytes.then(function (ab) {
       if (!ab) return null;
       return new Promise(function (resolve) {
@@ -539,13 +547,17 @@
   function presenter(run, root) {
     var D = window.SWIFTEE;
     if (!D || !D.clips) return null;
+    /* Drawn from her 2x sheets where the lesson's guide is (src/lesson/swiftee-flying.js: hdForPage),
+       so her sheets here are the ones already in. */
+    var hd = !!(D.hdForPage && D.hdForPage());
+    var CELL = hd && D.hd ? D.hd.cell : 256;
     var cv = el('canvas', 'lsum-presenter', root);
-    cv.width = cv.height = 256;
+    cv.width = cv.height = CELL;
     cv.setAttribute('aria-hidden', 'true');
     var cx = cv.getContext('2d'), imgs = {}, clip = null, t0 = 0, spot = SPOT.peek;
     var image = function (name) {
       var c = D.clips[name]; if (!c) return null;
-      if (!imgs[name]) { var im = new Image(); im.decoding = 'async'; im.src = c.image; imgs[name] = im; }
+      if (!imgs[name]) { var im = new Image(); im.decoding = 'async'; im.src = (D.sheet && D.sheet(name, hd) || c).image; imgs[name] = im; }
       return imgs[name];
     };
     var loopOf = function (state) { return (D.states[state] && D.states[state].loop) || state; };
@@ -557,8 +569,8 @@
       var c = clip && D.clips[clip], im = c && image(clip);
       if (!c || !im || !im.complete || !im.naturalWidth) return;       // a frame only once its sheet is in: never a blank
       var f = reduced() ? 0 : Math.floor((now - t0) / (1000 / (D.fps || 20))) % c.frames, cell = im.naturalWidth / c.cols;
-      cx.clearRect(0, 0, 256, 256);
-      cx.drawImage(im, (f % c.cols) * cell, Math.floor(f / c.cols) * cell, cell, cell, 0, 0, 256, 256);
+      cx.clearRect(0, 0, CELL, CELL);
+      cx.drawImage(im, (f % c.cols) * cell, Math.floor(f / c.cols) * cell, cell, cell, 0, 0, CELL, CELL);
     }
     requestAnimationFrame(draw);
     pose('happy');

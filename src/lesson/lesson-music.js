@@ -28,12 +28,8 @@
 
   var M = null;               // { el, ctx, gain, direct, on, opts, timer, level }
 
-  function source() {
-    var ogg = false;
-    // Ogg Opus only where it is fully played, as the lesson's voices choose (recorded-player.js)
-    try { ogg = document.createElement('audio').canPlayType('audio/ogg; codecs="opus"') === 'probably'; } catch (e) {}
-    return SRC + (ogg ? '.ogg' : '.mp3');
-  }
+  // Ogg Opus, the one format every sound ships in (recorded-player.js); a browser without it has no music
+  function source() { return SRC + '.ogg'; }
   function want() {
     if (!M || !M.on) return 0;
     var o = M.opts;

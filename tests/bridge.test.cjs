@@ -382,16 +382,15 @@ const SCENARIOS = {
     check('no line borrows the game\'s take', lines.length === 0, JSON.stringify(lines));
     const lesson = await page.evaluate(() => window.BridgeStory.lessonLines);
     const want = [
-      ['tut-5-broken', 'Oh no! The path is broken.', /^assets\/audio\/bridge\/.+\.mp3$/],
-      ['tut-2-goal', 'Help Momo cross the Frozen Pass!', /^assets\/audio\/bridge\/.+\.mp3$/],
-      ['learn-first', 'But for that first you need to learn about polygons.', /^assets\/audio\/lesson\/.+\.mp3$/]
+      ['tut-5-broken', 'Oh no! The path is broken.', /^assets\/audio\/bridge\/.+\.ogg$/],
+      ['tut-2-goal', 'Help Momo cross the Frozen Pass!', /^assets\/audio\/bridge\/.+\.ogg$/],
+      ['learn-first', 'But for that first you need to learn about polygons.', /^assets\/audio\/lesson\/.+\.ogg$/]
     ];
     check('her three lines are her recordings, word for word, with a time for every word', lesson.length === 3 &&
       want.every(([id, text, re], i) => lesson[i].id === id && lesson[i].text === text && re.test(lesson[i].src || '') &&
         lesson[i].words.length === text.split(' ').length && lesson[i].words.every((w, k) => !k || w > lesson[i].words[k - 1])), JSON.stringify(lesson));
     for (const l of lesson) {
-      check('the take for ' + l.id + ' is on disk, .mp3 and .ogg', !!l.src && fs.existsSync(path.join(ROOT, l.src)) &&
-        fs.existsSync(path.join(ROOT, l.src.replace(/\.mp3$/, '.ogg'))), l.src);
+      check('the take for ' + l.id + ' is on disk, as Ogg Opus', !!l.src && /\.ogg$/.test(l.src) && fs.existsSync(path.join(ROOT, l.src)), l.src);
     }
     await context.close();
   }
