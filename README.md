@@ -235,7 +235,7 @@ Screenshots of every story panel on every screen size are saved to `tests/output
 
 - **GitHub Pages** serves the `main` branch as it is. Every push updates the live game within a minute or two.
 - **Vercel** works too: framework preset **Other**, no build command. `.vercelignore` keeps tools, tests, docs, source art, the kit pages and the two scripts that only a page opened off the disk needs (`src/i18n/locales.js`, `game/js/game.bundle.js`) out of the deploy; `game/` ships with the page. `vercel.json` has every file revalidated on each load (`max-age=0, must-revalidate`, so no learner is ever held on an old build), except the game's content-hashed asset URLs (`?v=`, from `game/js/asset-versions.js`) and the version-named vendor scripts, which are cached for a year as immutable.
-- **The production build is the deployment itself.** `npm run build` (`tools/build-dist.cjs`) copies exactly what the deployment ships into `dist/`, with a size report and the largest files, so the build can be served and tested as the learner gets it: `npx serve dist`. There is no bundling or minification, by design: the sources are what runs, and the host compresses text on the wire.
+- **The production build is the deployment itself.** Vercel runs `npm run build` (`tools/build-dist.cjs`, set in `vercel.json`) and serves `dist/`: the shipped files, with their comments taken out of the scripts, pages and stylesheets (terser with compress and mangle off, so no code is renamed or rewritten; the sources keep every comment). Run it yourself to see the size report and serve the result: `npx serve dist`. `--keep-comments` copies without stripping.
 
 ## Notes
 

@@ -1,18 +1,16 @@
-# Only the game ships: index.html, src/, styles/, assets/ and game/ (the runner).
+# Only the game ships: index.html, src/, styles/, assets/ and game/ (the runner). Vercel builds
+# dist/ from these with npm run build (tools/build-dist.cjs, which also leaves out package.json,
+# its lock file and tools/: uploaded for the build, never shipped).
 docs/
 tests/
-tools/
 source-art/
 node_modules/
 dist/
-package.json
-package-lock.json
 README.md
 .env*
 .git/
 .gitignore
 .gitattributes
-.vercelignore
 .codex/
 .agents/
 .thumbnail
