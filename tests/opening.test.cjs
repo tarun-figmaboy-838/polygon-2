@@ -60,7 +60,7 @@ const SWIFTEE_OPENING = ['Momo needs your help.', 'But to help Momo, you need to
   check('the game\'s cover is the page: its banner and PLAY', up && !!f && await f.locator('#cover').isVisible() && await f.locator('#btn-play').isVisible());
   check('the lesson waits underneath, hidden, and nothing of the story or the Help Momo scene is there', await a.page.evaluate(() =>
     !window.__poly._voiceStarted && getComputedStyle(document.querySelector('.game-viewport')).visibility === 'hidden' &&
-    !document.getElementById('story-intro') && !document.getElementById('bridge-story') && !window.BridgeStory.enabled));
+    !document.getElementById('story-intro') && !document.getElementById('bridge-story') && !(window.BridgeStory && window.BridgeStory.enabled)));  // (the draft's script is not even on the page without ?story= or ?bridge=)
   check('no Skip and no Skip to ending in the game', await noSkips(f));
 
   /* 2. PLAY, and the tutorial to the broken path */
