@@ -1298,9 +1298,9 @@ class Component extends DCLogic {
     });
   }
   loadDrawingSound() {
-    if (!this._drawingLoad) this._drawingLoad = fetch(audioSrc('assets/audio/sfx/pencil-draw.ogg'))
-      .then(response => { if (!response.ok) throw new Error('Drawing audio unavailable'); return response.arrayBuffer(); })
-      .then(data => { const ac = this.ac(); return ac ? ac.decodeAudioData(data) : null; })
+    // (polygonDecodeAudio: the MP3 twin where the Ogg will not decode, src/lesson/recorded-player.js)
+    if (!this._drawingLoad) this._drawingLoad = Promise.resolve(this.ac())
+      .then(ac => ac ? window.polygonDecodeAudio(ac, audioSrc('assets/audio/sfx/pencil-draw.ogg')) : null)
       .then(buffer => { if (!this._gone) this._drawingBuffer = buffer; })
       .catch(() => {}); // A missing sound must never prevent the lesson from playing.
     return this._drawingLoad;
@@ -1379,6 +1379,7 @@ class Component extends DCLogic {
     this._answerClips = this._answerClips || {};
     if (!this._answerClips[kind]) {
       const clip = new Audio(audioSrc('assets/audio/sfx/' + files[kind]));
+      if (window.polygonMediaFallback) window.polygonMediaFallback(clip);
       clip.preload = 'auto';
       this._answerClips[kind] = clip;
     }

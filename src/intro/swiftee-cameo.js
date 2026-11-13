@@ -41,7 +41,15 @@
   function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
   function reduced() { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); }
   function el(tag, cls, parent) { var n = document.createElement(tag); if (cls) n.className = cls; if (parent) parent.appendChild(n); return n; }
-  function oggOf(base) { return base + '.ogg'; }   // the one format every sound ships in
+  // the Ogg, or its MP3 twin where the browser cannot play Ogg (an iPad before 18.4: recorded-player.js)
+  function oggOf(base) { return window.polygonAudioSrc ? window.polygonAudioSrc(base + '.ogg') : base + '.ogg'; }
+  /* a file's sound decoded by ctx (its MP3 twin if the Ogg will not decode: recorded-player.js); null if neither */
+  function decoded(ctx, url) {
+    var get = function (u) { return bytes(u).then(function (b) { if (!b) throw new Error('no bytes ' + u); return b; }); };
+    var p = window.polygonDecodeAudio ? window.polygonDecodeAudio(ctx, url, get)
+      : get(url).then(function (b) { return ctx.decodeAudioData(b.slice(0)); });
+    return p.catch(function () { return null; });
+  }
   function bytes(url) {
     if (!cache[url]) cache[url] = fetch(url).then(function (r) { return r.ok ? r.arrayBuffer() : null; }).catch(function () { return null; });
     return cache[url];
@@ -118,10 +126,8 @@
   /* ---- the game's whoosh, lighter for a small bird (as the Help Momo scene plays it) ---- */
   function whoosh(ctx) {
     if (!ctx || location.protocol === 'file:') return;
-    bytes(oggOf(WHOOSH)).then(function (buf) {
-      if (!buf || !C) return null;
-      return ctx.decodeAudioData(buf.slice(0));
-    }).then(function (b) {
+    if (!C) return;
+    decoded(ctx, oggOf(WHOOSH)).then(function (b) {
       if (!b || !C || ctx.state !== 'running') return;
       var d = b.getChannelData(0), peak = 0, i, at = 0;
       for (i = 0; i < d.length; i += 64) peak = Math.max(peak, Math.abs(d[i]));
@@ -236,6 +242,7 @@
         /* off the disk a fetch is refused, so the take plays as an element */
         try {
           var a = new Audio(k.src);
+          if (window.polygonMediaFallback) window.polygonMediaFallback(a);
           a.addEventListener('playing', function () {
             if (started || C !== mine) { try { a.pause(); } catch (e) {} return; }
             started = true;
@@ -250,7 +257,7 @@
         } catch (e) {}
       } else if (k && ctx) {
         if (ctx.state === 'suspended') { try { ctx.resume(); } catch (e) {} }
-        bytes(k.src).then(function (buf) { return buf ? ctx.decodeAudioData(buf.slice(0)) : null; }).then(function (b) {
+        decoded(ctx, k.src).then(function (b) {
           if (!b || started || C !== mine || ctx.state !== 'running') return;
           started = true;
           var src = ctx.createBufferSource();

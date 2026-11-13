@@ -1362,11 +1362,9 @@
   var AMBIENCE = { warm: 0.05, playful: 0.045, tension: 0.06, hush: 0.02, resolve: 0.035 };
 
   /* Ogg Opus where the browser plays it, MP3 everywhere else (older Safari). */
+  /* the Ogg, or its MP3 twin where the browser cannot play Ogg (an iPad before 18.4: recorded-player.js) */
   function preferredExt() {
-    try {
-      var a = document.createElement('audio');
-      return 'ogg';   // Ogg Opus is the one format every sound ships in
-    } catch (e) { return 'ogg'; }
+    return window.polygonPlaysOgg === false ? 'mp3' : 'ogg';
   }
 
   function createAudio() {
@@ -1423,7 +1421,8 @@
       });
     };
 
-    /* Fetch and decode `base` + .ogg: Ogg Opus is the one format every sound ships in. */
+    /* Fetch and decode `base` + .ogg (or .mp3, preferredExt); an Ogg that will not load or
+       decode is tried once more as its MP3 twin. */
     A.load = function (base) {
       var get = function (ext) {
         var ctrl = window.AbortController ? new AbortController() : null;
@@ -1433,7 +1432,7 @@
           .then(function (ab) { clearTimeout(timer); return A.decode(ab); },
                 function (err) { clearTimeout(timer); throw err; });
       };
-      return get(A.ext);
+      return A.ext === 'ogg' ? get('ogg').catch(function () { return get('mp3'); }) : get(A.ext);
     };
 
     A.unlock = function () {

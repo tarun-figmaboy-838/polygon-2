@@ -424,6 +424,12 @@
         try { var p = ctx.decodeAudioData(ab.slice(0), resolve, function () { resolve(null); }); if (p && p.catch) p.catch(function () { resolve(null); }); }
         catch (e) { resolve(null); }
       });
+    }).then(function (b) {
+      // an Ogg that will not decode after all: its MP3 twin (recorded-player.js)
+      var alt = !b && window.polygonAudioFallback ? window.polygonAudioFallback(srcOf(rec)) : null;
+      if (!alt || !window.polygonDecodeAudio) return b;
+      var V = window.PolygonRecordedVoice;
+      return window.polygonDecodeAudio(ctx, alt, V && V.bytes ? V.bytes : undefined).catch(function () { return null; });
     }).catch(function () { return null; });
     return run.buffers[rec.src];
   }

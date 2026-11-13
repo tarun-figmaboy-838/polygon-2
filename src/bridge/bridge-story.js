@@ -463,6 +463,7 @@
   var loading = null;    // the preload, shared by every caller
   var art = {};          // loaded images, by name
   var bytes = {};        // fetched audio, by name
+  var urls = {};         // the file each of `bytes` came from (for its MP3 retry)
   var ctxHint = null;    // the lesson's AudioContext, when it was handed over early
   var ctxSource = null;  // or where to get it (useAudio): the lesson's, unlocked by the story's Play
   var versionsP = null;
@@ -509,10 +510,10 @@
     if (avif !== src && V[avif] && window.polygonAvif && window.polygonAvif()) src = avif;
     return gameUrl(V, src);
   }
-  /* The game's sound files are Ogg Opus, the one format every sound ships in; a sound the game's
-     table still names by its old .mp3 name is its Ogg. */
+  /* The game's sound files ship as Ogg Opus and as MP3 twins: the one this browser plays
+     (polygonAudioSrc, src/lesson/recorded-player.js: an iPad before 18.4 gets the MP3). */
   function gameAudioUrl(V, src) {
-    var o = src.replace(/\.mp3$/, '.ogg');
+    var o = window.polygonAudioSrc ? window.polygonAudioSrc(src) : src.replace(/\.mp3$/, '.ogg');
     return gameUrl(V, V[o] ? o : src);
   }
   /* `plain`: the WebP to ask for instead if an AVIF will not load */
@@ -596,9 +597,9 @@
       if (document.fonts && document.fonts.load) jobs.push(document.fonts.load('600 46px Fredoka').catch(noop));
       LINES.concat(ENDING).forEach(function (l) {
         var take = lessonTake(l);
-        if (take) bytes[l.id] = fetchBytes(window.polygonAudioSrc ? window.polygonAudioSrc(take.src) : take.src);
+        if (take) bytes[l.id] = fetchBytes(urls[l.id] = window.polygonAudioSrc ? window.polygonAudioSrc(take.src) : take.src);
       });
-      Object.keys(SFX).forEach(function (k) { bytes[k] = fetchBytes(gameAudioUrl(V, SFX[k].src)); });
+      Object.keys(SFX).forEach(function (k) { bytes[k] = fetchBytes(urls[k] = gameAudioUrl(V, SFX[k].src)); });
       return Promise.all(jobs).then(function () {
         art.hd = hd;
         if (art.path) { art.tileA = pathTile(art.path, false); art.tileB = pathTile(art.path, true); }
@@ -636,10 +637,16 @@
           A2.buf[name] = b;
           if (SFX[name] && SFX[name].mode === 'onset') A2.hits[name] = onsets(b);
         };
+        // an Ogg that will not decode after all: its MP3 twin, once (recorded-player.js)
+        var tried = false, fail = function () {
+          var alt = !tried && urls[name] && window.polygonAudioFallback ? window.polygonAudioFallback(urls[name]) : null;
+          tried = true;
+          if (alt && window.polygonDecodeAudio) window.polygonDecodeAudio(ctx, alt).then(done, noop);
+        };
         try {
-          var p = ctx.decodeAudioData(ab.slice(0), done, noop);
-          if (p && p.then) p.then(done, noop);
-        } catch (e) {}
+          var p = ctx.decodeAudioData(ab.slice(0), done, fail);
+          if (p && p.then) p.then(done, fail);
+        } catch (e) { fail(); }
       });
     }); });
     return A2;

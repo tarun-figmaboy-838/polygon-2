@@ -28,8 +28,8 @@
 
   var M = null;               // { el, ctx, gain, direct, on, opts, timer, level }
 
-  // Ogg Opus, the one format every sound ships in (recorded-player.js); a browser without it has no music
-  function source() { return SRC + '.ogg'; }
+  // the Ogg, or its MP3 twin where the browser cannot play Ogg (an iPad before 18.4: recorded-player.js)
+  function source() { return window.polygonAudioSrc ? window.polygonAudioSrc(SRC + '.ogg') : SRC + '.ogg'; }
   function want() {
     if (!M || !M.on) return 0;
     var o = M.opts;
@@ -99,6 +99,7 @@
       }
     }
     if (!gain) el.volume = 0;
+    if (window.polygonMediaFallback) window.polygonMediaFallback(el);
     el.src = source();
     el.addEventListener('error', function () { /* no music: nothing else changes */ });
     M = { el: el, ctx: ctx, gain: gain, direct: direct, on: true, opts: opts, level: 0, step: 0 };

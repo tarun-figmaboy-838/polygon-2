@@ -1,12 +1,62 @@
 /* Shared recording playback. The media clock owns phrase and word progress. */
 (function () {
   'use strict';
-  /* Every recording and sound ships once, as Ogg Opus, which every current browser plays
-     (Safari since 17.4). The MP3 copies that stood behind them for older Safari are gone
-     (16 MB nobody else ever fetched): a browser without Ogg Opus goes on without the voice,
-     as it does with any take that cannot play (speak(), index.html). A path that still names
-     a take by its old .mp3 name resolves to the Ogg. */
-  window.polygonAudioSrc = src => String(src).replace(/\.mp3$/i, '.ogg');
+  /* EVERY SOUND SHIPS TWICE: as Ogg Opus, and as an MP3 twin of the same name beside it.
+     An iPad before iPadOS 18.4 cannot play Ogg Opus at all (nor decode it), and every browser
+     on an iPad is that same WebKit, Instagram's and Chrome's included: without the twins the
+     whole lesson went silent there. Apple's WebKit is given the MP3 whatever it says about Ogg
+     (the versions that say yes are not all the versions that play it); every other browser that
+     can play Ogg is given the Ogg (half the size), and the MP3 otherwise. Off the disk the MP3
+     (Chromium aborts an Ogg loaded from a file URL). Whichever name a caller holds, .ogg or
+     .mp3, polygonAudioSrc gives the file this browser gets; polygonAudioFallback is the MP3 to
+     try once when an Ogg was chosen and will not load or decode after all. */
+  const PLAYS_OGG = (() => {
+    try {
+      if (location.protocol === 'file:') return false;
+      if (/Apple/i.test(navigator.vendor || '')) return false;
+      return !!document.createElement('audio').canPlayType('audio/ogg; codecs="opus"');
+    } catch (e) { return false; }
+  })();
+  const OGG = /\.ogg(?=$|[?#])/i, MP3 = /\.mp3(?=$|[?#])/i;
+  window.polygonPlaysOgg = PLAYS_OGG;
+  window.polygonAudioSrc = src => (PLAYS_OGG ? String(src).replace(MP3, '.ogg') : String(src).replace(OGG, '.mp3'));
+  window.polygonAudioFallback = src => (OGG.test(String(src)) ? String(src).replace(OGG, '.mp3') : null);
+  /* decodeAudioData as a promise, for the callback-only Safari too; a copy, because it detaches
+     what it is given */
+  const decodeBytes = (ctx, buf) => new Promise((resolve, reject) => {
+    try { const p = ctx.decodeAudioData(buf.slice(0), resolve, reject); if (p && p.then) p.then(resolve, reject); }
+    catch (e) { reject(e); }
+  });
+  /* A file's sound, decoded by `ctx`: its MP3 twin when the Ogg will not load or decode.
+     `get(url)` gives the bytes (a cache of the caller's own, or a plain fetch). */
+  window.polygonDecodeAudio = (ctx, url, get) => {
+    const load = get || (u => fetch(u).then(r => (r.ok ? r.arrayBuffer() : Promise.reject(new Error(r.status + ' ' + u)))));
+    return load(url).then(buf => decodeBytes(ctx, buf)).catch(err => {
+      const alt = window.polygonAudioFallback(url);
+      if (!alt) throw err;
+      return load(alt).then(buf => decodeBytes(ctx, buf));
+    });
+  };
+  /* A media element given an Ogg that then fails: once, it takes the MP3 instead, and plays it
+     if it was asked to play (the element's own error never reaches its handlers). */
+  window.polygonMediaFallback = el => {
+    if (!el || el.__polyFallback) return el;
+    el.__polyFallback = true;
+    let wants = false;
+    const play = el.play, pause = el.pause;
+    el.play = function () { wants = true; return play.apply(el, arguments); };
+    el.pause = function () { wants = false; return pause.apply(el, arguments); };
+    el.addEventListener('error', e => {
+      const alt = window.polygonAudioFallback(el.currentSrc || el.src || '');
+      if (!alt || el.__polyTried) return;
+      el.__polyTried = true;
+      e.stopImmediatePropagation();
+      el.src = alt;
+      try { el.load(); } catch (x) {}
+      if (wants) { const p = play.call(el); if (p && p.catch) p.catch(() => { if (el.onerror) el.onerror(); }); }
+    });
+    return el;
+  };
   /* THE VOICE THROUGH THE LESSON'S AUDIO CONTEXT, where it is open. A media element may only
      start with sound after a tap on this page, and in Safari a tap inside the game's frame (its
      PLAY, which opens the experience) does not count, so the lesson's first line sat waiting for
@@ -33,7 +83,7 @@
       ? Math.min(v.duration || Infinity, Math.max(0, ctx.currentTime - t0, (performance.now() - w0) / 1000 - 0.25)) : at), set: () => {} });
     const halt = () => { clearInterval(timer); clearTimeout(guard); if (node) { node.onended = null; try { node.stop(); } catch (e) {} } };
     const ended = () => { if (dead || v.paused) return; at = v.duration; v.paused = true; halt(); if (v.onended) v.onended(); };
-    v.play = () => fetchBytes(url).then(buf => ctx.decodeAudioData(buf.slice(0))).then(b => {
+    v.play = () => window.polygonDecodeAudio(ctx, url, fetchBytes).then(b => {
       if (dead) return;
       if (ctx.state !== 'running') throw new Error('the context is not running');
       v.duration = b.duration;
@@ -69,7 +119,7 @@
   };
   const voiceFor = (game, url) => {
     const ctx = contextOf(game);
-    return ctx ? contextVoice(ctx, url) : new Audio(url);
+    return ctx ? contextVoice(ctx, url) : window.polygonMediaFallback(new Audio(url));
   };
   const numbers = ['zero','one','two','three','four','five','six','seven','eight','nine'];
   const normalize = text => text.toLowerCase().replace(/[0-9]/g, n => numbers[+n])

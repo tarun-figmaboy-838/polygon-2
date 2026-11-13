@@ -26,16 +26,27 @@
 const ASSET_V = {
   "assets/art/Bubble.svg": "523bce06",
   "assets/art/cover.webp": "e0c7a5db",
+  "assets/audio/bgm-ice-hunt.mp3": "7457c2bd",
   "assets/audio/bgm-ice-hunt.ogg": "73a948c6",
+  "assets/audio/dragon-studio-cartoon-blinking-372481.mp3": "8de04dea",
   "assets/audio/dragon-studio-cartoon-blinking-372481.ogg": "5657e93e",
+  "assets/audio/dragon-studio-heavy-boulder-thud-515257.mp3": "0a02f289",
   "assets/audio/dragon-studio-heavy-boulder-thud-515257.ogg": "b6de4e4a",
+  "assets/audio/dragon-studio-heavy-whoosh-06-414584.mp3": "5b86d710",
   "assets/audio/dragon-studio-heavy-whoosh-06-414584.ogg": "9222f698",
+  "assets/audio/floraphonic-punchy-taps-ui-5-183901.mp3": "07db8096",
   "assets/audio/floraphonic-punchy-taps-ui-5-183901.ogg": "6d09eec1",
+  "assets/audio/freesound_community-foot_steps_snow_heavy-38297.mp3": "96f76c88",
   "assets/audio/freesound_community-foot_steps_snow_heavy-38297.ogg": "84930612",
+  "assets/audio/themediaguy-earthquake-rumble-amp-cracking-379298.mp3": "6bf983ee",
   "assets/audio/themediaguy-earthquake-rumble-amp-cracking-379298.ogg": "710b80aa",
+  "assets/audio/universfield-ground-impact-352053.mp3": "906c20ab",
   "assets/audio/universfield-ground-impact-352053.ogg": "2f6ab5e2",
+  "assets/audio/universfield-sad-trumpet-278822.mp3": "429a0a32",
   "assets/audio/universfield-sad-trumpet-278822.ogg": "31998195",
+  "assets/audio/vo-lines-hi.mp3": "a0a9d105",
   "assets/audio/vo-lines-hi.ogg": "ebbb6834",
+  "assets/audio/vo-lines.mp3": "d5df6b98",
   "assets/audio/vo-lines.ogg": "a80595e4",
   "assets/char/bear.webp": "ac7771ee",
   "assets/char/duo-celebrate.webp": "7845cb0a",
@@ -1243,6 +1254,10 @@ function playsOgg() {
          silent. The mp3 loads there and is already the format the rest of the file-scheme
          handling assumes, so the negotiation simply does not apply. */
       if (typeof location !== 'undefined' && location.protocol === 'file:') oggOk = false;
+      /* NOR ON APPLE'S WEBKIT, whatever it answers. An iPad before iPadOS 18.4 cannot play or
+         decode Ogg Opus, every browser on an iPad (Instagram's, Chrome's) is that WebKit, and the
+         versions that say yes are not all the versions that play it. The MP3 always plays there. */
+      else if (typeof navigator !== 'undefined' && /Apple/i.test(navigator.vendor || '')) oggOk = false;
       else oggOk = !!new Audio().canPlayType('audio/ogg; codecs="opus"');
     } catch (e) { oggOk = false; }
   }
@@ -1284,6 +1299,13 @@ const avifReady = new Promise(done => {
 
 /* `plain` asks for the WebP even where there is an AVIF: the second try of a picture whose
    AVIF did not load. */
+/* The MP3 twin of a sound whose Ogg would not load or decode after all (asked for by its .mp3 name,
+   as CFG names every sound): null where there is no twin, or the MP3 was what was tried. */
+function audioRetryUrl(src) {
+  if (!src.endsWith('.mp3') || !ASSET_V[src] || !playsOgg()) return null;
+  return src + '?v=' + ASSET_V[src];
+}
+
 function assetUrl(src, plain) {
   /* (where the build ships no .mp3 for a sound, its .ogg is the only file there is: a browser
      without Ogg Opus is handed that and plays on silent, rather than asking for a file that 404s) */
@@ -2808,6 +2830,14 @@ class AudioManager {
       const el = new Audio(assetUrl(M.src));
       el.loop = true;
       el.preload = 'auto';
+      // an Ogg that will not play after all: its MP3 twin, once
+      el.addEventListener('error', () => {
+        const alt = audioRetryUrl(M.src);
+        if (!alt || el.dataset.retried) return;
+        el.dataset.retried = '1';
+        el.src = alt;
+        const p = el.play(); if (p && p.catch) p.catch(() => {});
+      });
       if (direct) {
         el.volume = 0;                        // faded in below
         this.music = { el, gain: null };
@@ -2889,9 +2919,17 @@ class AudioManager {
       try {
         if (!byUrl.has(cue.src)) {
           byUrl.set(cue.src, (async () => {
-            const res = await fetch(assetUrl(cue.src));
-            if (!res.ok) throw new Error(res.status + ' ' + cue.src);
-            return this.ctx.decodeAudioData(await res.arrayBuffer());
+            const get = async url => {
+              const res = await fetch(url);
+              if (!res.ok) throw new Error(res.status + ' ' + cue.src);
+              return this.ctx.decodeAudioData(await res.arrayBuffer());
+            };
+            // an Ogg that will not decode after all: its MP3 twin, once
+            try { return await get(assetUrl(cue.src)); } catch (e) {
+              const alt = audioRetryUrl(cue.src);
+              if (!alt) throw e;
+              return get(alt);
+            }
           })());
         }
         const buf = await byUrl.get(cue.src);
@@ -3083,7 +3121,15 @@ class AudioManager {
       if (!this.ctx) { this.voLoading = false; return; }     // try again when the context opens
       if (!this.voBytes) await this.fetchVo();
       if (!this.voBytes) throw new Error('no voice bytes');
-      this.vo = await this.ctx.decodeAudioData(this.voBytes.slice(0));
+      try { this.vo = await this.ctx.decodeAudioData(this.voBytes.slice(0)); } catch (e) {
+        // an Ogg take that will not decode after all: its MP3 twin, once
+        const alt = audioRetryUrl(this._voTake.src);
+        if (!alt) throw e;
+        const res = await fetch(alt);
+        if (!res.ok) throw e;
+        this.voBytes = await res.arrayBuffer();
+        this.vo = await this.ctx.decodeAudioData(this.voBytes.slice(0));
+      }
       this._sayPending();
     } catch (e) {
       // let a later attempt try again: a decode that failed once is not fatal
