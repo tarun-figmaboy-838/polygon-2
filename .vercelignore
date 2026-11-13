@@ -21,5 +21,6 @@ src/i18n/locales.js
 # the game's modules concatenated, only for game/index.html opened off the disk; over http its modules load
 game/js/game.bundle.js
 game/README.md
-# a translation master kept beside the project: not part of the game
-locales.json
+# (No rule for a root locales.json: a bare `locales.json` here also matched src/i18n/locales.json, the words of every
+# language, so no deployment since 2 Nov carried them and ?lan= showed English. A master kept beside the project is
+# not in the repository, so it never reaches the deployment anyway.)
