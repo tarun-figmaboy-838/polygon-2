@@ -142,9 +142,9 @@ const SCENARIOS = {
     await context.close();
   },
 
-  /* Ogg Opus is the one format shipped (README: Media formats), so an Ogg that will not load
-     has nothing behind it: the story must ask for no MP3 (there is none to find), show its lines
-     anyway, and hand over to the lesson. */
+  /* Every sound ships as Ogg Opus with an MP3 twin (README: Media formats): an Ogg that will not
+     load is asked for once more as its MP3, and the story shows its lines and hands over to the
+     lesson either way. */
   async oggMissing(browser, srv) {
     const asked = [];
     const { page, context } = await fresh(browser, srv, { route: { pattern: '**/assets/audio/story/*.ogg', handler: r => r.fulfill({ status: 404, body: '' }) } });
@@ -152,7 +152,7 @@ const SCENARIOS = {
     await ready(page); await page.click('.story-play');
     await until(page, () => window.StoryIntro.state().scene === 3);
     const s = await state(page);
-    check('Ogg missing: no MP3 is asked for', !asked.length, asked.join(', '));
+    check('Ogg missing: its MP3 twin is asked for instead', asked.some(p => /\/story-voice\.mp3$/.test(p)), asked.join(', ') || 'no MP3 asked for');
     check('Ogg missing: the story goes on, a line at a time', s.history.filter(e => e.event === 'voice').length >= 3, JSON.stringify(s.history.filter(e => e.event === 'voice').slice(0, 3)));
     await page.keyboard.press('Escape');
     check('Ogg missing: the lesson starts afterwards', await lessonStarted(page));

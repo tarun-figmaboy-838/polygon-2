@@ -53,8 +53,10 @@ async function onDisk() {
     return !head.startsWith('OggS') || !head.includes('OpusHead') || /theora|\x01vorbis/.test(head);
   });
   check(`every .ogg is Ogg Opus, sound only (${oggs.length})`, oggs.length > 100 && !notOpus.length, notOpus.join(', '));
-  const mp3s = shipped.filter(f => f.endsWith('.mp3'));
-  check('no MP3 copy ships (Ogg Opus is the one format)', !mp3s.length, mp3s.join(', '));
+  /* every sound ships twice: Apple's WebKit (an iPad before iPadOS 18.4 plays no Ogg Opus) gets the MP3 twin */
+  const mp3s = new Set(shipped.filter(f => f.endsWith('.mp3')));
+  const noTwin = oggs.filter(f => !mp3s.has(f.replace(/\.ogg$/, '.mp3')));
+  check(`every .ogg has its MP3 twin, for Apple's WebKit (${oggs.length})`, !noTwin.length, noTwin.join(', '));
   const mp3Named = [];
   for (const f of ['src/lesson/recordings.js', 'src/lesson/recordings-hi.js', 'src/lesson/recordings-mr.js', 'src/lesson/recordings-gu.js', 'src/story/story-voice.js', 'src/bridge/bridge-story.js', 'src/intro/swiftee-cameo.js', 'src/lesson/lesson-music.js', 'index.html']) {
     for (const m of fs.readFileSync(path.join(ROOT, f), 'utf8').matchAll(/assets\/audio\/(?!source\/)[\w./@-]+\.mp3/g)) mp3Named.push(f + ': ' + m[0]);
