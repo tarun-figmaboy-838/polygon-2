@@ -118,6 +118,9 @@
 </script>
 </head>
 <body>
+<!-- After </helmet>, the component's markup sits in a <template>: inert, so the browser does not read its
+     {{ bindings }} as real SVG values (viewBox, d, cx, ...) and log an error for each while the page loads.
+     The runtime unwraps it (src/runtime/support.js: dcTemplate), so it gets the same template as before. -->
 <x-dc>
 <helmet>
 <style>
@@ -279,7 +282,7 @@
     .game-action,.game-action::before,.game-action::after,.game-action *,.game-handle { animation:none !important; transition:none !important; }
   }
 </style>
-</helmet>
+</helmet><template data-dc-inert>
 <div class="game-viewport" ref="{{ stageRef }}" onScroll="{{ layoutScroll }}" style="{{ viewportStyle }}">
   <!-- Fills whatever part of the screen is not 16:9. The lesson canvas is a
        fixed 16:9 frame with the scenery painted inside it, so on any screen
@@ -474,7 +477,7 @@
   </div>
  </div>
 </div>
-</x-dc>
+</template></x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1320,&quot;height&quot;:720}}">
 const IK = '#f58420', ICE = '#22b8e6', GOLD = '#e9a733';
 /* How long the boundary trace takes on the open/closed screens. The dotted

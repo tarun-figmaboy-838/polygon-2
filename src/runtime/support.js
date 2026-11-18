@@ -21,6 +21,23 @@
   ));
 
   // src/parse.ts
+  /* The template is x-dc's markup. Markup kept in a <template data-dc-inert> (so the page's own parse does
+     not read its {{ bindings }} as live SVG values and log errors) is unwrapped, so the string is the same
+     as if it sat in x-dc directly. */
+  const INERT_OPEN = "<template data-dc-inert>", INERT_CLOSE = "</template>";
+  function dcTemplate(dc) {
+    let html = "";
+    for (const n of dc.childNodes) {
+      if (n.nodeType === 1) html += n.localName === "template" && n.hasAttribute("data-dc-inert") ? n.innerHTML : n.outerHTML;
+      else if (n.nodeType === 8) html += "<!--" + n.data + "-->";
+      else if (n.nodeType === 3) html += n.data.replace(/&/g, "&amp;").replace(/\u00a0/g, "&nbsp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+    return html;
+  }
+  function unwrapInert(text) {
+    const open = text.indexOf(INERT_OPEN), close = text.lastIndexOf(INERT_CLOSE);
+    return open === -1 || close < open ? text : text.slice(0, open) + text.slice(open + INERT_OPEN.length, close) + text.slice(close + INERT_CLOSE.length);
+  }
   function parseDcDocument(doc) {
     const dc = doc.querySelector("x-dc");
     if (!dc) return null;
@@ -29,7 +46,7 @@
       scriptEl?.getAttribute("data-props") ?? null
     );
     return {
-      template: dc.innerHTML,
+      template: dcTemplate(dc),
       js: scriptEl ? scriptEl.textContent || "" : "",
       props,
       preview
@@ -40,7 +57,7 @@
     if (!openMatch) return null;
     const close = src.lastIndexOf("</x-dc>");
     if (close === -1 || close < openMatch.index) return null;
-    const template = src.slice(openMatch.index + openMatch[0].length, close);
+    const template = unwrapInert(src.slice(openMatch.index + openMatch[0].length, close));
     const doc = new DOMParser().parseFromString(src, "text/html");
     const scriptEl = doc.querySelector("script[data-dc-script]");
     const { props, preview } = parseDataProps(
